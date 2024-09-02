@@ -1,0 +1,13 @@
+<% const name = action.getName(card) %>
+const <%= name.var %> = async (e) => {
+    let self = e.currentTarget;
+    let action = $(e.currentTarget).data('action')
+    const res = await jsonPost(`<%= name.url %>`, { action: action ? 'off' : 'on' })
+    if(res?.status != 'success') return
+    if (action) $('#<%= card.id.id %> i').removeClass('fa-toggle-off').addClass('fa-toggle-on')
+    else $('#<%= card.id.id %> i').removeClass('fa-toggle-on').addClass('fa-toggle-off')
+    $(self).data('action', !action)
+    <%= card.id.var %>ReloadList()
+}
+
+$('#<%= card.id.id %>').click(<%= name.var %>)

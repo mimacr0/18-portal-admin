@@ -1,0 +1,7 @@
+<div <%- Object.entries(group).map(([key, value]) => `${key}="${value}"`).join(' ') %>>
+    <label for="<%= field.id %>"><%= field.label %></label>
+    <input <%- Object.entries({...{ class: 'form-control', id: field.id, name: field.name, type, placeholder: field?.placeholder || field?.label }, ...field.attrs }).map(([key, value]) => `${key}="${value}"`).join(' ') %>/>
+    <% if (field.required) { %>
+        <div class="invalid-feedback">field.required.text</div>
+    <% } %>
+</div>

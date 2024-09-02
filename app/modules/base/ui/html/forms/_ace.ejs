@@ -1,0 +1,6 @@
+<div <%- field.groupHTML() %>>
+    <% if (field.label) { %>
+        <label for="<% field.id %>"><%= field.label %></label>
+    <% } %>
+    <textarea <%- field.inputHTML({"data-editor": field.data.mode || 'text'}) %>></textarea>
+</div>

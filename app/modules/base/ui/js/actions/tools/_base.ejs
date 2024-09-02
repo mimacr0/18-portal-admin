@@ -1,0 +1,8 @@
+<% const name = action.getName(card) %>
+const <%= name.var %> = async () => {
+    const res = await jsonPost(`<%= name.url %>`)
+    if(res?.status != 'success') return
+    <%= card.id.var %>ReloadList()
+}
+
+$('#<%= name.id %>').click(<%= name.var %>)

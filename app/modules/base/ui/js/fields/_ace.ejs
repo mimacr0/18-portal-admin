@@ -1,0 +1,18 @@
+<% const name = field.name %>
+const <%= name.lower %>_textarea = $('#<%= name.id %>')
+const <%= name.lower %>_mode = <%= name.lower %>_textarea.data('editor')
+const editDiv = $('<div>', {
+    position: 'absolute',
+    width: <%= name.lower %>_textarea.width(),
+    height: <%= name.lower %>_textarea.height(),
+    'class': <%= name.lower %>_textarea.attr('class')
+}).insertBefore(<%= name.lower %>_textarea)
+<%= name.lower %>_textarea.css('display', 'none')
+const <%= name.lower %>_editor = ace.edit(editDiv[0])
+<%= name.lower %>_editor.renderer.setShowGutter(true)
+<%= name.lower %>_editor.getSession().doc.setValue(<%= name.lower %>_textarea.val() || "")
+<%= name.lower %>_editor.getSession().setMode("ace/mode/" + <%= name.lower %>_mode)
+<%= name.lower %>_editor.setTheme("ace/theme/textmate")
+<%= name.lower %>_textarea.closest('form').submit(function () {
+    <%= name.lower %>_textarea.val(<%= name.lower %>_editor.getSession().getValue())
+})

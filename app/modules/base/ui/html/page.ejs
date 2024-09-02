@@ -1,0 +1,36 @@
+<%- include('layout/header', { page }) %>
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="row">
+       <div class="offset-3 col-6" id="page_messages_container"></div>
+    </div>
+ </div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<div class="content">
+
+   <div class="container-fluid">
+
+      <% if(page.state) { %>
+      <div class="row" id="main-status-widget" style="min-height: 100px;"></div>
+      <% } %>
+
+      <% for( const screen of page.screens ) { %>
+      <%- include('pages/_screen', { screen }) %>
+      <% } %>
+
+   </div>
+
+   <% page.forms.forEach(form => { %>
+   <%- include('forms/_form', { form }) %>
+   <% }) %>
+
+</div>
+
+<%- include('layout/footer', { page }) %>
+
+</body>
+
+</html>

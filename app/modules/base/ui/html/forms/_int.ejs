@@ -1,0 +1,4 @@
+<% let type = 'number' %>
+<% let groupId = `${field.id}-group` %>
+<% let group = {...{ class: 'form-group', id: groupId }, ...field?.group } %>
+<%- include('_input', { field, group, type }) %>

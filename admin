@@ -1,0 +1,5 @@
+#!/bin/bash
+# admin
+
+# Pass all the arguments to the Python script
+export PROJECT_NAME=logistic && export PROJECT_PORT=3004 && export PROJECT_VERSION=42 && export PROJECT_BASE_DIR=$(dirname "$(readlink -f "$0")") && python3 cli/cli.py "$@"

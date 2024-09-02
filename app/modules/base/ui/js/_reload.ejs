@@ -1,0 +1,31 @@
+##<% if (card.actions.crud.update) { %>
+const <%= card.id.var %>UpdateButtonClick = async (e) => {
+    $('#<%= card.id.var %>UpdateModal').modal('toggle')
+    <%= card.id.var %>ReloadList()
+}
+##<% } %>
+
+##<% if (card.actions.crud.delete) { %>
+const <%= card.id.var %>DeleteButtonClick = async (e) => {
+    alert('delete')
+}
+##<% } %>
+
+const <%= card.id.var %>ReloadList = async () => {
+    let q = $('#<%= card.id.id %>-search-input').val()
+    $('.tooltip').remove()
+    const res = await jsonGet(`<%= card.id.url %>/list?q=${q || ''}&page=${<%= card.id.var %>Page || ''}`)
+    $('#<%= card.id.id %>-list').html(res.html)
+    $('#<%= card.id.id %>-footer').html(res.footer)
+    $('[data-toggle="tooltip"]').tooltip()
+    $('#<%= card.id.id %>-footer .page-item').click(function () {
+        <%= card.id.var %>Page = $(this).data('page')
+        <%= card.id.var %>ReloadList()
+    })
+    <% if (card.actions.crud.update > 0) { %>
+    $('.<%= card.id.id %>-action-list-update').click(<%= card.id.var %>UpdateButtonClick)
+    ##<% } %>
+    ##<% if (card.actions.crud.delete > 0) { %>
+    $('.<%= card.id.id %>-action-list-delete').click(<%= card.id.var %>DeleteButtonClick)
+    ##<% } %>
+}

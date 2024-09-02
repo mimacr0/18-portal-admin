@@ -1,0 +1,47 @@
+##<% let cards = page.screens.reduce((cards, screen) => { if(!cards) cards = []; screen.sections.forEach(s => s.cards.forEach(c => { cards.push(c) })); return cards }, []).filter(c => c.type === 'chats') %>
+
+let messagesChatsPage = 1
+
+const messagesChatsReloadList = async () => {
+    let q = $('#messages-chats-search-input').val()
+    $('.tooltip').remove()
+    const res = await jsonGet(`/messages/chats/list?q=${q || ''}&page=${messagesChatsPage || ''}`)
+    $('#messages-chats-list').html(res.html)
+    $('#messages-chats-footer').html(res.footer)
+    $('[data-toggle="tooltip"]').tooltip()
+    $('#messages-chats-footer .page-item').click(function () {
+        messagesChatsPage = $(this).data('page')
+        messagesChatsReloadList()
+    })
+    $('.messages-chats-item').click(function () {
+        document.dispatchEvent(new CustomEvent('messages-chat-selected', {
+            detail: { chat_id: $(this).data('id') }
+        }))
+    })
+}
+
+messagesChatsReloadList()
+
+const setMessagesActiveChat = (chat_id) => {
+    const count = $(`[data-count-id="${chat_id}"]`)
+    const item = $(`[data-id="${chat_id}"]`)
+    const itemImg = item.find('img')
+    $('#messages-messages-chat-input-group').show()
+    $('#messages-messages-active-chat-container').show()
+    $('.messages-chat-item-active-label').removeClass('badge')
+    $('.messages-chat-item-active-label').removeClass('badge-success')
+    $('.messages-messages-active-chat-image').attr('src', itemImg.attr('src'))
+    $('.messages-messages-active-chat-image').show()
+    $('.messages-messages-active-chat-name').html(item.data('name'))
+    $('.messages-messages-active-chat-label').html(item.data('time'))
+    $('.messages-messages-list-action-update-button').data('id', chat_id)
+    if(!window.mobileDetect()) $('.messages-messages-list-action-config-dropdown').show()
+    count.html('')
+    count.removeClass('badge')
+    count.removeClass('badge-success')
+    window.location.hash = ''
+}
+
+document.addEventListener('messages-chat-selected', (e) => {
+    setMessagesActiveChat(e.detail.chat_id)
+})

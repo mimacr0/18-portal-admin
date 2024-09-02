@@ -1,0 +1,39 @@
+##<% page.cards.forEach(card => { %>
+let <%= card.id.var %>Page = 1
+
+##<% card.actions.batch.forEach(action => { %>
+<%- include('actions/_batch', { card, action }) %>
+##<% }) %>
+##<% if (card.actions.batch.length > 0) { %>
+<%- include('_checks', { card }) %>
+##<% } %>
+##
+##<% card.actions.tools.filter(action => action.jsTemplate).forEach(action => { %>
+<%- include(`actions/tools/_${action.jsTemplate}`, { card, action }) %>
+##<% }) %>
+
+##<% (card?.form?.fields || []).filter(f => f.jsTemplate).forEach(field => { %>
+<%- include(`fields/_${field.jsTemplate}`, { card, field }) %>
+##<% }) %>
+##
+<%- include('_reload', { card }) %>
+
+##<% if(card.form) { %>
+<%- include('_form', { form: card.form }) %>
+##<% } %>
+
+##<% if(card.actions.crud.create) { %>
+const <%= card.id.var %>CreateButtonClick = () => {
+    $('#<%= card.id.var %>UpdateModal').modal('toggle')
+    <%= card.id.var %>ReloadList()
+}
+
+$('.<%= card.id.id %>-create-button').click(<%= card.id.var %>CreateButtonClick)
+##<% } %>
+
+$('#<%= card.id.id %>-search-input').on('keyup', debounceAction(<%= card.id.var %>ReloadList, 300))
+
+<%= card.id.var %>ReloadList()
+##
+##<% }) %>
+##
