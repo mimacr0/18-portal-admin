@@ -13,7 +13,7 @@ export class ConfigConf extends Model {
 
         for (let [key, ref] of Object.entries(data)) {
             const item = await ConfigConf.findOne({ where: { 'data.key': ref } })
-            res[key] = item?.data?.conf_dict || {}
+            res[key] = item?.config || {}
         }
 
         return res
@@ -37,6 +37,9 @@ export class ConfigConf extends Model {
 
         return result
     }
+    get keyValue() {
+        return this.data.key
+    }
 }
 
 ConfigConf.init({
@@ -49,6 +52,11 @@ ConfigConf.init({
         allowNull: false
     },
     data: {
+        type: DataTypes.JSON,
+        defaultValue: {},
+        allowNull: false
+    },
+    config: {
         type: DataTypes.JSON,
         defaultValue: {},
         allowNull: false

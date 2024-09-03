@@ -3,6 +3,10 @@ const usersForm = {
     submit: true,
     fields: [
         {
+            name: 'id',
+            type: 'hidden'
+        },
+        {
             name: 'name',
             label: 'Name',
             type: 'str'
@@ -28,7 +32,8 @@ const usersSections = [
                     ]
                 },
                 columns: [
-                    { label: 'Name', value: 'name' }
+                    { label: 'Name', value: 'name' },
+                    { label: 'Login', value: 'login' }
                 ],
                 form: usersForm
             }

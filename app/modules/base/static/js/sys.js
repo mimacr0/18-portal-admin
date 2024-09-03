@@ -45,16 +45,16 @@ const jsonPost = async (url, data={}, options={}) => {
 
     let res = {}
 
-    const r = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify(data)
-    })
-
     try {
+        const r = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(data)
+        })
+
         if(r.status == 200) res = await r.json()
         if(r.status == 404) res = { status: 'error', message: 'URL not found' }
         if(r.status == 500) res = { status: 'error', message: 'Internal server error' }

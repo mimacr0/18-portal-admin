@@ -1,7 +1,7 @@
 
 import os
 
-from lib.base.tools import Tools, Conf
+from lib.base.tools import Conf
 from lib.base.cli import CLI
 
 def read_conf(file):

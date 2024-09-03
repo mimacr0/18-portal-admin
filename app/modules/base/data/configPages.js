@@ -18,19 +18,32 @@ const configForm = {
     submit: true,
     fields: [
         {
+            name: 'id',
+            type: 'hidden'
+        },
+        {
             name: 'name',
             label: 'Name',
-            type: 'str'
+            type: 'str',
+            attrs: {
+                required: 1
+            }
         },
         {
             name: 'key',
             label: 'Key',
-            type: 'str'
+            type: 'str',
+            attrs: {
+                required: 1
+            }
         },
         {
             name: 'sequence',
             label: 'Sequence',
-            type: 'int'
+            type: 'int',
+            attrs: {
+                min: 0
+            }
         },
         {
             name: 'config',
@@ -71,7 +84,7 @@ const configSections = [
                 },
                 columns: [
                     { label: 'Name', value: 'name' },
-                    { label: 'Mode', value: 'modeBadge' }
+                    { label: 'Key', value: 'keyValue' }
                 ],
                 form: configForm
             }

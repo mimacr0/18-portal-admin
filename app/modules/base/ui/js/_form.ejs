@@ -1,15 +1,16 @@
-const <%= form.className %>FormSubmit = async () => {
-    const res = await formPost('<%= form.url %>/action', "#<%= form.formName %>-form-data")
+##<% const name = form.name %>
+const <%= name.var %>FormSubmit = async () => {
+    const res = await formPost('<%= name.url %>/action', "#<%= name.id %>-form-data")
     if(res?.status != 'success') return
-    $('#<%= form.formName %>-form-id').val("")
-    $('#<%= form.className %>Modal').modal('toggle')
-    <%= form.className %>ReloadList()
+    $('#<%= name.id %>-form-id').val("")
+    $('#<%= name.var %>Modal').modal('toggle')
+    <%= card.id.var %>ReloadList()
 }
 
-$('#<%= form.formName %>-form-submit').click(<%= form.className %>FormSubmit)
+$('#<%= name.id %>-form-submit').click(<%= name.var %>FormSubmit)
 
-const <%= form.className %>FormReset = async () => {
-    $('#<%= form.formName %>-form-data').removeClass('was-validated')
+const <%= name.var %>FormReset = async () => {
+    $('#<%= name.id %>-form-data').removeClass('was-validated')
 }
 
-$('#<%= form.className %>Modal').on('hidden.bs.modal', <%= form.className %>FormReset)
+$('#<%= name.var %>Modal').on('hidden.bs.modal', <%= name.var %>FormReset)

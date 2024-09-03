@@ -25,9 +25,15 @@ export class Field {
     get label() {
         return this.data?.label || ''
     }
+    get placeholder() {
+        return this.data?.placeholder || this.label
+    }
     get jsTemplate() {
-        if(['str', 'int'].includes(this.type)) return false
+        if(['str', 'int', 'hidden'].includes(this.type)) return false
         return this.data?.type || ''
+    }
+    get formName() {
+        return this.data.name
     }
     get name() {
         const id = `${this.form.name.id}-${this.data.name}`

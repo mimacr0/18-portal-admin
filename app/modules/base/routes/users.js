@@ -11,6 +11,7 @@ import { SysPage } from '../../base/models/base.js'
 import { SysUser } from '../models/users.js'
 import { ConfigConf } from '../models/config.js'
 import { validateSchema } from '../../../tools/validate.js'
+import { genMD5 } from '../../../tools/sys.js'
 
 export const usersRouter = express.Router()
 
@@ -80,9 +81,37 @@ usersRouter.post('/login', async (req, res) => {
 usersRouter.post('/users/users/tools/action/sync', async (req, res) => {
     const pconf = await ConfigConf.getByKeys({
         gl: 'pages.global',
-        pc: 'wsrpc.connections'
+        conn: 'wsrpc.connections'
     })
-    const result = await runScript('users/sync', { pconf })
-    // res.json(result)
+
+    const ws = Object.entries(pconf?.conn).reduce((acc, [key, value]) => {
+        if(key == pconf?.gl?.rpc?.ws) return value;
+        return acc;
+    }, null)
+
+    if(!ws) return res.json({ status: 'error', message: 'Connection not found' })
+
+    const result = await runScript('users/sync', { ws })
+
+    if(result?.status !== 'success') return res.json(result)
+
+    for(const user of result.data) {
+        const uid = genMD5(user.login)
+        const item = await SysUser.findByPk(uid)
+        const password = user.password
+        const login = user.login
+        delete user.login
+        delete user.password
+        await SysUser.upsert({
+            id: uid,
+            name: user.name || login,
+            login: login,
+            password,
+            data: {
+                ...item?.data, ...user
+            }
+        })
+    }
+
     res.json({ status: 'success', message: 'Sync completed' })
 })
