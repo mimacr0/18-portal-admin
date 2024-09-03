@@ -1,5 +1,11 @@
 ##<% if (card.actions.crud.update) { %>
 const <%= card.id.var %>UpdateButtonClick = async (e) => {
+    const rid = $(e.currentTarget).data('id')
+    const res = await jsonGet(`<%= card.id.url %>/read/${rid}`)
+    if(res?.status != 'success') return
+##<% (card?.form?.fields || []).forEach(field => { %>
+    <%- include(`value/_${field.type}`, { card, field }) %>
+##<% }) %>
     $('#<%= card.id.var %>UpdateModal').modal('toggle')
     <%= card.id.var %>ReloadList()
 }
@@ -7,7 +13,9 @@ const <%= card.id.var %>UpdateButtonClick = async (e) => {
 
 ##<% if (card.actions.crud.delete) { %>
 const <%= card.id.var %>DeleteButtonClick = async (e) => {
-    alert('delete')
+    if(!confirm('Are you sure ?')) return
+    await jsonPost(`<%= card.id.url %>/action/delete/${$(e.currentTarget).data('id')}`)
+    <%= card.id.var %>ReloadList()
 }
 ##<% } %>
 

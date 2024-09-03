@@ -8,6 +8,8 @@ import { checkUser } from '../../../controllers/web/security.js'
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../models/config.js'
 import { renderFile } from '../../../tools/view.js'
+import { runScript } from '../../../tools/cli.js'
+import { genDBID } from '../../../tools/sys.js'
 
 
 export const configRouter = express.Router()
@@ -64,9 +66,16 @@ configRouter.post('/config/config/action/delete/:id', checkUser, async (req, res
     res.json({status: 'success', message: 'Action completed successfully'})
 })
 
-configRouter.post('/config/config/read/:id', checkUser, async (req, res) => {
+configRouter.get('/config/config/read/:id', checkUser, async (req, res) => {
     const item = await ConfigConf.findByPk(req.params.id)
-    res.json({ ...item.data, id: item.id, name: item.name })
+    res.json({
+        status: 'success',
+        data: {
+            ...item.data,
+            id: item.id,
+            name: item.name
+        }
+    })
 })
 
 configRouter.post('/config/config/update/action', checkUser, async (req, res) => {
@@ -75,11 +84,13 @@ configRouter.post('/config/config/update/action', checkUser, async (req, res) =>
     delete data.id
     delete data.name
 
-    if(data.config) data.conf_dict = await Config.readConf(data.config)
+    let config = {}
+
+    if(data.config) config = (await runScript('sys/conf', { format: 'raw_yml', data: data.config }))?.data || {}
 
     const rid = id || genDBID()
     const item = await ConfigConf.findByPk(rid)
-    await ConfigConf.upsert({ id: rid, name: name, data: { ...item?.data, ...data } })
+    await ConfigConf.upsert({ id: rid, name: name, data: { ...item?.data, ...data }, config })
     res.json({status: 'success', message: 'Action completed successfully'})
 })
 

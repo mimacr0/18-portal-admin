@@ -5,6 +5,7 @@ import { DataTypes, Model } from 'sequelize'
 import { dataDB } from '../../../controllers/db/db.js'
 import { USER_PASSWORD_SALT } from '../../../etc/sys.js'
 import { genMD5 } from '../../../tools/sys.js'
+import { runScript } from '../../../tools/cli.js'
 
 
 export class SysUser extends Model {
@@ -24,7 +25,14 @@ export class SysUser extends Model {
         }
     }
     async doLogin(passwd) {
-        return await bcrypt.compare(passwd, this.password)
+        if(!this.data.share) return await bcrypt.compare(passwd, this.password)
+
+        const result = await runScript('users/login', {
+            password: passwd,
+            hash: this.password
+        })
+
+        return result?.status === 'success'
     }
     listActions(card) {
         let result = []

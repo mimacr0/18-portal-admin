@@ -14,10 +14,12 @@ import { usersRouter } from './base/routes/users.js'
 import { mainRouter } from './base/routes/main.js'
 import { configRouter } from './base/routes/config.js'
 import { dashboardsRouter } from './base/routes/dashboards.js'
+import { expeditionsRouter } from './expeditions/routes/expeditions.js'
 
 import { mainPages } from './base/data/mainPages.js'
 import { configPages } from './base/data/configPages.js'
 import { usersPages } from './base/data/usersPages.js'
+import { expeditionsPages } from './expeditions/data/expeditionsPages.js'
 
 export const initRouters = () => {
     app.use(baseRouter)
@@ -25,6 +27,7 @@ export const initRouters = () => {
     app.use(usersRouter)
     app.use(configRouter)
     app.use(dashboardsRouter)
+    app.use(expeditionsRouter)
 }
 
 export const initStatic = () => {
@@ -38,4 +41,5 @@ export const initDB = async () => {
     await SysPage.actionRegister(mainPages)
     await SysPage.actionRegister(configPages)
     await SysPage.actionRegister(usersPages)
+    await SysPage.actionRegister(expeditionsPages)
 }

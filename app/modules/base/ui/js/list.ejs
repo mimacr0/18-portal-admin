@@ -19,7 +19,7 @@ let <%= card.id.var %>Page = 1
 <%- include('_reload', { card }) %>
 
 ##<% if(card.form) { %>
-<%- include('_form', { form: card.form }) %>
+<%- include('_form', { card, form: card.form }) %>
 ##<% } %>
 
 ##<% if(card.actions.crud.create) { %>
