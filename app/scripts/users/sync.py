@@ -17,9 +17,7 @@ ws = WS(ws_conf)
 if not ws.uid:
     CLI.out({'status': 'error', 'message': 'Connection error'})
 
-res = ws.search_read('res.users', [
-    ('share', '=', True)
-])
+res = ws.call('res.users', 'get_portal_users_data', [])
 
 items = []
 

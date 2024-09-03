@@ -1,7 +1,6 @@
 
 from datetime import datetime, timedelta
 import os
-import pysftp
 import pytz
 import random
 import shutil
@@ -25,18 +24,6 @@ class Conf:
 
         with open(fpath, 'r') as f:
             return yaml.load(f, Loader=yaml.FullLoader)
-
-class SFTP():
-
-    def __init__(self, conf):
-        self.host = conf.get('host')
-        self.user = conf.get('user')
-        self.password = conf.get('passwd')
-
-    def connect(self):
-        cnopts = pysftp.CnOpts()
-        cnopts.hostkeys = None
-        return pysftp.Connection(self.host, username=self.user, password=self.password, cnopts=cnopts)
 
 class Tools:
 
