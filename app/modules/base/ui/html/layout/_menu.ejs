@@ -2,7 +2,7 @@
             <li class="nav-item <%= menu.action ? 'menu-open' : '' %>">
                 <a href="<%= menu.url %>" class="nav-link <%= menu.active ? 'active' : '' %>">
                     <i class="nav-icon <%= menu.icon %>"></i>
-                    <p><%= menu.title %></p>
+                    <p><%= i18n.__(menu.title) %></p>
                 </a>
             </li>
 <% } %>

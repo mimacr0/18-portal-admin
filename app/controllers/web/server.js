@@ -8,7 +8,7 @@ import path from 'path'
 
 import { BASE_PATH, MAX_UPLOAD_SIZE } from '../../etc/sys.js'
 
-import { socketCheckUser } from './security.js'
+import { sessionMiddleware } from './security.js'
 
 export const app = express()
 export const server = http.createServer(app)
@@ -26,7 +26,15 @@ app.use(cors())
 app.use(express.json({limit: MAX_UPLOAD_SIZE || '1mb'}))
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
+app.use(sessionMiddleware)
 
 app.use(express.static(path.join(BASE_PATH, "/public")))
 
-sio.use(socketCheckUser)
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next)
+
+sio.use(wrap(sessionMiddleware))
+
+sio.use((socket, next) => {
+    if(socket.request.session.uid) next()
+    else next(new Error('Authentication error'))
+})

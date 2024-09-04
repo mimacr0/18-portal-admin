@@ -59,7 +59,7 @@ const configSections = [
         class: 'offset-md-2 col-md-8',
         cards: [
             {
-                title: 'Config',
+                title: 'Configurations',
                 name: 'config',
                 actions: {
                     crud: ['all'],

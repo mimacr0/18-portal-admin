@@ -33,6 +33,9 @@ export class Card {
     get actions() {
         return new Actions(this.data.actions, this.ctx)
     }
+    get title() {
+        return this.data.title
+    }
     get form() {
         return this.data.form ? new Form(this.data.form, `${this.id.id}-update`, this.ctx) : false
     }

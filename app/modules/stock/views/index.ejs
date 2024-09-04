@@ -1,0 +1,77 @@
+<%- include('../../base/ui/html/layout/header', { page }) %>
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="row">
+       <div class="offset-3 col-6" id="page_messages_container"></div>
+    </div>
+ </div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<div class="content">
+
+   <div class="container-fluid">
+
+    <div class="card">
+
+        <div class="card-header">
+           <h3 class="card-title"><span class="text-muted"><%= i18n.__('Stock') %></span></h3>
+           <div class="card-tools stock-stock-card-tools">
+              <button class="btn btn-tool" data-card-widget="collapse" type="button" data-toggle="tooltip" title="<%= i18n.__('Collapse') %>">
+                 <i class="fas fa-minus"></i>
+              </button>
+           </div>
+        </div>
+
+        <div class="card-body p-0">
+           <div class="mailbox-controls card-controls-fixed-head">
+              <div class="row">
+                 <div class="col-6">
+                    <div class="stock-stock-batch-actions">
+                       <span>&nbsp;&nbsp;</span>
+                       <button type="button" class="btn btn-default btn-sm checkbox-toggle stock-stock-checkbox"><i class="far fa-square"></i></button>
+                    </div>
+                 </div>
+                 <div class="col-6">
+                    <div>
+                       <div class="input-group input-group-sm float-right" style="max-width: 250px;">
+                          <input type="text" name="table_search" class="form-control float-right" placeholder="<%= i18n.__('Search') %>" id="stock-stock-search-input">
+                          <div class="input-group-append">
+                             <button type="submit" class="btn btn-default">
+                                <i class="fas fa-search"></i>
+                             </button>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
+           <div class="table-responsive mailbox-messages stock-stock-main-container table-fixed-head">
+            <table class="table table-hover table-striped table-sm">
+              <thead>
+                <tr>
+                  <th><span>&nbsp;</span></th>
+                  <th><%= i18n.__('Product') %></th>
+                  <th><%= i18n.__('State') %></th>
+                  <th class="text-right"><%= i18n.__('Quantity') %></th>
+                </tr>
+              </thead>
+              <tbody id="stock-stock-list"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card-footer clearfix" id="stock-stock-footer"></div>
+
+     </div>
+
+   </div>
+
+</div>
+
+<%- include('../../base/ui/html/layout/footer', { page }) %>
+
+</body>
+
+</html>

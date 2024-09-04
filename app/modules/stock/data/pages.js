@@ -1,0 +1,18 @@
+
+export const stockPages = [
+    {
+        name: 'stock',
+        url: '/stock',
+        title: 'Stock',
+        icon: 'fa fa-boxes',
+        sequence: 20,
+        assets: {
+            footer: {
+                js: [
+                    { url: '/static/base/js/sys.js' },
+                    { url: '/static/stock/js/stock.js' }
+                ]
+            }
+        }
+    }
+]

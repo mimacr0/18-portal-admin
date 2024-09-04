@@ -51,11 +51,7 @@
         <a class="nav-link" data-toggle="dropdown" href="#">
             <div class="user-panel d-flex">
                 <div class="image">
-                  <% if(!user.data.image) { %>
-                    <img src="/img/default_user.svg" class="img-circle elevation-2" alt="User Image">
-                  <% } else { %>
-                    <img src="data:image/png;base64, <%= user.data.image %>" class="img-circle elevation-2" alt="User Image">
-                  <% } %>
+                  <%- user.userImageCustom({class: 'img-circle elevation-2', alt: 'User Image'}) %>
                 </div>
                 <div class="info">
                     <span class="d-block"><%= user.name %></span>

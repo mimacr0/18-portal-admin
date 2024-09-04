@@ -55,13 +55,13 @@ export class KpisDashboard extends Model {
         if(card.actions.list.length > 0) result = [...card.actions.list]
 
         if(card.actions.crud.update) result.push({
-            name: 'Actualizar',
+            name: 'Update',
             icon: 'fas fa-edit',
             action: 'update'
         })
 
         if(card.actions.crud.delete) result.push({
-            name: 'Eliminar',
+            name: 'Delete',
             icon: 'fas fa-trash',
             action: 'delete'
         })

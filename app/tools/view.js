@@ -2,6 +2,8 @@ import fs from 'fs'
 import ejs from 'ejs'
 import path from 'path'
 
+import i18n from '../controllers/i18n/i18n.js'
+
 import { BASE_PATH } from '../etc/sys.js'
 
 export const renderFile = async (template, data) => {
@@ -14,7 +16,9 @@ export const renderFile = async (template, data) => {
 
     let removeLines = []
 
-    let result = await ejs.renderFile(file, data)
+    i18n.setLocale('zh_CN')
+
+    let result = await ejs.renderFile(file, { ...{ i18n }, ...data })
 
     let lines = result.split('\n')
 
