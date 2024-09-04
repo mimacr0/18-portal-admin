@@ -19,7 +19,7 @@ const usersSections = [
         class: 'offset-md-2 col-md-8',
         cards: [
             {
-                title: 'users',
+                title: 'Users',
                 name: 'users',
                 actions: {
                     crud: ['all'],
@@ -32,6 +32,7 @@ const usersSections = [
                     ]
                 },
                 columns: [
+                    { label: '', value: 'userImage' },
                     { label: 'Name', value: 'name' },
                     { label: 'Login', value: 'login' }
                 ],

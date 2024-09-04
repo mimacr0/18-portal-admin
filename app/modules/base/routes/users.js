@@ -11,7 +11,12 @@ import { SysPage } from '../../base/models/base.js'
 import { SysUser } from '../models/users.js'
 import { ConfigConf } from '../models/config.js'
 import { validateSchema } from '../../../tools/validate.js'
-import { genMD5 } from '../../../tools/sys.js'
+import { genMD5, saveFile } from '../../../tools/sys.js'
+import {
+    DEFAULT_UI_LANGUAGE,
+    UI_LOGIN_PAGE_TITLE,
+    UI_APP_TITLE,
+    UI_APP_COLOR } from '../../../etc/sys.js'
 
 export const usersRouter = express.Router()
 
@@ -62,6 +67,16 @@ usersRouter.get('/users/users/list', checkUser, async (req, res) => {
     res.json({ html: list, footer })
 })
 
+usersRouter.get('/login', async (req, res) => {
+    res.send(await renderFile('base/views/login', {
+        lang: DEFAULT_UI_LANGUAGE,
+        title: UI_LOGIN_PAGE_TITLE,
+        appTitle: UI_APP_TITLE,
+        color: UI_APP_COLOR,
+        user: req.user
+    }))
+})
+
 usersRouter.post('/login', async (req, res) => {
     const { username, password } = req.body
 
@@ -72,10 +87,13 @@ usersRouter.post('/login', async (req, res) => {
     const user = await SysUser.findOne({ where: { login: username } })
     if(!user) return res.json({ status: 'error', message: 'Error de autenticación' })
     if(!(await user.doLogin(password))) return res.json({ status: 'error', message: 'Error de autenticación' })
-    const token = jwt.sign({ id: user.id, login: user.login }, process.env.SECRET, { expiresIn: '1h' })
-    const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, { expiresIn: '1d' })
-    res.cookie('token', token, { httpOnly: true, sameSite: 'strict', secure: true, maxAge: 24 * 60 * 60 * 1000 })
-    res.json({ status: 'success', token, refreshToken })
+    req.session.uid = user.id
+    res.json({ status: 'success' })
+})
+
+usersRouter.get('/logout', checkUser, (req, res) => {
+    req.session.destroy()
+    res.redirect('/')
 })
 
 usersRouter.post('/users/users/tools/action/sync', async (req, res) => {
@@ -100,8 +118,20 @@ usersRouter.post('/users/users/tools/action/sync', async (req, res) => {
         const item = await SysUser.findByPk(uid)
         const password = user.password
         const login = user.login
+        const image = user.image
         delete user.login
         delete user.password
+        delete user.image
+
+        user.role = 'portal'
+        user.image = await saveFile({
+            file: `${uid}.jpg`,
+            ext: '.jpg',
+            b64: image,
+            mimetype: 'image/jpeg',
+            md5: uid
+        })
+
         await SysUser.upsert({
             id: uid,
             name: user.name || login,

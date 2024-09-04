@@ -1,8 +1,8 @@
 <div <%- field.groupHTML() %>>
     ##<% if (field.label) { %>
-    <label for="<%= field.id %>"><%= field.label %></label>
+    <label for="<%= field.id %>"><%= i18n.__(field.label) %></label>
     ##<% } %>
-    <input <%- field.inputHTML({placeholder: field.placeholder, type}) %>/>
+    <input <%- field.inputHTML({placeholder: i18n.__(field.placeholder), type}) %>/>
     ##<% if (field.required) { %>
         <div class="invalid-feedback">field.required.text</div>
     ##<% } %>

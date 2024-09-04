@@ -174,3 +174,32 @@
 form.was-validated .drop-area {
     border-color: #dc3545;
 }
+
+.table-fixed-head {
+    overflow-y: auto;
+    height: 70vh;
+}
+
+.table-fixed-head thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #FFFFFF;
+    border-top: none;
+}
+
+.table-fixed-head thead th::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background-color: #dee2e6;
+    z-index: 2;
+}
+
+.card-controls-fixed-head {
+    border-bottom: 2px solid #dee2e6;
+}
+

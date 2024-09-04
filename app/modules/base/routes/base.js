@@ -41,3 +41,11 @@ baseRouter.get('/:page/js/:card/:file.js', checkUser, async (req, res) => {
     res.setHeader('Content-type', 'text/javascript')
     res.send(await renderFile(`base/ui/js/${file}`, { page: pageData }))
 })
+
+baseRouter.get('/base/image/file/:file', checkUser, async (req, res) => {
+    if(!req.params.file) return res.sendStatus(404)
+    const filePath = path.join(BASE_PATH, 'data', 'filestore', req.params.file)
+    const defaultPath = path.join(BASE_PATH, 'public', 'img', 'default_user.svg')
+    if(!fs.existsSync(filePath)) return res.sendFile(defaultPath)
+    res.sendFile(filePath)
+})

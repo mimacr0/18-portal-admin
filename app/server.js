@@ -1,11 +1,12 @@
 import path from 'path'
 import { config } from 'dotenv'
-import { existsSync } from 'fs'
 
 import { Logger } from './tools/log.js'
 import { BASE_PATH } from './etc/sys.js'
 
 config({ path: path.join(BASE_PATH, '.env') })
+
+import i18n from './controllers/i18n/i18n.js'
 
 import { dataDB } from './controllers/db/db.js'
 import { server } from "./controllers/web/server.js"
@@ -20,6 +21,8 @@ if(!process.env?.SECRET) {
     console.error('ERROR: Required config (SECRET) not defined in .env file!')
     process.exit(0);
 }
+
+i18n.init()
 
 dataDB.sync()
 .then(async () => { await initDB() })

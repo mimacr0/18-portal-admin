@@ -24,7 +24,7 @@ export class SysPage extends Model {
     }
     static async actionRegister(pages) {
         for(const page of pages) {
-            const pid = genMD5(page.url)
+            const pid = genMD5(page.name)
             const p = await SysPage.findByPk(pid)
             await SysPage.upsert({
                 id: pid,

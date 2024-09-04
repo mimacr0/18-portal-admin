@@ -6,6 +6,7 @@ import { dataDB } from '../../../controllers/db/db.js'
 import { USER_PASSWORD_SALT } from '../../../etc/sys.js'
 import { genMD5 } from '../../../tools/sys.js'
 import { runScript } from '../../../tools/cli.js'
+import { formatAttrs } from '../components/common/tools.js'
 
 
 export class SysUser extends Model {
@@ -25,7 +26,7 @@ export class SysUser extends Model {
         }
     }
     async doLogin(passwd) {
-        if(!this.data.share) return await bcrypt.compare(passwd, this.password)
+        if(this.data?.role != 'portal') return await bcrypt.compare(passwd, this.password)
 
         const result = await runScript('users/login', {
             password: passwd,
@@ -40,18 +41,26 @@ export class SysUser extends Model {
         if(card.actions.list.length > 0) result = [...card.actions.list]
 
         if(card.actions.crud.update) result.push({
-            name: 'Actualizar',
+            name: 'Update',
             icon: 'fas fa-edit',
             action: 'update'
         })
 
         if(card.actions.crud.delete) result.push({
-            name: 'Eliminar',
+            name: 'Delete',
             icon: 'fas fa-trash',
             action: 'delete'
         })
 
         return result
+    }
+    get userImage() {
+        const file = this.data?.image?.name
+        return `<img src="/base/image/file/${file}" alt="Image" class="img-circle img-size-32 mr-2">`
+    }
+    userImageCustom(attrs) {
+        const file = this.data?.image?.name
+        return `<img src="/base/image/file/${file}" ${formatAttrs({...{ alt: 'Image', class: 'img-circle img-size-32 mr-2' }, ...(attrs || {})})}>`
     }
 }
 
