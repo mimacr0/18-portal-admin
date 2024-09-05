@@ -1,0 +1,21 @@
+<% items.forEach(function(item, count){ %>
+<tr>
+   <td style="width: 60px;">
+      <div class="icheck-primary bot-bot-checkbox">
+         <input type="checkbox" value="<%= item.id %>" id="check<% count %>">
+         <label for="check<% count %>"></label>
+      </div>
+   </td>
+   <td>
+      <small>
+         <strong><%= i18n.__('Order') %>:</strong> <%- item.name %><br/>
+         <strong><%= i18n.__('Address') %>:</strong> <%- item.address %><br/>
+         <strong><%= i18n.__('Date') %>:</strong> <%- item.date_order %><br/>
+         <strong><%= i18n.__('Total') %>:</strong> <%- item.amount_total %><br/>
+         <strong><%= i18n.__('Carrier') %>:</strong> <%- item.carrier %><br/>
+      </small>
+   </td>
+   <td><%- item.tracking %></td>
+   <td><%- item.state %></td>
+</tr>
+<% }) %>

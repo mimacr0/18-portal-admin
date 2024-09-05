@@ -19,6 +19,10 @@ stockRouter.get('/stock', checkUser, async (req, res) => {
 })
 
 stockRouter.get('/stock/stock/list', checkUser, async (req, res) => {
+    if(!req.user.portal) return res.json({
+        html: await renderFile('base/ui/html/pages/_list/_nodata', { message: 'No products found' })
+    })
+
     const pconf = await ConfigConf.getByKeys({
         gl: 'pages.global',
         pc: 'pages.stock.stock'
@@ -27,9 +31,17 @@ stockRouter.get('/stock/stock/list', checkUser, async (req, res) => {
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit || pconf?.pc.pager?.limit || pconf?.gl.pager?.limit) || 15
     const offset = (page - 1) * limit
-    const result = await erpConn.getStock()
-    const rows = result?.result?.data || []
-    const count = rows.length
+
+    const connResult = await erpConn.connect()
+
+    if(connResult?.status !== 'success') return res.json(connResult)
+
+    const result = await erpConn.query('stock/list', { limit, offset, id: req.user.portalID, q: req.query?.q || '' })
+
+    if(result?.status !== 'success') return res.json({ status: 'error', message: 'Failed to fetch data' })
+
+    const rows = result?.data?.items || []
+    const count = result?.data?.total || 0
 
     let rcount = pconf?.pc?.list?.rcount || pconf?.gl?.list?.rcount
     let rstyle = false

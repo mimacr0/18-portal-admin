@@ -13,4 +13,6 @@ const stockStockReloadList = async () => {
     })
 }
 
+$('#stock-stock-search-input').on('keyup', debounceAction(stockStockReloadList, 300))
+
 stockStockReloadList()

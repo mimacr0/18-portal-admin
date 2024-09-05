@@ -4,7 +4,7 @@
                         <h3 class="card-title"><span class="text-muted"><%= i18n.__(card.title) %></span></h3>
                         <div class="card-tools <%= card.id.id %>-card-tools">
                            <% for( const action of card.actions.tools ) { %>
-                           <%- include('actions/_tools', { card, action }) %>
+                           <%- include(`actions/_${action.htmlTemplate('tools')}`, { card, action }) %>
                            <% } %>
                            <button class="btn btn-tool" data-card-widget="collapse" type="button" data-toggle="tooltip" title="<%= i18n.__('Collapse') %>">
                               <i class="fas fa-minus"></i>

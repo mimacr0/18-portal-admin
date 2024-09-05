@@ -30,5 +30,11 @@
 	"SKU": "SKU",
 	"State": "状态",
 	"Quantity": "数量",
-	"IMEI": "IMEI"
+	"IMEI": "IMEI",
+	"No products found": "No products found",
+	"Address": "Address",
+	"Date": "Date",
+	"Total": "Total",
+	"Carrier": "Carrier",
+	"Order": "Order"
 }

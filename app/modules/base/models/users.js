@@ -62,6 +62,12 @@ export class SysUser extends Model {
         const file = this.data?.image?.name
         return `<img src="/base/image/file/${file}" ${formatAttrs({...{ alt: 'Image', class: 'img-circle img-size-32 mr-2' }, ...(attrs || {})})}>`
     }
+    get portal() {
+        return this.data?.role === 'portal'
+    }
+    get portalID() {
+        return this.data?.dbid
+    }
 }
 
 SysUser.init({
