@@ -1,141 +1,77 @@
 <%- include('../../base/ui/html/layout/header', { page }) %>
 
-   <div class="nav navbar navbar-expand navbar-white navbar-light border-bottom p-0">
-      <div class="nav-item dropdown">
-      <a class="nav-link bg-danger dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Close</a>
-      <div class="dropdown-menu mt-0" style="left: 0px; right: inherit;">
-      <a class="dropdown-item" href="#" data-widget="iframe-close" data-type="all">Close All</a>
-      <a class="dropdown-item" href="#" data-widget="iframe-close" data-type="all-other">Close All Other</a>
-      </div>
-      </div>
-      <a class="nav-link bg-light" href="#" data-widget="iframe-scrollleft"><i class="fas fa-angle-double-left"></i></a>
-      <ul class="navbar-nav overflow-hidden" role="tablist"><li class="nav-item active" role="presentation"><a href="#" class="btn-iframe-close" data-widget="iframe-close" data-type="only-this"><i class="fas fa-times"></i></a><a class="nav-link active" data-toggle="row" id="tab-index3-html" href="#panel-index3-html" role="tab" aria-controls="panel-index3-html" aria-selected="true">Home</a></li></ul>
-      <a class="nav-link bg-light" href="#" data-widget="iframe-scrollright"><i class="fas fa-angle-double-right"></i></a>
-      <a class="nav-link bg-light" href="#" data-widget="iframe-fullscreen"><i class="fas fa-expand"></i></a>
-   </div>
-
-   <!-- Content Header (Page header) -->
-   <div class="content-header">
+<!-- Content Header (Page header) -->
+<div class="content-header">
       <div class="row">
          <div class="offset-3 col-6" id="page_messages_container"></div>
       </div>
    </div>
-   <!-- /.content-header -->
+<!-- /.content-header -->
 
-   <!-- Main content -->
-   <div class="content">
+<!-- Main content -->
+<div class="content">
 
-      <div class="container-fluid">
-         <div class="card">
-            <div class="card-header border-0">
-               <h3 class="card-title">Products</h3>
-               <div class="card-tools">
-                  <a href="#" class="btn btn-tool btn-sm">
-                     <i class="fas fa-download"></i>
-                  </a>
-                  <a href="#" class="btn btn-tool btn-sm">
-                     <i class="fas fa-bars"></i>
-                  </a>
-               </div>
-            </div>
-            <div class="card-body table-responsive p-0">
-               <table class="table table-striped table-valign-middle table-hover">
-                  <thead>
-                     <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Sales</th>
-                        <th>More</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     <tr>
-                        <td>
-                           <img src="dist/img/default-150x150.png" alt="Product 1" class="img-circle img-size-32 mr-2">
-                           Some Product
-                        </td>
-                        <td>$13 USD</td>
-                        <td>
-                           <small class="text-success mr-1">
-                              <i class="fas fa-arrow-up"></i>
-                              12%
-                           </small>
-                           12,000 Sold
-                        </td>
-                        <td>
-                           <a href="#" class="text-muted">
-                              <i class="fas fa-search"></i>
-                           </a>
-                        </td>
-                     </tr>
-                     <tr>
-                        <td>
-                           <img src="dist/img/default-150x150.png" alt="Product 1" class="img-circle img-size-32 mr-2">
-                           Another Product
-                        </td>
-                        <td>$29 USD</td>
-                        <td>
-                           <small class="text-warning mr-1">
-                              <i class="fas fa-arrow-down"></i>
-                              0.5%
-                           </small>
-                           123,234 Sold
-                        </td>
-                        <td>
-                           <a href="#" class="text-muted">
-                              <i class="fas fa-search"></i>
-                           </a>
-                        </td>
-                     </tr>
-                     <tr>
-                        <td>
-                           <img src="dist/img/default-150x150.png" alt="Product 1" class="img-circle img-size-32 mr-2">
-                           Amazing Product
-                        </td>
-                        <td>$1,230 USD</td>
-                        <td>
-                           <small class="text-danger mr-1">
-                              <i class="fas fa-arrow-down"></i>
-                              3%
-                           </small>
-                           198 Sold
-                        </td>
-                        <td>
-                           <a href="#" class="text-muted">
-                              <i class="fas fa-search"></i>
-                           </a>
-                        </td>
-                     </tr>
-                     <tr>
-                        <td>
-                           <img src="dist/img/default-150x150.png" alt="Product 1" class="img-circle img-size-32 mr-2">
-                           Perfect Item
-                           <span class="badge bg-danger">NEW</span>
-                        </td>
-                        <td>$199 USD</td>
-                        <td>
-                           <small class="text-success mr-1">
-                              <i class="fas fa-arrow-up"></i>
-                              63%
-                           </small>
-                           87 Sold
-                        </td>
-                        <td>
-                           <a href="#" class="text-muted">
-                              <i class="fas fa-search"></i>
-                           </a>
-                        </td>
-                     </tr>
-                  </tbody>
-               </table>
+   <div class="container-fluid">
+
+      <div class="card">
+
+         <div class="card-header">
+            <h3 class="card-title"><span class="text-muted"><%= i18n.__('Stock') %></span></h3>
+            <div class="card-tools expeditions-expeditions-card-tools">
+               <button class="btn btn-tool" data-card-widget="collapse" type="button" data-toggle="tooltip" title="<%= i18n.__('Collapse') %>">
+                  <i class="fas fa-minus"></i>
+               </button>
             </div>
          </div>
+
+         <div class="card-body p-0">
+            <div class="mailbox-controls card-controls-fixed-head">
+               <div class="row">
+                  <div class="col-6">
+                     <div class="expeditions-expeditions-batch-actions">
+                        <span>&nbsp;&nbsp;</span>
+                        <button type="button" class="btn btn-default btn-sm checkbox-toggle expeditions-expeditions-checkbox"><i class="far fa-square"></i></button>
+                     </div>
+                  </div>
+                  <div class="col-6">
+                     <div>
+                        <div class="input-group input-group-sm float-right" style="max-width: 250px;">
+                           <input type="text" name="table_search" class="form-control float-right" placeholder="<%= i18n.__('Search') %>" id="expeditions-expeditions-search-input">
+                           <div class="input-group-append">
+                              <button type="submit" class="btn btn-default">
+                                 <i class="fas fa-search"></i>
+                              </button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="table-responsive mailbox-messages expeditions-expeditions-main-container table-fixed-head">
+            <table class="table table-hover table-striped table-sm">
+               <thead>
+                  <tr>
+                     <th><span>&nbsp;</span></th>
+                     <th><%= i18n.__('Order') %></th>
+                     <th><%= i18n.__('Tracking number') %></th>
+                     <th><%= i18n.__('State') %></th>
+                  </tr>
+               </thead>
+               <tbody id="expeditions-expeditions-list"></tbody>
+            </table>
+            </div>
+         </div>
+
+         <div class="card-footer clearfix" id="expeditions-expeditions-footer"></div>
+
       </div>
 
    </div>
 
-   <%- include('../../base/ui/html/layout/footer', { page }) %>
+</div>
 
-      </body>
+<%- include('../../base/ui/html/layout/footer', { page }) %>
 
-      </html>
+</body>
+
+</html>

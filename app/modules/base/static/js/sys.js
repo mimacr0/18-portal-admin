@@ -89,7 +89,13 @@ const jsonGet = async (url) => {
     if(res.status == 404) return displayAlertNotification(`URL not found: ${url}`, 'danger')
     if(res.status == 500) return displayAlertNotification('Internal server error', 'danger')
 
-    return res.json()
+    const r = await res.json()
+
+    if(!r.message) return r
+
+    displayAlertNotification(r.message, r.status == 'success' ? 'success' : 'danger')
+
+    return r
 }
 
 window.mobileDetect = function() {

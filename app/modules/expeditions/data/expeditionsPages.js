@@ -2,7 +2,7 @@
 export const expeditionsPages = [
     {
         name: 'expeditions',
-        url: '/expeditions?iframe=1',
+        url: '/expeditions',
         title: 'Expeditions',
         icon: 'fa fa-truck',
         sequence: 30,
@@ -10,7 +10,7 @@ export const expeditionsPages = [
             footer: {
                 js: [
                     { url: '/static/base/js/sys.js' },
-                    // { url: '/users/js/users/list.js' }
+                    { url: '/static/expeditions/js/expeditions.js' }
                 ]
             }
         }

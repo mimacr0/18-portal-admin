@@ -34,11 +34,15 @@ class ToolAction {
         return this.data.type
     }
     get jsTemplate() {
-        if(['page'].includes(this.type)) return false
+        if(['page', 'link'].includes(this.type)) return false
         if(this.modal.before && this.modal.after) return 'all'
         if(this.modal.after) return 'after'
         if(this.modal.before) return 'before'
         return this.type || 'base'
+    }
+    htmlTemplate(def) {
+        if(['link'].includes(this.type)) return 'link'
+        return def
     }
     getName(card) {
         const id = `${card.id.id}-tools-action-${this.data.action}`

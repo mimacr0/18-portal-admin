@@ -7,9 +7,10 @@ import { Op } from 'sequelize'
 import { checkUser } from '../../../controllers/web/security.js'
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../models/config.js'
+import { BASE_PATH } from '../../../etc/sys.js'
 import { renderFile } from '../../../tools/view.js'
 import { runScript } from '../../../tools/cli.js'
-import { genDBID } from '../../../tools/sys.js'
+import { genDBID, saveFile, removeFile } from '../../../tools/sys.js'
 
 
 export const configRouter = express.Router()
@@ -96,7 +97,7 @@ configRouter.post('/config/config/update/action', checkUser, async (req, res) =>
 
 configRouter.get('/config/config/tools/export/action', checkUser, async (req, res) => {
     const items = await ConfigConf.findAll()
-    const r = await shellScript('config/export', { items })
+    const r = await runScript('config/export', { items })
 
     const filePath = r?.data?.file
 
@@ -111,7 +112,7 @@ configRouter.get('/config/config/tools/export/action', checkUser, async (req, re
     filestream.pipe(res)
 })
 
-configRouter.post('/config/config/tools/import/action', checkUser, async (req, res) => {
+configRouter.post('/config/config/tools/action/import/before', checkUser, async (req, res) => {
     const file = req.files['file-0']
 
     const ext = path.extname(file.name)
@@ -131,7 +132,7 @@ configRouter.post('/config/config/tools/import/action', checkUser, async (req, r
         md5: file.md5
     })
 
-    const r = await shellScript('config/import', { path: path.join(Config.BASE_PATH, f.path) })
+    const r = await runScript('config/import', { path: path.join(BASE_PATH, f.path) })
 
     await removeFile(f.path)
 

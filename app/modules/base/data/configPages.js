@@ -73,6 +73,16 @@ const configSections = [
                     ],
                     tools: [
                         {
+                            action: 'export',
+                            icon: 'fa fa-download',
+                            type: 'link',
+                            tooltip: 'Export configuration',
+                            attrs: {
+                                href: '/config/config/tools/export/action',
+                                target: '_blank'
+                            }
+                        },
+                        {
                             action: 'import',
                             icon: 'fa fa-upload',
                             tooltip: 'Import configuration',
