@@ -54,3 +54,29 @@ SysPage.init({
 }, { sequelize: dataDB, modelName: 'sys_page' })
 
 
+export class SysValue extends Model {
+    static async getByKey(key, defaultValue) {
+        const value = await SysValue.findByPk(genMD5(key))
+        return value ? value.data : defaultValue
+    }
+    static async setByKey(key, data) {
+        const id = genMD5(key)
+        await SysValue.upsert({ id, key, data })
+        return await SysValue.findByPk(id)
+    }
+}
+
+SysValue.init({
+    id: {
+        type: DataTypes.STRING(32),
+        primaryKey: true
+    },
+    key: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    data: {
+        type: DataTypes.JSON,
+        allowNull: false
+    }
+}, { sequelize: dataDB, modelName: 'sys_value' })

@@ -4,7 +4,7 @@ import express from 'express'
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../../base/models/config.js'
 import { checkUser } from '../../../controllers/web/security.js'
-import { erpConn } from '../../../controllers/conn/erp.js'
+import { ERPClient } from '../../../controllers/rpc/erp.js'
 
 import { renderFile } from '../../../tools/view.js'
 
@@ -33,16 +33,26 @@ expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, re
     const limit = parseInt(req.query.limit || pconf?.pc.pager?.limit || pconf?.gl.pager?.limit) || 15
     const offset = (page - 1) * limit
 
-    const connResult = await erpConn.connect()
+    const clientAccountID = ERPClient.getAccountID(req.user)
 
-    if(connResult?.status !== 'success') return res.json(connResult)
+    const q = req.query?.q || ''
+    const expeditions = await ERPClient.searchRead(
+        req.user,
+        'after.sale.order',
+        [['client_account_id', '=', clientAccountID]],
+        { limit, offset }
+    )
 
-    const result = await erpConn.query('expeditions/list', { limit, offset, id: req.user.portalID, q: req.query?.q || '' })
+    if (expeditions?.status != 'success') return res.json(expeditions)
 
-    if(result?.status !== 'success') return res.json({ status: 'error', message: 'Failed to fetch data' })
+    const total = await ERPClient.searchCount(
+        req.user,
+        'after.sale.order',
+        [['client_account_id', '=', clientAccountID]]
+    )
 
-    const rows = result?.data?.items || []
-    const count = result?.data?.total || 0
+    const rows = expeditions?.data || []
+    const count = total?.data || 0
 
     let rcount = pconf?.pc?.list?.rcount || pconf?.gl?.list?.rcount
     let rstyle = false

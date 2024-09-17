@@ -3,7 +3,7 @@ import express from 'express'
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../../base/models/config.js'
 import { checkUser } from '../../../controllers/web/security.js'
-import { erpConn } from '../../../controllers/conn/erp.js'
+import { ERPClient } from '../../../controllers/rpc/erp.js'
 
 import { renderFile } from '../../../tools/view.js'
 
@@ -32,16 +32,45 @@ stockRouter.get('/stock/stock/list', checkUser, async (req, res) => {
     const limit = parseInt(req.query.limit || pconf?.pc.pager?.limit || pconf?.gl.pager?.limit) || 15
     const offset = (page - 1) * limit
 
-    const connResult = await erpConn.connect()
+    const accountResult = await ERPClient.getAccounts(req.user)
 
-    if(connResult?.status !== 'success') return res.json(connResult)
+    if(accountResult?.status != 'success') return res.json(accountResult)
 
-    const result = await erpConn.query('stock/list', { limit, offset, id: req.user.portalID, q: req.query?.q || '' })
+    const accounts = accountResult?.data || []
 
-    if(result?.status !== 'success') return res.json({ status: 'error', message: 'Failed to fetch data' })
+    const q = req.query?.q || ''
+    const searchDomain = [['client_account_id', 'in', accounts.map(a => a.id)]]
 
-    const rows = result?.data?.items || []
-    const count = result?.data?.total || 0
+    if(q) {
+        searchDomain.push('|')
+        searchDomain.push('|')
+        searchDomain.push('|')
+        searchDomain.push('|')
+        searchDomain.push('|')
+        searchDomain.push('|')
+        searchDomain.push('|')
+        searchDomain.push('|')
+        searchDomain.push(['product_id.name', 'ilike', q])
+        searchDomain.push(['internal_ref', 'ilike', q])
+        searchDomain.push(['expedition1', 'ilike', q])
+        searchDomain.push(['expedition', 'ilike', q])
+        searchDomain.push(['lot_id.name', 'ilike', q])
+        searchDomain.push(['lpn', 'ilike', q])
+        searchDomain.push(['imei', 'ilike', q])
+        searchDomain.push(['imei2', 'ilike', q])
+        searchDomain.push(['sku', 'ilike', q])
+    }
+
+    const expeditions = await ERPClient.searchRead(req.user, 'stock.quant', searchDomain, [],
+        { limit, offset, sudo: true }
+    )
+
+    if (expeditions?.status != 'success') return res.json(expeditions)
+
+    const total = await ERPClient.searchCount(req.user, 'stock.quant', searchDomain, { sudo: true })
+
+    const rows = expeditions?.data || []
+    const count = total?.data || 0
 
     let rcount = pconf?.pc?.list?.rcount || pconf?.gl?.list?.rcount
     let rstyle = false
