@@ -1,12 +1,11 @@
 import util from 'util'
 import jwt from 'jsonwebtoken'
-import { URL } from 'url'
 
 import { ConfigConf } from '../../modules/base/models/config.js'
 import { SysValue } from '../../modules/base/models/base.js'
 import { Logger } from '../../tools/log.js'
 
-class WebServiceRPC {
+export class WebServiceRPC {
     constructor(conn) {
         this.conn = conn
         this.user = null
@@ -39,6 +38,8 @@ class WebServiceRPC {
         }, conn.secret, { expiresIn: '1h' })
 
         await SysValue.setByKey('wsrpc.conn.data', { token: this.token })
+
+        Logger.debug('Token:', this.token)
 
         return { status: 'success', token: this.token }
     }
@@ -73,7 +74,7 @@ class WebServiceRPC {
 
             const json = await response.json()
 
-            Logger.debug('Response:', json)
+            Logger.debug('Response:', json?.result || json?.error)
 
             const debug = json?.error?.data?.debug
 
@@ -128,9 +129,4 @@ class WebServiceRPC {
     async call(user, model, id, method, args) {
         return await this._request(user, 'ws/call', { model, id, method, args })
     }
-    async getAccounts(user) {
-        return await this._request(user, 'ws/client_accounts')
-    }
 }
-
-export const ERPClient = new WebServiceRPC('erp')

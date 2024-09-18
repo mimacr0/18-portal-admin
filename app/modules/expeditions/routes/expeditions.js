@@ -3,8 +3,8 @@ import express from 'express'
 
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../../base/models/config.js'
-import { checkUser } from '../../../controllers/web/security.js'
-import { ERPClient } from '../../../controllers/rpc/erp.js'
+import { checkUser, checkERPUser } from '../../../controllers/web/security.js'
+import { expeditionsClient } from '../api/expeditions.js'
 
 import { renderFile } from '../../../tools/view.js'
 
@@ -33,26 +33,14 @@ expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, re
     const limit = parseInt(req.query.limit || pconf?.pc.pager?.limit || pconf?.gl.pager?.limit) || 15
     const offset = (page - 1) * limit
 
-    const clientAccountID = ERPClient.getAccountID(req.user)
-
     const q = req.query?.q || ''
-    const expeditions = await ERPClient.searchRead(
-        req.user,
-        'after.sale.order',
-        [['client_account_id', '=', clientAccountID]],
-        { limit, offset }
-    )
+    const expeditions = await expeditionsClient.searchReadExpeditions(req.user, {
+        limit, offset, q
+    })
 
     if (expeditions?.status != 'success') return res.json(expeditions)
 
-    const total = await ERPClient.searchCount(
-        req.user,
-        'after.sale.order',
-        [['client_account_id', '=', clientAccountID]]
-    )
-
-    const rows = expeditions?.data || []
-    const count = total?.data || 0
+    const { count, rows } = expeditions.data
 
     let rcount = pconf?.pc?.list?.rcount || pconf?.gl?.list?.rcount
     let rstyle = false
@@ -75,4 +63,8 @@ expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, re
         lastResult
     })
     res.json({ html: list, footer })
+})
+
+expeditionsRouter.post('/expeditions/erp/api/register', checkERPUser, async (req, res) => {
+    res.json({ status: 'success', message: 'Registered' })
 })

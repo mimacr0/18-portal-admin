@@ -1,0 +1,24 @@
+<%- include('../../base/ui/html/layout/header', { page }) %>
+
+<!-- Main content -->
+<div class="content">
+
+   <div class="container-fluid">
+
+      <div style="height: 5px;"></div>
+
+      <div class="row" id="dashboard-status-widget" style="min-height: 100px;">
+         <% for(const kpi of stateKPIs) { %>
+            <%- include('../../../components/dashboard/html/kpis/state', { kpi }) %>
+         <% } %>
+      </div>
+
+   </div>
+
+</div>
+
+<%- include('../../base/ui/html/layout/footer', { page }) %>
+
+</body>
+
+</html>

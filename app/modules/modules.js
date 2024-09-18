@@ -15,20 +15,23 @@ import { mainRouter } from './base/routes/main.js'
 import { configRouter } from './base/routes/config.js'
 import { expeditionsRouter } from './expeditions/routes/expeditions.js'
 import { stockRouter } from './stock/routes/stock.js'
+import { dashboardRouter } from './dashboard/routes/dashboard.js'
 
 import { mainPages } from './base/data/mainPages.js'
 import { configPages } from './base/data/configPages.js'
 import { usersPages } from './base/data/usersPages.js'
 import { expeditionsPages } from './expeditions/data/expeditionsPages.js'
 import { stockPages } from './stock/data/pages.js'
+import { dashboardPages } from './dashboard/data/dashboard.js'
 
 export const initRouters = () => {
     app.use(baseRouter)
-    app.use(mainRouter)
+    // app.use(mainRouter)
     app.use(usersRouter)
     app.use(configRouter)
     app.use(expeditionsRouter)
     app.use(stockRouter)
+    app.use(dashboardRouter)
 }
 
 export const initStatic = () => {
@@ -42,9 +45,10 @@ export const initDB = async () => {
 
     await SysUser.registerUsers(config?.data?.users || [])
     await SysPage.destroy({ where: {} })
-    await SysPage.actionRegister(mainPages)
+    // await SysPage.actionRegister(mainPages)
     await SysPage.actionRegister(configPages)
     await SysPage.actionRegister(usersPages)
     await SysPage.actionRegister(expeditionsPages)
     await SysPage.actionRegister(stockPages)
+    await SysPage.actionRegister(dashboardPages)
 }
