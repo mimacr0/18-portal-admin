@@ -6,38 +6,29 @@ import { SysValue } from '../../modules/base/models/base.js'
 import { Logger } from '../../tools/log.js'
 
 export class WebServiceRPC {
-    constructor(conn) {
-        this.conn = conn
-        this.user = null
-        this.token = null
+
+    constructor(url) {
+        this.baseURL = url
+        this.connKey = `api.rpc.connection.data`
     }
 
     async _getConnectionData() {
-        const pconf = await ConfigConf.getByKeys({
-            gl: 'pages.global',
-            conn: 'api.rpc.connections'
-        })
+        const conn = await ConfigConf.getByKey('api.rpc.connection')
 
-        const connRef = this.conn
-
-        const conn = Object.entries(pconf?.conn).reduce((acc, [key, value]) => {
-            if(key == connRef) return value
-            return acc
-        }, null)
+        Logger.debug('Connection:', conn)
 
         if(!conn) return { status: 'error', message: 'Connection not found' }
+        if(!conn?.url) return { status: 'error', message: 'Connection URL not found' }
+        if(!conn?.secret) return { status: 'error', message: 'Connection secret not found' }
+        if(!conn?.client) return { status: 'error', message: 'Connection client not found' }
 
-        return conn
+        return { status: 'success', data: conn }
     }
 
-    async requestToken(user) {
-        const conn = await this._getConnectionData()
+    async requestToken(data) {
+        this.token = await util.promisify(jwt.sign)({ client: data.client }, data.secret, { expiresIn: '1h' })
 
-        this.token = await util.promisify(jwt.sign)({
-            id: user.portalID,
-        }, conn.secret, { expiresIn: '1h' })
-
-        await SysValue.setByKey('wsrpc.conn.data', { token: this.token })
+        await SysValue.setByKey(this.connKey, { token: this.token })
 
         Logger.debug('Token:', this.token)
 
@@ -48,16 +39,24 @@ export class WebServiceRPC {
         return parts.join('/').replace(/([^:]\/)\/+/g, '$1')
     }
 
-    async _request(user, endpoint, data={}, options = {}) {
+    async _request(endpoint, data={}, options = {}) {
 
-        const connData = await this._getConnectionData()
+        if(typeof data !== 'object') throw new Error('Invalid data')
 
-        if(connData?.token) this.token = connData.token
+        const connResult = await this._getConnectionData()
+
+        if(connResult?.status !== 'success') return connResult
+
+        const connData = connResult.data
+
+        const tokenCache = await SysValue.getByKey(this.connKey)
+
+        if(tokenCache?.token) this.token = tokenCache.token
 
         Logger.debug('Request:', endpoint, data, options, this.token)
 
         if(!this.token) {
-            const loginRes = await this.requestToken(user)
+            const loginRes = await this.requestToken(connData)
             if(loginRes.status !== 'success') return { status: 'error', message: 'Login failed' }
         }
 
@@ -65,7 +64,7 @@ export class WebServiceRPC {
         const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.token}` }
 
         try {
-            const url = this.joinURL(connData.url, endpoint)
+            const url = this.joinURL(connData.url, this.baseURL, endpoint)
             const response = await fetch(url, {
                 method,
                 headers,
@@ -85,7 +84,7 @@ export class WebServiceRPC {
             const result = json.result
 
             if (result?.code === 401) {
-                const loginRes = await this.requestToken(user)
+                const loginRes = await this.requestToken(connData)
                 if(loginRes.status !== 'success') return { status: 'error', message: 'Login failed' }
                 this.token = loginRes.token
                 return await this._request(endpoint, data, options)
