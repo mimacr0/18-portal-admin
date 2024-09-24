@@ -185,44 +185,6 @@ const updateExpeditionsChart = (data) => {
 createExpeditionsChart()
 createReceptionsChart()
 
-setTimeout(updateExpeditionsChart, 5000)
-
-// const updateReceptionsChart = (kpi) => {
-//     kpiCharts[kpi.id].updateSeries([
-//         {
-//             name: "Receptions",
-//             data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
-//         },
-//     ])
-// }
-
-// const initChartKpis = (kpi) => {
-//     if(kpiCharts[kpi.id]) return kpiCharts[kpi.id].updateSeries([
-//         {
-//             name: "Net Profit",
-//             data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
-//         },
-//         {
-//             name: "Revenue",
-//             data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
-//         },
-//         {
-//             name: "Free Cash Flow",
-//             data: [76, 85, 101, 98, 87, 105, 91, 114, 94],
-//         },
-//     ])
-
-//     kpiCharts[kpi.id] = new ApexCharts(
-//         document.querySelector(`#portal-customer-expeditions-chart`),
-//         sales_chart_options
-//     )
-//     kpiCharts[kpi.id].render()
-// }
-
-// const dashboardKPIDataReload = (e) => {
-//     const kpi = e.detail
-//     if(kpi.type === 'chart') initChartKpis(kpi)
-//     if(kpi.type === 'state') numberKPIUpdateValue(kpi.id, -20)
-// }
-
-// document.addEventListener('dashboard-kpi-change-data', dashboardKPIDataReload)
+socket.on('dashboard expeditions update', () => {
+    updateExpeditionsChart()
+})

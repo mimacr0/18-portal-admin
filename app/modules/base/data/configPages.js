@@ -109,6 +109,7 @@ export const configPages = [
         title: 'Configurations',
         icon: 'fa fa-cogs',
         sequence: 1000,
+        access: 'admin',
         assets: {
             header: {
                 css: [

@@ -13,7 +13,7 @@ export const expeditionsRouter = express.Router()
 
 expeditionsRouter.get('/expeditions', checkUser, async (req, res) => {
     res.send(await renderFile('expeditions/views/index', {
-        page: await SysPage.getPage('expeditions'),
+        page: await SysPage.getPage('expeditions', req.user),
         user: req.user,
         iframe: req.query.iframe
     }))

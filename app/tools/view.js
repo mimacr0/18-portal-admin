@@ -16,7 +16,14 @@ export const renderFile = async (template, data) => {
 
     let removeLines = []
 
-    i18n.setLocale('en_US')
+    const langData = {
+        en: 'en_US',
+        es: 'es_ES',
+        zh: 'zh_CN'
+    }
+    const lang = data.user?.lang?.code || 'en'
+
+    i18n.setLocale(langData[lang])
 
     let result = await ejs.renderFile(file, { ...{ i18n }, ...data })
 

@@ -17,7 +17,7 @@ export const configRouter = express.Router()
 
 configRouter.get('/config', checkUser, async (req, res) => {
     res.send(await renderFile('base/ui/html/page', {
-        page: await SysPage.getPage('config'),
+        page: await SysPage.getPage('config', req.user),
         user: req.user
     }))
 })
@@ -28,7 +28,7 @@ configRouter.get('/config/config/list', checkUser, async (req, res) => {
         pc: 'pages.config.config'
     })
 
-    const card = await SysPage.getCard('config-config')
+    const card = await SysPage.getCard('config-config', req.user)
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit || pconf?.pc.pager?.limit || pconf?.gl.pager?.limit) || 15
     const offset = (page - 1) * limit;

@@ -15,12 +15,14 @@ import { configRouter } from './base/routes/config.js'
 import { expeditionsRouter } from './expeditions/routes/expeditions.js'
 import { stockRouter } from './stock/routes/stock.js'
 import { dashboardRouter } from './dashboard/routes/dashboard.js'
+import { messagesRouter } from './messages/routes/messages.js'
 
 import { configPages } from './base/data/configPages.js'
 import { usersPages } from './base/data/usersPages.js'
 import { expeditionsPages } from './expeditions/data/expeditionsPages.js'
 import { stockPages } from './stock/data/pages.js'
 import { dashboardPages } from './dashboard/data/dashboard.js'
+import { messagesPages } from './messages/data/messages.js'
 
 export const initRouters = () => {
     app.use(baseRouter)
@@ -29,6 +31,7 @@ export const initRouters = () => {
     app.use(expeditionsRouter)
     app.use(stockRouter)
     app.use(dashboardRouter)
+    app.use(messagesRouter)
 }
 
 export const initStatic = () => {
@@ -36,6 +39,7 @@ export const initStatic = () => {
     app.use('/static/dashboard', checkUserAssets, express.static(path.join(BASE_PATH, "modules", "dashboard", "static")))
     app.use('/static/stock', checkUserAssets, express.static(path.join(BASE_PATH, "modules", "stock", "static")))
     app.use('/static/expeditions', checkUserAssets, express.static(path.join(BASE_PATH, "modules", "expeditions", "static")))
+    app.use('/static/messages', checkUserAssets, express.static(path.join(BASE_PATH, "modules", "messages", "static")))
 }
 
 export const initDB = async () => {
@@ -48,4 +52,5 @@ export const initDB = async () => {
     await SysPage.actionRegister(expeditionsPages)
     await SysPage.actionRegister(stockPages)
     await SysPage.actionRegister(dashboardPages)
+    await SysPage.actionRegister(messagesPages)
 }

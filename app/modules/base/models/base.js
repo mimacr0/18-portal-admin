@@ -7,19 +7,19 @@ import { genMD5 } from '../../../tools/sys.js'
 import { Page } from '../components/page/page.js'
 
 export class SysPage extends Model {
-    static async getPage(pageName) {
+    static async getPage(pageName, user) {
         const pages = await SysPage.findAll({ order: [['data.sequence', 'ASC']] })
         const page = pages.find(m => m.data.name === pageName)
         if(!page) throw new Error(`Page "${pageName}" not found`)
         let ctx = {
             page,
-            pages
+            pages: user.portal ? pages.filter(p => !p.data?.access || p.data?.access === 'portal') : pages
         }
         return new Page(page, ctx)
     }
-    static async getCard(cardIndex) {
+    static async getCard(cardIndex, user) {
         const [pageName, cardName] = cardIndex.split('-')
-        const page = await SysPage.getPage(pageName)
+        const page = await SysPage.getPage(pageName, user)
         return page.cards.find(c => c.name === cardName)
     }
     static async actionRegister(pages) {

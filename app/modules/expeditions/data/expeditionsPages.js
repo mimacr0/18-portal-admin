@@ -5,6 +5,7 @@ export const expeditionsPages = [
         url: '/expeditions',
         title: 'Expeditions',
         icon: 'fa fa-truck',
+        access: 'portal',
         sequence: 30,
         assets: {
             footer: {

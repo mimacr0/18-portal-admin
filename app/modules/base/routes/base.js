@@ -25,7 +25,7 @@ baseRouter.get('/:page/js/:card/:file.js', checkUser, async (req, res) => {
 
     const { page, card, file } = req.params
 
-    const pageData = await SysPage.getPage(page)
+    const pageData = await SysPage.getPage(page, req.user)
 
     if(!pageData) return res.sendStatus(404)
 
@@ -48,4 +48,15 @@ baseRouter.get('/base/image/file/:file', checkUser, async (req, res) => {
     const defaultPath = path.join(BASE_PATH, 'public', 'img', 'default_user.svg')
     if(!fs.existsSync(filePath)) return res.sendFile(defaultPath)
     res.sendFile(filePath)
+})
+
+baseRouter.post('/base/system/lang/update', checkUser, async (req, res) => {
+    const user = req.user
+
+    user.config.lang = req.body.lang
+    user.changed('config', true)
+    await user.save()
+
+    res.json({ status: 'success', message: 'Action completed successfully' })
+
 })

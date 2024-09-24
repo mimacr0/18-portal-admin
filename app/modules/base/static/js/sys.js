@@ -299,3 +299,12 @@ const displayPageScreenAction = (e) => {
 }
 
 $('.display-page-screen-action').click(displayPageScreenAction)
+
+const updateSystemLangAction = async (e) => {
+    const lang = e.currentTarget.getAttribute('data-language')
+    const res = await jsonPost(`/base/system/lang/update`, { lang })
+    if(res?.status != 'success') return
+    location.reload()
+}
+
+$('.update-system-lang-action').click(updateSystemLangAction)

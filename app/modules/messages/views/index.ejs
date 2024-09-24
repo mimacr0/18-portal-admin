@@ -1,0 +1,147 @@
+<%- include('../../base/ui/html/layout/header', { page }) %>
+
+<!-- Main content -->
+<div class="content">
+
+   <div class="container-fluid">
+
+      <div style="height: 5px;"></div>
+
+      <div class="row">
+
+        <div class="col-3">
+
+            <div class="card">
+
+                <div class="card-header">
+                   <h3 class="card-title"><span class="text-muted"><%= i18n.__('Chats') %></span></h3>
+                   <div class="card-tools messages-chats-card-tools"></div>
+                </div>
+
+                <div class="card-body p-0">
+                   <div class="mailbox-controls">
+                      <div class="row">
+                         <div class="col-6">
+                        </div>
+                         <div class="col-6">
+                            <div>
+                               <div class="input-group input-group-sm float-right">
+                                  <input type="text" name="table_search" class="form-control float-right" placeholder="Search" id="messages-chats-search-input">
+                                     <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default">
+                                           <i class="fas fa-search"></i>
+                                        </button>
+                                     </div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                   <div class="table-responsive mailbox-messages messages-chats-main-container">
+                      <ul class="nav nav-pills flex-column" id="messages-chats-list" style="border-top: 1px solid rgba(0, 0, 0, .125);"></ul>
+                   </div>
+                </div>
+
+                <div class="card-footer clearfix" id="messages-chats-footer"></div>
+
+             </div>
+
+        </div>
+
+        <div class="col-9">
+
+            <div class="card messages-messages-card-container d-none d-lg-block">
+
+                <div class="card-header">
+                   <h3 class="card-title">
+                      <div id="messages-messages-active-chat-container">
+                         <div class="d-flex align-items-center py-1">
+                            <div class="position-relative">
+                               <img src="" class="messages-messages-active-chat-image rounded-circle mr-1 init-hidden" alt="Avatar" width="40" height="40">
+                            </div>
+                            <div class="flex-grow-1 pl-3">
+                               <strong class="messages-messages-active-chat-name"></strong>
+                               <div class="text-muted small"><em class="messages-messages-active-chat-label"></em></div>
+                            </div>
+                         </div>
+                      </div>
+                   </h3>
+                   <div class="card-tools messages-messages-card-tools"></div>
+                </div>
+
+                <div class="card-body p-0">
+                   <div class="mailbox-controls">
+                      <div class="row">
+                         <div class="col-12">
+                            <div>
+                               <div class="input-group input-group-sm float-right">
+                                  <input type="text" name="table_search" class="form-control float-right" placeholder="Search" id="messages-messages-search-input">
+                                     <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default">
+                                           <i class="fas fa-search"></i>
+                                        </button>
+                                     </div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                   <div class="table-responsive mailbox-messages messages-messages-main-container p-3" id="messages-messages-chat-messages-container" style="max-height: 57vh; overflow-y: auto;">
+                      <table class="table table-hover table-striped">
+                         <tbody id="messages-messages-list">
+                            <tr>
+                               <td class="text-center text-muted">
+                                  <h5 style="height: 100px; padding-top: 45px;"><%= i18n.__('No chat selected') %></h5>
+                               </td>
+                            </tr>
+                         </tbody>
+                      </table>
+                   </div>
+                   <div id="messages-messages-chat-input-group" style="display: none; border-top: 1px solid rgba(0, 0, 0, 0.1); padding-top: 1rem;">
+
+                      <div class="flex-grow-0 m-3">
+                         <form id="messages-messages-update-form-data">
+                            <input type="hidden" id="messages-message-form-reply-to" name="reply"/>
+                            <input type="hidden" id="messages-message-form-template-id" name="template_id"/>
+                            <input type="hidden" id="messages-message-form-chat-id" name="chat_id"/>
+
+                            <div class="input-group">
+                               <textarea name="message" class="form-control shadow-custom auto-height" id="messages-messages-chat-form-input" rows="1" placeholder="Write a message..." required="1"></textarea>
+                               <div class="input-group-append">
+                                  <button class="btn btn-secondary ml-1" type="button" id="messages-messages-attachments-button">
+                                     <i class="fas fa-paperclip"></i><span class="d-none d-sm-inline ">Adjuntar</span>
+                                  </button>
+                                  <button class="btn btn-primary" type="button" id="messages-messages-send-button">
+                                     <i class="fas fa-paper-plane"></i><span class="d-none d-sm-inline ">Enviar</span>
+                                  </button>
+                               </div>
+                            </div>
+                            <br/>
+                            <div class="container mt-1">
+                               <input class="file-input" id="messages-messages-file-input-2" type="file" name="file" multiple="1" style="display: none;"/>
+                               <div class="invalid-feedback text-center">No se han seleccionado archivos</div>
+                               <div id="messages-messages-file-input-list" class="row"></div>
+                            </div>
+                         </form>
+                      </div>
+
+                   </div>
+                </div>
+
+                <div class="card-footer clearfix" id="messages-messages-footer"></div>
+
+             </div>
+
+        </div>
+
+      </div>
+
+   </div>
+
+</div>
+
+<%- include('../../base/ui/html/layout/footer', { page }) %>
+
+</body>
+
+</html>

@@ -12,7 +12,7 @@ export const stockRouter = express.Router()
 
 stockRouter.get('/stock', checkUser, async (req, res) => {
     res.send(await renderFile('stock/views/index', {
-        page: await SysPage.getPage('stock'),
+        page: await SysPage.getPage('stock', req.user),
         user: req.user,
         iframe: req.query.iframe
     }))

@@ -8,20 +8,9 @@ import sys
 sys.path.append(f"""{os.getenv('BASE_DIR')}/scripts""")
 
 from lib.base.cli import CLI
-from lib.base.ws import WS
 
 args = CLI.args()
-ws_conf = args.get('ws') or {}
-
-if not ws_conf:
-    CLI.out({'status': 'error', 'message': 'WS config not found'})
-
-ws = WS(ws_conf)
-
-if not ws.uid:
-    CLI.out({'status': 'error', 'message': 'Connection error'})
-
-res = ws.call('res.users', 'get_portal_users_data', [])
+users = args.get('users')
 
 def random_color():
     return (random.randint(50, 190), random.randint(50, 190), random.randint(50, 190))
@@ -48,7 +37,7 @@ def user_image(name):
 
 items = []
 
-for values in res:
+for values in users:
     dbid = values.pop('id')
     values['dbid'] = dbid
     if not values.get('image'):
