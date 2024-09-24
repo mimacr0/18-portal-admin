@@ -1,0 +1,7 @@
+SECRET={{env.PROJECT_SECRET()}}
+NODE_ENV={{env.PROJECT_ENV() or 'production'}}
+PORT={{env.PROJECT_PORT()}}
+BASE_URL=http://{{env.HOST_IP()}}:{{env.PROJECT_PORT()}}
+WORK_DIR={{env.WORK_DIR()}}
+PYTHONPATH={{env.VENV_DIR()}}/bin/python3
+BASE_PATH={{env.BASE_PATH()}}
