@@ -61,6 +61,7 @@ export const usersPages = [
             {
                 sections: usersSections
             }
-        ]
+        ],
+        access: 'admin'
     }
 ]

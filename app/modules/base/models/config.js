@@ -6,7 +6,7 @@ import { dataDB } from '../../../controllers/db/db.js'
 export class ConfigConf extends Model {
     static async getByKey(key) {
         const item = await ConfigConf.findOne({ where: { 'data.key': key } })
-        return item?.data?.conf_dict || {}
+        return item?.config || {}
     }
     static async getByKeys(data) {
         let res = {}

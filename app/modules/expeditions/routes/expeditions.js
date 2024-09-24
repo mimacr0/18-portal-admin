@@ -3,8 +3,8 @@ import express from 'express'
 
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../../base/models/config.js'
-import { checkUser } from '../../../controllers/web/security.js'
-import { erpConn } from '../../../controllers/conn/erp.js'
+import { checkUser, checkERPUser } from '../../../controllers/web/security.js'
+import { expeditionsClient } from '../api/expeditions.js'
 
 import { renderFile } from '../../../tools/view.js'
 
@@ -13,7 +13,7 @@ export const expeditionsRouter = express.Router()
 
 expeditionsRouter.get('/expeditions', checkUser, async (req, res) => {
     res.send(await renderFile('expeditions/views/index', {
-        page: await SysPage.getPage('expeditions'),
+        page: await SysPage.getPage('expeditions', req.user),
         user: req.user,
         iframe: req.query.iframe
     }))
@@ -33,16 +33,14 @@ expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, re
     const limit = parseInt(req.query.limit || pconf?.pc.pager?.limit || pconf?.gl.pager?.limit) || 15
     const offset = (page - 1) * limit
 
-    const connResult = await erpConn.connect()
+    const q = req.query?.q || ''
+    const expeditions = await expeditionsClient.searchReadExpeditions({
+        q, limit, offset, user_id: req.user.uid
+    })
 
-    if(connResult?.status !== 'success') return res.json(connResult)
+    if (expeditions?.status != 'success') return res.json(expeditions)
 
-    const result = await erpConn.query('expeditions/list', { limit, offset, id: req.user.portalID, q: req.query?.q || '' })
-
-    if(result?.status !== 'success') return res.json({ status: 'error', message: 'Failed to fetch data' })
-
-    const rows = result?.data?.items || []
-    const count = result?.data?.total || 0
+    const { count, rows } = expeditions.data
 
     let rcount = pconf?.pc?.list?.rcount || pconf?.gl?.list?.rcount
     let rstyle = false
@@ -65,4 +63,8 @@ expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, re
         lastResult
     })
     res.json({ html: list, footer })
+})
+
+expeditionsRouter.post('/expeditions/erp/api/register', checkERPUser, async (req, res) => {
+    res.json({ status: 'success', message: 'Registered' })
 })

@@ -65,8 +65,20 @@ export class SysUser extends Model {
     get portal() {
         return this.data?.role === 'portal'
     }
-    get portalID() {
+    get uid() {
         return this.data?.dbid
+    }
+    get lang() {
+        const langData = {
+            en: { name: 'English', code: 'en' },
+            es: { name: 'Español', code: 'es' },
+            zh: { name: '中文 (繁體)', code: 'zh' }
+        }
+        const lang = this.config?.lang || this.data?.lang || 'en'
+
+        if(lang.includes('_')) return langData[lang.split('_')[0]]
+
+        return langData[lang]
     }
 }
 
@@ -85,11 +97,15 @@ SysUser.init({
         unique: true
     },
     password: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: DataTypes.STRING
     },
     data: {
         type: DataTypes.JSON,
         allowNull: false
+    },
+    config: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: {}
     }
 }, { sequelize: dataDB, modelName: 'sys_user' })

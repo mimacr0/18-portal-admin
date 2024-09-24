@@ -1,0 +1,25 @@
+<div class="<%= kpi.size %> kpi" data-id="5889a14fb248f8a5c3839e0f2ef91c00">
+    <div class="card" style="height: 233px">
+        <div class="card-header border-0">
+            <div class="d-flex justify-content-between">
+                <h3 class="card-title mr-auto"><%= kpi.title %></h3>
+                ##<% for(const serie of (kpi.data.series || [])) { %>
+                <span class="mr-2"><i class="fas fa-square" style="color: <%= serie.color %>"></i> <%= serie.label %></span>
+                ##<% } %>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="position-relative mb-4">
+                <div class="chartjs-size-monitor">
+                    <div class="chartjs-size-monitor-expand">
+                        <div class=""></div>
+                    </div>
+                    <div class="chartjs-size-monitor-shrink">
+                        <div class=""></div>
+                    </div>
+                </div>
+                 <div id="apex-chart-<%= kpi.id %>"></div>
+            </div>
+        </div>
+    </div>
+</div>

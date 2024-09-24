@@ -1,5 +1,4 @@
 import express from 'express'
-import jwt from 'jsonwebtoken'
 
 import { Op } from 'sequelize'
 
@@ -10,6 +9,7 @@ import { runScript } from '../../../tools/cli.js'
 import { SysPage } from '../../base/models/base.js'
 import { SysUser } from '../models/users.js'
 import { ConfigConf } from '../models/config.js'
+import { syncClient } from '../api/sync.js'
 import { validateSchema } from '../../../tools/validate.js'
 import { genMD5, saveFile } from '../../../tools/sys.js'
 import {
@@ -22,7 +22,7 @@ export const usersRouter = express.Router()
 
 usersRouter.get('/users', checkUser, async (req, res) => {
     res.send(await renderFile('base/ui/html/page', {
-        page: await SysPage.getPage('users'),
+        page: await SysPage.getPage('users', req.user),
         user: req.user
     }))
 })
@@ -33,7 +33,7 @@ usersRouter.get('/users/users/list', checkUser, async (req, res) => {
         pc: 'pages.users.users'
     })
 
-    const card = await SysPage.getCard('users-users')
+    const card = await SysPage.getCard('users-users', req.user)
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit || pconf?.pc.pager?.limit || pconf?.gl.pager?.limit) || 15
     const offset = (page - 1) * limit;
@@ -97,23 +97,16 @@ usersRouter.get('/logout', checkUser, (req, res) => {
 })
 
 usersRouter.post('/users/users/tools/action/sync', async (req, res) => {
-    const pconf = await ConfigConf.getByKeys({
-        gl: 'pages.global',
-        conn: 'wsrpc.connections'
-    })
 
-    const ws = Object.entries(pconf?.conn).reduce((acc, [key, value]) => {
-        if(key == pconf?.gl?.rpc?.ws) return value;
-        return acc;
-    }, null)
-
-    if(!ws) return res.json({ status: 'error', message: 'Connection not found' })
-
-    const result = await runScript('users/sync', { ws })
+    const result = await syncClient.getUsersList()
 
     if(result?.status !== 'success') return res.json(result)
 
-    for(const user of result.data) {
+    const usersResponse = await runScript('users/sync', { users: result.data })
+
+    if(usersResponse?.status !== 'success') return res.json(usersResponse)
+
+    for(const user of usersResponse.data) {
         const uid = genMD5(user.login)
         const item = await SysUser.findByPk(uid)
         const password = user.password
@@ -122,6 +115,8 @@ usersRouter.post('/users/users/tools/action/sync', async (req, res) => {
         delete user.login
         delete user.password
         delete user.image
+
+        if(item?.login === login && !item.data?.dbid) continue
 
         user.role = 'portal'
         user.image = await saveFile({

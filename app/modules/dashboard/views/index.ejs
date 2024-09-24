@@ -1,0 +1,184 @@
+<%- include('../../base/ui/html/layout/header', { page }) %>
+
+<!-- Main content -->
+<div class="content">
+
+   <div class="container-fluid">
+
+      <div style="height: 5px;"></div>
+
+      <div class="row" id="dashboard-status-widget" style="min-height: 100px;">
+        <div class="col-sm-6 col-md-2">
+            <div class="info-box mb-3">
+                <span class="info-box-icon bg-success elevation-1"><i class="fa fa-truck"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text"><%= i18n.__('Expeditions') %></span>
+                    <span class="info-box-number">
+                        <span class="number-display" data-value="0" id="kpi-value-EXPEDITIONS_STATUS_KPI">
+                            <%= data.expeditions_count %>
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-2">
+            <div class="info-box mb-3">
+                <span class="info-box-icon bg-success elevation-1"><i class="fa fa-box"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text"><%= i18n.__('Receptions') %></span>
+                    <span class="info-box-number">
+                        <span class="number-display" data-value="0" id="kpi-value-RECEPTIONS_STATUS_KPI">
+                            <%= data.receptions_count %>
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-2">
+            <div class="info-box mb-3">
+                <span class="info-box-icon bg-success elevation-1"><i class="fa fa-boxes"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text"><%= i18n.__('Stock') %></span>
+                    <span class="info-box-number">
+                        <span class="number-display" data-value="0" id="kpi-value-STOCK_STATUS_KPI">
+                            <%= data.stock_count %>
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-2">
+            <div class="info-box mb-3">
+                <span class="info-box-icon bg-success elevation-1"><i class="fa fa-layer-group"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text"><%= i18n.__('Storage') %></span>
+                    <span class="info-box-number">
+                        <span class="number-display" data-value="0" id="kpi-value-STORAGE_STATUS_KPI">
+                            <%= data.locations_count %>
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-2">
+            <div class="info-box mb-3">
+                <span class="info-box-icon bg-success elevation-1"><i class="fa fa-wrench"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text"><%= i18n.__('Repairs') %></span>
+                    <span class="info-box-number">
+                        <span class="number-display" data-value="0" id="kpi-value-REPAIRS_STATUS_KPI">
+                            <%= data.repairs_count %>
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-2">
+            <div class="info-box mb-3">
+                <span class="info-box-icon bg-success elevation-1"><i class="fa fa-puzzle-piece"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text"><%= i18n.__('Spare Parts') %></span>
+                    <span class="info-box-number">
+                        <span class="number-display" data-value="0" id="kpi-value-SPARE_PARTS_STATUS_KPI">
+                            <%= data.spareparts_count %>
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="row">
+         <div class="col-6">
+            <div class="kpi">
+               <div class="card" style="height: 233px">
+                   <div class="card-header border-0">
+                       <div class="d-flex justify-content-between">
+                           <h3 class="card-title mr-auto"><%= i18n.__('Expeditions') %></h3>
+                           <span class="mr-2"><i class="fas fa-square" style="color: #20c997"></i> <%= i18n.__('Expeditions') %></span>
+                       </div>
+                   </div>
+                   <div class="card-body">
+                       <div class="position-relative mb-4">
+                            <div id="portal-customer-expeditions-chart"></div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+            <div class="kpi">
+               <div class="card" style="height: 233px">
+                   <div class="card-header border-0">
+                       <div class="d-flex justify-content-between">
+                           <h3 class="card-title mr-auto"><%= i18n.__('Receptions') %></h3>
+                           <span class="mr-2"><i class="fas fa-square" style="color: #0d6efd"></i> <%= i18n.__('Receptions') %></span>
+                       </div>
+                   </div>
+                   <div class="card-body">
+                       <div class="position-relative mb-4">
+                           <div id="portal-customer-receptions-chart"></div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+         </div>
+         <div class="col-3">
+            <div class="kpi">
+                <div class="card" style="height: 233px">
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between">
+                            <h3 class="card-title mr-auto"><%= i18n.__('Last Expeditions') %></h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="position-relative mb-4">
+                             <div id="portal-customer-expeditions-chart-pie"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="kpi">
+                <div class="card" style="height: 233px">
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between">
+                            <h3 class="card-title mr-auto"><%= i18n.__('Last Receptions') %></h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="position-relative mb-4">
+                             <div id="portal-customer-receptions-chart-pie"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         </div>
+         <div class="col-3">
+            <div class="kpi">
+               <div class="card" style="height: 482px">
+                   <div class="card-header border-0">
+                       <div class="d-flex justify-content-between">
+                           <h3 class="card-title mr-auto"></h3>
+                       </div>
+                   </div>
+                   <div class="card-body">
+                       <div class="position-relative mb-4" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                           <div style="text-align: center;">
+                               <div style="font-size: 1.5em; font-weight: bold;">Balance</div>
+                               <div style="font-size: 2.5em; font-weight: bold;">50 €</div>
+                               <button class="btn btn-primary mt-3" onclick="payNow()">Pay Now</button>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+         </div>
+      </div>
+
+   </div>
+
+</div>
+
+<%- include('../../base/ui/html/layout/footer', { page }) %>
+
+</body>
+
+</html>

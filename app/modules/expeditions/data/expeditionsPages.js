@@ -5,11 +5,13 @@ export const expeditionsPages = [
         url: '/expeditions',
         title: 'Expeditions',
         icon: 'fa fa-truck',
+        access: 'portal',
         sequence: 30,
         assets: {
             footer: {
                 js: [
                     { url: '/static/base/js/sys.js' },
+                    { url: '/static/base/js/tabs.js' },
                     { url: '/static/expeditions/js/expeditions.js' }
                 ]
             }

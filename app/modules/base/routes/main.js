@@ -12,7 +12,7 @@ export const mainRouter = express.Router()
 
 mainRouter.get('/', checkUser, async (req, res) => {
     res.send(await renderFile('base/ui/html/dashboard', {
-        page: await SysPage.getPage('main'),
+        page: await SysPage.getPage('main', req.user),
         user: req.user,
         clean: req.query.c || false,
         kpis: await KpisKpi.getKPIs('/')
