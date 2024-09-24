@@ -1,44 +1,13 @@
 
 let kpiCharts = {}
 
-const sales_chart_options = {
+const expeditionsChartData = {
     series: [
         {
-            name: "Net Profit",
-            data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
-        },
-        {
-            name: "Revenue",
-            data: [76, 85, 101, 98, 87, 105, 91, 114, 94],
-        },
-        {
-            name: "Free Cash Flow",
-            data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
-        },
+            name: "Expeditions",
+            data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+        }
     ],
-    chart: {
-        type: "bar",
-        height: 150
-    },
-    plotOptions: {
-        bar: {
-            horizontal: false,
-            columnWidth: "55%",
-            endingShape: "rounded",
-        },
-    },
-    legend: {
-        show: true,
-    },
-    colors: ["#0d6efd", "#20c997", "#ffc107"],
-    dataLabels: {
-        enabled: false,
-    },
-    stroke: {
-        show: true,
-        width: 2,
-        colors: ["transparent"],
-    },
     xaxis: {
         categories: [
             "Feb",
@@ -52,6 +21,97 @@ const sales_chart_options = {
             "Oct",
         ],
     },
+    colors: ["#20c997"]
+}
+
+const expeditionsChartPieData = {
+    chart: {
+        type: "pie",
+        height: 170
+    },
+    series: [35, 41],
+    labels: ["Completed", "In Progress"],
+    colors: ["#20c997", "#ffc107"],
+    responsive: [{
+        breakpoint: 480,
+        options: {
+            chart: {
+                width: 200
+            },
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }]
+}
+
+const receptionsChartData = {
+    series: [
+        {
+            name: "Receptions",
+            data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+        },
+    ],
+    xaxis: {
+        categories: [
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+        ],
+    },
+    colors: ["#0d6efd", "#ffc107"]
+}
+
+const receptionsChartPieData = {
+    chart: {
+        type: "pie",
+        height: 170
+    },
+    series: [35, 41],
+    labels: ["Completed", "In Progress"],
+    colors: ["#0d6efd", "#ffc107"],
+    responsive: [{
+        breakpoint: 480,
+        options: {
+            chart: {
+                width: 200
+            },
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }]
+}
+
+const baseChartOptions = {
+    chart: {
+        type: "bar",
+        height: 170
+    },
+    plotOptions: {
+        bar: {
+            horizontal: false,
+            columnWidth: "55%",
+            endingShape: "rounded",
+        },
+    },
+    legend: {
+        show: true,
+    },
+    dataLabels: {
+        enabled: false,
+    },
+    stroke: {
+        show: true,
+        width: 2,
+        colors: ["transparent"],
+    },
     fill: {
         opacity: 1,
     },
@@ -61,36 +121,108 @@ const sales_chart_options = {
                 return "$ " + val + " thousands";
             },
         },
-    },
-};
+    }
+}
 
-const initChartKpis = (kpi) => {
-    if(kpiCharts[kpi.id]) return kpiCharts[kpi.id].updateSeries([
+const createExpeditionsChart = () => {
+    kpiCharts['expeditions'] = new ApexCharts(
+        document.querySelector(`#portal-customer-expeditions-chart`), {
+        ...baseChartOptions,
+        ...expeditionsChartData
+    })
+    kpiCharts['expeditions'].render()
+
+    kpiCharts['expeditions-pie'] = new ApexCharts(
+        document.querySelector(`#portal-customer-expeditions-chart-pie`), {
+        ...baseChartOptions,
+        ...expeditionsChartPieData
+    })
+    kpiCharts['expeditions-pie'].render()
+}
+
+const createReceptionsChart = () => {
+    kpiCharts['receptions'] = new ApexCharts(
+        document.querySelector(`#portal-customer-receptions-chart`), {
+        ...baseChartOptions,
+        ...receptionsChartData
+    })
+    kpiCharts['receptions'].render()
+
+    kpiCharts['receptions-pie'] = new ApexCharts(
+        document.querySelector(`#portal-customer-receptions-chart-pie`), {
+        ...baseChartOptions,
+        ...receptionsChartPieData
+    })
+    kpiCharts['receptions-pie'].render()
+}
+
+const updateExpeditionsChart = (data) => {
+    kpiCharts['expeditions'].updateOptions({
+        xaxis: {
+            categories: [
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec"
+            ],
+        }
+    })
+    kpiCharts['expeditions'].updateSeries([
         {
-            name: "Net Profit",
-            data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
-        },
-        {
-            name: "Revenue",
-            data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
-        },
-        {
-            name: "Free Cash Flow",
-            data: [76, 85, 101, 98, 87, 105, 91, 114, 94],
-        },
+            name: "Expeditions",
+            data: [ 36, 41, 36, 26, 45, 48, 52, 53, 41, 35, 41 ]
+        }
     ])
-
-    kpiCharts[kpi.id] = new ApexCharts(
-        document.querySelector(`#apex-chart-${kpi.id}`),
-        sales_chart_options
-    )
-    kpiCharts[kpi.id].render()
 }
 
-const dashboardKPIDataReload = (e) => {
-    const kpi = e.detail
-    if(kpi.type === 'chart') initChartKpis(kpi)
-    if(kpi.type === 'state') numberKPIUpdateValue(kpi.id, -20)
-}
+createExpeditionsChart()
+createReceptionsChart()
 
-document.addEventListener('dashboard-kpi-change-data', dashboardKPIDataReload)
+setTimeout(updateExpeditionsChart, 5000)
+
+// const updateReceptionsChart = (kpi) => {
+//     kpiCharts[kpi.id].updateSeries([
+//         {
+//             name: "Receptions",
+//             data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
+//         },
+//     ])
+// }
+
+// const initChartKpis = (kpi) => {
+//     if(kpiCharts[kpi.id]) return kpiCharts[kpi.id].updateSeries([
+//         {
+//             name: "Net Profit",
+//             data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
+//         },
+//         {
+//             name: "Revenue",
+//             data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
+//         },
+//         {
+//             name: "Free Cash Flow",
+//             data: [76, 85, 101, 98, 87, 105, 91, 114, 94],
+//         },
+//     ])
+
+//     kpiCharts[kpi.id] = new ApexCharts(
+//         document.querySelector(`#portal-customer-expeditions-chart`),
+//         sales_chart_options
+//     )
+//     kpiCharts[kpi.id].render()
+// }
+
+// const dashboardKPIDataReload = (e) => {
+//     const kpi = e.detail
+//     if(kpi.type === 'chart') initChartKpis(kpi)
+//     if(kpi.type === 'state') numberKPIUpdateValue(kpi.id, -20)
+// }
+
+// document.addEventListener('dashboard-kpi-change-data', dashboardKPIDataReload)

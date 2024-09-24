@@ -57,7 +57,9 @@ export const dashboardPages = [
                 js: [
                     { url: '/static/base/js/sys.js' },
                     { url: '/static/base/js/systray.js' },
-                    { url: '/static/dashboard/js/dashboard.js' }
+                    { url: '/static/base/js/tabs.js' },
+                    { url: '/static/dashboard/js/dashboard.js' },
+                    { url: '/static/dashboard/js/custom.js' }
                 ]
             }
         },

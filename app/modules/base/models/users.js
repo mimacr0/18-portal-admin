@@ -68,6 +68,9 @@ export class SysUser extends Model {
     get portalID() {
         return this.data?.dbid
     }
+    get uid() {
+        return this.data?.dbid
+    }
 }
 
 SysUser.init({

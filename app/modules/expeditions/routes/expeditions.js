@@ -34,8 +34,8 @@ expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, re
     const offset = (page - 1) * limit
 
     const q = req.query?.q || ''
-    const expeditions = await expeditionsClient.searchReadExpeditions(req.user, {
-        limit, offset, q
+    const expeditions = await expeditionsClient.searchReadExpeditions({
+        q, limit, offset, user_id: req.user.uid
     })
 
     if (expeditions?.status != 'success') return res.json(expeditions)

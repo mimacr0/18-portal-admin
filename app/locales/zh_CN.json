@@ -36,5 +36,9 @@
 	"Date": "Date",
 	"Total": "Total",
 	"Carrier": "Carrier",
-	"Order": "Order"
+	"Order": "Order",
+	"Receptions": "Receptions",
+	"Storage": "Storage",
+	"Repairs": "Repairs",
+	"Spare Parts": "Spare Parts"
 }

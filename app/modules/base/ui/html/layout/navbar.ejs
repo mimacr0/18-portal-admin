@@ -7,6 +7,8 @@
       </li>
     </ul>
 
+    <div class="btn-group" id="systemDynamicTabs" role="group"></div>
+
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <!-- Navbar Search -->
@@ -31,7 +33,24 @@
         </div>
       </li>
 
-      <!-- Messages Dropdown Menu -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="language-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <img src="/img/flags/us.svg" alt="English" class="mr-2 rounded" width="20">
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="language-dropdown">
+          <a class="dropdown-item" href="#" data-language="en">
+            <img src="/img/flags/us.svg" alt="English" class="mr-2 rounded" width="20"> English
+          </a>
+          <a class="dropdown-item" href="#" data-language="zh">
+            <img src="/img/flags/cn.svg" alt="中文 (繁體)" class="mr-2 rounded" width="20"> 中文 (繁體)
+          </a>
+          <a class="dropdown-item" href="#" data-language="es">
+            <img src="/img/flags/es.svg" alt="Español" class="mr-2 rounded" width="20"> Español
+          </a>
+        </div>
+      </li>
+
+      <!-- Notifications Dropdown Menu -->
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>

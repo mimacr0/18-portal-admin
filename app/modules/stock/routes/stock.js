@@ -34,7 +34,7 @@ stockRouter.get('/stock/stock/list', checkUser, async (req, res) => {
 
     const q = req.query?.q || ''
     const stockData = await stockClient.searchReadStock({
-        q, limit, offset, user: req.user
+        q, limit, offset, user_id: req.user.uid
     })
 
     if (stockData?.status != 'success') return res.json(stockData)

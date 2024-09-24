@@ -10,6 +10,7 @@ export const expeditionsPages = [
             footer: {
                 js: [
                     { url: '/static/base/js/sys.js' },
+                    { url: '/static/base/js/tabs.js' },
                     { url: '/static/expeditions/js/expeditions.js' }
                 ]
             }

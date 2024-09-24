@@ -13,6 +13,91 @@
          <% } %>
       </div>
 
+      <div class="row">
+         <div class="col-6">
+            <div class="kpi">
+               <div class="card" style="height: 233px">
+                   <div class="card-header border-0">
+                       <div class="d-flex justify-content-between">
+                           <h3 class="card-title mr-auto"><%= i18n.__('Expeditions') %></h3>
+                           <span class="mr-2"><i class="fas fa-square" style="color: #20c997"></i> <%= i18n.__('Expeditions') %></span>
+                       </div>
+                   </div>
+                   <div class="card-body">
+                       <div class="position-relative mb-4">
+                            <div id="portal-customer-expeditions-chart"></div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+            <div class="kpi">
+               <div class="card" style="height: 233px">
+                   <div class="card-header border-0">
+                       <div class="d-flex justify-content-between">
+                           <h3 class="card-title mr-auto"><%= i18n.__('Receptions') %></h3>
+                           <span class="mr-2"><i class="fas fa-square" style="color: #0d6efd"></i> <%= i18n.__('Expeditions') %></span>
+                       </div>
+                   </div>
+                   <div class="card-body">
+                       <div class="position-relative mb-4">
+                           <div id="portal-customer-receptions-chart"></div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+         </div>
+         <div class="col-3">
+            <div class="kpi">
+                <div class="card" style="height: 233px">
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between">
+                            <h3 class="card-title mr-auto"><%= i18n.__('Last Expeditions') %></h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="position-relative mb-4">
+                             <div id="portal-customer-expeditions-chart-pie"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="kpi">
+                <div class="card" style="height: 233px">
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between">
+                            <h3 class="card-title mr-auto"><%= i18n.__('Last Receptions') %></h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="position-relative mb-4">
+                             <div id="portal-customer-receptions-chart-pie"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         </div>
+         <div class="col-3">
+            <div class="kpi">
+               <div class="card" style="height: 482px">
+                   <div class="card-header border-0">
+                       <div class="d-flex justify-content-between">
+                           <h3 class="card-title mr-auto"></h3>
+                       </div>
+                   </div>
+                   <div class="card-body">
+                       <div class="position-relative mb-4" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                           <div style="text-align: center;">
+                               <div style="font-size: 1.5em; font-weight: bold;">Balance</div>
+                               <div style="font-size: 2.5em; font-weight: bold;">50 €</div>
+                               <button class="btn btn-primary mt-3" onclick="payNow()">Pay Now</button>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+         </div>
+      </div>
+
    </div>
 
 </div>

@@ -10,6 +10,7 @@ export const stockPages = [
             footer: {
                 js: [
                     { url: '/static/base/js/sys.js' },
+                    { url: '/static/base/js/tabs.js' },
                     { url: '/static/stock/js/stock.js' }
                 ]
             }

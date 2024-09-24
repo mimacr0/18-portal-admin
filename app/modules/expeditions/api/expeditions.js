@@ -4,8 +4,8 @@ import { WebServiceRPC } from '../../../controllers/rpc/erp.js'
 
 class ExpeditionsRPCClient extends WebServiceRPC {
 
-    async searchReadExpeditions(user, options) {
-        return await this._request(user, 'expeditions/list', options)
+    async searchReadExpeditions(options) {
+        return await this._request('expeditions/list', options)
     }
 
 }
