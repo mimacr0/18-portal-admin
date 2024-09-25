@@ -41,5 +41,17 @@
 	"Carrier": "Transportista",
 	"Messages": "Messages",
 	"Chats": "Chats",
-	"No chat selected": "No chat selected"
+	"No chat selected": "No chat selected",
+	"Create new expedition": "Create new expedition",
+	"Create expedition": "Create expedition",
+	"Client account": "Client account",
+	"Required field": "Required field",
+	"Close": "Close",
+	"Create": "Create",
+	"Shipping address": "Shipping address",
+	"Add": "Add",
+	"New Shipping Address": "New Shipping Address",
+	"City": "City",
+	"ZIP Code": "ZIP Code",
+	"Save Address": "Save Address"
 }

@@ -1,11 +1,5 @@
 <% items.forEach(function(item, count){ %>
 <tr>
-   <td style="width: 60px;">
-      <div class="icheck-primary bot-bot-checkbox">
-         <input type="checkbox" value="<%= item.id %>" id="check<% count %>">
-         <label for="check<% count %>"></label>
-      </div>
-   </td>
    <td>
       <small>
          <strong><%= i18n.__('Order') %>:</strong> <%- item.name %><br/>
