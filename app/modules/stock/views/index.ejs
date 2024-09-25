@@ -4,6 +4,10 @@
 <div style="height: 10px;"></div>
 <!-- /.content-header -->
 
+<div class="row">
+   <div class="offset-3 col-6" id="page_messages_container"></div>
+</div>
+
 <!-- Main content -->
 <div class="content">
 
@@ -23,8 +27,11 @@
               <div class="row">
                  <div class="col-6">
                     <div class="stock-stock-batch-actions">
-                       <span>&nbsp;&nbsp;</span>
-                       <button type="button" class="btn btn-default btn-sm checkbox-toggle stock-stock-checkbox"><i class="far fa-square"></i></button>
+                        <span>&nbsp;&nbsp;</span>
+                        <button type="button" class="btn btn-default btn-sm checkbox-toggle stock-stock-checkbox"><i class="far fa-square"></i></button>
+                        <button type="button" class="btn btn-default btn-sm stock-stock-expedition-button" data-toggle="tooltip" data-placement="right" data title="<%= i18n.__('Create new expedition') %>">
+                           <i class="fas fa-truck"></i>
+                        </button>
                     </div>
                  </div>
                  <div class="col-6">
@@ -63,6 +70,8 @@
    </div>
 
 </div>
+
+<%- include('_forms', { page }) %>
 
 <%- include('../../base/ui/html/layout/footer', { page }) %>
 
