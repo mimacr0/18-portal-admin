@@ -28,3 +28,10 @@ dashboardRouter.post('/dashboard/api/update', checkERPUser, async (req, res) => 
     sio.emit('dashboard expeditions update')
     res.json({ status: 'success', message: 'Action completed successfully' })
 })
+
+dashboardRouter.get('/dashboard/get/charts/data', checkUser, async (req, res) => {
+    const result = await dashboardClient.readDashboardsData({
+        user_id: req.user.uid, q: 'charts'
+    })
+    res.json({ status: 'success', data: result?.data })
+})

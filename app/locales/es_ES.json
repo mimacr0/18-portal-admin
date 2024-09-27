@@ -53,5 +53,12 @@
 	"New Shipping Address": "New Shipping Address",
 	"City": "City",
 	"ZIP Code": "ZIP Code",
-	"Save Address": "Save Address"
+	"Save Address": "Save Address",
+	"LPN": "LPN",
+	"SKU": "SKU",
+	"Reception": "Reception",
+	"On Hold": "En espera",
+	"Done": "Hecho",
+	"Number": "Number",
+	"Reception Date": "Reception Date"
 }
