@@ -29,9 +29,9 @@ const expeditionsChartPieData = {
         type: "pie",
         height: 170
     },
-    series: [35, 41],
-    labels: ["Completed", "In Progress"],
-    colors: ["#20c997", "#ffc107"],
+    series: [],
+    labels: [],
+    colors: ["#20c997", "#ffc107", "#ff0000", "#ffc107"],
     responsive: [{
         breakpoint: 480,
         options: {
@@ -73,8 +73,8 @@ const receptionsChartPieData = {
         type: "pie",
         height: 170
     },
-    series: [35, 41],
-    labels: ["Completed", "In Progress"],
+    series: [],
+    labels: [],
     colors: ["#0d6efd", "#ffc107"],
     responsive: [{
         breakpoint: 480,
@@ -114,13 +114,6 @@ const baseChartOptions = {
     },
     fill: {
         opacity: 1,
-    },
-    tooltip: {
-        y: {
-            formatter: function(val) {
-                return "$ " + val + " thousands";
-            },
-        },
     }
 }
 
@@ -182,8 +175,19 @@ const updateExpeditionsChart = (data) => {
     ])
 }
 
+const updateDashboardCharts = async (data) => {
+    const res = await jsonGet(`/dashboard/get/charts/data`)
+    if(res?.status != 'success') return
+    kpiCharts['receptions-pie'].updateOptions({ labels: res.data.receptions.labels })
+    kpiCharts['receptions-pie'].updateSeries(res.data.receptions.series)
+
+    kpiCharts['expeditions-pie'].updateOptions({ labels: res.data.expeditions.labels })
+    kpiCharts['expeditions-pie'].updateSeries(res.data.expeditions.series)
+}
+
 createExpeditionsChart()
 createReceptionsChart()
+updateDashboardCharts()
 
 socket.on('dashboard expeditions update', () => {
     updateExpeditionsChart()
