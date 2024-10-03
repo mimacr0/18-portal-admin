@@ -7,6 +7,7 @@ export const stockPages = [
         icon: 'fa fa-boxes',
         sequence: 20,
         access: 'portal',
+        module: 'stock',
         assets: {
             footer: {
                 js: [

@@ -3,12 +3,20 @@ export class Menu {
     constructor(page) {
         this.page = page
     }
-    get info() {
-        return {
-            name: this.page.data.name,
-            url: this.page.data.url,
-            title: this.page.data.title,
-            icon: this.page.data.icon
-        }
+
+    get name() {
+        return this.page.data.name
+    }
+    get title() {
+        return this.page.data.title
+    }
+    get url() {
+        return this.page.data.url
+    }
+    get icon() {
+        return this.page.data.icon
+    }
+    get action() {
+        return this.page.data.action
     }
 }

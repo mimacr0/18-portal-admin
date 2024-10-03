@@ -3,10 +3,10 @@ import bcrypt from 'bcrypt'
 import { DataTypes, Model } from 'sequelize'
 
 import { dataDB } from '../../../controllers/db/db.js'
-import { USER_PASSWORD_SALT } from '../../../etc/sys.js'
+import sysConfig from '../../../etc/sys.js'
 import { genMD5 } from '../../../tools/sys.js'
 import { runScript } from '../../../tools/cli.js'
-import { formatAttrs } from '../components/common/tools.js'
+import { formatAttrs } from '../../../tools/view.js'
 
 
 export class SysUser extends Model {
@@ -18,7 +18,7 @@ export class SysUser extends Model {
                 id: uid,
                 name: user.name || user.login,
                 login: user.login,
-                password: await bcrypt.hash(user.password, USER_PASSWORD_SALT),
+                password: await bcrypt.hash(user.password, sysConfig.USER_PASSWORD_SALT),
                 data: {
                     ...item?.data, ...user?.data
                 }
@@ -54,13 +54,8 @@ export class SysUser extends Model {
 
         return result
     }
-    get userImage() {
-        const file = this.data?.image?.name
-        return `<img src="/base/image/file/${file}" alt="Image" class="img-circle img-size-32 mr-2">`
-    }
-    userImageCustom(attrs) {
-        const file = this.data?.image?.name
-        return `<img src="/base/image/file/${file}" ${formatAttrs({...{ alt: 'Image', class: 'img-circle img-size-32 mr-2' }, ...(attrs || {})})}>`
+    get imageFile() {
+        return this.data?.image?.name || 'default_user.svg'
     }
     get portal() {
         return this.data?.role === 'portal'

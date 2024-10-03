@@ -3,20 +3,21 @@ import express from 'express'
 
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../../base/models/config.js'
-import { checkUser, checkERPUser } from '../../../controllers/web/security.js'
+import { checkUser } from '../../../controllers/web/security.js'
 import { expeditionsClient } from '../api/expeditions.js'
-
-import { renderFile } from '../../../tools/view.js'
+import { Page } from '../../../components/layout/models/page.js'
 
 
 export const expeditionsRouter = express.Router()
 
 expeditionsRouter.get('/expeditions', checkUser, async (req, res) => {
-    res.send(await renderFile('expeditions/views/index', {
-        page: await SysPage.getPage('expeditions', req.user),
+    const pageData = await SysPage.getPage('/expeditions')
+    const page = new Page({
+        ...pageData,
         user: req.user,
-        iframe: req.query.iframe
-    }))
+        i18n: req.i18n
+    })
+    res.send(await page.render())
 })
 
 expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, res) => {

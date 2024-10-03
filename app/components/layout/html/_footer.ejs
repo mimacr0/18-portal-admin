@@ -1,0 +1,49 @@
+        <div id="loading">
+            <img id="loading-image" src="/img/loader.gif" width="90" height="20"/>
+            <span id="loading-text"></span>
+        </div>
+
+    </div>
+    <!-- /.content-wrapper -->
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+
+    <!-- Main Footer -->
+    <footer class="main-footer">
+        <strong>Copyright &copy; <%= page.license %> <a href="<%= page.website %>" target="_blank"><%= page.company %></a>.</strong>
+        All rights reserved.
+        <div class="float-right d-none d-sm-inline-block">
+            <b>Version</b> <span><%= page.version %></span>
+        </div>
+    </footer>
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- REQUIRED SCRIPTS -->
+
+    <!-- jQuery -->
+    <script src="/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- InputMask -->
+    <script src="/plugins/moment/moment.min.js"></script>
+    <script src="/plugins/inputmask/jquery.inputmask.min.js"></script>
+    <!-- Advanced -->
+    <script src="/plugins/select2/js/select2.full.min.js"></script>
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script src="/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- AdminLTE -->
+    <script src="/js/adminlte.js"></script>
+
+    <!-- OPTIONAL SCRIPTS -->
+    <script src="/plugins/chart.js/Chart.min.js"></script>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <% for(const script of page.assets.footer.js) { %>
+        <script <%- script.attrsHTML %>></script>
+    <% } %>

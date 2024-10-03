@@ -1,3 +1,4 @@
+
 import util from 'util'
 import jwt from 'jsonwebtoken'
 
@@ -7,13 +8,14 @@ import { Logger } from '../../tools/log.js'
 
 export class WebServiceRPC {
 
-    constructor(url) {
-        this.baseURL = url
-        this.connKey = `api.rpc.connection.data`
+    constructor(conn) {
+        this.connKey = conn
     }
 
     async _getConnectionData() {
-        const conn = await ConfigConf.getByKey('api.rpc.connection')
+        const connections = await ConfigConf.getByKey('api.rpc.connections')
+
+        const conn = connections[this.connKey]
 
         Logger.debug('Connection:', conn)
 
@@ -39,7 +41,7 @@ export class WebServiceRPC {
         return parts.join('/').replace(/([^:]\/)\/+/g, '$1')
     }
 
-    async _request(endpoint, data={}, options = {}) {
+    async request(endpoint, data={}, options = {}) {
 
         if(typeof data !== 'object') throw new Error('Invalid data')
 
@@ -87,7 +89,7 @@ export class WebServiceRPC {
                 const loginRes = await this.requestToken(connData)
                 if(loginRes.status !== 'success') return { status: 'error', message: 'Login failed' }
                 this.token = loginRes.token
-                return await this._request(endpoint, data, options)
+                return await this.request(endpoint, data, options)
             }
 
             if(result?.status !== 'success') return result
@@ -100,32 +102,4 @@ export class WebServiceRPC {
 
     }
 
-    async search(user, model, domain) {
-        return await this._request(user, 'ws/search', { model, domain })
-
-    }
-
-    async searchRead(user, model, domain, fields, options={}) {
-        return await this._request(user, 'ws/search_read', { model, domain, fields, options })
-    }
-
-    async searchCount(user, model, domain) {
-        return await this._request(user, 'ws/search_count', { model, domain })
-    }
-
-    async create(user, model, values) {
-        return await this._request(user, 'ws/create', { model, values })
-    }
-
-    async update(user, model, id, values) {
-        return await this._request(user, 'ws/update', { model, id, values })
-    }
-
-    async delete(user, model, id) {
-        return await this._request(user, 'ws/delete', { model, id })
-    }
-
-    async call(user, model, id, method, args) {
-        return await this._request(user, 'ws/call', { model, id, method, args })
-    }
 }

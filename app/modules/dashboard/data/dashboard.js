@@ -49,6 +49,7 @@ export const dashboardPages = [
         name: 'dashboard',
         url: '/',
         type: 'dashboard',
+        module: 'dashboard',
         title: 'Dashboard',
         icon: 'fas fa-tachometer-alt',
         state: true,

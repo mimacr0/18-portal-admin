@@ -7,8 +7,8 @@ import { Op } from 'sequelize'
 import { checkUser } from '../../../controllers/web/security.js'
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../models/config.js'
-import { BASE_PATH } from '../../../etc/sys.js'
-import { renderFile } from '../../../tools/view.js'
+import sysConfig from '../../../etc/sys.js'
+import { renderComponent } from '../../../tools/view.js'
 import { runScript } from '../../../tools/cli.js'
 import { genDBID, saveFile, removeFile } from '../../../tools/sys.js'
 
@@ -132,7 +132,7 @@ configRouter.post('/config/config/tools/action/import/before', checkUser, async 
         md5: file.md5
     })
 
-    const r = await runScript('config/import', { path: path.join(BASE_PATH, f.path) })
+    const r = await runScript('config/import', { path: path.join(sysConfig.BASE_PATH, f.path) })
 
     await removeFile(f.path)
 

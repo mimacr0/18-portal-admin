@@ -1,0 +1,9 @@
+<div id="<%= field.id %>-group">
+    ##<% if (field.label) { %>
+    <label for="<%= field.id %>"><%= field.card.page.translate(field.label) %></label>
+    ##<% } %>
+    <textarea data-editor="<%= field.mode %>" id="<%= field.id %>" name="<%= field.name %>"></textarea>
+    ##<% if (field.required) { %>
+        <div class="invalid-feedback"><%= field.card.page.translate('Required field') %></div>
+    ##<% } %>
+</div>

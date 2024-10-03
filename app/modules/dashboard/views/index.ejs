@@ -1,4 +1,4 @@
-<%- include('../../base/ui/html/layout/header', { page }) %>
+<%- await include('../../../components/layout/html/_header', { page }) %>
 
 <!-- Main content -->
 <div class="content">
@@ -12,10 +12,10 @@
             <div class="info-box mb-3">
                 <span class="info-box-icon bg-success elevation-1"><i class="fa fa-truck"></i></span>
                 <div class="info-box-content">
-                    <span class="info-box-text"><%= i18n.__('Expeditions') %></span>
+                    <span class="info-box-text"><%= page.translate('Expeditions') %></span>
                     <span class="info-box-number">
                         <span class="number-display" data-value="0" id="kpi-value-EXPEDITIONS_STATUS_KPI">
-                            <%= data.expeditions_count %>
+                            <%= data?.expeditions_count || '0' %>
                         </span>
                     </span>
                 </div>
@@ -25,10 +25,10 @@
             <div class="info-box mb-3">
                 <span class="info-box-icon bg-success elevation-1"><i class="fa fa-box"></i></span>
                 <div class="info-box-content">
-                    <span class="info-box-text"><%= i18n.__('Receptions') %></span>
+                    <span class="info-box-text"><%= page.translate('Receptions') %></span>
                     <span class="info-box-number">
                         <span class="number-display" data-value="0" id="kpi-value-RECEPTIONS_STATUS_KPI">
-                            <%= data.receptions_count %>
+                            <%= data?.receptions_count || '0' %>
                         </span>
                     </span>
                 </div>
@@ -38,10 +38,10 @@
             <div class="info-box mb-3">
                 <span class="info-box-icon bg-success elevation-1"><i class="fa fa-boxes"></i></span>
                 <div class="info-box-content">
-                    <span class="info-box-text"><%= i18n.__('Stock') %></span>
+                    <span class="info-box-text"><%= page.translate('Stock') %></span>
                     <span class="info-box-number">
                         <span class="number-display" data-value="0" id="kpi-value-STOCK_STATUS_KPI">
-                            <%= data.stock_count %>
+                            <%= data?.stock_count || '0' %>
                         </span>
                     </span>
                 </div>
@@ -51,10 +51,10 @@
             <div class="info-box mb-3">
                 <span class="info-box-icon bg-success elevation-1"><i class="fa fa-layer-group"></i></span>
                 <div class="info-box-content">
-                    <span class="info-box-text"><%= i18n.__('Storage') %></span>
+                    <span class="info-box-text"><%= page.translate('Storage') %></span>
                     <span class="info-box-number">
                         <span class="number-display" data-value="0" id="kpi-value-STORAGE_STATUS_KPI">
-                            <%= data.locations_count %>
+                            <%= data?.locations_count || '0' %>
                         </span>
                     </span>
                 </div>
@@ -64,10 +64,10 @@
             <div class="info-box mb-3">
                 <span class="info-box-icon bg-success elevation-1"><i class="fa fa-wrench"></i></span>
                 <div class="info-box-content">
-                    <span class="info-box-text"><%= i18n.__('Repairs') %></span>
+                    <span class="info-box-text"><%= page.translate('Repairs') %></span>
                     <span class="info-box-number">
                         <span class="number-display" data-value="0" id="kpi-value-REPAIRS_STATUS_KPI">
-                            <%= data.repairs_count %>
+                            <%= data?.repairs_count || '0' %>
                         </span>
                     </span>
                 </div>
@@ -77,10 +77,10 @@
             <div class="info-box mb-3">
                 <span class="info-box-icon bg-success elevation-1"><i class="fa fa-puzzle-piece"></i></span>
                 <div class="info-box-content">
-                    <span class="info-box-text"><%= i18n.__('Spare Parts') %></span>
+                    <span class="info-box-text"><%= page.translate('Spare Parts') %></span>
                     <span class="info-box-number">
                         <span class="number-display" data-value="0" id="kpi-value-SPARE_PARTS_STATUS_KPI">
-                            <%= data.spareparts_count %>
+                            <%= data?.spareparts_count || '0' %>
                         </span>
                     </span>
                 </div>
@@ -94,8 +94,8 @@
                <div class="card" style="height: 233px">
                    <div class="card-header border-0">
                        <div class="d-flex justify-content-between">
-                           <h3 class="card-title mr-auto"><%= i18n.__('Expeditions') %></h3>
-                           <span class="mr-2"><i class="fas fa-square" style="color: #20c997"></i> <%= i18n.__('Expeditions') %></span>
+                           <h3 class="card-title mr-auto"><%= page.translate('Expeditions') %></h3>
+                           <span class="mr-2"><i class="fas fa-square" style="color: #20c997"></i> <%= page.translate('Expeditions') %></span>
                        </div>
                    </div>
                    <div class="card-body">
@@ -109,8 +109,8 @@
                <div class="card" style="height: 233px">
                    <div class="card-header border-0">
                        <div class="d-flex justify-content-between">
-                           <h3 class="card-title mr-auto"><%= i18n.__('Receptions') %></h3>
-                           <span class="mr-2"><i class="fas fa-square" style="color: #0d6efd"></i> <%= i18n.__('Receptions') %></span>
+                           <h3 class="card-title mr-auto"><%= page.translate('Receptions') %></h3>
+                           <span class="mr-2"><i class="fas fa-square" style="color: #0d6efd"></i> <%= page.translate('Receptions') %></span>
                        </div>
                    </div>
                    <div class="card-body">
@@ -126,7 +126,7 @@
                 <div class="card" style="height: 233px">
                     <div class="card-header border-0">
                         <div class="d-flex justify-content-between">
-                            <h3 class="card-title mr-auto"><%= i18n.__('Last Expeditions') %></h3>
+                            <h3 class="card-title mr-auto"><%= page.translate('Last Expeditions') %></h3>
                         </div>
                     </div>
                     <div class="card-body">
@@ -140,7 +140,7 @@
                 <div class="card" style="height: 233px">
                     <div class="card-header border-0">
                         <div class="d-flex justify-content-between">
-                            <h3 class="card-title mr-auto"><%= i18n.__('Last Receptions') %></h3>
+                            <h3 class="card-title mr-auto"><%= page.translate('Last Receptions') %></h3>
                         </div>
                     </div>
                     <div class="card-body">
@@ -177,7 +177,7 @@
 
 </div>
 
-<%- include('../../base/ui/html/layout/footer', { page }) %>
+<%- await include('../../../components/layout/html/_footer', { page }) %>
 
 </body>
 

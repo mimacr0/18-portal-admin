@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="<%= page.lang %>">
+
+<%- await include('_header.ejs') %>
+
+<body class="hold-transition login-page">
+   <div class="login-box">
+
+      <div class="card card-outline card-primary">
+         <div class="card-header text-center">
+            <img src="img/logo.png" class="img-fluid" alt="Logo" style="max-height: 120px;" />
+         </div>
+         <div class="card-body">
+            <p class="login-box-msg"><%= page.title %></p>
+
+            <div class="alert alert-danger alert-dismissible" style="background-color: #dc3545eb; border-color: #dc3545eb; display: none;">
+               <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+               <span><i class="icon fas fa-ban"></i></span>
+               <span class="message">Inicio de sesión incorrecto</span>
+            </div>
+
+            <%- await include('_form.ejs') %>
+
+         </div>
+      </div>
+   </div>
+
+   <script src="/plugins/jquery/jquery.min.js"></script>
+   <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+   <script src="/js/adminlte.min.js"></script>
+   <script src="/js/login.js"></script>
+
+</body>
+
+</html>

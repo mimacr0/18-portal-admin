@@ -5,18 +5,19 @@ import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../../base/models/config.js'
 import { checkUser } from '../../../controllers/web/security.js'
 import { receptionsClient } from '../api/receptions.js'
-
-import { renderFile } from '../../../tools/view.js'
+import { Page } from '../../../components/layout/models/page.js'
 
 
 export const receptionsRouter = express.Router()
 
 receptionsRouter.get('/receptions', checkUser, async (req, res) => {
-    res.send(await renderFile('receptions/views/index', {
-        page: await SysPage.getPage('receptions', req.user),
+    const pageData = await SysPage.getPage('/receptions')
+    const page = new Page({
+        ...pageData,
         user: req.user,
-        iframe: req.query.iframe
-    }))
+        i18n: req.i18n
+    })
+    res.send(await page.render())
 })
 
 receptionsRouter.get('/receptions/receptions/list', checkUser, async (req, res) => {

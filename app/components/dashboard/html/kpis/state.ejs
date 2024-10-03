@@ -2,9 +2,9 @@
     <div class="info-box mb-3">
         <span class="info-box-icon bg-<%= 'success' %> elevation-1"><i class="<%= kpi.icon %>"></i></span>
         <div class="info-box-content">
-            <span class="info-box-text"><%= i18n.__(kpi.label) %></span>
+            <span class="info-box-text"><%= kpi.label %></span>
             <span class="info-box-number">
-                <span class="number-display" data-value="0" id="kpi-value-<%= kpi.ref %>">0</span>
+                <span class="number-display" data-value="<%= kpi.value %>" id="kpi-value-<%= kpi.id %>"><%= kpi.value %></span>
                 <small><%= kpi.symbol %></small>
             </span>
         </div>

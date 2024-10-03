@@ -1,0 +1,22 @@
+##<% for(const field of (form.jsFields || [])) { %>
+<%- await include(`fields/${field.js}`, { card, field }) %>
+##<% } %>
+
+const <%= form.varName %>FormSubmit = async () => {
+    const res = await formPost('<%= form.url %>', "#<%= form.id %>-form-data")
+    if(res?.status != 'success') return
+    $('#<%= form.id %>-form-id').val("")
+    $('#<%= form.varName %>Modal').modal('toggle')
+    <%= card.id.var %>ReloadList()
+}
+
+$('#<%= form.id %>-form-submit').click(<%= form.varName %>FormSubmit)
+
+const <%= form.varName %>FormReset = async () => {
+    $('#<%= form.id %>-form-data').removeClass('was-validated')
+##<% for(const field of (form.fields || [])) { %>
+    <%- await include(`reset/${field.jsValue}`, { card, field }) %>
+##<% } %>
+}
+
+$('#<%= form.varName %>Modal').on('hidden.bs.modal', <%= form.varName %>FormReset)

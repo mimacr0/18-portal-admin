@@ -4,18 +4,19 @@ import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../../base/models/config.js'
 import { checkUser } from '../../../controllers/web/security.js'
 import { stockClient } from '../api/stock.js'
-
-import { renderFile } from '../../../tools/view.js'
+import { Page } from '../../../components/layout/models/page.js'
 
 
 export const stockRouter = express.Router()
 
 stockRouter.get('/stock', checkUser, async (req, res) => {
-    res.send(await renderFile('stock/views/index', {
-        page: await SysPage.getPage('stock', req.user),
+    const pageData = await SysPage.getPage('/stock')
+    const page = new Page({
+        ...pageData,
         user: req.user,
-        iframe: req.query.iframe
-    }))
+        i18n: req.i18n
+    })
+    res.send(await page.render())
 })
 
 stockRouter.get('/stock/stock/list', checkUser, async (req, res) => {
