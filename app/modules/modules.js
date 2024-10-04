@@ -22,7 +22,7 @@ import { receptionsRouter } from './receptions/routes/receptions.js'
 
 import { configPages } from './base/data/config.js'
 import { usersPages } from './base/data/users.js'
-import { expeditionsPages } from './expeditions/data/expeditionsPages.js'
+import { expeditionsPages } from './expeditions/data/expeditions.js'
 import { stockPages } from './stock/data/pages.js'
 import { dashboardPages } from './dashboard/data/dashboard.js'
 import { messagesPages } from './messages/data/messages.js'

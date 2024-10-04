@@ -48,12 +48,15 @@ export const usersPages = [
         url: '/users',
         title: 'Users',
         icon: 'fa fa-users',
+        module: 'base',
+        view: 'users',
+        js_view: 'users',
         sequence: 900,
         assets: {
             footer: {
                 js: [
                     { url: '/static/base/js/sys.js' },
-                    { url: '/users/js/users/list.js' }
+                    { url: '/assets/js/users/page.js' }
                 ]
             }
         },

@@ -6,6 +6,7 @@ export const receptionsPages = [
         title: 'Receptions',
         icon: 'fa fa-box',
         access: 'portal',
+        module: 'receptions',
         sequence: 30,
         assets: {
             footer: {

@@ -5,9 +5,8 @@
 const <%= form.varName %>FormSubmit = async () => {
     const res = await formPost('<%= form.url %>', "#<%= form.id %>-form-data")
     if(res?.status != 'success') return
-    $('#<%= form.id %>-form-id').val("")
     $('#<%= form.varName %>Modal').modal('toggle')
-    <%= card.id.var %>ReloadList()
+    <%= card.varName %>ReloadList()
 }
 
 $('#<%= form.id %>-form-submit').click(<%= form.varName %>FormSubmit)

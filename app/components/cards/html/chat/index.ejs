@@ -1,7 +1,7 @@
 <div class="card">
 
     <div class="card-header">
-       <h3 class="card-title"><span class="text-muted"><%= i18n.__(card.title) %></span></h3>
+       <h3 class="card-title"><span class="text-muted"><%= page.translate(card.title) %></span></h3>
        <div class="card-tools <%= card.id.id %>-card-tools">
           ##<% for( const action of card.actions.tools) { %>
           <%- await include('../../list/html/actions/index', { card, action }) %>
@@ -17,7 +17,7 @@
           <div class="row">
              <div class="col-6">
                <% if(card.actions.crud.create) { %>
-               <button type="button" class="btn btn-default btn-sm <%= card.id.id %>-create-button" data-toggle="tooltip" data-placement="right" data title="<%= i18n.__('Create new record') %>">
+               <button type="button" class="btn btn-default btn-sm <%= card.id.id %>-create-button" data-toggle="tooltip" data-placement="right" data title="<%= page.translate('Create new record') %>">
                   <i class="fas fa-plus"></i>
                </button>
                <% } %>

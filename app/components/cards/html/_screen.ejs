@@ -15,15 +15,15 @@
                      <span
                         class="btn btn-sm btn-primary mt-2 messages-messages-screen-action-back-button display-page-screen-action"
                         data-screen="1">
-                        <i class="fa fa-arrow-left"></i> <%= i18n.__('Go back') %>
+                        <i class="fa fa-arrow-left"></i> <%= page.translate('Go back') %>
                      </span>
                   </div>
                   <% } else { %>
                      <div class="offset-md-4 col-md-4 mb-4 text-center">
-                        <strong style="font-size: 1.4em; font-weight: bold"><%= i18n.__(screen.title) %></strong>
+                        <strong style="font-size: 1.4em; font-weight: bold"><%= page.translate(screen.title) %></strong>
                         <br />
                         <span class="btn btn-sm btn-primary mt-2 display-page-screen-action" data-screen="1">
-                           <i class="fa fa-arrow-left"></i> <%= i18n.__('Go back') %>
+                           <i class="fa fa-arrow-left"></i> <%= page.translate('Go back') %>
                         </span>
                      </div>
                   <% } %>

@@ -6,6 +6,7 @@ import { ConfigConf } from '../../base/models/config.js'
 import { checkUser } from '../../../controllers/web/security.js'
 import { expeditionsClient } from '../api/expeditions.js'
 import { Page } from '../../../components/layout/models/page.js'
+import { renderComponent, renderModule } from '../../../tools/view.js'
 
 
 export const expeditionsRouter = express.Router()
@@ -22,7 +23,7 @@ expeditionsRouter.get('/expeditions', checkUser, async (req, res) => {
 
 expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, res) => {
     if(!req.user.portal) return res.json({
-        html: await renderFile('base/ui/html/pages/_list/_nodata', { message: 'No products found' })
+        html: await renderComponent('portal/html/_nodata', { message: req.i18n.__('No products found') })
     })
 
     const pconf = await ConfigConf.getByKeys({
@@ -53,8 +54,8 @@ expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, re
     const endPage = Math.min(totalPages, currentPage + 4)
     const firstResult = (currentPage - 1) * limit + 1
     const lastResult = Math.min(currentPage * limit, count)
-    const list = await renderFile('expeditions/views/_items', { user: req.user, items: rows, pconf, rstyle, count })
-    const footer = await renderFile('base/ui/html/pages/_list/_footer', {
+    const list = await renderModule('expeditions/views/_items', { user: req.user, items: rows, pconf, rstyle, count })
+    const footer = await renderComponent('cards/html/list/_footer', {
         items: rows,
         total: count,
         totalPages, currentPage,

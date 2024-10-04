@@ -8,6 +8,6 @@ export class FormAction extends Form {
         this.action = action
     }
     get id() {
-        return `${this.card.id}-${this._id}-${this.action.id}-form`
+        return `${this.action.id}-${this._id}-form`
     }
 }

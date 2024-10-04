@@ -40,13 +40,15 @@ export class Form {
         return this.id.replace(/-/g, ' ')
     }
     get title() {
-        return this.data?.title
+        return this.data?.title || ''
     }
     get fields() {
         const fields = (this.data?.fields || [])
         const ctx = { card: this.card, form: this }
-        fields.push({name: 'id', type: 'hidden'})
-        fields.push({name: 'token', type: 'hidden'})
+        const idField = fields.find(f => f.name == 'id')
+        const tokenField = fields.find(f => f.name == 'token')
+        if(!idField) fields.push({name: 'id', type: 'hidden'})
+        if(!tokenField) fields.push({name: 'token', type: 'hidden'})
         return fields.map((field, index) => fieldMap[field.type] ?
             new fieldMap[field.type](field, index, ctx) :
             new Field(field, index, ctx)

@@ -1,4 +1,4 @@
-<%- include('../../base/ui/html/layout/header', { page }) %>
+<%- await include('../../../components/layout/html/_header', { page }) %>
 
 <!-- Content Header (Page header) -->
 <div style="height: 10px;"></div>
@@ -12,7 +12,7 @@
       <div class="card">
 
          <div class="card-header">
-            <h3 class="card-title"><span class="text-muted"><%= i18n.__('Expeditions') %></span></h3>
+            <h3 class="card-title"><span class="text-muted"><%= page.translate('Expeditions') %></span></h3>
             <div class="card-tools expeditions-expeditions-card-tools"></div>
          </div>
 
@@ -25,7 +25,7 @@
                   <div class="col-6">
                      <div>
                         <div class="input-group input-group-sm float-right" style="max-width: 250px;">
-                           <input type="text" name="table_search" class="form-control float-right" placeholder="<%= i18n.__('Search') %>" id="expeditions-expeditions-search-input">
+                           <input type="text" name="table_search" class="form-control float-right" placeholder="<%= page.translate('Search') %>" id="expeditions-expeditions-search-input">
                            <div class="input-group-append">
                               <button type="submit" class="btn btn-default">
                                  <i class="fas fa-search"></i>
@@ -40,9 +40,9 @@
             <table class="table table-hover table-striped table-sm">
                <thead>
                   <tr>
-                     <th><%= i18n.__('Order') %></th>
-                     <th><%= i18n.__('Tracking number') %></th>
-                     <th><%= i18n.__('State') %></th>
+                     <th><%= page.translate('Order') %></th>
+                     <th><%= page.translate('Tracking number') %></th>
+                     <th><%= page.translate('State') %></th>
                   </tr>
                </thead>
                <tbody id="expeditions-expeditions-list"></tbody>
@@ -58,7 +58,7 @@
 
 </div>
 
-<%- include('../../base/ui/html/layout/footer', { page }) %>
+<%- await include('../../../components/layout/html/_footer', { page }) %>
 
 </body>
 

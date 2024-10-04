@@ -2,11 +2,11 @@
 import bcrypt from 'bcrypt'
 import { DataTypes, Model } from 'sequelize'
 
-import { dataDB } from '../../../controllers/db/db.js'
 import sysConfig from '../../../etc/sys.js'
+
+import { dataDB } from '../../../controllers/db/db.js'
 import { genMD5 } from '../../../tools/sys.js'
 import { runScript } from '../../../tools/cli.js'
-import { formatAttrs } from '../../../tools/view.js'
 
 
 export class SysUser extends Model {
@@ -35,27 +35,15 @@ export class SysUser extends Model {
 
         return result?.status === 'success'
     }
-    listActions(card) {
-        let result = []
-
-        if(card.actions.list.length > 0) result = [...card.actions.list]
-
-        if(card.actions.crud.update) result.push({
-            name: 'Update',
-            icon: 'fas fa-edit',
-            action: 'update'
-        })
-
-        if(card.actions.crud.delete) result.push({
-            name: 'Delete',
-            icon: 'fas fa-trash',
-            action: 'delete'
-        })
-
-        return result
+    listActions(actions) {
+        return actions
     }
     get imageFile() {
         return this.data?.image?.name || 'default_user.svg'
+    }
+    get userImage() {
+        const file = this.data?.image?.name
+        return `<img src="/base/image/user/${file}" alt="Image" class="img-circle mr-2" width="32" height="35">`
     }
     get portal() {
         return this.data?.role === 'portal'
@@ -64,16 +52,21 @@ export class SysUser extends Model {
         return this.data?.dbid
     }
     get lang() {
-        const langData = {
-            en: { name: 'English', code: 'en' },
-            es: { name: 'Español', code: 'es' },
-            zh: { name: '中文 (繁體)', code: 'zh' }
-        }
+        const clang = this.config?.lang || this.data?.lang || 'en_US'
+        let lang = clang
+        if(!clang.includes('_')) lang = sysConfig.I18N_LOCALES.find(l => l.startsWith(clang))
+        if(!sysConfig.I18N_LOCALES.includes(lang)) throw new Error(`Language "${lang}" not found`)
+        return lang
+    }
+    get langName() {
         const lang = this.config?.lang || this.data?.lang || 'en'
-
         if(lang.includes('_')) return langData[lang.split('_')[0]]
-
-        return langData[lang]
+        return sysConfig.LANG_DATA[lang].name
+    }
+    get langCode() {
+        const lang = this.config?.lang || this.data?.lang || 'en'
+        if(lang.includes('_')) return langData[lang.split('_')[0]].code
+        return sysConfig.LANG_DATA[lang].code
     }
 }
 

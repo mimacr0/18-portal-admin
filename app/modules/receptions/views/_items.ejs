@@ -2,20 +2,20 @@
 <tr>
    <td>
       <small>
-         <strong><%= i18n.__('Number') %>:</strong> <%- item.name %><br/>
-         <strong><%= i18n.__('Reception Date') %>:</strong> <%- item.reception_date %><br/>
-         <strong><%= i18n.__('Tracking number') %>:</strong> <%- item.expedition1 %><br/>
+         <strong><%= page.translate('Number') %>:</strong> <%- item.name %><br/>
+         <strong><%= page.translate('Reception Date') %>:</strong> <%- item.reception_date %><br/>
+         <strong><%= page.translate('Tracking number') %>:</strong> <%- item.expedition1 %><br/>
       </small>
    </td>
    <td>
       <% if (item.state.value == 'on_hold') { %>
          <span class="badge bg-warning">
-            <%- i18n.__(item.state.label) %>
+            <%- page.translate(item.state.label) %>
          </span>
       <% } %>
       <% if (item.state.value == 'done') { %>
          <span class="badge bg-success">
-            <%- i18n.__(item.state.label) %>
+            <%- page.translate(item.state.label) %>
          </span>
       <% } %>
    </td>

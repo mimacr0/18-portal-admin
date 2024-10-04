@@ -2,10 +2,16 @@ import express from 'express'
 import path from 'path'
 import fs from 'fs'
 
+import { Logger } from '../../../tools/log.js'
 import { checkUser } from '../../../controllers/web/security.js'
 import sysConfig from '../../../etc/sys.js'
 
 export const baseRouter = express.Router()
+
+baseRouter.use(async (req, _, next) => {
+    Logger.debug('U', req.url,'B', req.body,'Q', req.query, 'P', req.params,'F', req.files || 'No files')
+    next()
+})
 
 baseRouter.get('/base/image/user/:file', checkUser, async (req, res) => {
     if(!req.params.file) return res.sendStatus(404)

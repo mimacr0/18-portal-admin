@@ -18,24 +18,8 @@ export class ConfigConf extends Model {
 
         return res
     }
-    listActions(card) {
-        let result = []
-
-        if(card.actions.list.length > 0) result = [...card.actions.list]
-
-        if(card.actions.crud.update) result.push({
-            name: 'Update',
-            icon: 'fas fa-edit',
-            action: 'update'
-        })
-
-        if(card.actions.crud.delete) result.push({
-            name: 'Delete',
-            icon: 'fas fa-trash',
-            action: 'delete'
-        })
-
-        return result
+    listActions(actions) {
+        return actions
     }
     get keyValue() {
         return this.data.key

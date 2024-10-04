@@ -5,6 +5,7 @@ import { ConfigConf } from '../../base/models/config.js'
 import { checkUser } from '../../../controllers/web/security.js'
 import { stockClient } from '../api/stock.js'
 import { Page } from '../../../components/layout/models/page.js'
+import { renderComponent } from '../../../tools/view.js'
 
 
 export const stockRouter = express.Router()
@@ -21,7 +22,7 @@ stockRouter.get('/stock', checkUser, async (req, res) => {
 
 stockRouter.get('/stock/stock/list', checkUser, async (req, res) => {
     if(!req.user.portal) return res.json({
-        html: await renderFile('base/ui/html/pages/_list/_nodata', { message: 'No products found' })
+        html: await renderComponent('portal/html/_nodata', { message: req.i18n.__('No products found') })
     })
 
     const pconf = await ConfigConf.getByKeys({
@@ -52,8 +53,8 @@ stockRouter.get('/stock/stock/list', checkUser, async (req, res) => {
     const endPage = Math.min(totalPages, currentPage + 4)
     const firstResult = (currentPage - 1) * limit + 1
     const lastResult = Math.min(currentPage * limit, count)
-    const list = await renderFile('stock/views/_items', { user: req.user, items: rows, pconf, rstyle, count })
-    const footer = await renderFile('base/ui/html/pages/_list/_footer', {
+    const list = await renderComponent('stock/views/_items', { user: req.user, items: rows, pconf, rstyle, count })
+    const footer = await renderComponent('base/ui/html/pages/_list/_footer', {
         items: rows,
         total: count,
         totalPages, currentPage,

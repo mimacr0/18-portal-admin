@@ -11,12 +11,19 @@ config({ path: path.join(BASE_PATH, '.env') })
 
 const CONFIG_LOCALES = (process.env?.I18N_LOCALES || '').split(',').filter(l => l.length > 0)
 
+const langData = {
+    en: { name: 'English', code: 'en' },
+    es: { name: 'Español', code: 'es' },
+    zh: { name: '中文 (繁體)', code: 'zh' }
+}
+
 const SERVER_PORT = process.env?.SERVER_PORT || 0
 const sysConfig = {
     BASE_PATH,
     USER_PASSWORD_SALT: process.env?.USER_PASSWORD_SALT || 10,
     MAX_UPLOAD_SIZE: process.env?.MAX_UPLOAD_SIZE || '100mb',
     I18N_LOCALES: CONFIG_LOCALES.length > 0 ? CONFIG_LOCALES : ['en_US', 'es_ES'],
+    LANG_DATA: langData,
     DB_SQL_LOG: process.env?.DB_SQL_LOG || false,
     DEFAULT_UI_LANGUAGE: process.env?.DEFAULT_UI_LANGUAGE || 'en_US',
     UI_LOGIN_PAGE_TITLE: process.env?.UI_LOGIN_PAGE_TITLE || 'Login',

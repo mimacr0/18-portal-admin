@@ -8,7 +8,7 @@
 
       <div class="card card-outline card-primary">
          <div class="card-header text-center">
-            <img src="img/logo.png" class="img-fluid" alt="Logo" style="max-height: 120px;" />
+            <img src="img/black.svg" class="img-fluid" alt="Logo" style="max-height: 120px;" />
          </div>
          <div class="card-body">
             <p class="login-box-msg"><%= page.title %></p>
@@ -16,7 +16,7 @@
             <div class="alert alert-danger alert-dismissible" style="background-color: #dc3545eb; border-color: #dc3545eb; display: none;">
                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                <span><i class="icon fas fa-ban"></i></span>
-               <span class="message">Inicio de sesión incorrecto</span>
+               <span class="message"><%= page.translate('Login incorrect') %></span>
             </div>
 
             <%- await include('_form.ejs') %>

@@ -16,6 +16,7 @@ const beforeImportModal = {
 
 const configForm = {
     submit: true,
+    title: 'Configurations',
     fields: [
         {
             name: 'id',
@@ -108,6 +109,9 @@ export const configPages = [
         url: '/config',
         title: 'Configurations',
         icon: 'fa fa-cogs',
+        module: 'base',
+        view: 'config',
+        js_view: 'config',
         sequence: 1000,
         access: 'admin',
         assets: {
@@ -120,8 +124,7 @@ export const configPages = [
                 js: [
                     ...aceFooterJs,
                     { url: '/static/base/js/sys.js' },
-                    { url: '/config/js/config/list.js' },
-                    { url: '/config/js/config/status.js' }
+                    { url: '/assets/js/config/page.js' }
                 ]
             }
         },
