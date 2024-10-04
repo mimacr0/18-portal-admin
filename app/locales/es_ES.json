@@ -60,5 +60,17 @@
 	"On Hold": "En espera",
 	"Done": "Hecho",
 	"Number": "Number",
-	"Reception Date": "Reception Date"
+	"Reception Date": "Reception Date",
+	"Logout": "Logout",
+	"Balance": "Balance",
+	"Pay Now": "Pay Now",
+	"Error syncing dashboard": "Error syncing dashboard",
+	"Query": "Query",
+	"Configuration": "Configuration",
+	"Confirm": "Confirm",
+	"Import configuration": "Import configuration",
+	"Select Files": "Select Files",
+	"Clear": "Clear",
+	"Go back": "Go back",
+	"Create shipping address": "Create shipping address"
 }

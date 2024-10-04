@@ -1,11 +1,12 @@
 
 import crypto from 'crypto'
 import fs from 'fs'
+import jwt from 'jsonwebtoken'
 import path from 'path'
 import util from 'util'
 
 import { Logger } from './log.js'
-import { BASE_PATH } from '../etc/sys.js'
+import sysConfig from '../etc/sys.js'
 
 
 export const genMD5 = (input) => {
@@ -34,7 +35,7 @@ export const saveFile = async (data) => {
     const sname = `${md5}.${ext.replace(/^\./, '').trim().toLowerCase()}`
     const fname = file || sname
     const writeFile = util.promisify(fs.writeFile)
-    const fpath = path.join(BASE_PATH, 'data', 'filestore', sname)
+    const fpath = path.join(sysConfig.BASE_PATH, 'data', 'filestore', sname)
     const rpath = path.join('data/filestore', sname)
     let fsize = 0
 
@@ -49,7 +50,7 @@ export const saveFile = async (data) => {
 }
 
 export const removeFile = async (file) => {
-    const fpath = path.join(BASE_PATH, file)
+    const fpath = path.join(sysConfig.BASE_PATH, file)
     try {
         fs.unlinkSync(fpath)
         Logger.debug(`File ${file} has been removed from ${fpath}`)
@@ -57,4 +58,20 @@ export const removeFile = async (file) => {
         Logger.error(`Error removing file ${file} from ${fpath}`)
     }
     return true
+}
+
+export const generateWebToken = async (data, secret, options) => {
+    return jwt.sign(data, secret, options)
+}
+
+export const verifyWebToken = async (token, secret, options) => {
+    try {
+        const payload = await util.promisify(jwt.verify)(token, secret, options)
+        return { status: 'success', data: payload }
+    } catch (error) {
+        if(error.name === 'TokenExpiredError') return { status: 'error', message: 'Token expired', code: 401 }
+        if(error.name === 'JsonWebTokenError') return { status: 'error', message: 'Token invalid', code: 403 }
+        Logger.error('Token error:', error)
+        return { status: 'error', message: 'Token error', code: 400 }
+    }
 }

@@ -2,11 +2,13 @@
 import { I18n } from 'i18n'
 import path from 'path'
 
-import { BASE_PATH } from '../../etc/sys.js'
+import sysConfig from '../../etc/sys.js'
 
-const i18n = new I18n({
-    locales: ['en_US', 'es_ES', 'zh_CN'],
-    directory: path.join(BASE_PATH, 'locales'),
+const i18n = new I18n()
+
+i18n.configure({
+    locales: sysConfig.I18N_LOCALES,
+    directory: path.join(sysConfig.BASE_PATH, 'locales'),
     defaultLocale: 'en_US'
 })
 

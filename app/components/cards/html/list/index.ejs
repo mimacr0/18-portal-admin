@@ -1,0 +1,102 @@
+<div class="card">
+
+    <div class="card-header">
+       <h3 class="card-title"><span class="text-muted"><%= page.translate(card.title) %></span></h3>
+       <div class="card-tools <%= card.id %>-card-tools">
+          ##<% for( const action of card.actions.tools) { %>
+          <%- await include(`actions/tools/${action.html}`, { card, action }) %>
+          ##<% } %>
+       </div>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="mailbox-controls">
+         <div class="row">
+            <div class="col-6">
+               <div class="<%= card.id %>-batch-actions">
+                  <% if(card.actions.batch.length > 0) { %>
+                  <span>&nbsp;&nbsp;</span>
+                  <button type="button" class="btn btn-default btn-sm checkbox-toggle <%= card.id %>-checkbox"><i class="far fa-square"></i></button>
+                  <% } %>
+                  <% if(card.actions.crud.create) { %>
+                  <button type="button" class="btn btn-default btn-sm <%= card.id %>-create-button" data-toggle="tooltip" data-placement="right" data title="<%= page.translate('Create new record') %>">
+                     <i class="fas fa-plus"></i>
+                  </button>
+                  <% } %>
+                  <% for( const action of card.actions.batch ) { %>
+                  <%- await include('actions/index', { card, action }) %>
+                  <% } %>
+               </div>
+            </div>
+            <div class="col-6">
+               <div>
+                  <div class="input-group input-group-sm float-right" style="max-width: 250px;">
+                    <div class="input-group-prepend">
+                       <button type="submit" class="btn btn-default">
+                          <i class="fas fa-search"></i>
+                       </button>
+                    </div>
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="<%= page.translate('Search') %>" id="<%= card.id %>-search-input">
+                    <div class="input-group-append">
+                       <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="collapse" data-target="#<%= card.id %>-advanced-search-container" aria-expanded="false" aria-controls="<%= card.id %>-advanced-search-container">
+                          <span class="sr-only">Toggle Dropdown</span>
+                       </button>
+                    </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="collapse" id="<%= card.id %>-advanced-search-container">
+            <div class="row mt-3">
+              <div class="col-3">
+                 <select class="form-control" id="<%= card.id %>-advanced-search-field-select">
+                    <option value="field1">Field 1</option>
+                    <option value="field2">Field 2</option>
+                    <option value="field3">Field 3</option>
+                 </select>
+              </div>
+              <div class="col-3">
+                 <select class="form-control" id="<%= card.id %>-advanced-search-operator-select">
+                    <option value="equals">Equals</option>
+                    <option value="not-equals">Not Equals</option>
+                    <option value="contains">Contains</option>
+                 </select>
+              </div>
+              <div class="col-3">
+                 <input type="text" class="form-control" id="<%= card.id %>-advanced-search-query-input" placeholder="<%= page.translate('Query') %>">
+              </div>
+              <div class="col-3">
+                 <button type="button" class="btn btn-default" id="<%= card.id %>-add-advanced-search-line">
+                    <i class="fa fa-plus"></i> <%= page.translate('Add') %>
+                 </button>
+              </div>
+              <div class="col-12 mt-3">
+                 <div class="btn-group" role="group" aria-label="Boolean operators">
+                    <button type="button" class="btn btn-default">AND</button>
+                    <button type="button" class="btn btn-default">OR</button>
+                 </div>
+              </div>
+            </div>
+         </div>
+      </div>
+       <div class="table-responsive mailbox-messages <%= card.id %>-main-container">
+          <table class="table table-hover table-striped table-sm" style="overflow: hidden;">
+             <thead>
+                <tr>
+                   <% if(card.actions.batch.length > 0) { %>
+                   <th><span>&nbsp;</span></th>
+                   <% } %>
+                   <% for( const column of card.columns ) { %>
+                   <th><%= page.translate(column.label) %></th>
+                   <% } %>
+                   <th class="text-right"><%= page.translate('Actions') %></th>
+                </tr>
+             </thead>
+             <tbody id="<%= card.id %>-list"></tbody>
+          </table>
+       </div>
+    </div>
+
+    <div class="card-footer clearfix" id="<%= card.id %>-footer"></div>
+
+ </div>

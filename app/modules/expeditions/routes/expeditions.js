@@ -3,25 +3,27 @@ import express from 'express'
 
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../../base/models/config.js'
-import { checkUser, checkERPUser } from '../../../controllers/web/security.js'
-import { expeditionsClient } from '../api/expeditions.js'
-
-import { renderFile } from '../../../tools/view.js'
+import { checkUser } from '../../../controllers/web/security.js'
+import { WebServiceRPC } from '../../../controllers/rpc/erp.js'
+import { Page } from '../../../components/layout/models/page.js'
+import { renderComponent, renderModule } from '../../../tools/view.js'
 
 
 export const expeditionsRouter = express.Router()
 
 expeditionsRouter.get('/expeditions', checkUser, async (req, res) => {
-    res.send(await renderFile('expeditions/views/index', {
-        page: await SysPage.getPage('expeditions', req.user),
+    const pageData = await SysPage.getPage('/expeditions')
+    const page = new Page({
+        ...pageData,
         user: req.user,
-        iframe: req.query.iframe
-    }))
+        i18n: req.i18n
+    })
+    res.send(await page.render())
 })
 
 expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, res) => {
     if(!req.user.portal) return res.json({
-        html: await renderFile('base/ui/html/pages/_list/_nodata', { message: 'No products found' })
+        html: await renderComponent('portal/html/_nodata', { message: req.i18n.__('No products found') })
     })
 
     const pconf = await ConfigConf.getByKeys({
@@ -34,13 +36,20 @@ expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, re
     const offset = (page - 1) * limit
 
     const q = req.query?.q || ''
-    const expeditions = await expeditionsClient.searchReadExpeditions({
+
+    const rpc = pconf?.pc?.rpc || pconf?.gl?.rpc
+
+    if(!rpc) return res.json({ status: 'error', message: req.i18n.__('Error syncing stock') })
+
+    const erp = new WebServiceRPC(rpc)
+
+    const result = await erp.request('expeditions/list', {
         q, limit, offset, user_id: req.user.uid
     })
 
-    if (expeditions?.status != 'success') return res.json(expeditions)
+    if(result?.status !== 'success') return res.json(result)
 
-    const { count, rows } = expeditions.data
+    const { count, rows } = result.data
 
     let rcount = pconf?.pc?.list?.rcount || pconf?.gl?.list?.rcount
     let rstyle = false
@@ -52,8 +61,8 @@ expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, re
     const endPage = Math.min(totalPages, currentPage + 4)
     const firstResult = (currentPage - 1) * limit + 1
     const lastResult = Math.min(currentPage * limit, count)
-    const list = await renderFile('expeditions/views/_items', { user: req.user, items: rows, pconf, rstyle, count })
-    const footer = await renderFile('base/ui/html/pages/_list/_footer', {
+    const list = await renderModule('expeditions/views/_items', { user: req.user, items: rows, pconf, rstyle, count, i18n: req.i18n })
+    const footer = await renderComponent('cards/html/list/_footer', {
         items: rows,
         total: count,
         totalPages, currentPage,
@@ -66,19 +75,42 @@ expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, re
 })
 
 expeditionsRouter.get('/expeditions/create/account/data', checkUser, async (req, res) => {
+    const pconf = await ConfigConf.getByKeys({
+        gl: 'pages.global',
+        pc: 'pages.expeditions.expeditions'
+    })
 
-    const expeditions = await expeditionsClient.getExpeditionsData({ user_id: req.user.uid })
+    const rpc = pconf?.pc?.rpc || pconf?.gl?.rpc
 
-    if (expeditions?.status != 'success') return res.json(expeditions)
+    if(!rpc) return res.json({ status: 'error', message: req.i18n.__('Error syncing stock') })
 
-    res.json({ status: 'success', accounts: expeditions.data.accounts, countries: expeditions.data.countries })
+    const erp = new WebServiceRPC(rpc)
+
+    const result = await erp.request('expeditions/shipping/data', {
+        user_id: req.user.uid
+    })
+
+    if(result?.status !== 'success') return res.json(result)
+
+    res.json({ status: 'success', accounts: result.data.accounts, countries: result.data.countries })
 })
 
 expeditionsRouter.post('/expeditions/create/account/shipping/data', checkUser, async (req, res) => {
     const { account_id } = req.body
-    const result = await expeditionsClient.getExpeditionsShippingData({
-        user_id: req.user.uid,
-        account_id
+
+    const pconf = await ConfigConf.getByKeys({
+        gl: 'pages.global',
+        pc: 'pages.expeditions.expeditions'
+    })
+
+    const rpc = pconf?.pc?.rpc || pconf?.gl?.rpc
+
+    if(!rpc) return res.json({ status: 'error', message: req.i18n.__('Error syncing stock') })
+
+    const erp = new WebServiceRPC(rpc)
+
+    const result = await erp.request('expeditions/shipping/address/data', {
+        user_id: req.user.uid, account_id
     })
 
     if (result?.status != 'success') return res.json(result)
@@ -88,10 +120,20 @@ expeditionsRouter.post('/expeditions/create/account/shipping/data', checkUser, a
 
 expeditionsRouter.post('/expeditions/create/account/zip/find', checkUser, async (req, res) => {
     const { account_id, zip } = req.body
-    const result = await expeditionsClient.getExpeditionsZipCodeData({
-        user_id: req.user.uid,
-        account_id,
-        q: zip
+
+    const pconf = await ConfigConf.getByKeys({
+        gl: 'pages.global',
+        pc: 'pages.expeditions.expeditions'
+    })
+
+    const rpc = pconf?.pc?.rpc || pconf?.gl?.rpc
+
+    if(!rpc) return res.json({ status: 'error', message: req.i18n.__('Error syncing stock') })
+
+    const erp = new WebServiceRPC(rpc)
+
+    const result = await erp.request('expeditions/zip/find', {
+        user_id: req.user.uid, account_id, q: zip
     })
 
     if (result?.status != 'success') return res.json(result)
@@ -100,10 +142,21 @@ expeditionsRouter.post('/expeditions/create/account/zip/find', checkUser, async 
 })
 
 expeditionsRouter.post('/expeditions/create/account/zip/data', checkUser, async (req, res) => {
-    const { zip } = req.body
-    const result = await expeditionsClient.getExpeditionsZipData({
-        user_id: req.user.uid,
-        q: zip.toString()
+    const { account_id, zip } = req.body
+
+    const pconf = await ConfigConf.getByKeys({
+        gl: 'pages.global',
+        pc: 'pages.expeditions.expeditions'
+    })
+
+    const rpc = pconf?.pc?.rpc || pconf?.gl?.rpc
+
+    if(!rpc) return res.json({ status: 'error', message: req.i18n.__('Error syncing stock') })
+
+    const erp = new WebServiceRPC(rpc)
+
+    const result = await erp.request('expeditions/zip/data', {
+        user_id: req.user.uid, account_id, q: zip.toString()
     })
 
     if (result?.status != 'success') return res.json(result)
@@ -123,7 +176,18 @@ expeditionsRouter.post('/expeditions/create/account/address/save', checkUser, as
         zip_id,
         contact_country_id } = req.body
 
-    const result = await expeditionsClient.expeditionsRegisterShippingAddress({
+    const pconf = await ConfigConf.getByKeys({
+        gl: 'pages.global',
+        pc: 'pages.expeditions.expeditions'
+    })
+
+    const rpc = pconf?.pc?.rpc || pconf?.gl?.rpc
+
+    if(!rpc) return res.json({ status: 'error', message: req.i18n.__('Error syncing stock') })
+
+    const erp = new WebServiceRPC(rpc)
+
+    const result = await erp.request('expeditions/shipping/create', {
         user_id: req.user.uid,
         contact_name,
         contact_email,
@@ -138,13 +202,24 @@ expeditionsRouter.post('/expeditions/create/account/address/save', checkUser, as
 
     if (result?.status != 'success') return res.json(result)
 
-    res.json({ status: 'success', data: result.data })
+    res.json({ status: 'success', data: { partner_id: result.partner_id }})
 })
 
 expeditionsRouter.post('/expeditions/create/expedition/create', checkUser, async (req, res) => {
     const { client_account_id, shipping_adddress_id, id } = req.body
 
-    const result = await expeditionsClient.expeditionsShippingCreate({
+    const pconf = await ConfigConf.getByKeys({
+        gl: 'pages.global',
+        pc: 'pages.expeditions.expeditions'
+    })
+
+    const rpc = pconf?.pc?.rpc || pconf?.gl?.rpc
+
+    if(!rpc) return res.json({ status: 'error', message: req.i18n.__('Error syncing stock') })
+
+    const erp = new WebServiceRPC(rpc)
+
+    const result = await erp.request('expeditions/expedition/create', {
         user_id: req.user.uid,
         client_account_id,
         shipping_adddress_id,

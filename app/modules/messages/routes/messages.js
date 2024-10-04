@@ -3,19 +3,31 @@ import express from 'express'
 
 import { SysPage } from '../../base/models/base.js'
 import { checkUser, checkERPUser } from '../../../controllers/web/security.js'
-import { sio } from '../../../controllers/web/server.js'
-
-import { renderFile } from '../../../tools/view.js'
+import { sio } from '../../../controllers/web/servers.js'
+import { Cards } from '../../../components/cards/models/page.js'
 
 export const messagesRouter = express.Router()
 
 messagesRouter.get('/messages', checkUser, async (req, res) => {
-    const page = await SysPage.getPage('messages', req.user)
-    res.send(await renderFile('messages/views/index', {
-        page,
+    const pageData = await SysPage.getPage('/messages')
+    const page = new Cards({
+        ...pageData,
         user: req.user,
-        clean: req.query.c || false
-    }))
+        i18n: req.i18n
+    })
+    res.send(await page.render())
+})
+
+messagesRouter.get('/assets/js/messages/page.js', checkUser, async (req, res) => {
+    const pageData = await SysPage.getPage('/messages')
+    const page = new Cards({
+        ...pageData,
+        user: req.user,
+        i18n: req.i18n
+    })
+    res.setHeader('Content-disposition', `inline; filename=${page.name}.js`)
+    res.setHeader('Content-type', 'text/javascript')
+    res.send(await page.renderJS())
 })
 
 messagesRouter.post('/messages/api/update', checkERPUser, async (req, res) => {

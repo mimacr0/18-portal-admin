@@ -1,0 +1,9 @@
+<div id="<%= field.id %>-group">
+    ##<% if (field.label) { %>
+    <label for="<%= field.id %>"><%= field.card.page.translate(field.label) %></label>
+    ##<% } %>
+    <input class="form-control" id="<%= field.id %>" name="<%= field.name %>" placeholder="<%= field.card.page.translate(field.placeholder) %>" type="text" value="<%= field.defaultValue %>"/>
+    ##<% if (field.required) { %>
+        <div class="invalid-feedback"><%= field.card.page.translate('Required field') %></div>
+    ##<% } %>
+</div>

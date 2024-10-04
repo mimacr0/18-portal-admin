@@ -4,11 +4,13 @@ import fss from 'fs'
 import path from 'path'
 import { Op } from 'sequelize'
 
+import sysConfig from '../../../etc/sys.js'
+
 import { checkUser } from '../../../controllers/web/security.js'
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../models/config.js'
-import { BASE_PATH } from '../../../etc/sys.js'
-import { renderFile } from '../../../tools/view.js'
+import { Cards } from '../../../components/cards/models/page.js'
+import { renderComponent } from '../../../tools/view.js'
 import { runScript } from '../../../tools/cli.js'
 import { genDBID, saveFile, removeFile } from '../../../tools/sys.js'
 
@@ -16,10 +18,25 @@ import { genDBID, saveFile, removeFile } from '../../../tools/sys.js'
 export const configRouter = express.Router()
 
 configRouter.get('/config', checkUser, async (req, res) => {
-    res.send(await renderFile('base/ui/html/page', {
-        page: await SysPage.getPage('config', req.user),
-        user: req.user
-    }))
+    const pageData = await SysPage.getPage('/config')
+    const page = new Cards({
+        ...pageData,
+        user: req.user,
+        i18n: req.i18n
+    })
+    res.send(await page.render())
+})
+
+configRouter.get('/assets/js/config/page.js', checkUser, async (req, res) => {
+    const pageData = await SysPage.getPage('/config')
+    const page = new Cards({
+        ...pageData,
+        user: req.user,
+        i18n: req.i18n
+    })
+    res.setHeader('Content-disposition', `inline; filename=${page.name}.js`)
+    res.setHeader('Content-type', 'text/javascript')
+    res.send(await page.renderJS())
 })
 
 configRouter.get('/config/config/list', checkUser, async (req, res) => {
@@ -28,10 +45,17 @@ configRouter.get('/config/config/list', checkUser, async (req, res) => {
         pc: 'pages.config.config'
     })
 
-    const card = await SysPage.getCard('config-config', req.user)
-    const page = parseInt(req.query.page) || 1
+    const pageData = await SysPage.getPage('/config')
+    const page = new Cards({
+        ...pageData,
+        user: req.user,
+        i18n: req.i18n
+    })
+
+    const card = page.cards.find(c => c.name === 'config')
+    const pageNum = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit || pconf?.pc.pager?.limit || pconf?.gl.pager?.limit) || 15
-    const offset = (page - 1) * limit;
+    const offset = (pageNum - 1) * limit;
     const { count, rows } = await ConfigConf.findAndCountAll({
         where: { name: { [Op.like]: '%' + req.query.q + '%' } },
         limit,
@@ -49,8 +73,8 @@ configRouter.get('/config/config/list', checkUser, async (req, res) => {
     const endPage = Math.min(totalPages, currentPage + 4)
     const firstResult = (currentPage - 1) * limit + 1
     const lastResult = Math.min(currentPage * limit, count)
-    const list = await renderFile('base/ui/html/pages/_list/_items', { user: req.user, items: rows, pconf, rstyle, count, card })
-    const footer = await renderFile('base/ui/html/pages/_list/_footer', {
+    const list = await renderComponent(`cards/html/${card.html}/_items`, { user: req.user, items: rows, pconf, rstyle, count, card })
+    const footer = await renderComponent(`cards/html/${card.html}/_footer`, {
         items: rows,
         total: count,
         totalPages, currentPage,
@@ -79,7 +103,7 @@ configRouter.get('/config/config/read/:id', checkUser, async (req, res) => {
     })
 })
 
-configRouter.post('/config/config/update/action', checkUser, async (req, res) => {
+configRouter.post('/config/config/update/form', checkUser, async (req, res) => {
     const { id, name } = req.body
     const data = { ...req.body }
     delete data.id
@@ -95,7 +119,7 @@ configRouter.post('/config/config/update/action', checkUser, async (req, res) =>
     res.json({status: 'success', message: 'Action completed successfully'})
 })
 
-configRouter.get('/config/config/tools/export/action', checkUser, async (req, res) => {
+configRouter.get('/config/config/tools/action/export', checkUser, async (req, res) => {
     const items = await ConfigConf.findAll()
     const r = await runScript('config/export', { items })
 
@@ -132,7 +156,7 @@ configRouter.post('/config/config/tools/action/import/before', checkUser, async 
         md5: file.md5
     })
 
-    const r = await runScript('config/import', { path: path.join(BASE_PATH, f.path) })
+    const r = await runScript('config/import', { path: path.join(sysConfig.BASE_PATH, f.path) })
 
     await removeFile(f.path)
 
@@ -145,11 +169,4 @@ configRouter.post('/config/config/tools/action/import/before', checkUser, async 
     res.json({ status: 'success', message: 'Action completed', alert: true })
 })
 
-configRouter.post('/config/config/tools/export/action', checkUser, async (req, res) => {
-    res.json({ status: 'success', message: 'Action completed', alert: true })
-})
-
-configRouter.post('/config/config/tools/import/action', checkUser, async (req, res) => {
-    res.json({ status: 'success', message: 'Action completed', alert: true })
-})
 

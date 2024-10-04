@@ -1,0 +1,27 @@
+<!-- <%= form.detailId %> -->
+<div class="modal fade" id="<%= form.varName %>Modal" tabindex="-1" role="dialog" aria-labelledby="<%= form.varName %>ModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="<%= form.varName %>ModalLabel"><%= i18n.__(form.title) %></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="<%= form.id %>-form-data">
+                    <% for(const field of form.fields) { %>
+                        <%- await include(`fields/${field.html}`, { form, field }) %>
+                    <% } %>
+                </form>
+                <div id="<%= form.id %>-modal-html"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><%= form.card.page.translate('Close') %></button>
+                ##<% if( form.submit ) { %>
+                <button type="button" class="btn btn-primary" id="<%= form.id %>-form-submit"><%= form.card.page.translate('Confirm') %></button>
+                ##<% } %>
+            </div>
+        </div>
+    </div>
+</div>

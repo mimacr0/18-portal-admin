@@ -1,30 +1,49 @@
 import express from 'express'
+import path from 'path'
+import qr from 'qr-image'
 
+import { config } from 'dotenv'
 import { Op } from 'sequelize'
 
+import i18n from '../../../controllers/i18n/i18n.js'
+import sysConfig from '../../../etc/sys.js'
+
 import { checkUser } from '../../../controllers/web/security.js'
-import { loginSchema } from './schemas.js'
-import { renderFile } from '../../../tools/view.js'
+import { WebServiceRPC } from '../../../controllers/rpc/erp.js'
+import { loginSchema } from '../schemas/login.js'
 import { runScript } from '../../../tools/cli.js'
 import { SysPage } from '../../base/models/base.js'
 import { SysUser } from '../models/users.js'
 import { ConfigConf } from '../models/config.js'
-import { syncClient } from '../api/sync.js'
+import { Login } from '../../../components/login/models/page.js'
+import { Cards } from '../../../components/cards/models/page.js'
 import { validateSchema } from '../../../tools/validate.js'
-import { genMD5, saveFile } from '../../../tools/sys.js'
-import {
-    DEFAULT_UI_LANGUAGE,
-    UI_LOGIN_PAGE_TITLE,
-    UI_APP_TITLE,
-    UI_APP_COLOR } from '../../../etc/sys.js'
+import { renderComponent } from '../../../tools/view.js'
+import { genMD5, saveFile, generateWebToken, verifyWebToken } from '../../../tools/sys.js'
+
 
 export const usersRouter = express.Router()
 
 usersRouter.get('/users', checkUser, async (req, res) => {
-    res.send(await renderFile('base/ui/html/page', {
-        page: await SysPage.getPage('users', req.user),
-        user: req.user
-    }))
+    const pageData = await SysPage.getPage('/users')
+    const page = new Cards({
+        ...pageData,
+        user: req.user,
+        i18n: req.i18n
+    })
+    res.send(await page.render())
+})
+
+usersRouter.get('/assets/js/users/page.js', checkUser, async (req, res) => {
+    const pageData = await SysPage.getPage('/users')
+    const page = new Cards({
+        ...pageData,
+        user: req.user,
+        i18n: req.i18n
+    })
+    res.setHeader('Content-disposition', `inline; filename=${page.name}.js`)
+    res.setHeader('Content-type', 'text/javascript')
+    res.send(await page.renderJS())
 })
 
 usersRouter.get('/users/users/list', checkUser, async (req, res) => {
@@ -33,16 +52,22 @@ usersRouter.get('/users/users/list', checkUser, async (req, res) => {
         pc: 'pages.users.users'
     })
 
-    const card = await SysPage.getCard('users-users', req.user)
-    const page = parseInt(req.query.page) || 1
+    const pageData = await SysPage.getPage('/users')
+    const page = new Cards({
+        ...pageData,
+        user: req.user,
+        i18n: req.i18n
+    })
+
+    const card = page.cards.find(c => c.name === 'users')
+    const pageNum = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit || pconf?.pc.pager?.limit || pconf?.gl.pager?.limit) || 15
-    const offset = (page - 1) * limit;
+    const offset = (pageNum - 1) * limit;
     const { count, rows } = await SysUser.findAndCountAll({
         where: { name: { [Op.like]: '%' + req.query.q + '%' } },
         limit,
         offset
     })
-    rows.sort((a, b) => a.data.sequence - b.data.sequence)
 
     let rcount = pconf?.pc?.list?.rcount || pconf?.gl?.list?.rcount
     let rstyle = false
@@ -54,8 +79,8 @@ usersRouter.get('/users/users/list', checkUser, async (req, res) => {
     const endPage = Math.min(totalPages, currentPage + 4)
     const firstResult = (currentPage - 1) * limit + 1
     const lastResult = Math.min(currentPage * limit, count)
-    const list = await renderFile('base/ui/html/pages/_list/_items', { user: req.user, items: rows, pconf, rstyle, count, card })
-    const footer = await renderFile('base/ui/html/pages/_list/_footer', {
+    const list = await renderComponent(`cards/html/${card.html}/_items`, { user: req.user, items: rows, pconf, rstyle, count, card })
+    const footer = await renderComponent(`cards/html/${card.html}/_footer`, {
         items: rows,
         total: count,
         totalPages, currentPage,
@@ -68,13 +93,9 @@ usersRouter.get('/users/users/list', checkUser, async (req, res) => {
 })
 
 usersRouter.get('/login', async (req, res) => {
-    res.send(await renderFile('base/views/login', {
-        lang: DEFAULT_UI_LANGUAGE,
-        title: UI_LOGIN_PAGE_TITLE,
-        appTitle: UI_APP_TITLE,
-        color: UI_APP_COLOR,
-        user: req.user
-    }))
+    i18n.setLocale(sysConfig.DEFAULT_UI_LANGUAGE)
+    const page = new Login({ i18n })
+    res.send(await page.render())
 })
 
 usersRouter.post('/login', async (req, res) => {
@@ -96,11 +117,44 @@ usersRouter.get('/logout', checkUser, (req, res) => {
     res.redirect('/')
 })
 
-usersRouter.post('/users/users/tools/action/sync', async (req, res) => {
+usersRouter.post('/users/users/list/action/access', checkUser, async (req, res) => {
+    const { id } = req.body
 
-    const result = await syncClient.getUsersList()
+    config({ path: path.join(BASE_PATH, '.env') })
 
-    if(result?.status !== 'success') return res.json(result)
+    const user = await SysUser.findByPk(id)
+
+    if(!user) return res.json({ status: 'error', message: 'User not found' })
+
+    const token = await generateWebToken({ id: user.id, login: user.login }, process.env.DIRECT_SECRET)
+
+    const url = `${process.env.BASE_URL.replace(/\/$/, '')}/users/login/token/${token}`
+
+    const QRSvg = qr.imageSync(url, {
+        type: 'svg',
+        size: 5,
+        margin: 2
+    })
+
+    res.json({
+        status: 'success',
+        html: await renderFile('../modules/base/views/access', { url, qr_image: QRSvg.toString() })
+    })
+})
+
+usersRouter.post('/users/users/tools/action/sync', checkUser, async (req, res) => {
+    const conf = await ConfigConf.getByKey('pages.users.users')
+    const rpc = conf.rpc
+    if(!rpc) return res.json({ status: 'error', message: 'Connection not found' })
+
+    const erp = new WebServiceRPC(rpc)
+
+    const result = await erp.request('users/list')
+
+    if(result?.status !== 'success') return res.json({
+        status: 'error',
+        message: req.i18n.__('Error syncing users')
+    })
 
     const usersResponse = await runScript('users/sync', { users: result.data })
 
@@ -138,5 +192,27 @@ usersRouter.post('/users/users/tools/action/sync', async (req, res) => {
         })
     }
 
-    res.json({ status: 'success', message: 'Sync completed' })
+    res.json({ status: 'success', message: req.i18n.__('Sync completed') })
+})
+
+usersRouter.get('/users/login/token/:token', async (req, res) => {
+    const { token } = req.params
+    if(!token) return res.redirect('/')
+
+    const result = await verifyWebToken(token, process.env.DIRECT_SECRET)
+
+    if(result?.status !== 'success') return res.redirect('/')
+
+    const payload = result?.data
+    const user = await SysUser.findOne({ where: { login: payload?.login, id: payload?.id } })
+
+    if(!user) return res.redirect('/')
+
+    req.session.uid = user.id
+
+    res.send(await renderFile('../modules/base/views/redirect', {
+        page: await SysPage.getPage('redirect'),
+        user,
+        url: '/'
+    }))
 })

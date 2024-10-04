@@ -1,18 +1,17 @@
 import { config } from 'dotenv'
 
 import path from 'path'
-import jwt from 'jsonwebtoken'
-import util from 'util'
 import session from 'express-session'
 import SqliteStoreFactory from 'better-sqlite3-session-store'
 
-import { ConfigConf } from '../../modules/base/models/config.js'
 import { SysUser } from '../../modules/base/models/users.js'
 import { sysDB } from '../db/db.js'
 
-import { BASE_PATH } from '../../etc/sys.js'
+import i18n from '../i18n/i18n.js'
 
-config({ path: path.join(BASE_PATH, '.env') })
+import sysConfig from '../../etc/sys.js'
+
+config({ path: path.join(sysConfig.BASE_PATH, '.env') })
 
 const SqliteStore = SqliteStoreFactory(session)
 
@@ -26,14 +25,20 @@ export const checkUser = async (req, res, next) => {
 
     if(!user) return res.redirect('/login')
 
+    i18n.setLocale(user.lang)
+
+    req.i18n = i18n
     req.user = user
     next()
 }
 
 export const checkUserAssets = async (req, res, next) => {
-    if(!req?.session?.uid) return res.redirect('/login')
+    if(!req?.session?.uid) return res.sendStatus(404)
     const user = await SysUser.findByPk(req.session.uid)
-    if(!user) return res.redirect('/login')
+    if(!user) return res.sendStatus(404)
+    i18n.setLocale(user.lang)
+
+    req.i18n = i18n
     req.user = user
     next()
 }

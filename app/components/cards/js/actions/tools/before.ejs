@@ -1,0 +1,14 @@
+const <%= action.modal.before.varName %> = async (e) => {
+    $('#<%= action.modal.before.varName %>Modal').modal('toggle')
+}
+
+const <%= action.modal.before.varName %>Submit = async () => {
+    const res = await formPost('<%= action.modal.before.url %>', "#<%= action.modal.before.id %>-form-data")
+    if(res?.status != 'success') return
+    $('#<%= action.modal.before.id %>-form-id').val("")
+    $('#<%= action.modal.before.varName %>Modal').modal('toggle')
+    <%= card.varName %>ReloadList()
+}
+
+$('.<%= action.id %>').click(<%= action.modal.before.varName %>)
+$('#<%= action.modal.before.id %>-form-submit').click(<%= action.modal.before.varName %>Submit)

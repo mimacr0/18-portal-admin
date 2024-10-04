@@ -1,0 +1,24 @@
+const <%= field.lineId %>_textarea = $('#<%= field.id %>')
+const <%= field.lineId %>_mode = <%= field.lineId %>_textarea.data('editor')
+const <%= field.varName %>EditDiv = $('<div>', {
+    position: 'absolute',
+    width: <%= field.lineId %>_textarea.width(),
+    height: <%= field.lineId %>_textarea.height(),
+    'class': <%= field.lineId %>_textarea.attr('class')
+}).insertBefore(<%= field.lineId %>_textarea)
+<%= field.lineId %>_textarea.css('display', 'none')
+const <%= field.lineId %>_editor = ace.edit(<%= field.varName %>EditDiv[0])
+<%= field.lineId %>_editor.renderer.setShowGutter(true)
+<%= field.lineId %>_editor.getSession().doc.setValue(<%= field.lineId %>_textarea.val() || "")
+<%= field.lineId %>_editor.getSession().setMode("ace/mode/" + <%= field.lineId %>_mode)
+<%= field.lineId %>_editor.setTheme("ace/theme/textmate")
+<%= field.lineId %>_textarea.closest('form').submit(function () {
+    <%= field.lineId %>_textarea.val(<%= field.lineId %>_editor.getSession().getValue())
+})
+
+const <%= field.varName %>Change = () => {
+    let mdValue = <%= field.lineId %>_editor.getSession().getValue()
+    <%= field.lineId %>_textarea.val(mdValue)
+}
+
+<%= field.lineId %>_editor.getSession().on('change',  <%= field.varName %>Change)

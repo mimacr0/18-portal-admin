@@ -4,7 +4,7 @@ import crypto from 'crypto'
 import fs from 'fs'
 import path from 'path'
 
-import { BASE_PATH } from '../etc/sys.js'
+import sysConfig from '../etc/sys.js'
 import { Logger } from './log.js'
 
 const fsp = fs.promises
@@ -17,7 +17,7 @@ export const runScript = async (script, args={}, options={}) => {
 
     const { debug=false, clean=false } = options
 
-    const scriptDir = path.resolve(BASE_PATH, 'scripts')
+    const scriptDir = path.resolve(sysConfig.BASE_PATH, 'scripts')
     const scriptFile = path.join(scriptDir, `${script}.py`)
     const tmpDir = path.join(scriptDir, 'tmp')
 
@@ -54,10 +54,10 @@ export const runScript = async (script, args={}, options={}) => {
     ],
     "env": {
         "BASE_DIR": "${BASE_PATH}",
-        "WORK_DIR": "${process.env?.WORK_DIR || BASE_PATH}",
+        "WORK_DIR": "${process.env?.WORK_DIR || sysConfig.BASE_PATH}",
         "CMD_FILE": "${cmdFile}"
     },
-    "cwd": "${BASE_PATH}"
+    "cwd": "${sysConfig.BASE_PATH}"
 }
     `)
 
@@ -68,7 +68,12 @@ export const runScript = async (script, args={}, options={}) => {
 
         if(!tmpExist) fs.mkdir(tmpDir)
 
-        const child = spawn(pythonPath, [scriptFile, cmdFile], { env: { WORK_DIR: process.env?.WORK_DIR || BASE_PATH, BASE_DIR: BASE_PATH, CMD_FILE: cmdFile } })
+        const child = spawn(pythonPath, [scriptFile, cmdFile], { env: {
+                WORK_DIR: process.env?.WORK_DIR || sysConfig.BASE_PATH,
+                BASE_DIR: sysConfig.BASE_PATH, CMD_FILE: cmdFile,
+                DISPLAY: process.env?.DISPLAY || ':0'
+            }
+        })
 
         child.stdout.on('data', data => {
             Logger.debug(data.toString())

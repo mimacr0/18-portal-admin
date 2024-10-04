@@ -1,4 +1,4 @@
-<%- include('../../base/ui/html/layout/header', { page }) %>
+<%- await include('../../../components/layout/html/_header', { page }) %>
 
 <!-- Main content -->
 <div class="content">
@@ -14,7 +14,7 @@
             <div class="card">
 
                 <div class="card-header">
-                   <h3 class="card-title"><span class="text-muted"><%= i18n.__('Chats') %></span></h3>
+                   <h3 class="card-title"><span class="text-muted"><%= page.translate('Chats') %></span></h3>
                    <div class="card-tools messages-chats-card-tools"></div>
                 </div>
 
@@ -91,7 +91,7 @@
                          <tbody id="messages-messages-list">
                             <tr>
                                <td class="text-center text-muted">
-                                  <h5 style="height: 100px; padding-top: 45px;"><%= i18n.__('No chat selected') %></h5>
+                                  <h5 style="height: 100px; padding-top: 45px;"><%= page.translate('No chat selected') %></h5>
                                </td>
                             </tr>
                          </tbody>
@@ -140,7 +140,7 @@
 
 </div>
 
-<%- include('../../base/ui/html/layout/footer', { page }) %>
+<%- await include('../../../components/layout/html/_footer', { page }) %>
 
 </body>
 
