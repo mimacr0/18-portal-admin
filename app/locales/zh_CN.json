@@ -63,5 +63,11 @@
 	"Configuration": "配置",
 	"Files": "文件",
 	"Error syncing dashboard": "同步仪表盘时出错",
-	"Sync completed": "同步完成"
+	"Sync completed": "同步完成",
+	"Select Files": "选择文件",
+	"Clear": "清除",
+	"Confirm": "Confirm",
+	"Import configuration": "Import configuration",
+	"Create shipping address": "Create shipping address",
+	"Go back": "Go back"
 }

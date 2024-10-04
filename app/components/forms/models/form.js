@@ -4,6 +4,7 @@ import { Ace } from './fields/_ace.js'
 import { Select } from './fields/_select.js'
 import { Many2One } from './fields/_m2o.js'
 import { Hidden } from './fields/_hidden.js'
+import { File } from './fields/file.js'
 
 import { cammelCase } from '../../../tools/view.js'
 
@@ -11,7 +12,8 @@ const fieldMap = {
     ace: Ace,
     select: Select,
     m2o: Many2One,
-    hidden: Hidden
+    hidden: Hidden,
+    file: File
 }
 
 export class Form {

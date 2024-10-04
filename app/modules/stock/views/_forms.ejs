@@ -5,6 +5,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="stockExpeditionBatchCreateModalLabel"><%= page.translate('Create expedition') %></h5>
+                <h5 class="modal-title init-hidden" id="stockExpeditionBatchCreateShippingModalLabel"><%= page.translate('Create shipping address') %></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -122,18 +123,16 @@
 
                     </form>
 
-                    <div class="row p-1">
-                        <div class="col-12 text-center">
-                            <button type="button" class="btn btn-primary" id="save-new-shipping-address"><%= page.translate('Save Address') %></button>
-                        </div>
-                    </div>
-
                 </div>
 
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" id="stock-expedition-account-buttons">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><%= page.translate('Close') %></button>
                 <button type="button" class="btn btn-primary" id="stock-expedition-create-form-submit"><%= page.translate('Create') %></button>
+            </div>
+            <div class="modal-footer" id="stock-expedition-shipping-buttons" style="display: none;">
+                <button type="button" class="btn btn-secondary" id="stock-expedition-create-shipping-back"><%= page.translate('Go back') %></button>
+                <button type="button" class="btn btn-primary" id="stock-expedition-create-shipping-submit"><%= page.translate('Save Address') %></button>
             </div>
         </div>
     </div>

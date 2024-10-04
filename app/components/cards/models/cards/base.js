@@ -2,6 +2,12 @@
 import { cammelCase } from '../../../../tools/view.js'
 import { Form } from '../../../forms/models/form.js'
 import { ToolAction } from '../actions/tools.js'
+import { ToolLinkAction } from '../actions/link.js'
+
+const actionsToolMap = {
+    link: ToolLinkAction
+}
+
 
 export class Card {
     constructor(data, index, category, ctx) {
@@ -48,7 +54,11 @@ export class Card {
             page: this.page
         }
         return {
-            tools: tools.map((tool, index) => new ToolAction(tool, index, ctx)),
+            tools: tools.map(
+                (tool, index) => actionsToolMap[tool.type] ?
+                new actionsToolMap[tool.type](tool, index, ctx) :
+                new ToolAction(tool, index, ctx)
+            ),
             batch: [],
             list: [],
             crud: {

@@ -8,15 +8,15 @@
    </td>
    <td>
       <small>
-         <strong><%= page.translate('Product') %>:</strong> <%- item.product %><br/>
-         <strong><%= page.translate('Reception date') %>:</strong> <%- item.reception_date ? item.reception_date.split(' ')[0] : '' %><br/>
-         <strong><%= page.translate('Tracking number') %>:</strong> <%- item.expedition1 %><br/>
-         <strong><%= page.translate('Other tracking number') %>:</strong> <%- item.expedition %><br/>
-         <strong><%= page.translate('Reference') %>:</strong> <%- item.internal_ref %><br/>
-         <strong><%= page.translate('Serie') %>:</strong> <%- item.lot %><br/>
-         <% if(item.lpn) { %><strong><%= page.translate('LPN') %>:</strong> <%- item.lpn %><br/><% } %>
-         <strong><%= page.translate('IMEI') %>:</strong> <%- item.imei %><br/>
-         <% if(item.sku) { %><strong><%= page.translate('SKU') %>:</strong> <%- item.sku %> <% } %>
+         <strong><%= i18n.__('Product') %>:</strong> <%- item.product %><br/>
+         <strong><%= i18n.__('Reception date') %>:</strong> <%- item.reception_date ? item.reception_date.split(' ')[0] : '' %><br/>
+         <strong><%= i18n.__('Tracking number') %>:</strong> <%- item.expedition1 %><br/>
+         <strong><%= i18n.__('Other tracking number') %>:</strong> <%- item.expedition %><br/>
+         <strong><%= i18n.__('Reference') %>:</strong> <%- item.internal_ref %><br/>
+         <strong><%= i18n.__('Serie') %>:</strong> <%- item.lot %><br/>
+         <% if(item.lpn) { %><strong><%= i18n.__('LPN') %>:</strong> <%- item.lpn %><br/><% } %>
+         <strong><%= i18n.__('IMEI') %>:</strong> <%- item.imei %><br/>
+         <% if(item.sku) { %><strong><%= i18n.__('SKU') %>:</strong> <%- item.sku %> <% } %>
       </small>
    </td>
    <td><%- item.product_state.label %></td>

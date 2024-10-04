@@ -49,12 +49,16 @@ const stockExpeditionBatchCreateAction = async (mids) => {
     $('#stockExpeditionBatchCreateModal').modal('toggle')
 }
 
-const stockExpeditionBatchCreateAccountIdChange = async (e) => {
-    const accountId = $(e.currentTarget).val()
-    if(!accountId) return $('#stock-expedition-create-form-shipping-adddress-id').html('')
+const stockExpeditionBatchCreateShippingReload = async (accountId) => {
     const res = await jsonPost(`/expeditions/create/account/shipping/data`, { account_id: accountId })
     if(res?.status != 'success') return
     $('#stock-expedition-create-form-shipping-adddress-id').html(res.data)
+}
+
+const stockExpeditionBatchCreateAccountIdChange = async (e) => {
+    const accountId = $(e.currentTarget).val()
+    if(!accountId) return $('#stock-expedition-create-form-shipping-adddress-id').html('')
+    stockExpeditionBatchCreateShippingReload(accountId)
 }
 
 $('#stock-expedition-create-form-client-account-id').on('change', stockExpeditionBatchCreateAccountIdChange)
@@ -116,14 +120,29 @@ const stockExpeditionContactSaveAction = async (e) => {
     $('.o_portal_street').val('')
     $('.o_portal_phone').val('')
     $('#register-shipping-address-form').hide()
+    $('#stock-expedition-create-form-data').show()
+    $('#stock-expedition-account-buttons').show()
+    $('#stockExpeditionBatchCreateModalLabel').show()
+    $('#stockExpeditionBatchCreateShippingModalLabel').hide()
+    $('#stock-expedition-shipping-buttons').hide()
+
     const accId = $('#stock-expedition-create-form-client-account-id').val()
-    if(accId) return $('#stock-expedition-create-form-client-account-id').trigger('change')
+    if(!accId) return
+
+    await stockExpeditionBatchCreateShippingReload(accId)
+
+    $('#stock-expedition-create-form-shipping-adddress-id').val(res.data.partner_id).trigger('change')
 }
 
-$('#save-new-shipping-address').click(stockExpeditionContactSaveAction)
+$('#stock-expedition-create-shipping-submit').click(stockExpeditionContactSaveAction)
 
 $('#add-shipping-address-btn').click(async () => {
     $('#register-shipping-address-form').show()
+    $('#stock-expedition-create-form-data').hide()
+    $('#stock-expedition-account-buttons').hide()
+    $('#stockExpeditionBatchCreateModalLabel').hide()
+    $('#stockExpeditionBatchCreateShippingModalLabel').show()
+    $('#stock-expedition-shipping-buttons').show()
 })
 
 const stockExpeditionCreateFormSubmit = async (e) => {

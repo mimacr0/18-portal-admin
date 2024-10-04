@@ -48,13 +48,11 @@ export class BaseAction {
         return this.data.tooltip
     }
     get js() {
-        if(this.data.no_js) return false
         if(this.modal.before && this.modal.after) return 'after'
         if(this.modal.before) return 'before'
         return 'index'
     }
     get html() {
-        if(this.data.no_html) return false
         if(this.modal.before && this.modal.after) return 'after'
         if(this.modal.before) return 'before'
         return 'index'

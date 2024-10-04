@@ -1,5 +1,0 @@
-<div class="<%= section.class %> page-card-section-<%= section.num %>">
-         <% for( const card of section.cards ) { %>
-            <%- include(`_${card.type || 'list'}/index`, { screen, section, card }) %>
-         <% } %>
-      </div>

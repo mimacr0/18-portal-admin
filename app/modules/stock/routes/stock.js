@@ -3,9 +3,9 @@ import express from 'express'
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../../base/models/config.js'
 import { checkUser } from '../../../controllers/web/security.js'
-import { stockClient } from '../api/stock.js'
+import { WebServiceRPC } from '../../../controllers/rpc/erp.js'
 import { Page } from '../../../components/layout/models/page.js'
-import { renderComponent } from '../../../tools/view.js'
+import { renderComponent, renderModule } from '../../../tools/view.js'
 
 
 export const stockRouter = express.Router()
@@ -35,13 +35,20 @@ stockRouter.get('/stock/stock/list', checkUser, async (req, res) => {
     const offset = (page - 1) * limit
 
     const q = req.query?.q || ''
-    const stockData = await stockClient.searchReadStock({
+
+    const rpc = pconf?.pc?.rpc || pconf?.gl?.rpc
+
+    if(!rpc) return res.json({ status: 'error', message: req.i18n.__('Error syncing stock') })
+
+    const erp = new WebServiceRPC(rpc)
+
+    const result = await erp.request('stock/list', {
         q, limit, offset, user_id: req.user.uid
     })
 
-    if (stockData?.status != 'success') return res.json(stockData)
+    if(result?.status !== 'success') return res.json(result)
 
-    const { count, rows } = stockData.data
+    const { count, rows } = result.data
 
     let rcount = pconf?.pc?.list?.rcount || pconf?.gl?.list?.rcount
     let rstyle = false
@@ -53,8 +60,8 @@ stockRouter.get('/stock/stock/list', checkUser, async (req, res) => {
     const endPage = Math.min(totalPages, currentPage + 4)
     const firstResult = (currentPage - 1) * limit + 1
     const lastResult = Math.min(currentPage * limit, count)
-    const list = await renderComponent('stock/views/_items', { user: req.user, items: rows, pconf, rstyle, count })
-    const footer = await renderComponent('base/ui/html/pages/_list/_footer', {
+    const list = await renderModule('stock/views/_items', { user: req.user, items: rows, pconf, rstyle, count, i18n: req.i18n })
+    const footer = await renderComponent('cards/html/list/_footer', {
         items: rows,
         total: count,
         totalPages, currentPage,

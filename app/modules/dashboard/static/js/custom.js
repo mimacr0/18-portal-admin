@@ -2,25 +2,8 @@
 let kpiCharts = {}
 
 const expeditionsChartData = {
-    series: [
-        {
-            name: "Expeditions",
-            data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
-        }
-    ],
-    xaxis: {
-        categories: [
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-        ],
-    },
+    series: [{ name: "", data: [0] }],
+    xaxis: { categories: [""] },
     colors: ["#20c997"]
 }
 
@@ -46,25 +29,8 @@ const expeditionsChartPieData = {
 }
 
 const receptionsChartData = {
-    series: [
-        {
-            name: "Receptions",
-            data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
-        },
-    ],
-    xaxis: {
-        categories: [
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-        ],
-    },
+    series: [{ name: "", data: [0] }],
+    xaxis: { categories: [""] },
     colors: ["#0d6efd", "#ffc107"]
 }
 
@@ -152,25 +118,13 @@ const createReceptionsChart = () => {
 const updateExpeditionsChart = (data) => {
     kpiCharts['expeditions'].updateOptions({
         xaxis: {
-            categories: [
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-                "Oct",
-                "Nov",
-                "Dec"
-            ],
+            categories: [""],
         }
     })
     kpiCharts['expeditions'].updateSeries([
         {
-            name: "Expeditions",
-            data: [ 36, 41, 36, 26, 45, 48, 52, 53, 41, 35, 41 ]
+            name: "",
+            data: [ 0 ]
         }
     ])
 }
@@ -183,6 +137,30 @@ const updateDashboardCharts = async (data) => {
 
     kpiCharts['expeditions-pie'].updateOptions({ labels: res.data.expeditions.labels })
     kpiCharts['expeditions-pie'].updateSeries(res.data.expeditions.series)
+
+    kpiCharts['expeditions'].updateOptions({
+        xaxis: {
+            categories: res.data.expeditions_data.labels
+        }
+    })
+    kpiCharts['expeditions'].updateSeries([
+        {
+            name: "Expeditions",
+            data: res.data.expeditions_data.series
+        }
+    ])
+
+    kpiCharts['receptions'].updateOptions({
+        xaxis: {
+            categories: res.data.receptions_data.labels
+        }
+    })
+    kpiCharts['receptions'].updateSeries([
+        {
+            name: "Receptions",
+            data: res.data.receptions_data.series
+        }
+    ])
 }
 
 createExpeditionsChart()

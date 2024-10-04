@@ -4,7 +4,7 @@ import express from 'express'
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../../base/models/config.js'
 import { checkUser } from '../../../controllers/web/security.js'
-import { receptionsClient } from '../api/receptions.js'
+import { WebServiceRPC } from '../../../controllers/rpc/erp.js'
 import { Page } from '../../../components/layout/models/page.js'
 import { renderComponent, renderModule } from '../../../tools/view.js'
 
@@ -28,7 +28,7 @@ receptionsRouter.get('/receptions/receptions/list', checkUser, async (req, res) 
 
     const pconf = await ConfigConf.getByKeys({
         gl: 'pages.global',
-        pc: 'pages.receptions.receptions'
+        pc: 'pages.expeditions.expeditions'
     })
 
     const page = parseInt(req.query.page) || 1
@@ -36,13 +36,20 @@ receptionsRouter.get('/receptions/receptions/list', checkUser, async (req, res) 
     const offset = (page - 1) * limit
 
     const q = req.query?.q || ''
-    const receptions = await receptionsClient.searchReadReceptions({
+
+    const rpc = pconf?.pc?.rpc || pconf?.gl?.rpc
+
+    if(!rpc) return res.json({ status: 'error', message: req.i18n.__('Error syncing stock') })
+
+    const erp = new WebServiceRPC(rpc)
+
+    const result = await erp.request('receptions/list', {
         q, limit, offset, user_id: req.user.uid
     })
 
-    if (receptions?.status != 'success') return res.json(receptions)
+    if(result?.status !== 'success') return res.json(result)
 
-    const { count, rows } = receptions.data
+    const { count, rows } = result.data
 
     let rcount = pconf?.pc?.list?.rcount || pconf?.gl?.list?.rcount
     let rstyle = false
@@ -54,7 +61,7 @@ receptionsRouter.get('/receptions/receptions/list', checkUser, async (req, res) 
     const endPage = Math.min(totalPages, currentPage + 4)
     const firstResult = (currentPage - 1) * limit + 1
     const lastResult = Math.min(currentPage * limit, count)
-    const list = await renderModule('receptions/views/_items', { user: req.user, items: rows, pconf, rstyle, count })
+    const list = await renderModule('receptions/views/_items', { user: req.user, items: rows, pconf, rstyle, count, i18n: req.i18n })
     const footer = await renderComponent('cards/html/list/_footer', {
         items: rows,
         total: count,

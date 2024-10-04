@@ -60,12 +60,12 @@ export class SysUser extends Model {
     }
     get langName() {
         const lang = this.config?.lang || this.data?.lang || 'en'
-        if(lang.includes('_')) return langData[lang.split('_')[0]]
+        if(lang.includes('_')) return sysConfig.LANG_DATA[lang.split('_')[0]]
         return sysConfig.LANG_DATA[lang].name
     }
     get langCode() {
         const lang = this.config?.lang || this.data?.lang || 'en'
-        if(lang.includes('_')) return langData[lang.split('_')[0]].code
+        if(lang.includes('_')) return sysConfig.LANG_DATA[lang.split('_')[0]].code
         return sysConfig.LANG_DATA[lang].code
     }
 }

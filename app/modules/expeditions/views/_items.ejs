@@ -2,11 +2,11 @@
 <tr>
    <td>
       <small>
-         <strong><%= page.translate('Order') %>:</strong> <%- item.name %><br/>
-         <strong><%= page.translate('Address') %>:</strong> <%- item.address %><br/>
-         <strong><%= page.translate('Date') %>:</strong> <%- item.date_order %><br/>
-         <strong><%= page.translate('Total') %>:</strong> <%- item.amount_total %><br/>
-         <strong><%= page.translate('Carrier') %>:</strong> <%- item.carrier %><br/>
+         <strong><%= i18n.__('Order') %>:</strong> <%- item.name %><br/>
+         <strong><%= i18n.__('Address') %>:</strong> <%- item.address %><br/>
+         <strong><%= i18n.__('Date') %>:</strong> <%- item.date_order %><br/>
+         <strong><%= i18n.__('Total') %>:</strong> <%- item.amount_total %><br/>
+         <strong><%= i18n.__('Carrier') %>:</strong> <%- item.carrier %><br/>
       </small>
    </td>
    <td><%- item.tracking %></td>

@@ -2,6 +2,7 @@ import { aceHeaderCSS, aceFooterJs } from './common.js'
 
 const beforeImportModal = {
     submit: true,
+    title: 'Import configuration',
     fields: [
         {
             name: 'files',
