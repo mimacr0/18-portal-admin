@@ -1,0 +1,374 @@
+let dashboardKPICharts = {}
+
+const numberKPIIntervalTime = 150
+let numberKPICurrentValue = 0
+let numberKPITargetValue = 0
+
+function numberKPIformat(number) {
+    return new Intl.NumberFormat('en-US').format(number);
+}
+
+function numberKPIUpdateDisplay(eid) {
+    $e = document.querySelector(`#kpi-value-${eid}`)
+    $e.textContent = numberKPIformat(parseInt(numberKPICurrentValue))
+}
+
+function numberKPIUpdateValue(eid, value) {
+    $e = document.querySelector(`#kpi-value-${eid}`)
+    numberKPICurrentValue = parseInt($e.getAttribute('data-value'))
+    numberKPITargetValue = parseInt(value)
+    numberKPIAnimateChange(eid)
+}
+
+
+function numberKPIAnimateChange(eid) {
+    const step = Math.sign(numberKPITargetValue - numberKPICurrentValue)
+    const interval = setInterval(() => {
+        if (Math.abs(numberKPICurrentValue - numberKPITargetValue) < Math.abs(step)) {
+            numberKPICurrentValue = numberKPITargetValue;
+            clearInterval(interval);
+        } else {
+            numberKPICurrentValue += step;
+        }
+        numberKPIUpdateDisplay(eid)
+    }, numberKPIIntervalTime);
+}
+
+const baseChartBarOptions = {
+    chart: {
+        type: "bar",
+        height: 165
+    },
+    plotOptions: {
+        bar: {
+            horizontal: false,
+            columnWidth: "55%",
+            endingShape: "rounded",
+        },
+    },
+    legend: {
+        show: true
+    },
+    dataLabels: {
+        enabled: false,
+    },
+    stroke: {
+        show: true,
+        width: 2,
+        colors: ["transparent"],
+    },
+    fill: {
+        opacity: 1
+    }
+}
+
+const baseChartPieOptions = {
+    chart: {
+        type: "pie",
+        height: 170
+    },
+    series: [1],
+    labels: [""],
+    colors: ["#20c997"],
+    legend: {
+      position: 'bottom'
+    },
+    responsive: [{
+        breakpoint: 480,
+        options: {
+            chart: {
+                width: 200
+            }
+        }
+    }]
+}
+
+const baseBarChartBarData = {
+    series: [{ name: "", data: [0] }],
+    xaxis: { categories: [""] },
+    colors: ["#20c997"]
+}
+
+const initDashboardBarChart = (kpiId, data={}) => {
+    dashboardKPICharts[kpiId] = new ApexCharts(
+        document.querySelector(`#kpi-chart-${kpiId}`), {
+        ...baseChartBarOptions,
+        ...baseBarChartBarData,
+        ...data
+    })
+    dashboardKPICharts[kpiId].render()
+}
+
+const baseBarChartPieData = {
+    series: [1],
+    labels: [""],
+    colors: ["#20c997"]
+}
+
+const initDashboardPieChart = (kpiId, data={}) => {
+    dashboardKPICharts[kpiId] = new ApexCharts(
+        document.querySelector(`#kpi-chart-${kpiId}`), {
+        ...baseChartPieOptions,
+        ...baseBarChartPieData,
+        ...data
+    })
+    dashboardKPICharts[kpiId].render()
+}
+
+##<% for( const kpi of kpis.filter(kpi => kpi.type == 'chart' && kpi.mode == 'bar') ) { %>
+initDashboardBarChart('<%= kpi.id %>', <%- JSON.stringify(kpi.chartData) %>)
+##<% } %>
+
+##<% for( const kpi of kpis.filter(kpi => kpi.type == 'chart' && kpi.mode == 'pie') ) { %>
+initDashboardPieChart('<%= kpi.id %>', <%- JSON.stringify(kpi.chartData) %>)
+##<% } %>
+
+let bankStatementsChart = {
+    chart: {
+      group: 'sparks',
+      type: 'area',
+      height: 80,
+      sparkline: {
+        enabled: true
+      },
+      dropShadow: {
+        enabled: false
+      }
+    },
+    series: [
+      {
+        name: 'Income',
+        data: [4700, 4500, 7400, 3200, 5600, 3100, 4400, 3300, 4500, 1900]
+      },
+      {
+        name: 'Expense',
+        data: [3200, 3800, 3900, 2800, 3800, 2800, 3600, 2900, 3800, 2100]
+      }
+    ],
+    stroke: {
+      curve: 'smooth',
+      width: 2
+    },
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.7,
+        opacityTo: 0.3,
+        stops: [0, 100]
+      }
+    },
+    markers: {
+      size: 0
+    },
+    grid: {
+      padding: {
+        top: 5,
+        bottom: 5
+      }
+    },
+    colors: ['#28a745', '#dc3545'],
+    tooltip: {
+      fixed: {
+        enabled: false
+      },
+      x: {
+        show: false
+      },
+      y: {
+        title: {
+          formatter: function formatter(val) {
+            return '$';
+          }
+        },
+        formatter: function(value) {
+          return '$' + value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+      },
+      marker: {
+        show: false
+      }
+    },
+    yaxis: {
+      labels: {
+        formatter: function(value) {
+          return '$' + value.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+      }
+    }
+}
+
+let serverResourcesChart = {
+    chart: {
+      group: 'sparks',
+      type: 'area',
+      height: 50,
+      sparkline: {
+        enabled: true
+      },
+      dropShadow: {
+        enabled: false
+      }
+    },
+    series: [
+      {
+        name: 'CPU',
+        data: [45, 52, 38, 60, 55, 70, 48, 56, 62, 50]
+      },
+      {
+        name: 'RAM',
+        data: [65, 58, 70, 72, 68, 75, 60, 78, 72, 80]
+      },
+      {
+        name: 'Storage',
+        data: [30, 32, 35, 38, 40, 42, 45, 48, 50, 52]
+      }
+    ],
+    stroke: {
+      curve: 'smooth',
+      width: 2
+    },
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.7,
+        opacityTo: 0.3,
+        stops: [0, 100]
+      }
+    },
+    markers: {
+      size: 0
+    },
+    grid: {
+      padding: {
+        top: 5,
+        bottom: 5
+      }
+    },
+    colors: ['#007bff', '#28a745', '#ffc107'],
+    tooltip: {
+      fixed: {
+        enabled: false
+      },
+      x: {
+        show: false
+      },
+      y: {
+        title: {
+          formatter: function formatter(val) {
+            return '';
+          }
+        },
+        formatter: function(value) {
+          return value.toFixed(2) + '%';
+        }
+      },
+      marker: {
+        show: false
+      }
+    },
+    yaxis: {
+      labels: {
+        formatter: function(value) {
+          return value.toFixed(0) + '%';
+        }
+      }
+    }
+}
+
+const serverResourcesChartComplete = {
+    ...serverResourcesChart,
+    chart: { ...serverResourcesChart.chart, height: 90 }
+}
+
+let usersLogChart = {
+    chart: {
+      group: 'sparks',
+      type: 'area',
+      height: 30,
+      sparkline: {
+        enabled: true
+      },
+      dropShadow: {
+        enabled: false
+      }
+    },
+    series: [
+      {
+        name: 'Users',
+        data: [10, 15, 8, 12, 18, 20, 14, 16, 22, 25]
+      }
+    ],
+    stroke: {
+      curve: 'smooth',
+      width: 2
+    },
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.7,
+        opacityTo: 0.3,
+        stops: [0, 100]
+      }
+    },
+    markers: {
+      size: 0
+    },
+    grid: {
+      padding: {
+        top: 5,
+        bottom: 5
+      }
+    },
+    colors: ['#17a2b8'],
+    tooltip: {
+      fixed: {
+        enabled: false
+      },
+      x: {
+        show: false
+      },
+      y: {
+        title: {
+          formatter: function formatter(val) {
+            return '';
+          }
+        },
+        formatter: function(value) {
+          return value + ' users';
+        }
+      },
+      marker: {
+        show: false
+      }
+    },
+    yaxis: {
+      labels: {
+        formatter: function(value) {
+          return value.toFixed(0);
+        }
+      }
+    }
+}
+
+##<% for( const kpi of kpis.filter(kpi => kpi.type == 'bank') ) { %>
+new ApexCharts(document.querySelector("#bank-chart-<%= kpi.id %>"), bankStatementsChart).render()
+##<% } %>
+
+##<% for( const kpi of kpis.filter(kpi => kpi.type == 'station') ) { %>
+new ApexCharts(document.querySelector("#station-chart-<%= kpi.id %>"), <% if(kpi.hasUsers) { %>serverResourcesChart<% } else { %>serverResourcesChartComplete<% } %>).render()
+new ApexCharts(document.querySelector("#users-chart-<%= kpi.id %>"), usersLogChart).render()
+##<% } %>
+
+socket.on('dashboard fullscreen', (data) => {
+    $('body > div > nav').hide()
+    $('body > div > footer').hide()
+    $('body > div > aside').css('height', '100vh')
+    $('body > div > div.content-wrapper').css('height', '100vh')
+})
+
+socket.on('dashboard reload', (data) => {
+    location.reload()
+})

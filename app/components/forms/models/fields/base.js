@@ -36,6 +36,9 @@ export class Field {
     get js() {
         return false
     }
+    get preloadJs() {
+        return false
+    }
     get jsValue() {
         return 'index'
     }
@@ -47,6 +50,9 @@ export class Field {
     }
     get id() {
         return `${this.form.id}-${this.name}`
+    }
+    get url() {
+        return `${this.form.url}/${this.name}`
     }
     get lineId() {
         return this.id.replace(/-/g, '_')

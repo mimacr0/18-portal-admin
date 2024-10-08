@@ -69,5 +69,9 @@
 	"Confirm": "Confirm",
 	"Import configuration": "Import configuration",
 	"Create shipping address": "Create shipping address",
-	"Go back": "Go back"
+	"Go back": "Go back",
+	"Authorizations": "Authorizations",
+	"Authorization": "Authorization",
+	"Client ID": "Client ID",
+	"User": "User"
 }

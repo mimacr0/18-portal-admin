@@ -1,11 +1,9 @@
-const stationsStationsUpdateUserIdReload = async () => {
-    const res = await jsonGet(`/stations/stations/update/m2o/user_id`)
+const <%= field.varName %>Reload = async () => {
+    const res = await jsonGet('<%= field.url %>')
     if(!res?.html) return
-    $('#stations-stations-update-user_id').html(res.html).trigger('change')
+    $('#<%= field.id %>').html(res.html)
 }
 
-stationsStationsUpdateUserIdReload()
-
 $('#<%= field.id %>').select2({
-    dropdownParent: $('#stationsStationsUpdateModal')
+    dropdownParent: $('#<%= form.varName %>Modal')
 })

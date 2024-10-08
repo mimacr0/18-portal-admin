@@ -3,27 +3,19 @@ import { DataTypes, Model } from 'sequelize'
 
 import { dataDB } from '../../../controllers/db/db.js'
 import { genMD5 } from '../../../tools/sys.js'
-import { sio } from '../../../controllers/web/servers.js'
 
 
 export class DashboardKpi extends Model {
-    static async updateKpi(args, options = {}) {
-        const { reload = true, del = false } = options
-
-        const { name, ref, data } = args
+    static async updateKpi(ref, data) {
         const id = genMD5(ref)
         var kpi = await DashboardKpi.findByPk(id)
 
-        if(!kpi) {
-            kpi = await this.create({ id, name, data })
-            if(reload) sio.emit('kpi update', kpi.id)
-            return kpi
-        }
+        if(!kpi) return false
 
-        if(del) await this.destroy({ where: { id } })
-        await DashboardKpi.upsert({ id, name, data: { ...kpi?.data, ...data } })
-        if(data?.visible && reload) sio.emit('kpi update', kpi.id)
-        return kpi
+        kpi.kpi = data
+        kpi.changed('kpi', true)
+        await kpi.save()
+        return true
     }
     static async getKPIs(page) {
         const kpis = await this.findAll({ where: { 'data.page': page } })
@@ -69,3 +61,22 @@ DashboardKpi.init({
         defaultValue: {}
     }
 }, { sequelize: dataDB, modelName: 'dashboard_kpi' })
+
+
+export class DashboardKPIValues extends Model {}
+
+DashboardKPIValues.init({
+    id: {
+        type: DataTypes.STRING(32),
+        primaryKey: true
+    },
+    user_id: {
+        type: DataTypes.STRING(32),
+        allowNull: false
+    },
+    values: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: {}
+    }
+}, { sequelize: dataDB, modelName: 'dashboard_kpi_value' })

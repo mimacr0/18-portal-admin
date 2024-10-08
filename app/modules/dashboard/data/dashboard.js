@@ -41,6 +41,44 @@ const kpis = [
         size: 'col-sm-6 col-md-2',
         ref: 'SPARE_PARTS_STATUS_KPI',
         type: 'state'
+    },
+    {
+        ref: 'PORTAL_EXPEDITIONS_CHART',
+        type: 'chart',
+        section: 1,
+        title: 'Expeditions',
+        size: 'col-lg-12 col-md-12 col-sm-12',
+        series: [
+            { label: 'Expeditions', color: '#20c997' }
+        ]
+    },
+    {
+        ref: 'PORTAL_RECEPTIONS_CHART',
+        type: 'chart',
+        section: 1,
+        title: 'Receptions',
+        size: 'col-lg-12 col-md-12 col-sm-12',
+        series: [
+            { label: 'Receptions', color: '#0d6efd' }
+        ]
+    },
+    {
+        ref: 'PORTAL_EXPEDITIONS_CHART_PIE',
+        type: 'chart',
+        mode: 'pie',
+        section: 2,
+        title: 'Last month Expeditions',
+        size: 'col-lg-12 col-md-12 col-sm-12',
+        colors: ["#6c757d", "#ffc107", "#ff0000", "#20c997"]
+    },
+    {
+        ref: 'PORTAL_RECEPTIONS_CHART_PIE',
+        type: 'chart',
+        mode: 'pie',
+        section: 2,
+        title: 'Last month Receptions',
+        size: 'col-lg-12 col-md-12 col-sm-12',
+        colors: ['#0d6efd', '#ffc107', "#ff0000"]
     }
 ]
 
@@ -59,8 +97,7 @@ export const dashboardPages = [
                     { url: '/static/base/js/sys.js' },
                     { url: '/static/base/js/systray.js' },
                     { url: '/static/base/js/tabs.js' },
-                    { url: '/static/dashboard/js/dashboard.js' },
-                    { url: '/static/dashboard/js/custom.js' }
+                    { url: '/assets/js/dashboard/page.js' }
                 ]
             }
         },

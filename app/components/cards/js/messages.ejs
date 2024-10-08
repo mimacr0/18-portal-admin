@@ -1,0 +1,71 @@
+let <%= card.varName %>Page = 1
+
+##<% for(const action of card.actions.tools.filter(action => action.js)) { %>
+<%- await include(`actions/tools/${action.js}`, { action }) %>
+##<% } %>
+##
+##<% if(card.actions.crud.create) { %>
+const <%= card.varName %>CreateButtonClick = () => {
+    $('#<%= card.form.varName %>Modal').modal('toggle')
+    <%= card.varName %>ReloadList()
+}
+
+$('.<%= card.id %>-create-button').click(<%= card.varName %>CreateButtonClick)
+##<% } %>
+
+##<% const updateAction = card.actions.update %>
+##<% const deleteAction = card.actions.delete %>
+##<% if (card.actions.crud.update) { %>
+const <%= updateAction.varName %> = async (e) => {
+    const rid = $(e.currentTarget).data('id')
+    const res = await jsonGet(`<%= card.url %>/read/${rid}`)
+    if(res?.status != 'success') return
+    ##<% for(const field of (card?.form?.fields || [])) { %>
+    <%- await include(`value/${field.jsValue}`, { card, field }) %>
+    ##<% } %>
+    $('#<%= card.form.varName %>Modal').modal('toggle')
+    <%= card.varName %>ReloadList()
+}
+##<% } %>
+
+##<% if (card.actions.crud.delete) { %>
+const <%= deleteAction.varName %> = async (e) => {
+    if(!confirm('Are you sure ?')) return
+    await jsonPost(`<%= card.url %>/action/delete/${$(e.currentTarget).data('id')}`)
+    <%= card.varName %>ReloadList()
+}
+##<% } %>
+
+##<% for(const action of (card.actions.list || [])) { %>
+<%- await include(`actions/list/${action.js}`, { card, action }) %>
+##<% } %>
+
+##<% if(card.form) { %>
+<%- await include('../../forms/js/form', { card, form: card.form }) %>
+##<% } %>
+
+const <%= card.varName %>ReloadList = async () => {
+    let q = $('#<%= card.id %>-search-input').val()
+    $('.tooltip').remove()
+    const res = await jsonGet(`<%= card.url %>/list?q=${q || ''}&page=${<%= card.varName %>Page || ''}`)
+    $('#<%= card.id %>-list').html(res.html)
+    $('#<%= card.id %>-footer').html(res.footer)
+    $('[data-toggle="tooltip"]').tooltip()
+    $('#<%= card.id %>-footer .page-item').click(function () {
+        <%= card.varName %>Page = $(this).data('page')
+        <%= card.varName %>ReloadList()
+    })
+    ##<% for(const action of (card.actions.list || [])) { %>
+    <%- await include(`actions/list/_call`, { card, action }) %>
+    ##<% } %>
+    ##<% if (updateAction) { %>
+    $('.<%= updateAction.id %>').click(<%= updateAction.varName %>)
+    ##<% } %>
+    ##<% if (deleteAction) { %>
+    $('.<%= deleteAction.id %>').click(<%= deleteAction.varName %>)
+    ##<% } %>
+}
+
+$('#<%= card.id %>-search-input').on('keyup', debounceAction(<%= card.varName %>ReloadList, 300))
+
+// <%= card.varName %>ReloadList()

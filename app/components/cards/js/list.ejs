@@ -6,6 +6,9 @@ let <%= card.varName %>Page = 1
 ##
 ##<% if(card.actions.crud.create) { %>
 const <%= card.varName %>CreateButtonClick = () => {
+    ##<% for(const field of (card?.form?.fields || []).filter(field => field.preloadJs)) { %>
+    <%- await include(`preload/${field.preloadJs}`, { card, field }) %>
+    ##<% } %>
     $('#<%= card.form.varName %>Modal').modal('toggle')
     <%= card.varName %>ReloadList()
 }
@@ -17,6 +20,9 @@ $('.<%= card.id %>-create-button').click(<%= card.varName %>CreateButtonClick)
 ##<% const deleteAction = card.actions.delete %>
 ##<% if (card.actions.crud.update) { %>
 const <%= updateAction.varName %> = async (e) => {
+    ##<% for(const field of (card?.form?.fields || []).filter(field => field.preloadJs)) { %>
+    <%- await include(`preload/${field.preloadJs}`, { card, field }) %>
+    ##<% } %>
     const rid = $(e.currentTarget).data('id')
     const res = await jsonGet(`<%= card.url %>/read/${rid}`)
     if(res?.status != 'success') return

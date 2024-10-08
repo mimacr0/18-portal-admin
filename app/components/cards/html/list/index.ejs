@@ -48,35 +48,29 @@
          </div>
          <div class="collapse" id="<%= card.id %>-advanced-search-container">
             <div class="row mt-3">
-              <div class="col-3">
-                 <select class="form-control" id="<%= card.id %>-advanced-search-field-select">
-                    <option value="field1">Field 1</option>
-                    <option value="field2">Field 2</option>
-                    <option value="field3">Field 3</option>
-                 </select>
-              </div>
-              <div class="col-3">
-                 <select class="form-control" id="<%= card.id %>-advanced-search-operator-select">
-                    <option value="equals">Equals</option>
-                    <option value="not-equals">Not Equals</option>
-                    <option value="contains">Contains</option>
-                 </select>
-              </div>
-              <div class="col-3">
-                 <input type="text" class="form-control" id="<%= card.id %>-advanced-search-query-input" placeholder="<%= page.translate('Query') %>">
-              </div>
-              <div class="col-3">
-                 <button type="button" class="btn btn-default" id="<%= card.id %>-add-advanced-search-line">
-                    <i class="fa fa-plus"></i> <%= page.translate('Add') %>
-                 </button>
-              </div>
-              <div class="col-12 mt-3">
-                 <div class="btn-group" role="group" aria-label="Boolean operators">
-                    <button type="button" class="btn btn-default">AND</button>
-                    <button type="button" class="btn btn-default">OR</button>
-                 </div>
-              </div>
-            </div>
+               <div class="col-3">
+                  <select class="form-control form-control-xs" id="<%= card.id %>-advanced-search-field-select" style="height: 90%; font-size: 0.875rem; padding: 0.2rem 0.5rem;">
+                     <option value="field1">Field 1</option>
+                     <option value="field2">Field 2</option>
+                     <option value="field3">Field 3</option>
+                  </select>
+               </div>
+               <div class="col-3">
+                  <select class="form-control form-control-xs" id="<%= card.id %>-advanced-search-operator-select" style="height: 90%; font-size: 0.875rem; padding: 0.2rem 0.5rem;">
+                     <option value="equals">Equals</option>
+                     <option value="not-equals">Not Equals</option>
+                     <option value="contains">Contains</option>
+                  </select>
+               </div>
+               <div class="col-3">
+                  <input type="text" class="form-control form-control-xs" id="<%= card.id %>-advanced-search-query-input" placeholder="<%= page.translate('Query') %>" style="height: 90%; font-size: 0.875rem; padding: 0.2rem 0.5rem;">
+               </div>
+               <div class="col-3">
+                  <button type="button" class="btn btn-default btn-xs" id="<%= card.id %>-add-advanced-search-line" style="height: 90%; font-size: 0.875rem; padding: 0.2rem 0.5rem;">
+                     <i class="fa fa-plus"></i> <%= page.translate('Add') %>
+                  </button>
+               </div>
+             </div>
          </div>
       </div>
        <div class="table-responsive mailbox-messages <%= card.id %>-main-container">

@@ -1,8 +1,12 @@
 
 import { List } from './cards/list.js'
+import { Messages } from './cards/messages.js'
+import { Chat } from './cards/chat.js'
 
 const cardTypes = {
-    list: List
+    list: List,
+    messages: Messages,
+    chat: Chat
 }
 
 export class Section {

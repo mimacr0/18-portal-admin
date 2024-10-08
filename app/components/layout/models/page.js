@@ -1,4 +1,3 @@
-
 import path from 'path'
 
 import { Menu } from './menu.js'
@@ -59,10 +58,10 @@ export class Page {
     }
 
     async render(data={}) {
-        return await renderModule(path.join(this.module, 'views', this.view), { page: this, data, i18n: this.i18n })
+        return await renderModule(path.join(this.module, 'views', this.view), { page: this, ...data, i18n: this.i18n })
     }
 
     async renderJS(data={}) {
-        return await renderModule(path.join(this.module, 'js', this.jsView), { page: this, data, i18n: this.i18n })
+        return await renderModule(path.join(this.module, 'js', this.jsView), { page: this, ...data, i18n: this.i18n })
     }
 }

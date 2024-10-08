@@ -6,6 +6,8 @@ import { checkUser } from '../../../controllers/web/security.js'
 import { WebServiceRPC } from '../../../controllers/rpc/erp.js'
 import { Page } from '../../../components/layout/models/page.js'
 import { renderComponent, renderModule } from '../../../tools/view.js'
+import { genMD5 } from '../../../tools/sys.js'
+import { StockItem } from '../models/stock.js'
 
 
 export const stockRouter = express.Router()
@@ -36,19 +38,32 @@ stockRouter.get('/stock/stock/list', checkUser, async (req, res) => {
 
     const q = req.query?.q || ''
 
-    const rpc = pconf?.pc?.rpc || pconf?.gl?.rpc
+    const totalCount = await StockItem.count({ where: { user_id: req.user.id } })
 
-    if(!rpc) return res.json({ status: 'error', message: req.i18n.__('Error syncing stock') })
+    if(totalCount == 0) {
 
-    const erp = new WebServiceRPC(rpc)
+        const erp = new WebServiceRPC('pages.stock.stock')
 
-    const result = await erp.request('stock/list', {
-        q, limit, offset, user_id: req.user.uid
+        const result = await erp.request('stock/list/all', {
+            user_id: req.user.uid
+        })
+
+        if(result?.status !== 'success') return res.json(result)
+        else await StockItem.bulkCreate(result.data.map(row => {
+            return {
+                id: genMD5(row.id.toString()),
+                data: row,
+                user_id: req.user.id
+            }
+        }))
+
+    }
+
+    const { count, rows } = await StockItem.findAndCountAll({
+        where: { user_id: req.user.id },
+        limit,
+        offset
     })
-
-    if(result?.status !== 'success') return res.json(result)
-
-    const { count, rows } = result.data
 
     let rcount = pconf?.pc?.list?.rcount || pconf?.gl?.list?.rcount
     let rstyle = false

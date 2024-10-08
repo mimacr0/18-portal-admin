@@ -1,40 +1,72 @@
 
-import util from 'util'
+import fs from 'fs/promises'
 import jwt from 'jsonwebtoken'
+import path from 'path'
+import util from 'util'
 
 import { ConfigConf } from '../../modules/base/models/config.js'
 import { SysValue } from '../../modules/base/models/base.js'
 import { Logger } from '../../tools/log.js'
+import sysConfig from '../../etc/sys.js'
 
 export class WebServiceRPC {
 
-    constructor(conn) {
-        this.connKey = conn
+    constructor(page) {
+        this.pageConfig = page
     }
 
     async _getConnectionData() {
         const connections = await ConfigConf.getByKey('api.rpc.connections')
+        const conf = await ConfigConf.getByKeys({
+            gl: 'pages.global',
+            pc: this.pageConfig
+        })
 
-        const conn = connections[this.connKey]
+        const connKey = conf?.pc?.rpc || conf?.gl?.rpc
 
-        Logger.debug('Connection:', conn)
+        if(!connKey) return { status: 'error', message: 'Connection not found' }
 
-        if(!conn) return { status: 'error', message: 'Connection not found' }
-        if(!conn?.url) return { status: 'error', message: 'Connection URL not found' }
-        if(!conn?.secret) return { status: 'error', message: 'Connection secret not found' }
-        if(!conn?.client) return { status: 'error', message: 'Connection client not found' }
+        const data = connections[connKey]
 
-        return { status: 'success', data: conn }
+        Logger.debug('Connection:', data)
+
+        if(!data) return { status: 'error', message: 'Connection not found' }
+        if(!data?.url) return { status: 'error', message: 'Connection URL not found' }
+        if(!data?.client) return { status: 'error', message: 'Connection client not found' }
+
+        return { status: 'success', data: { ...data, connKey } }
     }
 
     async requestToken(data) {
-        this.token = await util.promisify(jwt.sign)({ client: data.client }, data.secret, { expiresIn: '1h' })
+        const keyPath = path.join(sysConfig.BASE_PATH, 'security', 'id_rsa.key')
+        const key = await fs.readFile(keyPath)
 
-        await SysValue.setByKey(this.connKey, { token: this.token })
+        const token = await util.promisify(jwt.sign)({}, key, { expiresIn: '10m', algorithm: 'RS256' })
+        const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${data.client},${token}` }
+        const url = this.joinURL(data.url, 'auth/login')
 
-        Logger.debug('Token:', this.token)
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({})
+            })
+            const json = await response.json()
 
-        return { status: 'success', token: this.token }
+            Logger.debug('Response:', json?.result || json?.error)
+
+            const newToken = json?.result?.token
+
+            if(!newToken) return { status: 'error', message: 'Error during request' }
+
+            await SysValue.setByKey(`rpc_api_${data.connKey}`, { token: newToken })
+
+            Logger.debug('Token:', newToken)
+            return { status: 'success', token: newToken }
+        } catch (error) {
+            Logger.error('Error during request:', error.message)
+            return { status: 'error', message: 'Error during request' }
+        }
     }
 
     joinURL(...parts) {
@@ -51,22 +83,25 @@ export class WebServiceRPC {
 
         const connData = connResult.data
 
-        const tokenCache = await SysValue.getByKey(this.connKey)
+        const tokenCache = await SysValue.getByKey(`rpc_api_${connData.connKey}`)
 
-        if(tokenCache?.token) this.token = tokenCache.token
+        let token = false
+
+        if(tokenCache?.token) token = tokenCache.token
 
         Logger.debug('Request:', endpoint, data, options, this.token)
 
-        if(!this.token) {
+        if(!token) {
             const loginRes = await this.requestToken(connData)
             if(loginRes.status !== 'success') return { status: 'error', message: 'Login failed' }
+            token = loginRes.token
         }
 
         const { method = 'POST' } = options
-        const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.token}` }
+        const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
 
         try {
-            const url = this.joinURL(connData.url, this.baseURL, endpoint)
+            const url = this.joinURL(connData.url, endpoint)
             const response = await fetch(url, {
                 method,
                 headers,
@@ -90,6 +125,11 @@ export class WebServiceRPC {
                 if(loginRes.status !== 'success') return { status: 'error', message: 'Login failed' }
                 this.token = loginRes.token
                 return await this.request(endpoint, data, options)
+            }
+
+            if(result?.status !== 'success') {
+                await SysValue.setByKey(`rpc_api_${connData.connKey}`, { token: null })
+                return { status: 'error', message: 'Error during request' }
             }
 
             if(result?.status !== 'success') return result

@@ -3,6 +3,7 @@ export class KPI {
     constructor(kpi) {
         this._kpi = kpi
         this._data = kpi.data
+        this._values = kpi.kpi
     }
     get type() {
         return this._data?.type || ''
@@ -17,6 +18,12 @@ export class KPI {
         return this._kpi.id
     }
     get ref() {
-        return this._kpi.ref
+        return this._data.ref
+    }
+    get conf() {
+        return this._data
+    }
+    get data() {
+        return this._values
     }
 }
