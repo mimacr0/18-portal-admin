@@ -48,6 +48,7 @@ def install(args):
     os.makedirs(install_dir, exist_ok=True)
     os.makedirs(os.path.join(install_dir, 'data', 'db'), exist_ok=True)
     os.makedirs(os.path.join(install_dir, 'data', 'filestore'), exist_ok=True)
+    os.makedirs(os.path.join(install_dir, 'security'), exist_ok=True)
 
     os.system(f'rm -rf {install_dir}/controllers')
     os.system(f'rm -rf {install_dir}/data/mp3')
@@ -58,6 +59,7 @@ def install(args):
     os.system(f'rm -rf {install_dir}/public')
     os.system(f'rm -rf {install_dir}/server.js')
     os.system(f'rm -rf {install_dir}/package*.json')
+    os.system(f'rm -rf {install_dir}/security/jwt_rsa.sh')
 
     os.system(f'cp -r {src_dir}/app/controllers {install_dir}')
     os.system(f'cp -r {src_dir}/app/data/mp3 {install_dir}/data')
@@ -70,6 +72,7 @@ def install(args):
     os.system(f'cp -r {src_dir}/app/scripts {install_dir}/scripts')
     os.system(f'cp -r {src_dir}/app/server.js {install_dir}')
     os.system(f'cp -r {src_dir}/app/package.json {install_dir}')
+    os.system(f'cp -r {src_dir}/app/security/jwt_rsa.sh {install_dir}/security')
 
     os.makedirs(os.path.join(install_dir, 'scripts', 'tmp'), exist_ok=True)
 
