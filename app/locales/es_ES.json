@@ -72,5 +72,9 @@
 	"Select Files": "Select Files",
 	"Clear": "Clear",
 	"Go back": "Go back",
-	"Create shipping address": "Create shipping address"
+	"Create shipping address": "Create shipping address",
+	"Authorizations": "Authorizations",
+	"Authorization": "Authorization",
+	"Client ID": "Client ID",
+	"User": "User"
 }

@@ -60,6 +60,25 @@ export const removeFile = async (file) => {
     return true
 }
 
+export const uploadFiles = async (files) => {
+    const dpath = path.join(sysConfig.BASE_PATH, 'data', 'filestore')
+    let result = []
+    for (const file of Object.values(files)) {
+        const { name, mimetype, size, md5 } = file
+        const ext = name.split('.').pop()
+        const fpath = path.join(dpath, md5)
+        const rpath = path.join('data/filestore', md5)
+        try {
+            await file.mv(fpath)
+            result.push({ name, ext, mimetype, size, md5, path: rpath })
+            Logger.debug(`File ${name} has been saved to ${fpath}`);
+        } catch (error) {
+            Logger.error(`Error saving file ${name} to ${fpath}`);
+        }
+    }
+    return result
+}
+
 export const generateWebToken = async (data, secret, options) => {
     return jwt.sign(data, secret, options)
 }

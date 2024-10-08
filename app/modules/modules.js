@@ -19,6 +19,7 @@ import { stockRouter } from './stock/routes/stock.js'
 import { dashboardRouter } from './dashboard/routes/dashboard.js'
 import { messagesRouter } from './messages/routes/messages.js'
 import { receptionsRouter } from './receptions/routes/receptions.js'
+import { keysRouter } from './base/routes/keys.js'
 
 import { configPages } from './base/data/config.js'
 import { usersPages } from './base/data/users.js'
@@ -27,6 +28,7 @@ import { stockPages } from './stock/data/pages.js'
 import { dashboardPages } from './dashboard/data/dashboard.js'
 import { messagesPages } from './messages/data/messages.js'
 import { receptionsPages } from './receptions/data/receptions.js'
+import { keysPages } from './base/data/keys.js'
 
 import { dashboardRegisterListeners } from './dashboard/listeners/register.js'
 
@@ -40,6 +42,7 @@ export const initRouters = () => {
     app.use(dashboardRouter)
     app.use(messagesRouter)
     app.use(receptionsRouter)
+    app.use(keysRouter)
 
     if (!app._router.stack.some(layer => layer.route && layer.route.path === '/'))
         app.use(mainRouter)
@@ -47,7 +50,7 @@ export const initRouters = () => {
 
 export const initStatic = () => {
     app.use('/static/base', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "base", "static")))
-    app.use('/static/dashboard', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "dashboard", "static")))
+    // app.use('/static/dashboard', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "dashboard", "static")))
     app.use('/static/stock', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "stock", "static")))
     app.use('/static/expeditions', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "expeditions", "static")))
     app.use('/static/messages', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "messages", "static")))
@@ -63,6 +66,7 @@ const initPages = async () => {
     await SysPage.actionRegister(dashboardPages)
     await SysPage.actionRegister(messagesPages)
     await SysPage.actionRegister(receptionsPages)
+    await SysPage.actionRegister(keysPages)
 }
 
 const initUsers = async () => {

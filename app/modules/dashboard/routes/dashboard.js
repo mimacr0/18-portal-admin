@@ -2,35 +2,81 @@
 import express from 'express'
 
 import { SysPage } from '../../base/models/base.js'
-import { checkUser, checkERPUser } from '../../../controllers/web/security.js'
+import { checkUser } from '../../../controllers/web/security.js'
 import { sio } from '../../../controllers/web/servers.js'
-import { ConfigConf } from '../../base/models/config.js'
 import { WebServiceRPC } from '../../../controllers/rpc/erp.js'
 import { Dashboard } from '../../../components/dashboard/models/dashboard.js'
+import { Logger } from '../../../tools/log.js'
 
 export const dashboardRouter = express.Router()
 
 dashboardRouter.get('/', checkUser, async (req, res) => {
     const pageData = await SysPage.getPage('/')
-    const conf = await ConfigConf.getByKey('pages.dashboard.dashboard')
-    const rpc = conf.rpc
     const page = new Dashboard({
         ...pageData,
         user: req.user,
         i18n: req.i18n
     })
 
-    if(!rpc) return res.send(await page.render())
+    const kpis = await page.getKPIs()
+    const unload = kpis.find(k => Object.keys(k.data).length == 0)
 
-    const erp = new WebServiceRPC(rpc)
+    if(unload) {
 
-    const result = await erp.request('dashboard/data', {
-        user_id: req.user.uid
-    })
+        const erp = new WebServiceRPC('pages.dashboard.dashboard')
 
-    if(result?.status !== 'success') return res.send(await page.render())
+        const result = await erp.request('dashboard/data', {
+            user_id: req.user.uid
+        })
 
-    res.send(await page.render(result.data || {}))
+        const defaultColors = ['#20c997', '#ffc107', '#ff0000']
+        const expeditionsChart = kpis.find(k => k.ref == 'PORTAL_EXPEDITIONS_CHART')
+        const receptionsChart = kpis.find(k => k.ref == 'PORTAL_RECEPTIONS_CHART')
+        const expeditionsChartPie = kpis.find(k => k.ref == 'PORTAL_EXPEDITIONS_CHART_PIE')
+        const receptionsChartPie = kpis.find(k => k.ref == 'PORTAL_RECEPTIONS_CHART_PIE')
+        const updates = {
+            EXPEDITIONS_STATUS_KPI: {
+                value: result?.data?.count?.expeditions_count
+            },
+            RECEPTIONS_STATUS_KPI: {
+                value: result?.data?.count?.receptions_count
+            },
+            STOCK_STATUS_KPI: {
+                value: result?.data?.count?.stock_count
+            },
+            STORAGE_STATUS_KPI: {
+                value: result?.data?.count?.locations_count
+            },
+            REPAIRS_STATUS_KPI: {
+                value: result?.data?.count?.repairs_count
+            },
+            SPARE_PARTS_STATUS_KPI: {
+                value: result?.data?.count?.spareparts_count
+            },
+            PORTAL_EXPEDITIONS_CHART: {
+                ...result?.data?.charts?.expeditions_data,
+                colors: expeditionsChart.conf?.colors || defaultColors
+            },
+            PORTAL_RECEPTIONS_CHART: {
+                ...result?.data?.charts?.receptions_data,
+                colors: receptionsChart.conf?.colors || defaultColors
+            },
+            PORTAL_EXPEDITIONS_CHART_PIE: {
+                ...result?.data?.charts?.expeditions,
+                colors: expeditionsChartPie.conf?.colors || defaultColors
+            },
+            PORTAL_RECEPTIONS_CHART_PIE: {
+                ...result?.data?.charts?.receptions,
+                colors: receptionsChartPie.conf?.colors || defaultColors
+            }
+        }
+
+        if(result?.status !== 'success') Logger.error(result)
+        else await page.updateKPIs(updates)
+
+    }
+
+    res.send(await page.render())
 })
 
 dashboardRouter.get('/assets/js/dashboard/page.js', checkUser, async (req, res) => {
@@ -45,23 +91,8 @@ dashboardRouter.get('/assets/js/dashboard/page.js', checkUser, async (req, res) 
     res.send(await page.renderJS())
 })
 
-dashboardRouter.post('/dashboard/api/update', checkERPUser, async (req, res) => {
-    sio.emit('dashboard expeditions update')
-    res.json({ status: 'success', message: 'Action completed successfully' })
-})
+// dashboardRouter.post('/dashboard/api/update', checkERPUser, async (req, res) => {
+//     sio.emit('dashboard expeditions update')
+//     res.json({ status: 'success', message: 'Action completed successfully' })
+// })
 
-dashboardRouter.get('/dashboard/get/charts/data', checkUser, async (req, res) => {
-    const conf = await ConfigConf.getByKey('pages.dashboard.dashboard')
-    const rpc = conf.rpc
-    if(!rpc) return res.json({ status: 'success', data: {} })
-
-    const erp = new WebServiceRPC(rpc)
-
-    const result = await erp.request('dashboard/data', {
-        user_id: req.user.uid,  q: 'charts'
-    })
-
-    if(result?.status !== 'success') return res.json({ status: 'error', message: req.i18n.__('Error syncing dashboard') })
-
-    res.json({ status: 'success', data: result?.data })
-})

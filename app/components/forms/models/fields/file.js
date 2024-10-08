@@ -5,4 +5,7 @@ export class File extends Field {
     get html() {
         return 'file'
     }
+    get jsValue() {
+        return 'file'
+    }
 }

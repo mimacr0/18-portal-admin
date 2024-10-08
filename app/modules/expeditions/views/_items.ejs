@@ -9,7 +9,7 @@
          <strong><%= i18n.__('Carrier') %>:</strong> <%- item.carrier %><br/>
       </small>
    </td>
-   <td><%- item.tracking %></td>
+   <td><%- item.tracking || '' %></td>
    <td><%- item.state %></td>
 </tr>
 <% }) %>

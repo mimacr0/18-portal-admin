@@ -1,0 +1,32 @@
+<%- await include('../../../components/layout/html/_header', { page }) %>
+
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+         <div class="row">
+            <div class="offset-3 col-6" id="page_messages_container"></div>
+         </div>
+      </div>
+      <!-- /.content-header -->
+
+      <!-- Main content -->
+      <div class="content">
+
+         <div class="container-fluid">
+
+            ##<% for( const screen of page.screens ) { %>
+            <%- await include('../../../components/cards/html/_screen', { screen, page }) %>
+            ##<% } %>
+
+         </div>
+
+         <% for(const form of page.forms) { %>
+         <%- await include('../../../components/forms/html/index', { form }) %>
+         <% } %>
+
+      </div>
+
+<%- await include('../../../components/layout/html/_footer', { page }) %>
+
+</body>
+
+</html>

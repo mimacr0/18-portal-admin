@@ -64,7 +64,7 @@ app/security/*.key
 app/security/*.csr
 app/security/*.srl
 app/security/*.pem
-app/security/*.sh
+app/security/*.pub
 app/scripts/tmp/*
 
 etc/*.yml

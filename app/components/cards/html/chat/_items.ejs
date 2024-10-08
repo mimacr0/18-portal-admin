@@ -1,0 +1,28 @@
+##<% let count = 0 %>
+##<% for( const item of items ) { %>
+##<% count++ %>
+<li class="nav-item p-1 <%= card.id.id %>-item" data-id="<%= item.id %>" data-name="<%= item.name %>" data-time="<%= item.timeAgoLabel %>">
+    <div class="media">
+        <img class="img-size-50 img-circle mr-3" src="/base/image/file/<%= item.id %>">
+
+        <div class="media-body">
+            <h3 class="dropdown-item-title">
+                <strong class="<%= card.id.id %>-item-name"><%= item.name %></strong>
+                ##<% if(item.unread > 0) { %>
+                <span class="ml-3 badge badge-pill badge-success" data-count-id="<%= item.id %>"><%= item.unread %> </span>
+                ##<% } %>
+                <span class="ml-3 messages-chat-item-active-label" data-active-id="<%= item.id %>"></span>
+                ##<% if(item.isGroup) { %>
+                <span class="float-right mt-1 mr-2 p-0 btn btn-tool btn-sm text-sm"><i class="fa fa-users"></i></span>
+                ##<% } %>
+                ##<% if(item.isMuted) { %>
+                <span class="float-right mt-1 mr-2 p-0 btn btn-tool btn-sm text-sm"><i class="fa fa-volume-mute"></i></span>
+                ##<% } %>
+            </h3>
+            <p class="text-sm text-muted">
+                <span class="chat-item-timeago messages-messages-last-message"><%- item.lastMessage %></span>
+            </p>
+        </div>
+    </div>
+</li>
+##<% } %>

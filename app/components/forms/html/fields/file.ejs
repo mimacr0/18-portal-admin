@@ -1,7 +1,7 @@
-<div id="<%= field.id %>-group">
+<div id="<%= field.id %>-group" class="form-group">
     <div class="col-md-12">
         <div class="drop-area" id="<%= field.id %>-drop-area">
-            <input type="file"  id="<%= field.id %>" name="file" hidden="1" required="1">
+            <input type="file"  id="<%= field.id %>" name="file" hidden="1" <% if (field.required) { %>required="1"<% } %>>
             <label for="<%= field.id %>" class="btn btn-primary btn-block small-form-file-label"><%= field.card.page.translate('Select Files') %></label>
             <button id="<%= field.id %>-clear" class="btn btn-danger mt-1 btn-clear"><%= field.card.page.translate('Clear') %></button>
         </div>

@@ -1,0 +1,18 @@
+<% let val = typeof(value) != "undefined" ? value : '' %>
+<% if(typeof(null_opt) != "undefined") { %>
+    <option value="">
+        <%= null_opt %>
+    </option>
+<% } %>
+
+<% items.forEach(function(item){ %>
+    <% if(item.id == val) { %>
+    <option value="<%= item.id %>" selected="1">
+        <%= item.name || item?.displayName %>
+    </option>
+    <% } else { %>
+    <option value="<%= item.id %>">
+        <%= item.name || item?.displayName %>
+    </option>
+    <% } %>
+<% }) %>

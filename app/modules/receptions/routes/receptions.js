@@ -28,7 +28,7 @@ receptionsRouter.get('/receptions/receptions/list', checkUser, async (req, res) 
 
     const pconf = await ConfigConf.getByKeys({
         gl: 'pages.global',
-        pc: 'pages.expeditions.expeditions'
+        pc: 'pages.receptions.receptions'
     })
 
     const page = parseInt(req.query.page) || 1
@@ -37,11 +37,7 @@ receptionsRouter.get('/receptions/receptions/list', checkUser, async (req, res) 
 
     const q = req.query?.q || ''
 
-    const rpc = pconf?.pc?.rpc || pconf?.gl?.rpc
-
-    if(!rpc) return res.json({ status: 'error', message: req.i18n.__('Error syncing stock') })
-
-    const erp = new WebServiceRPC(rpc)
+    const erp = new WebServiceRPC('pages.receptions.receptions')
 
     const result = await erp.request('receptions/list', {
         q, limit, offset, user_id: req.user.uid

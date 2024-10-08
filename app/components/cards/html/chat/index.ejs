@@ -4,7 +4,7 @@
        <h3 class="card-title"><span class="text-muted"><%= page.translate(card.title) %></span></h3>
        <div class="card-tools <%= card.id.id %>-card-tools">
           ##<% for( const action of card.actions.tools) { %>
-          <%- await include('../../list/html/actions/index', { card, action }) %>
+          <%- await include('../../../actions/html/tools/index', { card, action }) %>
           ##<% } %>
           <button class="btn btn-tool" data-card-widget="collapse" type="button" data-toggle="tooltip" title="Replegar/desplegar panel">
              <i class="fas fa-minus"></i>

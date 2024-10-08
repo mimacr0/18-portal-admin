@@ -12,6 +12,6 @@ export class StateKPI extends KPI {
         return this._data?.icon
     }
     get value() {
-        return this._data?.value || '0'
+        return this.data?.value || '0'
     }
 }

@@ -2,7 +2,7 @@
 import express from 'express'
 
 import { SysPage } from '../../base/models/base.js'
-import { checkUser, checkERPUser } from '../../../controllers/web/security.js'
+import { checkUser } from '../../../controllers/web/security.js'
 import { sio } from '../../../controllers/web/servers.js'
 import { Cards } from '../../../components/cards/models/page.js'
 
@@ -30,7 +30,7 @@ messagesRouter.get('/assets/js/messages/page.js', checkUser, async (req, res) =>
     res.send(await page.renderJS())
 })
 
-messagesRouter.post('/messages/api/update', checkERPUser, async (req, res) => {
-    sio.emit('messages expeditions update')
-    res.json({ status: 'success', message: 'Action completed successfully' })
-})
+// messagesRouter.post('/messages/api/update', checkERPUser, async (req, res) => {
+//     sio.emit('messages expeditions update')
+//     res.json({ status: 'success', message: 'Action completed successfully' })
+// })
