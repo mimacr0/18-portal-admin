@@ -51,6 +51,7 @@ export const usersPages = [
         module: 'base',
         view: 'users',
         js_view: 'users',
+        privilege: 'system',
         sequence: 900,
         assets: {
             footer: {

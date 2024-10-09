@@ -31,6 +31,11 @@ export class SysPage extends Model {
             registerEmitter.emit('page register', newPage)
         }
     }
+    hasMenu(user) {
+        if(!this.data?.icon) return false
+        const privilege = this.data?.privilege
+        return privilege ? user.hasPrivilege(privilege) : true
+    }
 }
 
 SysPage.init({

@@ -68,6 +68,12 @@ export class SysUser extends Model {
         if(lang.includes('_')) return sysConfig.LANG_DATA[lang.split('_')[0]].code
         return sysConfig.LANG_DATA[lang].code
     }
+    get displayName() {
+        return this.data?.short_name || this.name
+    }
+    hasPrivilege(privilege) {
+        return this.data?.privileges?.includes(privilege)
+    }
 }
 
 SysUser.init({

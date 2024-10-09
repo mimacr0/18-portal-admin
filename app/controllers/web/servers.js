@@ -1,5 +1,4 @@
 import { Server } from 'socket.io'
-import fs from 'fs'
 import cors from 'cors'
 import express from 'express'
 import fileupload from 'express-fileupload'

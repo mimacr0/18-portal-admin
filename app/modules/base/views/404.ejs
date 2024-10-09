@@ -1,0 +1,25 @@
+<%- await include('../../../components/layout/html/_header', { page }) %>
+
+      <!-- Main content -->
+      <div class="content">
+
+         <div class="container-fluid">
+            <div class="row">
+               <div class="offset-3 col-6 text-center" style="margin-top: 30vh;">
+                  <h3 style="font-size: 2.5rem;"><i class="fas fa-exclamation-triangle text-warning"></i> <%= page.translate('Oops! Page not found.') %></h3>
+               </div>
+            </div>
+            <div class="row">
+               <div class="offset-3 col-6 text-center">
+                  <h2 class="text-warning" style="font-size: 4.5rem;">404</h2>
+               </div>
+            </div>
+         </div>
+
+      </div>
+
+<%- await include('../../../components/layout/html/_footer', { page }) %>
+
+</body>
+
+</html>

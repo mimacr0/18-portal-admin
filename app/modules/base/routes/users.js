@@ -25,6 +25,9 @@ import { genMD5, saveFile, generateWebToken, verifyWebToken } from '../../../too
 export const usersRouter = express.Router()
 
 usersRouter.get('/users', checkUser, async (req, res) => {
+
+    if(!req.user.hasPrivilege('system')) return res.redirect('/pages/404')
+
     const pageData = await SysPage.getPage('/users')
     const page = new Cards({
         ...pageData,
@@ -35,6 +38,9 @@ usersRouter.get('/users', checkUser, async (req, res) => {
 })
 
 usersRouter.get('/assets/js/users/page.js', checkUser, async (req, res) => {
+
+    if(!req.user.hasPrivilege('system')) return res.redirect('/pages/404')
+
     const pageData = await SysPage.getPage('/users')
     const page = new Cards({
         ...pageData,
@@ -47,6 +53,9 @@ usersRouter.get('/assets/js/users/page.js', checkUser, async (req, res) => {
 })
 
 usersRouter.get('/users/users/list', checkUser, async (req, res) => {
+
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
+
     const pconf = await ConfigConf.getByKeys({
         gl: 'pages.global',
         pc: 'pages.users.users'
@@ -118,6 +127,9 @@ usersRouter.get('/logout', checkUser, (req, res) => {
 })
 
 usersRouter.post('/users/users/list/action/access', checkUser, async (req, res) => {
+
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
+
     const { id } = req.body
 
     config({ path: path.join(BASE_PATH, '.env') })
@@ -143,11 +155,10 @@ usersRouter.post('/users/users/list/action/access', checkUser, async (req, res) 
 })
 
 usersRouter.post('/users/users/tools/action/sync', checkUser, async (req, res) => {
-    const conf = await ConfigConf.getByKey('pages.users.users')
-    const rpc = conf.rpc
-    if(!rpc) return res.json({ status: 'error', message: 'Connection not found' })
 
-    const erp = new WebServiceRPC(rpc)
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
+
+    const erp = new WebServiceRPC('pages.users.users')
 
     const result = await erp.request('users/list')
 

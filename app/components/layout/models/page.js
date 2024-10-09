@@ -54,7 +54,7 @@ export class Page {
     }
 
     get menus() {
-        return this.pages.filter(p => p.data.icon).map(p => new Menu(p))
+        return this.pages.filter(p => p.hasMenu(this.user)).map(p => new Menu(p))
     }
 
     async render(data={}) {

@@ -4,6 +4,8 @@ import fs from 'fs'
 
 import { Logger } from '../../../tools/log.js'
 import { checkUser } from '../../../controllers/web/security.js'
+import { SysPage } from '../../base/models/base.js'
+import { Page } from '../../../components/layout/models/page.js'
 import sysConfig from '../../../etc/sys.js'
 
 export const baseRouter = express.Router()
@@ -45,4 +47,14 @@ baseRouter.post('/base/system/lang/update', checkUser, async (req, res) => {
 
     res.json({ status: 'success', message: 'Action completed successfully' })
 
+})
+
+baseRouter.get('/pages/404', checkUser, async (req, res) => {
+    const pageData = await SysPage.getPage('/404')
+    const page = new Page({
+        ...pageData,
+        user: req.user,
+        i18n: req.i18n
+    })
+    res.send(await page.render())
 })
