@@ -227,3 +227,48 @@ usersRouter.get('/users/login/token/:token', async (req, res) => {
         url: '/'
     }))
 })
+
+usersRouter.post('/users/users/tabs/add', checkUser, async (req, res) => {
+    const user = req.user
+    const { name, url } = req.body
+
+    if(!user.config.tabs) user.config.tabs = []
+
+    const tab = user.config.tabs.find(t => t.url == url)
+
+    if(tab) return res.json({ status: 'exists' })
+
+    user.config.tabs.push({
+        name,
+        url
+    })
+    user.changed('config', true)
+    await user.save()
+
+    res.json({ status: 'success' })
+})
+
+usersRouter.get('/users/users/tabs/list', checkUser, async (req, res) => {
+    const user = req.user
+
+    if(!user.config.tabs) return res.json({ status: 'success', tabs: [] })
+
+    res.json({ status: 'success', data: user.config.tabs.map(t => { return { title: t.name, url: t.url } }) })
+})
+
+usersRouter.post('/users/users/tabs/remove', checkUser, async (req, res) => {
+    const user = req.user
+    const { url } = req.body
+
+    if(!user.config.tabs) return res.json({ status: 'error', message: 'No tabs found' })
+
+    const tab = user.config.tabs.find(t => t.url == url)
+
+    if(!tab) return res.json({ status: 'error', message: 'Tab not found' })
+
+    user.config.tabs = user.config.tabs.filter(t => t.url != url)
+    user.changed('config', true)
+    await user.save()
+
+    res.json({ status: 'success' })
+})
