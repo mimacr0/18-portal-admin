@@ -7,6 +7,8 @@ import { checkUser } from '../../../controllers/web/security.js'
 import { WebServiceRPC } from '../../../controllers/rpc/erp.js'
 import { Page } from '../../../components/layout/models/page.js'
 import { renderComponent, renderModule } from '../../../tools/view.js'
+import { genMD5 } from '../../../tools/sys.js'
+import { ExpeditionItem } from '../models/expeditions.js'
 
 
 export const expeditionsRouter = express.Router()
@@ -39,17 +41,32 @@ expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, re
 
     const rpc = pconf?.pc?.rpc || pconf?.gl?.rpc
 
-    if(!rpc) return res.json({ status: 'error', message: req.i18n.__('Error syncing stock') })
+    const totalCount = await ExpeditionItem.count({ where: { user_id: req.user.id } })
 
-    const erp = new WebServiceRPC('pages.expeditions.expeditions')
+    if(totalCount == 0) {
 
-    const result = await erp.request('expeditions/list', {
-        q, limit, offset, user_id: req.user.uid
+        const erp = new WebServiceRPC('pages.expeditions.expeditions')
+
+        const result = await erp.request('expeditions/list', {
+            user_id: req.user.uid
+        })
+
+        if(result?.status !== 'success') return res.json(result)
+        else await ExpeditionItem.bulkCreate(result.data.map(row => {
+            return {
+                id: genMD5(row.id.toString()),
+                data: row,
+                user_id: req.user.id
+            }
+        }))
+
+    }
+
+    const { count, rows } = await ExpeditionItem.findAndCountAll({
+        where: { user_id: req.user.id },
+        limit,
+        offset
     })
-
-    if(result?.status !== 'success') return res.json(result)
-
-    const { count, rows } = result.data
 
     let rcount = pconf?.pc?.list?.rcount || pconf?.gl?.list?.rcount
     let rstyle = false
@@ -175,4 +192,20 @@ expeditionsRouter.post('/expeditions/create/expedition/create', checkUser, async
     if (result?.status != 'success') return res.json(result)
 
     res.json({ status: 'success', message: `Expedition ${result.data.name} created successfully` })
+})
+
+expeditionsRouter.post('/portal/customer/after/sales/create', checkUser, async (req, res) => {
+    const { id } = req.body
+    const data = req.body
+    delete data.id
+
+    res.json({ status: 'success' })
+})
+
+expeditionsRouter.post('/portal/customer/after/sales/update', checkUser, async (req, res) => {
+    const { id } = req.body
+    const data = req.body
+    delete data.id
+
+    res.json({ status: 'success' })
 })

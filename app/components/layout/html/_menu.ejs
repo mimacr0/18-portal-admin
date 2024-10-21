@@ -1,5 +1,5 @@
 <li class="nav-item <%= menu.action ? 'menu-open' : '' %>">
-                <a href="<%= menu.url %>" class="nav-link <%= menu.url == page.url ? 'active' : '' %>">
+                <a href="<%= menu.url %>" data-tab="<%= menu.url %>" data-label="<%= menu.title %>" class="nav-link <%= menu.url == page.url ? 'active' : '' %>">
                     <i class="nav-icon <%= menu.icon %>"></i>
                     <p><%= menu.title %></p>
                 </a>

@@ -59,6 +59,7 @@ node_modules
 
 # Security
 
+app/security/keys/*
 app/security/*.crt
 app/security/*.key
 app/security/*.csr

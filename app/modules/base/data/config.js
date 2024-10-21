@@ -114,7 +114,7 @@ export const configPages = [
         view: 'config',
         js_view: 'config',
         sequence: 1000,
-        access: 'admin',
+        privilege: 'system',
         assets: {
             header: {
                 css: [

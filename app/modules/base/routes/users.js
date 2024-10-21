@@ -25,6 +25,9 @@ import { genMD5, saveFile, generateWebToken, verifyWebToken } from '../../../too
 export const usersRouter = express.Router()
 
 usersRouter.get('/users', checkUser, async (req, res) => {
+
+    if(!req.user.hasPrivilege('system')) return res.redirect('/pages/404')
+
     const pageData = await SysPage.getPage('/users')
     const page = new Cards({
         ...pageData,
@@ -35,6 +38,9 @@ usersRouter.get('/users', checkUser, async (req, res) => {
 })
 
 usersRouter.get('/assets/js/users/page.js', checkUser, async (req, res) => {
+
+    if(!req.user.hasPrivilege('system')) return res.redirect('/pages/404')
+
     const pageData = await SysPage.getPage('/users')
     const page = new Cards({
         ...pageData,
@@ -47,6 +53,9 @@ usersRouter.get('/assets/js/users/page.js', checkUser, async (req, res) => {
 })
 
 usersRouter.get('/users/users/list', checkUser, async (req, res) => {
+
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
+
     const pconf = await ConfigConf.getByKeys({
         gl: 'pages.global',
         pc: 'pages.users.users'
@@ -118,6 +127,9 @@ usersRouter.get('/logout', checkUser, (req, res) => {
 })
 
 usersRouter.post('/users/users/list/action/access', checkUser, async (req, res) => {
+
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
+
     const { id } = req.body
 
     config({ path: path.join(BASE_PATH, '.env') })
@@ -143,11 +155,10 @@ usersRouter.post('/users/users/list/action/access', checkUser, async (req, res) 
 })
 
 usersRouter.post('/users/users/tools/action/sync', checkUser, async (req, res) => {
-    const conf = await ConfigConf.getByKey('pages.users.users')
-    const rpc = conf.rpc
-    if(!rpc) return res.json({ status: 'error', message: 'Connection not found' })
 
-    const erp = new WebServiceRPC(rpc)
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
+
+    const erp = new WebServiceRPC('pages.users.users')
 
     const result = await erp.request('users/list')
 
@@ -215,4 +226,49 @@ usersRouter.get('/users/login/token/:token', async (req, res) => {
         user,
         url: '/'
     }))
+})
+
+usersRouter.post('/users/users/tabs/add', checkUser, async (req, res) => {
+    const user = req.user
+    const { name, url } = req.body
+
+    if(!user.config.tabs) user.config.tabs = []
+
+    const tab = user.config.tabs.find(t => t.url == url)
+
+    if(tab) return res.json({ status: 'exists' })
+
+    user.config.tabs.push({
+        name,
+        url
+    })
+    user.changed('config', true)
+    await user.save()
+
+    res.json({ status: 'success' })
+})
+
+usersRouter.get('/users/users/tabs/list', checkUser, async (req, res) => {
+    const user = req.user
+
+    if(!user.config.tabs) return res.json({ status: 'success', tabs: [] })
+
+    res.json({ status: 'success', data: user.config.tabs.map(t => { return { title: t.name, url: t.url } }) })
+})
+
+usersRouter.post('/users/users/tabs/remove', checkUser, async (req, res) => {
+    const user = req.user
+    const { url } = req.body
+
+    if(!user.config.tabs) return res.json({ status: 'error', message: 'No tabs found' })
+
+    const tab = user.config.tabs.find(t => t.url == url)
+
+    if(!tab) return res.json({ status: 'error', message: 'Tab not found' })
+
+    user.config.tabs = user.config.tabs.filter(t => t.url != url)
+    user.changed('config', true)
+    await user.save()
+
+    res.json({ status: 'success' })
 })

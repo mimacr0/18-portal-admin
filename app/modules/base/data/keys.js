@@ -79,6 +79,7 @@ export const keysPages = [
         icon: 'fa fa-link',
         view: 'keys',
         js_view: 'keys',
+        privilege: 'system',
         sequence: 100,
         screens,
         forms,

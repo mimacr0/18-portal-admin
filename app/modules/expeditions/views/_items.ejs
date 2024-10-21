@@ -6,10 +6,10 @@
          <strong><%= i18n.__('Address') %>:</strong> <%- item.address %><br/>
          <strong><%= i18n.__('Date') %>:</strong> <%- item.date_order %><br/>
          <strong><%= i18n.__('Total') %>:</strong> <%- item.amount_total %><br/>
-         <strong><%= i18n.__('Carrier') %>:</strong> <%- item.carrier %><br/>
+         <% if(item.carrier) { %><strong><%= i18n.__('Carrier') %>:</strong> <%- item.carrier %><br/><% } %>
       </small>
    </td>
-   <td><%- item.tracking || '' %></td>
+   <td><%- item.tracking %></td>
    <td><%- item.state %></td>
 </tr>
 <% }) %>

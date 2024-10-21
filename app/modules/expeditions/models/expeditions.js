@@ -4,7 +4,38 @@ import { DataTypes, Model } from 'sequelize'
 import { dataDB } from '../../../controllers/db/db.js'
 
 
-export class ExpeditionItem extends Model {}
+export class ExpeditionItem extends Model {
+    get name() {
+        return this.data?.name
+    }
+    get address() {
+        return this.data?.address
+    }
+    get date_order() {
+        return this.data?.date_order
+    }
+    get amount_total() {
+        return this.data?.amount_total
+    }
+    get carrier() {
+        return this.data?.carrier || ''
+    }
+    get tracking() {
+        const tracking = this.data?.tracking
+        if(!tracking?.number) return ''
+        return `<a href="${tracking?.url}" target="_blank">${tracking?.number}</a>`
+    }
+    get state() {
+        const state = this.data?.state
+        if(!state?.value) return ''
+        const colors = {
+            on_hold: 'warning',
+            done: 'success'
+        }
+        const color = colors[state?.value] || 'secondary'
+        return `<span class="badge bg-${color}">${state?.label}</span>`
+    }
+}
 
 ExpeditionItem.init({
     id: {

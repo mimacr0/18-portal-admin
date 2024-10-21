@@ -76,5 +76,8 @@
 	"Authorizations": "Authorizations",
 	"Authorization": "Authorization",
 	"Client ID": "Client ID",
-	"User": "User"
+	"User": "User",
+	"Error syncing users": "Error syncing users",
+	"Sync completed": "Sync completed",
+	"Oops! Page not found.": "Oops! Page not found."
 }

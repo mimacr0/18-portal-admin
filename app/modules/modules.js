@@ -11,6 +11,7 @@ import { SysUser } from './base/models/users.js'
 import { SysPage } from './base/models/base.js'
 
 import { baseRouter } from './base/routes/base.js'
+import { apiRouter } from './base/routes/api.js'
 import { usersRouter } from './base/routes/users.js'
 import { configRouter } from './base/routes/config.js'
 import { expeditionsRouter } from './expeditions/routes/expeditions.js'
@@ -29,6 +30,7 @@ import { dashboardPages } from './dashboard/data/dashboard.js'
 import { messagesPages } from './messages/data/messages.js'
 import { receptionsPages } from './receptions/data/receptions.js'
 import { keysPages } from './base/data/keys.js'
+import { basePages } from './base/data/base.js'
 
 import { dashboardRegisterListeners } from './dashboard/listeners/register.js'
 
@@ -43,14 +45,19 @@ export const initRouters = () => {
     app.use(messagesRouter)
     app.use(receptionsRouter)
     app.use(keysRouter)
+    app.use(apiRouter)
 
     if (!app._router.stack.some(layer => layer.route && layer.route.path === '/'))
         app.use(mainRouter)
+
+    app.use((req, res) => {
+        res.redirect('/pages/404')
+    })
+
 }
 
 export const initStatic = () => {
     app.use('/static/base', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "base", "static")))
-    // app.use('/static/dashboard', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "dashboard", "static")))
     app.use('/static/stock', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "stock", "static")))
     app.use('/static/expeditions', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "expeditions", "static")))
     app.use('/static/messages', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "messages", "static")))
@@ -67,6 +74,7 @@ const initPages = async () => {
     await SysPage.actionRegister(messagesPages)
     await SysPage.actionRegister(receptionsPages)
     await SysPage.actionRegister(keysPages)
+    await SysPage.actionRegister(basePages)
 }
 
 const initUsers = async () => {
@@ -80,9 +88,8 @@ export const initListeners = async () => {
 
 export const initModules = async () => {
     initListeners()
+    initStatic()
     initRouters()
     initPages()
     initUsers()
-
-    initStatic()
 }

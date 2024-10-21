@@ -18,6 +18,7 @@ import { genDBID, saveFile, removeFile } from '../../../tools/sys.js'
 export const configRouter = express.Router()
 
 configRouter.get('/config', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.redirect('/pages/404')
     const pageData = await SysPage.getPage('/config')
     const page = new Cards({
         ...pageData,
@@ -28,6 +29,7 @@ configRouter.get('/config', checkUser, async (req, res) => {
 })
 
 configRouter.get('/assets/js/config/page.js', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.redirect('/pages/404')
     const pageData = await SysPage.getPage('/config')
     const page = new Cards({
         ...pageData,
@@ -40,6 +42,7 @@ configRouter.get('/assets/js/config/page.js', checkUser, async (req, res) => {
 })
 
 configRouter.get('/config/config/list', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
     const pconf = await ConfigConf.getByKeys({
         gl: 'pages.global',
         pc: 'pages.config.config'
@@ -87,11 +90,13 @@ configRouter.get('/config/config/list', checkUser, async (req, res) => {
 })
 
 configRouter.post('/config/config/action/delete/:id', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
     await ConfigConf.destroy({ where: { id: req.params.id } })
     res.json({status: 'success', message: 'Action completed successfully'})
 })
 
 configRouter.get('/config/config/read/:id', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
     const item = await ConfigConf.findByPk(req.params.id)
     res.json({
         status: 'success',
@@ -104,6 +109,7 @@ configRouter.get('/config/config/read/:id', checkUser, async (req, res) => {
 })
 
 configRouter.post('/config/config/update/form', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
     const { id, name } = req.body
     const data = { ...req.body }
     delete data.id
@@ -120,6 +126,7 @@ configRouter.post('/config/config/update/form', checkUser, async (req, res) => {
 })
 
 configRouter.get('/config/config/tools/action/export', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
     const items = await ConfigConf.findAll()
     const r = await runScript('config/export', { items })
 
@@ -137,6 +144,7 @@ configRouter.get('/config/config/tools/action/export', checkUser, async (req, re
 })
 
 configRouter.post('/config/config/tools/action/import/before', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
     const file = req.files['file-0']
 
     const ext = path.extname(file.name)

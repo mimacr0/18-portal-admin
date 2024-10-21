@@ -2,13 +2,13 @@ import { config } from 'dotenv'
 
 import path from 'path'
 import fs from 'fs/promises'
+import fss from 'fs'
 import jwt from 'jsonwebtoken'
 import util from 'util'
 import session from 'express-session'
 import SqliteStoreFactory from 'better-sqlite3-session-store'
 
 import { SysUser } from '../../modules/base/models/users.js'
-import { KeysKey } from '../../modules/base/models/keys.js'
 import { sysDB } from '../db/db.js'
 
 import i18n from '../i18n/i18n.js'
@@ -48,31 +48,45 @@ export const checkUserAssets = async (req, res, next) => {
 }
 
 export const checkRPCUser = async (req, res, next) => {
-    const authToken = req.headers['authorization'].split(' ')[1]
-
-    if(!authToken) return res.status(404).json({ status: 'error', message: 'Unauthorized' })
-    if(!authToken.includes(',')) return res.status(404).json({ status: 'error', message: 'Unauthorized' })
-
-    const [cid, token] = authToken.split(',')
-
-    const key = await KeysKey.findOne({ where: { 'data.client_user': cid } })
-
-    if(!key) return res.status(404).json({ status: 'error', message: 'Unauthorized' })
-
-    if(!key.data?.file?.path) return res.status(404).json({ status: 'error', message: 'Unauthorized' })
-
-    const keyPath = path.join(sysConfig.BASE_PATH, key.data.file.path)
+    const token = req.headers['authorization'].split(' ')[1]
+    if(!token) return res.status(404).json({ status: 'error', message: 'Unauthorized' })
 
     try {
-        const keyData = await fs.readFile(keyPath, { encoding: 'utf8' })
-        const decoded = await util.promisify(jwt.verify)(token, keyData, { algorithms: ['RS256'] })
-        req.payload = decoded
-        next()
+        await util.promisify(jwt.verify)(token, sysConfig.RPC_API_SECRET)
     } catch (error) {
         if(error.name == 'TokenExpiredError') return res.status(401).json({ status: 'error', message: 'Token expired' })
         if(error.name == 'JsonWebTokenError') return res.status(403).json({ status: 'error', message: 'Invalid token' })
         return res.status(500).json({ status: 'error', message: 'Authentication error' })
     }
+
+    req.token = token
+    next()
+}
+
+export const checkRPCUserAuth = async (req, res, next) => {
+    const token = req.headers['authorization'].split(' ')[1]
+
+    if(!token) return res.status(404).json({ status: 'error', message: 'Unauthorized' })
+    if(typeof(token) != 'string') return res.status(404).json({ status: 'error', message: 'Unauthorized' })
+    if(!token.includes(',')) return res.status(404).json({ status: 'error', message: 'Unauthorized' })
+
+    const [cid, t] = token.split(',')
+
+    const keyPath = path.join(sysConfig.BASE_PATH, 'security', 'keys', `${cid}.pub`)
+
+    try {
+        if(!fss.existsSync(keyPath)) return res.status(404).json({ status: 'error', message: 'Unauthorized' })
+        const keyData = await fs.readFile(keyPath, { encoding: 'utf8' })
+        await util.promisify(jwt.verify)(t, keyData, { algorithms: ['RS256'] })
+    } catch (error) {
+        Logger.error('Error verifying token:', error)
+        if(error.name == 'TokenExpiredError') return res.status(401).json({ status: 'error', message: 'Token expired' })
+        if(error.name == 'JsonWebTokenError') return res.status(403).json({ status: 'error', message: 'Invalid token' })
+        return res.status(500).json({ status: 'error', message: 'Authentication error' })
+    }
+
+    req.token = await util.promisify(jwt.sign)({}, sysConfig.RPC_API_SECRET, { expiresIn: '1h' })
+    next()
 }
 
 export const sessionMiddleware = session({

@@ -17,6 +17,7 @@ import { uploadFiles, removeFile, genDBID } from '../../../tools/sys.js'
 export const keysRouter = express.Router()
 
 keysRouter.get('/keys', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.redirect('/pages/404')
     const pageData = await SysPage.getPage('/keys')
     const page = new Cards({
         ...pageData,
@@ -27,6 +28,7 @@ keysRouter.get('/keys', checkUser, async (req, res) => {
 })
 
 keysRouter.get('/assets/js/keys/page.js', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.redirect('/pages/404')
     const pageData = await SysPage.getPage('/keys')
     const page = new Cards({
         ...pageData,
@@ -39,6 +41,7 @@ keysRouter.get('/assets/js/keys/page.js', checkUser, async (req, res) => {
 })
 
 keysRouter.get('/keys/keys/list', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
     const pconf = await ConfigConf.getByKeys({
         gl: 'pages.global',
         pc: 'pages.keys.keys'
@@ -84,6 +87,7 @@ keysRouter.get('/keys/keys/list', checkUser, async (req, res) => {
 })
 
 keysRouter.get('/keys/keys/read/:id', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
     const item = await KeysKey.findByPk(req.params.id)
     res.json({
         status: 'success',
@@ -96,6 +100,7 @@ keysRouter.get('/keys/keys/read/:id', checkUser, async (req, res) => {
 })
 
 keysRouter.post('/keys/keys/update/form', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
     const { id, name } = req.body
     const data = { ...req.body }
     delete data.id
@@ -119,6 +124,7 @@ keysRouter.post('/keys/keys/update/form', checkUser, async (req, res) => {
 })
 
 keysRouter.post('/keys/keys/action/delete/:id', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
     const { id } = req.params
     const item = await KeysKey.findByPk(id)
     if(item?.id && item?.data?.file) await removeFile(item.data.file.path)
@@ -127,6 +133,7 @@ keysRouter.post('/keys/keys/action/delete/:id', checkUser, async (req, res) => {
 })
 
 keysRouter.post('/keys/keys/list/action/fullscreen', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
     sio.emit('dashboard fullscreen', {})
     res.json({status: 'success'})
 })
@@ -168,6 +175,7 @@ keysRouter.get('/keys/login/token/:token', async (req, res) => {
 })
 
 keysRouter.get('/keys/keys/update/form/user_id', checkUser, async (req, res) => {
+    if(!req.user.hasPrivilege('system')) return res.status(404).json({ status: 'error', message: 'Not found' })
     const items = await SysUser.findAll()
     const html = await renderComponent('forms/html/fields/_options', { items, null_opt: 'Select user ...'})
     res.json({

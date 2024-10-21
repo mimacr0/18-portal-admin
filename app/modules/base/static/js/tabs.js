@@ -1,19 +1,14 @@
 
-let systemDynamicTabs = JSON.parse(localStorage.getItem('systemDynamicTabs')) || []
-
-const systemRegisterTab = (tab) => {
-    const item = systemDynamicTabs.find(t => t.url === tab.url)
-    if(item) return window.location.href = tab.url
-    systemDynamicTabs.push(tab)
-    localStorage.setItem('systemDynamicTabs', JSON.stringify(systemDynamicTabs))
-    loadSystemTabs()
+const systemRegisterTab = async (tab) => {
+    await jsonPost(`/users/users/tabs/add`, { name: tab.title, url: tab.url }, { loading: false })
+    await loadSystemTabs()
     window.location.href = tab.url
 }
 
 const systemRegisterTabClick = (e) => {
     e.preventDefault()
-    const url = e.currentTarget.getAttribute('href')
-    const title = e.currentTarget.textContent.trim()
+    const url = e.currentTarget.getAttribute('data-tab')
+    const title = e.currentTarget.getAttribute('data-label')
     if(!url || !title) return
     if(url.includes('#')) return
     systemRegisterTab({
@@ -22,7 +17,7 @@ const systemRegisterTabClick = (e) => {
     })
 }
 
-const loadSystemTabs = () => {
+const loadSystemTabs = async () => {
     const tabs = document.getElementById('systemDynamicTabs');
     if (!tabs) return;
 
@@ -31,7 +26,11 @@ const loadSystemTabs = () => {
     const pillContainer = document.createElement('div');
     pillContainer.classList.add('d-flex', 'flex-wrap');
 
-    for (const tab of systemDynamicTabs) {
+    const tabsResult = await jsonGet('/users/users/tabs/list')
+
+    if(tabsResult?.status != 'success') return
+
+    for (const tab of tabsResult.data) {
         const pill = document.createElement('span');
         pill.classList.add('badge', 'badge-pill', 'mr-2', 'mb-2', 'd-flex', 'align-items-center');
         pill.classList.add(tab.url === window.location.pathname ? 'badge-primary' : 'badge-secondary');
@@ -50,11 +49,9 @@ const loadSystemTabs = () => {
         closeButton.innerHTML = '&times;';
         closeButton.style.fontSize = '1.2rem';
         closeButton.style.lineHeight = '1';
-        closeButton.addEventListener('click', (e) => {
+        closeButton.addEventListener('click', async (e) => {
             e.stopPropagation();
-            const index = systemDynamicTabs.findIndex(t => t.url === tab.url);
-            systemDynamicTabs.splice(index, 1);
-            localStorage.setItem('systemDynamicTabs', JSON.stringify(systemDynamicTabs));
+            await jsonPost(`/users/users/tabs/remove`, { url: tab.url }, { loading: false })
             loadSystemTabs();
         });
 
@@ -68,4 +65,4 @@ const loadSystemTabs = () => {
 
 loadSystemTabs();
 
-$('a').click(systemRegisterTabClick);
+$('a[data-tab]').click(systemRegisterTabClick)
