@@ -36,9 +36,7 @@ const sysConfig = {
     SERVER_PORT,
     SERVER_BASE_URL: process.env?.SERVER_BASE_URL || `http://localhost:${SERVER_PORT}`,
     SECRET: process.env?.SECRET,
-    RT_URL: process.env?.RT_URL,
-    RT_SECRET: process.env?.RT_SECRET,
-    WWEB_ENABLED: process.env?.WWEB_ENABLED == 'true'
+    RPC_API_SECRET: process.env?.RPC_API_SECRET
 }
 
 export default sysConfig

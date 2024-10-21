@@ -11,6 +11,7 @@ import { SysUser } from './base/models/users.js'
 import { SysPage } from './base/models/base.js'
 
 import { baseRouter } from './base/routes/base.js'
+import { apiRouter } from './base/routes/api.js'
 import { usersRouter } from './base/routes/users.js'
 import { configRouter } from './base/routes/config.js'
 import { expeditionsRouter } from './expeditions/routes/expeditions.js'
@@ -44,13 +45,14 @@ export const initRouters = () => {
     app.use(messagesRouter)
     app.use(receptionsRouter)
     app.use(keysRouter)
+    app.use(apiRouter)
 
     if (!app._router.stack.some(layer => layer.route && layer.route.path === '/'))
         app.use(mainRouter)
 
-    // app.use((req, res) => {
-    //     res.redirect('/pages/404')
-    // })
+    app.use((req, res) => {
+        res.redirect('/pages/404')
+    })
 
 }
 
@@ -86,9 +88,8 @@ export const initListeners = async () => {
 
 export const initModules = async () => {
     initListeners()
+    initStatic()
     initRouters()
     initPages()
     initUsers()
-
-    initStatic()
 }
