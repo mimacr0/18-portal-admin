@@ -1,5 +1,13 @@
 #!/bin/bash
-# admin
+
+PROJECT_BASE_DIR=$(dirname "$(readlink -f "$0")")
+PROJECTS_MAIN_DIR=$(realpath "$PROJECT_BASE_DIR/../..")
+PROJECT_NAME=logistic
+PROJECT_TYPE=app
+PROJECT_VERSION=20
+PROJECT_PORT=4504
+VENV_DIR="$PROJECTS_MAIN_DIR/cache/venv"
 
 # Pass all the arguments to the Python script
-export PROJECT_NAME=logistic && export PROJECT_PORT=3004 && export PROJECT_VERSION=42 && export PROJECT_BASE_DIR=$(dirname "$(readlink -f "$0")") && python3 cli/cli.py "$@"
+export  PROJECT_BASE_DIR PROJECT_NAME PROJECT_TYPE PROJECT_VERSION\
+        PROJECT_PORT VENV_DIR && source "$VENV_DIR/bin/activate" && python3 "$PROJECT_BASE_DIR/cli/cli.py" "$@"

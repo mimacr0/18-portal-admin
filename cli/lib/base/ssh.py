@@ -20,6 +20,9 @@ class SSH():
     def cp(self, src, dst):
         return f"""scp -P {self.ssh_port} {src} {self.ssh_data}:{dst}"""
 
+    def exists(self, path):
+        return execute(f"""ssh -p {self.ssh_port} {self.ssh_data} 'test -e {path} && echo 1'""").strip() == '1'
+
     def upload(self, src, dst):
 
         if not os.path.exists(src):
