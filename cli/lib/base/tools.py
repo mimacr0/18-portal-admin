@@ -1,7 +1,39 @@
 
+import configparser
 import os
 import random
 import string
+import yaml
+
+
+class Conf:
+
+    @staticmethod
+    def load_yml(txt):
+        return yaml.safe_load(txt) or {}
+
+    @staticmethod
+    def read_yml(file, dname=None):
+        file = file.replace('.yml', '')
+        fpath = dname and os.path.join(dname, file + '.yml') or os.path.join(os.getenv('PROJECT_BASE_DIR'), 'etc', file + '.yml')
+
+        if not os.path.exists(fpath):
+            raise FileNotFoundError(f'File {fpath} does not exist')
+
+        with open(fpath, 'r') as f:
+            return yaml.load(f, Loader=yaml.FullLoader) or {}
+
+        return {}
+
+    @staticmethod
+    def read_conf(file):
+
+        if not os.path.exists(file):
+            raise Exception('File not found: {}'.format(file))
+
+        config = configparser.ConfigParser()
+        config.read(file)
+        return config
 
 
 class Tools:
