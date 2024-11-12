@@ -69,60 +69,9 @@ dashboardRouter.get('/dashboard/init/kpi/data/action', checkUser, async (req, re
         await kpi.save()
     }
 
-    // if(kpis.length == 0) {
+    const kpis = await DashboardKpi.findAll({ where: { user_id: req.user.id } })
 
-    //     const erp = new WebServiceRPC()
-
-    //     const result = await erp.request('dashboard.kpis', {
-    //         user_id: req.user.id
-    //     })
-
-    //     const defaultColors = ['#20c997', '#ffc107', '#ff0000']
-    //     const expeditionsChart = kpis.find(k => k.ref == 'PORTAL_EXPEDITIONS_CHART')
-    //     const receptionsChart = kpis.find(k => k.ref == 'PORTAL_RECEPTIONS_CHART')
-    //     const expeditionsChartPie = kpis.find(k => k.ref == 'PORTAL_EXPEDITIONS_CHART_PIE')
-    //     const receptionsChartPie = kpis.find(k => k.ref == 'PORTAL_RECEPTIONS_CHART_PIE')
-    //     const updates = {
-    //         EXPEDITIONS_STATUS_KPI: {
-    //             value: result?.data?.count?.expeditions_count
-    //         },
-    //         RECEPTIONS_STATUS_KPI: {
-    //             value: result?.data?.count?.receptions_count
-    //         },
-    //         STOCK_STATUS_KPI: {
-    //             value: result?.data?.count?.stock_count
-    //         },
-    //         STORAGE_STATUS_KPI: {
-    //             value: result?.data?.count?.locations_count
-    //         },
-    //         REPAIRS_STATUS_KPI: {
-    //             value: result?.data?.count?.repairs_count
-    //         },
-    //         SPARE_PARTS_STATUS_KPI: {
-    //             value: result?.data?.count?.spareparts_count
-    //         },
-    //         PORTAL_EXPEDITIONS_CHART: {
-    //             ...result?.data?.charts?.expeditions_data,
-    //             colors: expeditionsChart.conf?.colors || defaultColors
-    //         },
-    //         PORTAL_RECEPTIONS_CHART: {
-    //             ...result?.data?.charts?.receptions_data,
-    //             colors: receptionsChart.conf?.colors || defaultColors
-    //         },
-    //         PORTAL_EXPEDITIONS_CHART_PIE: {
-    //             ...result?.data?.charts?.expeditions,
-    //             colors: expeditionsChartPie.conf?.colors || defaultColors
-    //         },
-    //         PORTAL_RECEPTIONS_CHART_PIE: {
-    //             ...result?.data?.charts?.receptions,
-    //             colors: receptionsChartPie.conf?.colors || defaultColors
-    //         }
-    //     }
-
-    //     if(result?.status !== 'success') Logger.error(result)
-    //     else await renderer.updateKPIs(updates)
-
-    // }
+    if(kpis.length == 0) return res.json({ status: 'error', message: 'No kpis found' })
 
     res.json({ status: 'success' })
 })
