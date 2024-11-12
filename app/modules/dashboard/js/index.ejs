@@ -374,9 +374,7 @@ socket.on('dashboard reload', (data) => {
 })
 
 const initPortalCustomerData = async () => {
-    const res = await jsonGet('/dashboard/init/kpi/data/action', '<%= page.translate('Dashboard loading ...') %>')
-    if(res?.status != 'success') return
-    window.location.reload()
+    await jsonGet('/dashboard/init/kpi/data/action', '<%= page.translate('Dashboard loading ...') %>')
 }
 
 ##<% if(initSync) { %>
