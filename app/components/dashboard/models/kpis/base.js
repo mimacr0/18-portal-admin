@@ -26,4 +26,7 @@ export class KPI {
     get data() {
         return this._values
     }
+    get sequence() {
+        return this._data?.sequence || 0
+    }
 }

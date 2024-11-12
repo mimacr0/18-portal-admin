@@ -1,13 +1,19 @@
 
+export const expeditionsMenus = [
+    {
+        url: '/expeditions',
+        ref: 'expeditions',
+        label: 'Expeditions',
+        icon: 'fa fa-truck',
+        sequence: 20
+    }
+]
+
 export const expeditionsPages = [
     {
         name: 'expeditions',
-        url: '/expeditions',
         title: 'Expeditions',
-        icon: 'fa fa-truck',
-        access: 'portal',
         module: 'expeditions',
-        sequence: 30,
         assets: {
             footer: {
                 js: [

@@ -77,7 +77,10 @@ const jsonPost = async (url, data={}, options={}) => {
 
 }
 
-const jsonGet = async (url) => {
+const jsonGet = async (url, loading=false) => {
+
+    if(loading) loadingShow(loading)
+
     const res = await fetch(url, {
         method: 'GET',
         headers: {
@@ -85,6 +88,8 @@ const jsonGet = async (url) => {
             'X-Requested-With': 'XMLHttpRequest'
         }
     })
+
+    if(loading) loadingHide()
 
     if(res.status == 404) return displayAlertNotification(`URL not found: ${url}`, 'danger')
     if(res.status == 500) return displayAlertNotification('Internal server error', 'danger')

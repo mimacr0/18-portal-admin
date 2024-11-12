@@ -1,6 +1,36 @@
-<li class="nav-item <%= menu.action ? 'menu-open' : '' %>">
-                <a href="<%= menu.url %>" data-tab="<%= menu.url %>" data-label="<%= menu.title %>" class="nav-link <%= menu.url == page.url ? 'active' : '' %>">
-                    <i class="nav-icon <%= menu.icon %>"></i>
-                    <p><%= menu.title %></p>
-                </a>
-            </li>
+##<% if(menu.menus.length > 0) { %>
+<li class="nav-item">
+    <a href="#" class="nav-link <%= menu.menus.find(m => m.url == page.url) ? 'active' : '' %>">
+        <i class="nav-icon <%= menu.icon %>"></i>
+        <p>
+            <%= menu.title %>
+            <i class="fas fa-angle-left right"></i>
+            ##<% if(menu.badge) { %>
+            <span class="badge <%= menu.badge.class %> right"><%= menu.badge.text %></span>
+            ##<% } %>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        ##<% for( const subMenu of menu.menus ) { %>
+        <li class="nav-item">
+            <a href="<%= subMenu.url %>" class="nav-link <%= subMenu.url == page.url ? 'active' : '' %>">
+                <i class="<%= subMenu.icon || 'far fa-circle' %> nav-icon"></i>
+                <p><%= subMenu.label || 'Undefined' %></p>
+            </a>
+        </li>
+        ##<% } %>
+    </ul>
+</li>
+##<% } else { %>
+<li class="nav-item">
+    <a href="<%= menu.url %>" class="nav-link <%= menu.url == page.url ? 'active' : '' %>">
+        <i class="nav-icon <%= menu.icon %>"></i>
+        <p>
+            <%= menu.title %>
+            ##<% if(menu.badge) { %>
+            <span class="badge <%= menu.badge.class %> right"><%= menu.badge.text %></span>
+            ##<% } %>
+        </p>
+    </a>
+</li>
+##<% } %>

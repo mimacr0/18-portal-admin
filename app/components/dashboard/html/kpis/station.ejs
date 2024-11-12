@@ -1,12 +1,12 @@
 <div class="<%= kpi.size %> kpi" data-id="<%= kpi.id %>">
-    <div class="card" style="height: 150px">
-        <div class="card-header border-0" style="margin: 0; padding: 0; padding-left: 20px;">
+    <div class="card callout callout-success" style="height: 150px; padding-top: 5px; margin-top: 0px;">
+        <div class="card-header border-0" style="margin: 0; padding: 0;">
             <div class="d-flex justify-content-between">
                 <h3 class="card-title"><%= kpi.title %></h3>
             </div>
         </div>
 
-        <div class="card-body mt-1" style="padding-bottom: 0px; padding-top: 0px;">
+        <div class="card-body mt-1" style="padding: 0px;">
 
             <div class="row">
 
@@ -32,7 +32,7 @@
                 <div class="col-4">
                     <div class="progress-group">
                         <div class="progress progress-sm">
-                            <div class="progress-bar bg-<%= kpi?.data?.cpu?.color %>" data-widget="cpu" style="width: <%= kpi?.data?.cpu?.value %>%"></div>
+                            <div id="station-cpu-<%= kpi.id %>" class="progress-bar bg-<%= kpi.cpu.color %>" data-widget="cpu" style="width: <%= kpi.cpu.value %>%"></div>
                         </div>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                 <div class="col-4">
                     <div class="progress-group">
                         <div class="progress progress-sm">
-                            <div class="progress-bar bg-<%= kpi?.data?.memory?.color %>" data-widget="memory" style="width: <%= kpi?.data?.memory?.value %>%"></div>
+                            <div id="station-memory-<%= kpi.id %>" class="progress-bar bg-<%= kpi.memory.color %>" data-widget="memory" style="width: <%= kpi.memory.value %>%"></div>
                         </div>
                     </div>
                 </div>
@@ -48,21 +48,16 @@
                 <div class="col-4">
                     <div class="progress-group">
                         <div class="progress progress-sm">
-                            <div class="progress-bar bg-<%= kpi?.data?.disk?.color %>" data-widget="storage" style="width: <%= kpi?.data?.disk?.value %>%"></div>
+                            <div id="station-storage-<%= kpi.id %>" class="progress-bar bg-<%= kpi.storage.color %>" data-widget="storage" style="width: <%= kpi.storage.value %>%"></div>
                         </div>
                     </div>
                 </div>
 
             </div>
 
-            <% if(kpi.hasUsers) { %>
-                <div id="station-chart-<%= kpi.id %>" style="width: 100%; height: 40px;"></div>
-                <div id="users-chart-<%= kpi.id %>" style="width: 100%; height: 40px;"></div>
-            <% } else { %>
-                <div class="d-flex flex-wrap pt-1 pb-1">
-                    <div id="station-chart-<%= kpi.id %>" style="width: 100%; height: 90px;"></div>
-                </div>
-            <% } %>
+            <div class="d-flex flex-wrap pt-1 pb-1">
+                <div id="station-chart-<%= kpi.id %>" style="width: 100%; height: 100px;"></div>
+            </div>
 
         </div>
     </div>

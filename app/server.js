@@ -10,6 +10,21 @@ if(!sysConfig.SECRET) {
     process.exit(0);
 }
 
+if(!sysConfig.RPC_API_SECRET) {
+    console.error('ERROR: Required config (RPC_API_SECRET) not defined in .env file!')
+    process.exit(0);
+}
+
+if(!sysConfig.ERP_AUTH_CLIENT) {
+    console.error('ERROR: Required config (ERP_AUTH_CLIENT) not defined in .env file!')
+    process.exit(0);
+}
+
+if(!sysConfig.PRIVATE_KEY_FILE) {
+    console.error('ERROR: Required config (PRIVATE_KEY_FILE) not defined in .env file!')
+    process.exit(0);
+}
+
 import { initDatabases } from './controllers/db/db.js'
 import { initServers } from './controllers/web/servers.js'
 import { initModules } from './modules/modules.js'

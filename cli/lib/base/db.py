@@ -1,92 +1,12 @@
 
 import sqlite3
-import json
-
-class Table:
-    def __init__(self, conn, name):
-        self.conn = conn
-        self.name = name
-
-    def create(self, columns):
-        columns_definition = ", ".join([f"{column} {data_type}" for column, data_type in columns.items()])
-        query = f"CREATE TABLE IF NOT EXISTS {self.name} ({columns_definition})"
-        self.conn.execute(query)
-
-    def insert(self, data):
-        columns = ", ".join(data.keys())
-        placeholders = ", ".join(["?" for _ in data.values()])
-        query = f"INSERT INTO {self.name} ({columns}) VALUES ({placeholders})"
-        self.conn.execute(query, tuple(data.values()))
-
-    def update(self, data, conditions):
-        set_clause = ", ".join([f"{column} = ?" for column in data.keys()])
-        where_clause = " AND ".join([f"{column} = ?" for column in conditions.keys()])
-        query = f"UPDATE {self.name} SET {set_clause} WHERE {where_clause}"
-        self.conn.execute(query, tuple(data.values()) + tuple(conditions.values()))
-
-    def delete(self, conditions):
-        where_clause = " AND ".join([f"{column} = ?" for column in conditions.keys()])
-        query = f"DELETE FROM {self.name} WHERE {where_clause}"
-        self.conn.execute(query, tuple(conditions.values()))
-
-    def select(self, columns=None, conditions=None):
-        columns = ", ".join(columns) if columns else "*"
-        query = f"SELECT {columns} FROM {self.name}"
-        if conditions:
-            where_clause = " AND ".join([f"{column} = ?" for column in conditions.keys()])
-            query += f" WHERE {where_clause}"
-        result = self.conn.execute(query, tuple(conditions.values()) if conditions else None)
-        return result.fetchall()
-
-    def read(self, limit, offset, columns=None, conditions=None, order_by=None):
-        order_by = f"ORDER BY {order_by}" if order_by else "ORDER BY id"
-        columns = ", ".join(columns) if columns else "*"
-        query = f"SELECT {columns} FROM {self.name}"
-        if conditions:
-            where_clause = " AND ".join([f"{column} = ?" for column in conditions.keys()])
-            query += f" WHERE {where_clause}"
-        query += f" {order_by} LIMIT ? OFFSET ?"
-        params = (tuple(conditions.values()) if conditions else ()) + (limit, offset)
-        result = self.conn.execute(query, params)
-        return result.fetchall()
-
-    def find_one(self, id, columns=None, column="id"):
-        columns = ", ".join(columns) if columns else "*"
-        query = f"SELECT {columns} FROM {self.name} WHERE {column} = ?"
-        cursor = self.conn.cursor()
-        cursor.execute(query, (id,))
-        column_names = [description[0] for description in cursor.description]
-        result = cursor.fetchone()
-        return dict(zip(column_names, result)) if result else None
-
-    def count(self, conditions=None):
-        query = f"SELECT COUNT(*) FROM {self.name}"
-        if conditions:
-            where_clause = " AND ".join([f"{column} = ?" for column in conditions.keys()])
-            query += f" WHERE {where_clause}"
-        result = self.conn.execute(query, tuple(conditions.values()) if conditions else tuple())
-        return result.fetchone()[0]
-
-    def drop(self):
-        query = f"DROP TABLE IF EXISTS {self.name}"
-        self.conn.execute(query)
-        return self.conn
-
-    def clear(self, limit=1000):
-        offset = 0
-        while self.count() > 0:
-            self.conn.execute(f"DELETE FROM {self.name} WHERE id IN (SELECT id FROM {self.name} ORDER BY id LIMIT ?);", (limit,))
-            print(f"Deleted {offset} records from {self.name}")
-            offset += limit
-            self.conn.commit()
-
-    def add_index(self, column):
-        query = f"CREATE INDEX IF NOT EXISTS {self.name}_{column}_index ON {self.name} ({column})"
-        self.conn.execute(query)
+import os
 
 class DB:
     def __init__(self, file):
-        self.file = f"""{file}.db"""
+        data_dir = os.path.join(os.getenv('PROJECT_BASE_DIR'), 'data')
+        os.makedirs(data_dir, exist_ok=True)
+        self.file = os.path.join(data_dir, f"{file}.db")
         self.conn = sqlite3.connect(self.file)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -111,10 +31,22 @@ class DB:
         result = [dict(zip(column_names, row)) for row in rows]
         return result
 
+    def fetch_one(self, sql, *params):
+        cursor = self.conn.cursor()
+        cursor.execute(sql, params)
+        column_names = [description[0] for description in cursor.description]
+        row = cursor.fetchone()
+        if row:
+            return dict(zip(column_names, row))
+        return None
+
     def execute(self, sql, *params):
         cursor = self.conn.cursor()
         cursor.execute(sql, params)
         return cursor.lastrowid
+
+    def commit(self):
+        self.conn.commit()
 
     def ps(self, detailed=False):
         query = "SELECT name FROM sqlite_master WHERE type = 'table'"
@@ -142,30 +74,46 @@ class DB:
     def get_table(self, name):
         return Table(self.conn, name)
 
+    def create_table(self, table_name, columns):
+        query = f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(columns)})"
+        self.execute(query)
 
-class KeyValueDB:
-    def __init__(self, db_name):
-        self.conn = sqlite3.connect(f"""{db_name}.db""")
-        self.create_table()
+    def insert(self, table_name, data):
+        placeholders = ', '.join(['?' for _ in data])
+        columns = ', '.join(data.keys())
+        values = tuple(data.values())
+        query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+        return self.execute(query, *values)
 
-    def __del__(self):
-        self.conn.close()
+    def update(self, table_name, data, condition):
+        set_clause = ', '.join([f"{key} = ?" for key in data.keys()])
+        query = f"UPDATE {table_name} SET {set_clause} WHERE {condition}"
+        values = tuple(data.values())
+        return self.execute(query, *values)
 
-    def create_table(self):
-        c = self.conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS key_value_table (key TEXT UNIQUE, value JSON)''')
-        self.conn.commit()
+    def delete(self, table_name, condition, *params):
+        query = f"DELETE FROM {table_name} WHERE {condition}"
+        return self.execute(query, *params)
 
-    def set_value(self, key, value):
-        c = self.conn.cursor()
-        c.execute('''INSERT OR REPLACE INTO key_value_table (key, value) VALUES (?, ?)''', (key, json.dumps(value)))
-        self.conn.commit()
+    def table_exists(self, table_name):
+        query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
+        result = self.query(query, table_name)
+        return bool(result)
 
-    def get_value(self, key):
-        c = self.conn.cursor()
-        c.execute('''SELECT value FROM key_value_table WHERE key = ?''', (key,))
-        result = c.fetchone()
-        if result is not None:
-            return json.loads(result[0])
-        else:
-            return None
+class Table:
+    def __init__(self, conn, name):
+        self.conn = conn
+        self.name = name
+
+    def query(self, sql, *params):
+        cursor = self.conn.cursor()
+        cursor.execute(sql, params)
+        column_names = [description[0] for description in cursor.description]
+        rows = cursor.fetchall()
+        result = [dict(zip(column_names, row)) for row in rows]
+        return result
+
+    def execute(self, sql, *params):
+        cursor = self.conn.cursor()
+        cursor.execute(sql, params)
+        return cursor.lastrowid

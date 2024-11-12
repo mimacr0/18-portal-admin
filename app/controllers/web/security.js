@@ -89,6 +89,43 @@ export const checkRPCUserAuth = async (req, res, next) => {
     next()
 }
 
+export const checkAuthorization = async (req, res, next) => {
+    const token = (req.headers['authorization'] || '').split(' ')[1]
+
+    if(!token) return res.status(404).json({ status: 'error', message: 'Unauthorized' })
+    if(typeof(token) != 'string') return res.status(404).json({ status: 'error', message: 'Unauthorized' })
+    if(!token.includes(',')) return res.status(404).json({ status: 'error', message: 'Unauthorized' })
+
+    const [cid, _token] = token.split(',')
+
+    const key = await RPCAuthorization.findOne({ where: { cid: cid } })
+
+    if(!key) return { status: 'error', message: 'Unauthorized', code: 404 }
+
+    const keyB64 = key.data.key
+
+    if(!keyB64) return { status: 'error', message: 'Unauthorized', code: 404 }
+
+    const keyData = Buffer.from(keyB64, 'base64').toString('utf8')
+
+    try {
+        await util.promisify(jwt.verify)(_token, keyData, { algorithms: ['RS256'] })
+    } catch (error) {
+        Logger.error('Error verifying token:', error)
+        if(error.name == 'TokenExpiredError') return res.status(401).json({ status: 'error', message: 'Token expired' })
+        if(error.name == 'JsonWebTokenError') return res.status(403).json({ status: 'error', message: 'Invalid token' })
+        return res.status(500).json({ status: 'error', message: 'Authentication error' })
+    }
+
+    if(!sysConfig.RPC_API_SECRET) {
+        Logger.error('RPC_API_SECRET is not set')
+        return res.status(500).json({ status: 'error', message: 'Authentication error' })
+    }
+
+    req.token = await util.promisify(jwt.sign)({}, sysConfig.RPC_API_SECRET, { expiresIn: '1h' })
+    next()
+}
+
 export const sessionMiddleware = session({
     store: new SqliteStore({
         client: sysDB,

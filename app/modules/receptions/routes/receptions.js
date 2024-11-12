@@ -12,13 +12,13 @@ import { renderComponent, renderModule } from '../../../tools/view.js'
 export const receptionsRouter = express.Router()
 
 receptionsRouter.get('/receptions', checkUser, async (req, res) => {
-    const pageData = await SysPage.getPage('/receptions')
-    const page = new Page({
-        ...pageData,
+    const page = await SysPage.getPage('receptions')
+    const renderer = new Page({
+        page,
         user: req.user,
         i18n: req.i18n
     })
-    res.send(await page.render())
+    res.send(await renderer.render())
 })
 
 receptionsRouter.get('/receptions/receptions/list', checkUser, async (req, res) => {

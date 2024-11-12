@@ -1,13 +1,20 @@
 
+export const messagesMenu = [
+    {
+        label: 'Messages',
+        url: '/messages',
+        icon: 'fa fa-comments',
+        ref: 'messages',
+        sequence: 100
+    }
+]
+
 export const messagesPages = [
     {
         name: 'messages',
-        url: '/messages',
         type: 'messages',
         module: 'messages',
         title: 'Messages',
-        icon: 'fa fa-comments',
-        sequence: 50,
         assets: {
             footer: {
                 js: [

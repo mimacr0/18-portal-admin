@@ -13,13 +13,13 @@ import { StockItem } from '../models/stock.js'
 export const stockRouter = express.Router()
 
 stockRouter.get('/stock', checkUser, async (req, res) => {
-    const pageData = await SysPage.getPage('/stock')
-    const page = new Page({
-        ...pageData,
+    const page = await SysPage.getPage('stock')
+    const renderer = new Page({
+        page,
         user: req.user,
         i18n: req.i18n
     })
-    res.send(await page.render())
+    res.send(await renderer.render())
 })
 
 stockRouter.get('/stock/stock/list', checkUser, async (req, res) => {

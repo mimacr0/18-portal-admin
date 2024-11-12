@@ -14,13 +14,13 @@ import { ExpeditionItem } from '../models/expeditions.js'
 export const expeditionsRouter = express.Router()
 
 expeditionsRouter.get('/expeditions', checkUser, async (req, res) => {
-    const pageData = await SysPage.getPage('/expeditions')
-    const page = new Page({
-        ...pageData,
+    const page = await SysPage.getPage('expeditions')
+    const renderer = new Page({
+        page,
         user: req.user,
         i18n: req.i18n
     })
-    res.send(await page.render())
+    res.send(await renderer.render())
 })
 
 expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, res) => {

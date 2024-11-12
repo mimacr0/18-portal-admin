@@ -71,6 +71,9 @@ export class SysUser extends Model {
     get displayName() {
         return this.data?.short_name || this.name
     }
+    get dbid() {
+        return this.data?.dbid
+    }
     hasPrivilege(privilege) {
         return this.data?.privileges?.includes(privilege)
     }

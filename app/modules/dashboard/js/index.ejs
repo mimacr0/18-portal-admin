@@ -372,3 +372,12 @@ socket.on('dashboard fullscreen', (data) => {
 socket.on('dashboard reload', (data) => {
     location.reload()
 })
+
+const initPortalCustomerData = async () => {
+    const res = await jsonGet('/dashboard/init/kpi/data/action', '<%= page.translate('Dashboard loading ...') %>')
+    window.location.reload()
+}
+
+##<% if(initSync) { %>
+initPortalCustomerData()
+##<% } %>
