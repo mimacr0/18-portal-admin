@@ -1,13 +1,19 @@
 
+export const receptionsMenus = [
+    {
+        url: '/receptions',
+        ref: 'receptions',
+        label: 'Receptions',
+        icon: 'fa fa-box',
+        sequence: 30
+    }
+]
+
 export const receptionsPages = [
     {
         name: 'receptions',
-        url: '/receptions',
         title: 'Receptions',
-        icon: 'fa fa-box',
-        access: 'portal',
         module: 'receptions',
-        sequence: 30,
         assets: {
             footer: {
                 js: [

@@ -30,7 +30,7 @@ const loadSystemTabs = async () => {
 
     if(tabsResult?.status != 'success') return
 
-    for (const tab of tabsResult.data) {
+    for (const tab of (tabsResult.data || [])) {
         const pill = document.createElement('span');
         pill.classList.add('badge', 'badge-pill', 'mr-2', 'mb-2', 'd-flex', 'align-items-center');
         pill.classList.add(tab.url === window.location.pathname ? 'badge-primary' : 'badge-secondary');

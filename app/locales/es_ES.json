@@ -79,5 +79,6 @@
 	"User": "User",
 	"Error syncing users": "Error syncing users",
 	"Sync completed": "Sync completed",
-	"Oops! Page not found.": "Oops! Page not found."
+	"Oops! Page not found.": "Oops! Page not found.",
+	"Dashboard loading ...": "Dashboard loading ..."
 }

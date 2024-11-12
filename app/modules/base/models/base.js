@@ -11,20 +11,19 @@ import { dataDB } from '../../../controllers/db/db.js'
 import { genMD5 } from '../../../tools/sys.js'
 import { Logger } from '../../../tools/log.js'
 import { registerEmitter } from '../../../controllers/events/register.js'
+import sysConfig from '../../../etc/sys.js'
 
 
 export class SysPage extends Model {
-    static async getPage(url) {
-        const pages = await SysPage.findAll({
-            order: [['data.sequence', 'ASC']]
-        })
-        const page = pages.find(m => m.data.url === url)
-        if(!page) throw new Error(`Page "${url}" not found`)
-        return { page, pages }
+    static async getPage(name) {
+        const page = await SysPage.findOne({ where: { name } })
+        if(!page) throw new Error(`Page "${name}" not found`)
+        return page
     }
     static async actionRegister(pages) {
         for(const data of pages) {
-            const pid = genMD5(data.url)
+            if(!data.name) throw new Error('Page name not found')
+            const pid = genMD5(data.name)
             const page = await SysPage.findByPk(pid)
             await SysPage.upsert({
                 id: pid,
@@ -130,7 +129,7 @@ export class RPCAPIConnections extends Model {
         return parts.join('/').replace(/([^:]\/)\/+/g, '$1')
     }
 
-    async request(endpoint, data = {}, options = {}, sysConfig) {
+    async request(action, data = {}) {
         if (typeof data !== 'object') throw new Error('Invalid data')
 
         const tokenCache = await SysValue.getByKey(`conn_${this.cid}`)
@@ -142,15 +141,15 @@ export class RPCAPIConnections extends Model {
             token = loginRes.token
         }
 
-        const { method = 'POST' } = options
+        const method = 'POST'
         const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
 
         try {
-            const url = RPCAPIConnections.joinURL(this.data.url, endpoint)
+            const url = RPCAPIConnections.joinURL(this.data.url, 'ws/action')
             const response = await fetch(url, {
                 method,
                 headers,
-                body: JSON.stringify(data)
+                body: JSON.stringify({ action, data })
             })
 
             const json = await response.json()
@@ -159,7 +158,7 @@ export class RPCAPIConnections extends Model {
             if (result?.code === 401) {
                 const loginRes = await this.requestToken()
                 if (loginRes.status !== 'success') return { status: 'error', message: 'Login failed' }
-                return await this.request(this.cid, endpoint, data, options, sysConfig)
+                return await this.request(action, data)
             }
 
             if (result?.status !== 'success') {
@@ -210,3 +209,46 @@ RPCAuthorization.init({
         allowNull: false
     }
 }, { sequelize: dataDB, modelName: 'rpc_authorization' })
+
+
+export class SysMenu extends Model {
+    static async actionRegister(menus) {
+        for(const menu of menus || []) {
+            if(!menu.ref) throw new Error('Menu ref not found')
+            const id = genMD5(menu.ref)
+            const item = await SysMenu.findByPk(id)
+            const label = menu.label
+            const data = { ...item?.data, ...menu }
+            delete data.label
+            await SysMenu.upsert({ id, name: label, data })
+        }
+    }
+    get title() {
+        return this.name
+    }
+    get url() {
+        return this.data?.url || '/'
+    }
+    get icon() {
+        return this.data?.icon || 'far fa-circle'
+    }
+    get menus() {
+        return this.data?.menus || []
+    }
+}
+
+SysMenu.init({
+    id: {
+        type: DataTypes.STRING(32),
+        primaryKey: true
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    data: {
+        type: DataTypes.JSON,
+        defaultValue: {},
+        allowNull: false
+    }
+}, { sequelize: dataDB, modelName: 'sys_menu' })

@@ -8,7 +8,7 @@ import { app } from '../controllers/web/servers.js'
 import { runScript } from '../tools/cli.js'
 
 import { SysUser } from './base/models/users.js'
-import { SysPage } from './base/models/base.js'
+import { SysPage, SysMenu } from './base/models/base.js'
 
 import { baseRouter } from './base/routes/base.js'
 import { apiRouter } from './base/routes/api.js'
@@ -24,11 +24,15 @@ import { keysRouter } from './base/routes/keys.js'
 
 import { configPages } from './base/data/config.js'
 import { usersPages } from './base/data/users.js'
-import { expeditionsPages } from './expeditions/data/expeditions.js'
-import { stockPages } from './stock/data/pages.js'
-import { dashboardPages } from './dashboard/data/dashboard.js'
-import { messagesPages } from './messages/data/messages.js'
-import { receptionsPages } from './receptions/data/receptions.js'
+import { expeditionsPages, expeditionsMenus } from './expeditions/data/expeditions.js'
+import { stockPages, stockMenus } from './stock/data/pages.js'
+import { dashboardPages, dashboardMenus } from './dashboard/data/dashboard.js'
+import { messagesPages, messagesMenu } from './messages/data/messages.js'
+import { receptionsPages, receptionsMenus } from './receptions/data/receptions.js'
+import { storagePages, storageMenus } from './storage/data/pages.js'
+import { repairsPages, repairsMenus } from './repairs/data/pages.js'
+import { sparepartsPages, sparepartsMenus } from './spareparts/data/pages.js'
+import { invoicesPages, invoicesMenus } from './invoices/data/pages.js'
 import { keysPages } from './base/data/keys.js'
 import { basePages } from './base/data/base.js'
 
@@ -75,6 +79,23 @@ const initPages = async () => {
     await SysPage.actionRegister(receptionsPages)
     await SysPage.actionRegister(keysPages)
     await SysPage.actionRegister(basePages)
+    await SysPage.actionRegister(storagePages)
+    await SysPage.actionRegister(repairsPages)
+    await SysPage.actionRegister(sparepartsPages)
+    await SysPage.actionRegister(invoicesPages)
+}
+
+const initMenus = async () => {
+    await SysMenu.destroy({ where: {} })
+    await SysMenu.actionRegister(dashboardMenus)
+    await SysMenu.actionRegister(expeditionsMenus)
+    await SysMenu.actionRegister(receptionsMenus)
+    await SysMenu.actionRegister(stockMenus)
+    await SysMenu.actionRegister(messagesMenu)
+    await SysMenu.actionRegister(storageMenus)
+    await SysMenu.actionRegister(repairsMenus)
+    await SysMenu.actionRegister(sparepartsMenus)
+    await SysMenu.actionRegister(invoicesMenus)
 }
 
 const initUsers = async () => {
@@ -90,6 +111,7 @@ export const initModules = async () => {
     initListeners()
     initStatic()
     initRouters()
+    initMenus()
     initPages()
     initUsers()
 }

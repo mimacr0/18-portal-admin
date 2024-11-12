@@ -1,6 +1,8 @@
 import express from 'express'
 import path from 'path'
 import qr from 'qr-image'
+import jwt from 'jsonwebtoken'
+import util from 'util'
 
 import { config } from 'dotenv'
 import { Op } from 'sequelize'
@@ -8,13 +10,14 @@ import { Op } from 'sequelize'
 import i18n from '../../../controllers/i18n/i18n.js'
 import sysConfig from '../../../etc/sys.js'
 
-import { checkUser } from '../../../controllers/web/security.js'
+import { checkUser, checkRPCUser } from '../../../controllers/web/security.js'
 import { WebServiceRPC } from '../../../controllers/rpc/erp.js'
 import { loginSchema } from '../schemas/login.js'
 import { runScript } from '../../../tools/cli.js'
 import { SysPage } from '../../base/models/base.js'
 import { SysUser } from '../models/users.js'
 import { ConfigConf } from '../models/config.js'
+import { Logger } from '../../../tools/log.js'
 import { Login } from '../../../components/login/models/page.js'
 import { Cards } from '../../../components/cards/models/page.js'
 import { validateSchema } from '../../../tools/validate.js'
@@ -271,4 +274,84 @@ usersRouter.post('/users/users/tabs/remove', checkUser, async (req, res) => {
     await user.save()
 
     res.json({ status: 'success' })
+})
+
+usersRouter.post('/users/portal/register/action', checkRPCUser, async (req, res) => {
+    const { users } = req.body
+
+    const usersResponse = await runScript('users/sync', { users })
+
+    if(usersResponse?.status !== 'success') return res.json({ status: 'error', message: req.i18n.__('Error syncing users') })
+
+    for(const user of usersResponse.data) {
+        const uid = genMD5(user.login)
+        const item = await SysUser.findByPk(uid)
+        const password = user.password
+        const login = user.login
+        const image = user.image
+        delete user.login
+        delete user.password
+        delete user.image
+
+        if(item?.login === login && !item.dbid) continue
+
+        user.role = 'portal'
+
+        if(!image && !user.data.image)
+            user.image = await saveFile({
+                file: `${uid}.jpg`,
+                ext: '.jpg',
+                b64: image,
+                mimetype: 'image/jpeg',
+                md5: uid
+            })
+
+        await SysUser.upsert({
+            id: uid,
+            name: user.name || login,
+            login: login,
+            password,
+            data: {
+                ...item?.data, ...user
+            }
+        })
+    }
+
+    res.json({ status: 'success', message: 'Action completed successfully' })
+})
+
+
+usersRouter.post('/users/portal/request/access/action', checkRPCUser, async (req, res) => {
+    const { user_id } = req.body
+
+    const user = await SysUser.findOne({ where: { 'data.dbid': user_id } })
+
+    if(!user) return res.json({ status: 'error', message: 'User not found' })
+
+    try {
+        const token = await util.promisify(jwt.sign)({ user_id: user.id }, sysConfig.RPC_API_SECRET, { expiresIn: '10m' })
+        return res.json({ status: 'success', data: { token } })
+    } catch (error) {
+        Logger.error('Error generating token:', error)
+        return res.json({ status: 'error', message: 'Error generating token' })
+    }
+
+})
+
+usersRouter.get('/users/portal/access/action/:token', async (req, res) => {
+    const { token } = req.params
+
+    if(!token) return res.redirect('/')
+
+    try {
+        const payload = await util.promisify(jwt.verify)(token, sysConfig.RPC_API_SECRET)
+        const user = await SysUser.findByPk(payload.user_id)
+        if(!user) return res.redirect('/')
+        req.session.uid = user.id
+    } catch (error) {
+        if(error.name == 'TokenExpiredError') Logger.error('Token expired', error)
+        if(error.name == 'JsonWebTokenError') Logger.error('Invalid token', error)
+    }
+
+    res.redirect('/')
 })

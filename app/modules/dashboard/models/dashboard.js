@@ -51,6 +51,10 @@ DashboardKpi.init({
         type: DataTypes.STRING(32),
         primaryKey: true
     },
+    user_id: {
+        type: DataTypes.STRING(32),
+        allowNull: true
+    },
     data: {
         type: DataTypes.JSON,
         allowNull: false
@@ -61,6 +65,8 @@ DashboardKpi.init({
         defaultValue: {}
     }
 }, { sequelize: dataDB, modelName: 'dashboard_kpi' })
+
+DashboardKpi.sync({ alter: true })
 
 
 export class DashboardKPIValues extends Model {}

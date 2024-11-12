@@ -1,6 +1,6 @@
 import path from 'path'
 
-import { Menu } from './menu.js'
+import { SysMenu } from '../../../modules/base/models/base.js'
 import { renderModule, formatAssets } from '../../../tools/view.js'
 
 import sysConfig from '../../../etc/sys.js'
@@ -8,15 +8,15 @@ import sysConfig from '../../../etc/sys.js'
 
 export class Page {
     constructor(ctx) {
-        const { page, pages, user, i18n } = ctx
+        const { page, user, i18n } = ctx
         this.name = page.name
         this.data = page.data
-        this.pages = pages
         this.user = user
         this.i18n = i18n
         this.module = this.data.module
         this.view = this.data.view || 'index'
         this.jsView = this.data.js_view || 'index'
+        this.menuItems = []
 
         if(!this.user) throw new Error(`User is required for page: ${this.name}`)
         if(!this.i18n) throw new Error(`i18n is required for page: ${this.name}`)
@@ -54,10 +54,15 @@ export class Page {
     }
 
     get menus() {
-        return this.pages.filter(p => p.hasMenu(this.user)).map(p => new Menu(p))
+        return this.menuItems
+    }
+
+    async loadMenus() {
+        this.menuItems = await SysMenu.findAll({ where: {}, order: [['data.sequence', 'ASC']] })
     }
 
     async render(data={}) {
+        await this.loadMenus()
         return await renderModule(path.join(this.module, 'views', this.view), { page: this, ...data, i18n: this.i18n })
     }
 

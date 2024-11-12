@@ -50,11 +50,11 @@ baseRouter.post('/base/system/lang/update', checkUser, async (req, res) => {
 })
 
 baseRouter.get('/pages/404', checkUser, async (req, res) => {
-    const pageData = await SysPage.getPage('/404')
-    const page = new Page({
-        ...pageData,
+    const page = await SysPage.getPage('404')
+    const renderer = new Page({
+        page,
         user: req.user,
         i18n: req.i18n
     })
-    res.send(await page.render())
+    res.send(await renderer.render())
 })

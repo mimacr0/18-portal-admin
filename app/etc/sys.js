@@ -36,7 +36,9 @@ const sysConfig = {
     SERVER_PORT,
     SERVER_BASE_URL: process.env?.SERVER_BASE_URL || `http://localhost:${SERVER_PORT}`,
     SECRET: process.env?.SECRET,
-    RPC_API_SECRET: process.env?.RPC_API_SECRET
+    RPC_API_SECRET: process.env?.RPC_API_SECRET,
+    ERP_AUTH_CLIENT: process.env?.ERP_AUTH_CLIENT,
+    PRIVATE_KEY_FILE: process.env?.PRIVATE_KEY_FILE || 'id_rsa.key'
 }
 
 export default sysConfig
