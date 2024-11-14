@@ -1,15 +1,19 @@
-<% items.forEach(function(item, count){ %>
+##<% let count = 0 %>
+##<% items.forEach(function(item, count){ %>
+##<% count++ %>
 <tr>
+   <td class="align-middle">
+      <span class="badge badge-secondary"><%= count %></span>
    <td>
       <small>
-         <strong><%= i18n.__('Order') %>:</strong> <%- item.name %><br/>
+         <strong><%= i18n.__('Order') %>:</strong> <a href="/expeditions/details/<%= item.id %>"><%- item.name %></a><br/>
          <strong><%= i18n.__('Address') %>:</strong> <%- item.address %><br/>
          <strong><%= i18n.__('Date') %>:</strong> <%- item.date_order %><br/>
          <strong><%= i18n.__('Total') %>:</strong> <%- item.amount_total %><br/>
          <% if(item.carrier) { %><strong><%= i18n.__('Carrier') %>:</strong> <%- item.carrier %><br/><% } %>
       </small>
    </td>
-   <td><%- item.tracking %></td>
-   <td><%- item.state %></td>
+   <td class="align-middle"><%- item.tracking %></td>
+   <td class="align-middle"><%- item.state %></td>
 </tr>
-<% }) %>
+##<% }) %>

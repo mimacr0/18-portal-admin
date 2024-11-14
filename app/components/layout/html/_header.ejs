@@ -53,7 +53,7 @@
   * sidebar-collapse
   * sidebar-mini
 -->
-<body class="hold-transition sidebar-collapse">
+<body class="hold-transition <%= page.user.sidebarConfig %>">
 <div class="wrapper">
 
     <%- await include('_navbar') %>

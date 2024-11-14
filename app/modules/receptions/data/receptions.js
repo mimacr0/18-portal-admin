@@ -12,6 +12,7 @@ export const receptionsMenus = [
 export const receptionsPages = [
     {
         name: 'receptions',
+        url: '/receptions',
         title: 'Receptions',
         module: 'receptions',
         assets: {

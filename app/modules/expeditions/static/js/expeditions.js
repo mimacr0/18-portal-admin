@@ -5,9 +5,9 @@ const expeditionsExpeditionsReloadList = async () => {
     $('.tooltip').remove()
     const res = await jsonGet(`/expeditions/expeditions/list?q=${q || ''}&page=${expeditionsExpeditionsPage || ''}`)
     $('#expeditions-expeditions-list').html(res.html)
-    $('#expeditions-expeditions-footer').html(res.footer)
+    $('#expeditions-expeditions-pager').html(res.pager)
     $('[data-toggle="tooltip"]').tooltip()
-    $('#expeditions-expeditions-footer .page-item').click(function () {
+    $('#expeditions-expeditions-pager .page-item').click(function () {
         expeditionsExpeditionsPage = $(this).data('page')
         expeditionsExpeditionsReloadList()
     })

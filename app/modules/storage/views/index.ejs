@@ -4,68 +4,51 @@
 <div style="height: 10px;"></div>
 <!-- /.content-header -->
 
-<div class="row">
-   <div class="offset-3 col-6" id="page_messages_container"></div>
-</div>
-
 <!-- Main content -->
 <div class="content">
 
    <div class="container-fluid">
 
-    <div class="card">
+      <div class="card">
 
-        <div class="card-header">
-           <h3 class="card-title"><span class="text-muted"><%= page.translate('Stock') %></span></h3>
-           <div class="card-tools stock-stock-card-tools">
+         <div class="card-body p-0">
 
-           </div>
-        </div>
+            <div class="mailbox-controls card-controls-fixed-head">
+               <div class="row">
+                  <div class="col-8 d-flex justify-content-left">
+                     <div class="ml-3">
+                        <div class="input-group input-group-sm" style="max-width: 250px;">
+                           <input type="text" name="table_search" class="form-control float-right" placeholder="<%= page.translate('Search') %>" id="stock-stock-search-input">
+                           <div class="input-group-append">
+                              <button type="submit" class="btn btn-default">
+                                 <i class="fas fa-search"></i>
+                              </button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-4">
+                     <div id="stock-stock-pager"></div>
+                  </div>
+               </div>
+            </div>
+            <div class="table-responsive mailbox-messages stock-stock-main-container table-fixed-head">
+               <table class="table table-hover table-striped table-sm">
+                  <thead>
+                     <tr>
+                        <th><span>&nbsp;</span></th>
+                        <th><%= page.translate('Product') %></th>
+                        <th><%= page.translate('State') %></th>
+                        <th class="text-right"><%= page.translate('Quantity') %></th>
+                     </tr>
+                  </thead>
+                  <tbody id="stock-stock-list"></tbody>
+               </table>
+            </div>
 
-        <div class="card-body p-0">
-           <div class="mailbox-controls card-controls-fixed-head">
-              <div class="row">
-                 <div class="col-6">
-                    <div class="stock-stock-batch-actions">
-                        <span>&nbsp;&nbsp;</span>
-                        <button type="button" class="btn btn-default btn-sm checkbox-toggle stock-stock-checkbox"><i class="far fa-square"></i></button>
-                        <button type="button" class="btn btn-default btn-sm stock-stock-expedition-button" data-toggle="tooltip" data-placement="right" data title="<%= page.translate('Create new expedition') %>">
-                           <i class="fas fa-truck"></i>
-                        </button>
-                    </div>
-                 </div>
-                 <div class="col-6">
-                    <div>
-                       <div class="input-group input-group-sm float-right" style="max-width: 250px;">
-                          <input type="text" name="table_search" class="form-control float-right" placeholder="<%= page.translate('Search') %>" id="stock-stock-search-input">
-                          <div class="input-group-append">
-                             <button type="submit" class="btn btn-default">
-                                <i class="fas fa-search"></i>
-                             </button>
-                          </div>
-                       </div>
-                    </div>
-                 </div>
-              </div>
-           </div>
-           <div class="table-responsive mailbox-messages stock-stock-main-container table-fixed-head">
-            <table class="table table-hover table-striped table-sm">
-              <thead>
-                <tr>
-                  <th><span>&nbsp;</span></th>
-                  <th><%= page.translate('Product') %></th>
-                  <th><%= page.translate('State') %></th>
-                  <th class="text-right"><%= page.translate('Quantity') %></th>
-                </tr>
-              </thead>
-              <tbody id="stock-stock-list"></tbody>
-            </table>
-          </div>
-        </div>
+         </div>
 
-        <div class="card-footer clearfix" id="stock-stock-footer"></div>
-
-     </div>
+      </div>
 
    </div>
 

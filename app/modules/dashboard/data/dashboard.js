@@ -14,6 +14,7 @@ export const dashboardMenus = [
 export const dashboardPages = [
     {
         name: 'dashboard',
+        url: '/',
         type: 'dashboard',
         module: 'dashboard',
         title: 'Dashboard',

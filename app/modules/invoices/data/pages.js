@@ -5,13 +5,14 @@ export const invoicesMenus = [
         ref: 'invoices',
         label: 'Invoices',
         icon: 'fa fa-file-invoice',
-        sequence: 80
+        sequence: 110
     }
 ]
 
 export const invoicesPages = [
     {
         name: 'invoices',
+        url: '/invoices',
         title: 'Invoices',
         module: 'invoices',
         assets: {

@@ -12,6 +12,7 @@ export const repairsMenus = [
 export const repairsPages = [
     {
         name: 'repairs',
+        url: '/repairs',
         title: 'Repairs',
         module: 'repairs',
         assets: {

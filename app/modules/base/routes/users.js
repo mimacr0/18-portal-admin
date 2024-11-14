@@ -20,6 +20,7 @@ import { ConfigConf } from '../models/config.js'
 import { Logger } from '../../../tools/log.js'
 import { Login } from '../../../components/login/models/page.js'
 import { Cards } from '../../../components/cards/models/page.js'
+import { Page } from '../../../components/layout/models/page.js'
 import { validateSchema } from '../../../tools/validate.js'
 import { renderComponent } from '../../../tools/view.js'
 import { genMD5, saveFile, generateWebToken, verifyWebToken } from '../../../tools/sys.js'
@@ -354,4 +355,37 @@ usersRouter.get('/users/portal/access/action/:token', async (req, res) => {
     }
 
     res.redirect('/')
+})
+
+usersRouter.get('/user/config', checkUser, async (req, res) => {
+    const page = await SysPage.getPage('user-config')
+    const renderer = new Page({
+        page,
+        user: req.user,
+        i18n: req.i18n
+    })
+    res.send(await renderer.render())
+})
+
+usersRouter.post('/user/config/update', checkUser, async (req, res) => {
+    const { sidebar, darkMode, header, footer } = req.body
+    const user = req.user
+    user.config.sidebar = sidebar
+    user.config.darkMode = darkMode
+    user.config.header = header
+    user.config.footer = footer
+    user.changed('config', true)
+    await user.save()
+    res.json({ status: 'success', message: 'Action completed' })
+})
+
+usersRouter.post('/user/config/reset', checkUser, async (req, res) => {
+    const user = req.user
+    delete user.config.sidebar
+    delete user.config.darkMode
+    delete user.config.header
+    delete user.config.footer
+    user.changed('config', true)
+    await user.save()
+    res.json({ status: 'success', message: 'Action completed' })
 })

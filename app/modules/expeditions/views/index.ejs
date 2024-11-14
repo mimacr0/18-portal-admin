@@ -11,20 +11,18 @@
 
       <div class="card">
 
-         <div class="card-header">
-            <h3 class="card-title"><span class="text-muted"><%= page.translate('Expeditions') %></span></h3>
-            <div class="card-tools expeditions-expeditions-card-tools"></div>
-         </div>
-
          <div class="card-body p-0">
+
             <div class="mailbox-controls card-controls-fixed-head">
                <div class="row">
-                  <div class="col-6">
-                     <div class="expeditions-expeditions-batch-actions"></div>
-                  </div>
-                  <div class="col-6">
-                     <div>
-                        <div class="input-group input-group-sm float-right" style="max-width: 250px;">
+                  <div class="col-8 d-flex justify-content-left">
+                     <div class="expeditions-expeditions-batch-actions">
+                        <a href="/expeditions/create" class="btn btn-default btn-sm expeditions-expeditions-create-button" data-toggle="tooltip" data-placement="right" data-original-title="<%= page.translate('Create new expedition') %>">
+                           <i class="fas fa-plus"></i>
+                        </a>
+                     </div>
+                     <div class="ml-3">
+                        <div class="input-group input-group-sm" style="max-width: 250px;">
                            <input type="text" name="table_search" class="form-control float-right" placeholder="<%= page.translate('Search') %>" id="expeditions-expeditions-search-input">
                            <div class="input-group-append">
                               <button type="submit" class="btn btn-default">
@@ -34,23 +32,26 @@
                         </div>
                      </div>
                   </div>
+                  <div class="col-4">
+                     <div id="expeditions-expeditions-pager"></div>
+                  </div>
                </div>
             </div>
             <div class="table-responsive mailbox-messages expeditions-expeditions-main-container table-fixed-head">
-            <table class="table table-hover table-striped table-sm">
-               <thead>
-                  <tr>
-                     <th><%= page.translate('Order') %></th>
-                     <th><%= page.translate('Tracking number') %></th>
-                     <th><%= page.translate('State') %></th>
-                  </tr>
-               </thead>
-               <tbody id="expeditions-expeditions-list"></tbody>
-            </table>
+               <table class="table table-hover table-striped table-sm">
+                  <thead>
+                     <tr>
+                        <th><%= page.translate('#') %></th>
+                        <th><%= page.translate('Order') %></th>
+                        <th><%= page.translate('Tracking number') %></th>
+                        <th><%= page.translate('State') %></th>
+                     </tr>
+                  </thead>
+                  <tbody id="expeditions-expeditions-list"></tbody>
+               </table>
             </div>
-         </div>
 
-         <div class="card-footer clearfix" id="expeditions-expeditions-footer"></div>
+         </div>
 
       </div>
 

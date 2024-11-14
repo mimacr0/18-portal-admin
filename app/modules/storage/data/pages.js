@@ -12,6 +12,7 @@ export const storageMenus = [
 export const storagePages = [
     {
         name: 'storage',
+        url: '/storage',
         title: 'Storage',
         module: 'storage',
         assets: {

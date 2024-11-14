@@ -1,0 +1,20 @@
+<div class="d-flex justify-content-end align-items-end">
+   <div class="mr-3 d-flex align-items-center">
+      <% if(firstResult > 0) { %>
+      <div><%= firstResult %> - <%= lastResult %> / <%= total %></div>
+      <% } %>
+   </div>
+   <div>
+      <div>
+         <% if(firstResult > 0) { %>
+         <ul class="pagination pagination-sm m-0" style="cursor: pointer;">
+            <li class="page-item <% if (currentPage === 1) { %>disabled<% } %>" data-page="<%= currentPage !== 1 ? currentPage - 1 : '' %>"><span class="page-link">«</span></li>
+            <% for (let i = startPage; i <= endPage; i++) { %>
+            <li class="page-item <% if (i === currentPage) { %>active<% } %>" data-page="<%= i %>"><span class="page-link"><%= i %></span></li>
+            <% } %>
+            <li class="page-item <% if (currentPage === totalPages) { %>disabled<% } %>" data-page="<%= currentPage !== totalPages ? currentPage + 1 : '' %>"><span class="page-link">»</span></li>
+          </ul>
+          <% } %>
+      </div>
+   </div>
+</div>

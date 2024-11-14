@@ -374,7 +374,14 @@ socket.on('dashboard reload', (data) => {
 })
 
 const initPortalCustomerData = async () => {
-    await jsonGet('/dashboard/init/kpi/data/action', '<%= page.translate('Dashboard loading ...') %>')
+    await jsonGet('/dashboard/init/kpi/data/action', '<%= page.translate('Loading Dashboard ...') %>')
+    await jsonGet('/dashboard/init/expeditions/data/action', '<%= page.translate('Loading Expeditions ...') %>')
+    await jsonGet('/dashboard/init/receptions/data/action', '<%= page.translate('Loading Receptions ...') %>')
+    await jsonGet('/dashboard/init/stock/data/action', '<%= page.translate('Loading Stock ...') %>')
+    await jsonGet('/dashboard/init/storage/data/action', '<%= page.translate('Loading Storage ...') %>')
+    await jsonGet('/dashboard/init/repairs/data/action', '<%= page.translate('Loading Repairs ...') %>')
+    await jsonGet('/dashboard/init/spareparts/data/action', '<%= page.translate('Loading Spare Parts ...') %>')
+    await jsonGet('/dashboard/init/invoices/data/action', '<%= page.translate('Loading Invoices ...') %>')
 }
 
 ##<% if(initSync) { %>

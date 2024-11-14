@@ -67,5 +67,19 @@ export const usersPages = [
             }
         ],
         access: 'admin'
+    },
+    {
+        name: 'user-config',
+        title: 'Configuration',
+        module: 'base',
+        view: 'configuration',
+        assets: {
+            footer: {
+                js: [
+                    { url: '/static/base/js/sys.js' },
+                    { url: '/static/base/js/configuration.js' }
+                ]
+            }
+        }
     }
 ]

@@ -1,0 +1,187 @@
+<%- await include('../../../components/layout/html/_header', { page }) %>
+
+<!-- Content Header (Page header) -->
+<div style="height: 10px;"></div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<div class="content">
+   <div class="container-fluid">
+
+      <div id="wrap" class="o_portal_wrap">
+         <div class="container pt-3">
+            <div class="container o_portal_sidebar">
+               <div class="row">
+                  <div class="col-lg-2 text-center">
+                     <div class="w-100 p-2 text-center text-sm">
+                        <a href="/expeditions">
+                           <i class="fas fa-arrow-left"></i> Volver
+                        </a>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row o_portal_expedition_sidebar">
+                  <div class="col-lg-3 col-xl-4 d-print-none me-lg-auto">
+                     <div class="o_portal_sidebar_content d-lg-inline-block mb-4 mb-lg-0 p-3 p-lg-0" id="sidebar_content">
+                        <div class="position-relative d-flex align-items-center justify-content-md-center justify-content-lg-between flex-wrap gap-2">
+                           <div class="badge badge-success orders_label_text_align w-100 p-2">
+                              <span>Hecho</span>
+                           </div>
+                        </div>
+                        <div class="d-flex flex-column gap-4">
+                           <div class="d-flex flex-column gap-2" id="expedition_sidebar_button"></div>
+                           <div class="navspy flex-grow-1 ps-0" role="complementary">
+                              <ul class="nav flex-column bs-sidenav"></ul>
+                           </div>
+                           <div>
+                              <h6><small class="text-muted">Su contacto</small></h6>
+                              <div class="o_portal_contact_details d-flex flex-column gap-2">
+                                 <div class="d-flex justify-content-start align-items-center gap-2">
+                                    <img class="o_avatar o_portal_contact_img rounded" alt="Contactos"
+                                       src="data:image/jpg;base64,[base64-image-data]">
+                                    <div>
+                                       <h6 class="mb-0">Yan Zhou 周岩</h6>
+                                       <a href="#discussion" class="d-flex align-items-center gap-2 small fw-bold">
+                                          Enviar mensaje
+                                       </a>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div id="expedition_content" class="o_portal_content col-12 col-lg-9 col-xl-8">
+                     <div id="portal_sale_content">
+                        <div id="introduction">
+                           <div class="row" id="intro_row">
+                              <h2 class="my-0 col-12 col-lg flex-grow-1 mb-1 mb-lg-0">
+                                 <em>AS/00002</em>
+                              </h2>
+                           </div>
+                        </div>
+                        <div id="content">
+                           <div id="informations" class="row">
+                              <div id="sale_info" class="col-12 col-lg-6 mb-4">
+                                 <span id="sale_info_title">
+                                    <h4 class="mt-2 mb-1">Información</h4>
+                                    <hr class="mt-1 mb-2">
+                                 </span>
+                                 <table class="table table-borderless table-sm">
+                                    <tbody style="white-space:nowrap" id="sale_info_table">
+                                       <tr>
+                                          <th class="ps-0 pb-0">Fecha:</th>
+                                          <td class="w-100 pb-0 text-wrap"><span>23/10/2023</span></td>
+                                       </tr>
+                                    </tbody>
+                                 </table>
+                              </div>
+                              <div id="shipping_address" class="col-lg-6">
+                                 <span id="shipping_info_title">
+                                    <h4 class="mt-2 mb-1">Dirección de envío</h4>
+                                    <hr class="mt-1 mb-2">
+                                 </span>
+                                 <address>
+                                    <div>
+                                       <span>ShenZhenshi Worlddlink Supply Chain Co.,Ltd.深圳市世联互通供应链有限公司, 8-HT/BD-Werner
+                                          Richter</span>
+                                    </div>
+                                    <div class="gap-2">
+                                       <div class="d-flex align-items-baseline gap-1">
+                                          <span class="d-block w-100 lh-sm">Katzenstr. 11<br>08118<br>Alemania</span>
+                                       </div>
+                                    </div>
+                                 </address>
+                              </div>
+                           </div>
+                           <section id="details" style="page-break-inside: auto;">
+                              <div class="table-responsive">
+                                 <table class="table table-sm" id="sales_order_table">
+                                    <thead class="bg-100">
+                                       <tr>
+                                          <th class="text-start">Productos</th>
+                                          <th class="text-end">Cantidad</th>
+                                       </tr>
+                                    </thead>
+                                    <tbody class="sale_tbody">
+                                       <tr>
+                                          <td id="product_name">
+                                             <span>POCO X5 5G</span>
+                                          </td>
+                                          <td class="text-end">
+                                             <div id="quote_qty">
+                                                <span>0,0</span>
+                                                <span>Unidades</span>
+                                             </div>
+                                          </td>
+                                       </tr>
+                                    </tbody>
+                                 </table>
+                              </div>
+                           </section>
+                        </div>
+                     </div>
+                     <hr>
+                     <div id="expedition_communication">
+                        <h3>Historia de la comunicación</h3>
+                        <div id="discussion" class="d-print-none o_portal_chatter o_not_editable p-0">
+                           <div class="o_portal_chatter p-0">
+                              <div>
+                                 <div class="o_portal_chatter_header pb-2 text-muted">
+                                    <div class="o_message_counter">No hay comentarios por ahora.</div>
+                                 </div>
+                                 <div class="o_portal_chatter_composer">
+                                    <div class="alert alert-danger mb8 d-none o_portal_chatter_composer_error"
+                                       role="alert">
+                                       ¡Uy! Ocurrió un error. Intente actualizar la página e inicie sesión.
+                                    </div>
+                                    <div class="d-flex">
+                                       <img alt="Avatar"
+                                          class="o_avatar o_portal_chatter_avatar align-self-start me-3 rounded"
+                                          src="/web/image/res.partner/283/avatar_128">
+                                       <div class="flex-grow-1">
+                                          <div class="o_portal_chatter_composer_input">
+                                             <div
+                                                class="o_portal_chatter_composer_body d-flex flex-nowrap align-items-start flex-grow-1 mb-4">
+                                                <div class="d-flex flex-column flex-grow-1 rounded-3">
+                                                   <div class="position-relative flex-grow-1">
+                                                      <textarea rows="4" name="message"
+                                                         class="form-control rounded-3 shadow-none"
+                                                         placeholder="Escribir un mensaje..."
+                                                         style="resize:none;"></textarea>
+                                                   </div>
+                                                   <div class="d-flex flex-row align-self-end p-2">
+                                                      <div class="d-flex px-1">
+                                                         <button
+                                                            class="o_portal_chatter_attachment_btn btn fa fa-paperclip border-0"
+                                                            type="button" title="Agregar archivo adjunto"></button>
+                                                      </div>
+                                                      <button
+                                                         class="o_portal_chatter_composer_btn btn btn-primary o-last rounded-3"
+                                                         type="submit">Enviar</button>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+   </div>
+</div>
+
+<%- await include('../../../components/layout/html/_footer', { page }) %>
+
+</body>
+
+</html>

@@ -1,0 +1,89 @@
+<%- await include('../../../components/layout/html/_header', { page }) %>
+
+<!-- Content Header (Page header) -->
+<div style="height: 10px;"></div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<div class="content">
+   <div class="container-fluid">
+      <form action="/expedition/order/create" class="row o_portal_expedition_order_form" method="POST">
+         <div class="col-md-2 o_portal_details">
+            <div class="pt16 pb16 o_colored_level">
+            </div>
+         </div>
+         <div class="col-md-8">
+            <section class="s_faq_collapse pt32 pb32 o_colored_level">
+               <div id="myCollapse" class="accordion" role="tablist">
+                  <div class="card bg-white">
+                     <a href="#" role="tab" data-toggle="collapse" aria-expanded="true" class="card-header" data-parent="#myCollapse" data-target="#basic">Expedition</a>
+                     <div class="collapse show" role="tabpanel" id="basic">
+                        <div class="card-body row">
+                           <div class="col-xl-6 form-group">
+                              <label class="col-form-label" for="client_account_id">Client Account</label>
+                              <select name="client_account_id" id="client_account_id_select" class="form-control" required>
+                                 <option value="">Client Account...</option>
+                              </select>
+                           </div>
+
+                           <div class="col-xl-6 form-group">
+                              <label class="col-form-label" for="partner_shipping_id">Partner Shipping</label>
+                              <div class="input-group mb-3">
+                                 <div class="select2-primary" style="width: 100%;">
+                                    <select name="partner_shipping_id" id="partner_shipping_id_select" class="form-control" required>
+                                       <option value="">Partner Shipping...</option>
+                                    </select>
+                                 </div>
+                                 <div class="input-group-append">
+                                    <span role="button" class="btn btn-primary search_zip_code_btn" data-bs-toggle="modal" data-bs-target="#modalzip" data-backdrop='static' data-keyboard='false'><i class="fa fa-plus"></i></span>
+                                 </div>
+                              </div>
+                           </div>
+
+                           <div class="clearfix"></div>
+
+                           <section id="order_product_details" class="mt32">
+                              <h3>Products</h3>
+                              <div class="table-responsive">
+                                 <table class="table table-sm">
+                                    <thead class="bg-100">
+                                       <tr>
+                                          <th class="col-md-3 text-start">Product</th>
+                                          <th class="col-md-1 text-end">Quantity</th>
+                                       </tr>
+                                    </thead>
+                                    <tbody class="sale_tbody" id="order_product_list_content"></tbody>
+                                 </table>
+                              </div>
+                              <input type="hidden" name="product_ids" class="o_portal_product_ids"/>
+                           </section>
+
+                           <div class="clearfix"></div>
+
+                           <div class="row justify-content-center text-center d-print-none pt-1 pb-4 mt32">
+                              <div class="col-sm-auto mt8">
+                                 <span role="button" class="btn btn-primary o_portal_add_products_btn"><i class="fa fa-plus"></i> Add Products</span>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </section>
+
+            <div class="clearfix">
+               <span class="btn btn-primary float-right mb32 o_portal_submit_form_btn" style="display: none;">
+                  Confirm
+                  <span class="fa fa-long-arrow-right"></span>
+               </span>
+            </div>
+         </div>
+      </form>
+   </div>
+</div>
+
+<%- await include('../../../components/layout/html/_footer', { page }) %>
+
+</body>
+
+</html>
