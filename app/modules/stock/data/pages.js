@@ -12,6 +12,7 @@ export const stockMenus = [
 export const stockPages = [
     {
         name: 'stock',
+        url: '/stock',
         title: 'Stock',
         module: 'stock',
         assets: {

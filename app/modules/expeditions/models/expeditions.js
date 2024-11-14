@@ -15,7 +15,7 @@ export class ExpeditionItem extends Model {
         return this.data?.date_order
     }
     get amount_total() {
-        return this.data?.amount_total
+        return (this.data?.amount_total || 0).toFixed(2)
     }
     get carrier() {
         return this.data?.carrier || ''

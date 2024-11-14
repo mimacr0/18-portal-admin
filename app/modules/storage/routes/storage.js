@@ -1,35 +1,33 @@
 import express from 'express'
+import { Op } from 'sequelize'
 
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../../base/models/config.js'
 import { checkUser } from '../../../controllers/web/security.js'
-import { WebServiceRPC } from '../../../controllers/rpc/erp.js'
 import { Page } from '../../../components/layout/models/page.js'
 import { renderComponent, renderModule } from '../../../tools/view.js'
-import { genMD5 } from '../../../tools/sys.js'
-import { StockItem } from '../models/stock.js'
+import { StorageItem } from '../models/storage.js'
 
+export const storageRouter = express.Router()
 
-export const stockRouter = express.Router()
-
-stockRouter.get('/stock', checkUser, async (req, res) => {
-    const pageData = await SysPage.getPage('/stock')
-    const page = new Page({
-        ...pageData,
+storageRouter.get('/storage', checkUser, async (req, res) => {
+    const page = await SysPage.getPage('storage')
+    const renderer = new Page({
+        page,
         user: req.user,
         i18n: req.i18n
     })
-    res.send(await page.render())
+    res.send(await renderer.render())
 })
 
-stockRouter.get('/stock/stock/list', checkUser, async (req, res) => {
+storageRouter.get('/storage/location/list', checkUser, async (req, res) => {
     if(!req.user.portal) return res.json({
-        html: await renderComponent('portal/html/_nodata', { message: req.i18n.__('No products found') })
+        html: await renderComponent('portal/html/_nodata', { message: req.i18n.__('No locations found') })
     })
 
     const pconf = await ConfigConf.getByKeys({
         gl: 'pages.global',
-        pc: 'pages.stock.stock'
+        pc: 'pages.stock.storage'
     })
 
     const page = parseInt(req.query.page) || 1
@@ -38,29 +36,8 @@ stockRouter.get('/stock/stock/list', checkUser, async (req, res) => {
 
     const q = req.query?.q || ''
 
-    const totalCount = await StockItem.count({ where: { user_id: req.user.id } })
-
-    if(totalCount == 0) {
-
-        const erp = new WebServiceRPC('pages.stock.stock')
-
-        const result = await erp.request('stock/list/all', {
-            user_id: req.user.uid
-        })
-
-        if(result?.status !== 'success') return res.json(result)
-        else await StockItem.bulkCreate(result.data.map(row => {
-            return {
-                id: genMD5(row.id.toString()),
-                data: row,
-                user_id: req.user.id
-            }
-        }))
-
-    }
-
-    const { count, rows } = await StockItem.findAndCountAll({
-        where: { user_id: req.user.id },
+    const { count, rows } = await StorageItem.findAndCountAll({
+        where: { user_id: req.user.id, 'data.name': { [Op.like]: '%' + q + '%' } },
         limit,
         offset
     })
@@ -75,7 +52,7 @@ stockRouter.get('/stock/stock/list', checkUser, async (req, res) => {
     const endPage = Math.min(totalPages, currentPage + 4)
     const firstResult = (currentPage - 1) * limit + 1
     const lastResult = Math.min(currentPage * limit, count)
-    const list = await renderModule('stock/views/_items', { user: req.user, items: rows, pconf, rstyle, count, i18n: req.i18n })
+    const list = await renderModule('stock/views/_locations', { user: req.user, items: rows, pconf, rstyle, count, i18n: req.i18n })
     const footer = await renderComponent('cards/html/list/_footer', {
         items: rows,
         total: count,

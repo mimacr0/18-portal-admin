@@ -1,5 +1,6 @@
 
 import express from 'express'
+import { Op } from 'sequelize'
 
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../../base/models/config.js'
@@ -39,31 +40,8 @@ expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, re
 
     const q = req.query?.q || ''
 
-    const rpc = pconf?.pc?.rpc || pconf?.gl?.rpc
-
-    const totalCount = await ExpeditionItem.count({ where: { user_id: req.user.id } })
-
-    if(totalCount == 0) {
-
-        const erp = new WebServiceRPC('pages.expeditions.expeditions')
-
-        const result = await erp.request('expeditions/list', {
-            user_id: req.user.uid
-        })
-
-        if(result?.status !== 'success') return res.json(result)
-        else await ExpeditionItem.bulkCreate(result.data.map(row => {
-            return {
-                id: genMD5(row.id.toString()),
-                data: row,
-                user_id: req.user.id
-            }
-        }))
-
-    }
-
     const { count, rows } = await ExpeditionItem.findAndCountAll({
-        where: { user_id: req.user.id },
+        where: { user_id: req.user.id, 'data.name': { [Op.like]: '%' + q + '%' } },
         limit,
         offset
     })
@@ -79,7 +57,7 @@ expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, re
     const firstResult = (currentPage - 1) * limit + 1
     const lastResult = Math.min(currentPage * limit, count)
     const list = await renderModule('expeditions/views/_items', { user: req.user, items: rows, pconf, rstyle, count, i18n: req.i18n })
-    const footer = await renderComponent('cards/html/list/_footer', {
+    const pager = await renderComponent('cards/html/list/_pager', {
         items: rows,
         total: count,
         totalPages, currentPage,
@@ -88,7 +66,7 @@ expeditionsRouter.get('/expeditions/expeditions/list', checkUser, async (req, re
         firstResult,
         lastResult
     })
-    res.json({ html: list, footer })
+    res.json({ html: list, pager })
 })
 
 expeditionsRouter.get('/expeditions/create/account/data', checkUser, async (req, res) => {
@@ -208,4 +186,26 @@ expeditionsRouter.post('/portal/customer/after/sales/update', checkUser, async (
     delete data.id
 
     res.json({ status: 'success' })
+})
+
+expeditionsRouter.get('/expeditions/details/:id', checkUser, async (req, res) => {
+    const item = await ExpeditionItem.findOne({ where: { id: req.params.id } })
+    if(!item) return res.redirect('/pages/404')
+    const page = await SysPage.getPage('expeditions-details')
+    const renderer = new Page({
+        page,
+        user: req.user,
+        i18n: req.i18n
+    })
+    res.send(await renderer.render())
+})
+
+expeditionsRouter.get('/expeditions/create', checkUser, async (req, res) => {
+    const page = await SysPage.getPage('expeditions-create')
+    const renderer = new Page({
+        page,
+        user: req.user,
+        i18n: req.i18n
+    })
+    res.send(await renderer.render())
 })

@@ -12,6 +12,7 @@ export const expeditionsMenus = [
 export const expeditionsPages = [
     {
         name: 'expeditions',
+        url: '/expeditions',
         title: 'Expeditions',
         module: 'expeditions',
         assets: {
@@ -20,6 +21,34 @@ export const expeditionsPages = [
                     { url: '/static/base/js/sys.js' },
                     { url: '/static/base/js/tabs.js' },
                     { url: '/static/expeditions/js/expeditions.js' }
+                ]
+            }
+        }
+    },
+    {
+        name: 'expeditions-details',
+        title: 'Expedition',
+        module: 'expeditions',
+        view: 'details',
+        assets: {
+            footer: {
+                js: [
+                    { url: '/static/base/js/sys.js' },
+                    { url: '/static/base/js/tabs.js' }
+                ]
+            }
+        }
+    },
+    {
+        name: 'expeditions-create',
+        title: 'Expedition create',
+        module: 'expeditions',
+        view: 'create',
+        assets: {
+            footer: {
+                js: [
+                    { url: '/static/base/js/sys.js' },
+                    { url: '/static/base/js/tabs.js' }
                 ]
             }
         }

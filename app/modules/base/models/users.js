@@ -77,6 +77,16 @@ export class SysUser extends Model {
     hasPrivilege(privilege) {
         return this.data?.privileges?.includes(privilege)
     }
+    get sidebarConfig() {
+        const result = []
+
+        if(['collapsed', 'sidebar-mini'].includes(this.config?.sidebar)) result.push('sidebar-collapse')
+        if(this.config?.sidebar == 'sidebar-mini') result.push('sidebar-mini')
+
+        if(this.config?.darkMode == 'enabled') result.push('dark-mode')
+
+        return result.join(' ')
+    }
 }
 
 SysUser.init({

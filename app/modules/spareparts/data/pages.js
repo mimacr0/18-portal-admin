@@ -12,6 +12,7 @@ export const sparepartsMenus = [
 export const sparepartsPages = [
     {
         name: 'spareparts',
+        url: '/spareparts',
         title: 'Spare Parts',
         module: 'spareparts',
         assets: {

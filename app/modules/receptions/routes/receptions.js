@@ -1,10 +1,11 @@
 
 import express from 'express'
+import { Op } from 'sequelize'
 
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../../base/models/config.js'
 import { checkUser } from '../../../controllers/web/security.js'
-import { WebServiceRPC } from '../../../controllers/rpc/erp.js'
+import { StockReception } from '../models/receptions.js'
 import { Page } from '../../../components/layout/models/page.js'
 import { renderComponent, renderModule } from '../../../tools/view.js'
 
@@ -37,15 +38,11 @@ receptionsRouter.get('/receptions/receptions/list', checkUser, async (req, res) 
 
     const q = req.query?.q || ''
 
-    const erp = new WebServiceRPC('pages.receptions.receptions')
-
-    const result = await erp.request('receptions/list', {
-        q, limit, offset, user_id: req.user.uid
+    const { count, rows } = await StockReception.findAndCountAll({
+        where: { user_id: req.user.id, 'data.name': { [Op.like]: '%' + q + '%' } },
+        limit,
+        offset
     })
-
-    if(result?.status !== 'success') return res.json(result)
-
-    const { count, rows } = result.data
 
     let rcount = pconf?.pc?.list?.rcount || pconf?.gl?.list?.rcount
     let rstyle = false
@@ -58,7 +55,7 @@ receptionsRouter.get('/receptions/receptions/list', checkUser, async (req, res) 
     const firstResult = (currentPage - 1) * limit + 1
     const lastResult = Math.min(currentPage * limit, count)
     const list = await renderModule('receptions/views/_items', { user: req.user, items: rows, pconf, rstyle, count, i18n: req.i18n })
-    const footer = await renderComponent('cards/html/list/_footer', {
+    const pager = await renderComponent('cards/html/list/_pager', {
         items: rows,
         total: count,
         totalPages, currentPage,
@@ -67,7 +64,7 @@ receptionsRouter.get('/receptions/receptions/list', checkUser, async (req, res) 
         firstResult,
         lastResult
     })
-    res.json({ html: list, footer })
+    res.json({ html: list, pager })
 })
 
 receptionsRouter.get('/receptions/create/account/data', checkUser, async (req, res) => {

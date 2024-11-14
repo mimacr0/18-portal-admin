@@ -12,6 +12,7 @@ export const messagesMenu = [
 export const messagesPages = [
     {
         name: 'messages',
+        url: '/messages',
         type: 'messages',
         module: 'messages',
         title: 'Messages',

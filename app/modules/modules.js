@@ -17,6 +17,10 @@ import { configRouter } from './base/routes/config.js'
 import { expeditionsRouter } from './expeditions/routes/expeditions.js'
 import { mainRouter } from './base/routes/main.js'
 import { stockRouter } from './stock/routes/stock.js'
+import { repairsRouter } from './repairs/routes/repairs.js'
+import { storageRouter } from './storage/routes/storage.js'
+import { sparePartsRouter } from './spareparts/routes/spareparts.js'
+import { invoicesRouter } from './invoices/routes/invoices.js'
 import { dashboardRouter } from './dashboard/routes/dashboard.js'
 import { messagesRouter } from './messages/routes/messages.js'
 import { receptionsRouter } from './receptions/routes/receptions.js'
@@ -44,7 +48,11 @@ export const initRouters = () => {
     app.use(usersRouter)
     app.use(configRouter)
     app.use(expeditionsRouter)
+    app.use(repairsRouter)
     app.use(stockRouter)
+    app.use(storageRouter)
+    app.use(invoicesRouter)
+    app.use(sparePartsRouter)
     app.use(dashboardRouter)
     app.use(messagesRouter)
     app.use(receptionsRouter)
@@ -64,8 +72,12 @@ export const initStatic = () => {
     app.use('/static/base', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "base", "static")))
     app.use('/static/stock', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "stock", "static")))
     app.use('/static/expeditions', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "expeditions", "static")))
+    app.use('/static/repairs', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "repairs", "static")))
     app.use('/static/messages', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "messages", "static")))
     app.use('/static/receptions', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "receptions", "static")))
+    app.use('/static/storage', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "storage", "static")))
+    app.use('/static/spareparts', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "spareparts", "static")))
+    app.use('/static/invoices', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "invoices", "static")))
 }
 
 const initPages = async () => {
