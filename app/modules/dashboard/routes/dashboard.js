@@ -53,7 +53,7 @@ dashboardRouter.get('/dashboard/init/kpi/data/action', checkUser, async (req, re
 
     if(result?.status !== 'success') return res.json({ status: 'error', message: 'Error loading kpis' })
 
-    const generalKpis = await DashboardKpi.findAll({ where: { user_id: null } })
+    const generalKpis = await DashboardKpi.findAll({ where: { [Op.or]: [{ user_id: null }, { user_id: false }, { user_id: '' }] } })
 
     for(const kpi of generalKpis) await kpi.destroy()
 
