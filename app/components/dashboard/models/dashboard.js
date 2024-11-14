@@ -21,7 +21,7 @@ const kpiMap = {
 export class Dashboard extends Page {
 
     async getKPIs() {
-        const kpis = await DashboardKpi.findAll({})
+        const kpis = await DashboardKpi.findAll({ where: { user_id: this.user.id } })
         const _kpis = kpis.map(kpi => kpiMap[kpi.data.type] ? new kpiMap[kpi.data.type](kpi) : new KPI(kpi))
         _kpis.sort((a, b) => a.sequence - b.sequence)
         return _kpis
