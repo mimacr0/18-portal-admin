@@ -53,32 +53,36 @@ dashboardRouter.get('/dashboard/init/kpi/data/action', checkUser, async (req, re
 
     if(result?.status !== 'success') return res.json({ status: 'error', message: 'Error loading kpis' })
 
+    const generalKpis = await DashboardKpi.findAll({ where: { user_id: null } })
+
+    for(const kpi of generalKpis) await kpi.destroy()
+
     Logger.debug('Dashboard KPIs:', result.data)
 
-    // for(const data of result.data) {
-    //     const kpi = await DashboardKpi.findOne({ where: { 'data.ref': data.ref } })
+    for(const data of result.data) {
+        const kpi = await DashboardKpi.findOne({ where: { 'data.ref': data.ref, user_id: req.user.id } })
 
-    //     const kpiData = data?.data || {}
+        const kpiData = data?.data || {}
 
-    //     delete data.data
+        delete data.data
 
-    //     if(!kpi) {
-    //         await DashboardKpi.create({ id: genDBID(), user_id: req.user.id, data, kpi: kpiData })
-    //         continue
-    //     }
+        if(!kpi) {
+            await DashboardKpi.create({ id: genDBID(), user_id: req.user.id, data, kpi: kpiData })
+            continue
+        }
 
-    //     kpi.data = { ...kpi.data, ...data }
-    //     kpi.kpi = { ...kpi.kpi, ...kpiData }
-    //     kpi.user_id = req.user.id
-    //     kpi.changed('data', true)
-    //     kpi.changed('kpi', true)
-    //     kpi.changed('user_id', true)
-    //     await kpi.save()
-    // }
+        kpi.data = { ...kpi.data, ...data }
+        kpi.kpi = { ...kpi.kpi, ...kpiData }
+        kpi.user_id = req.user.id
+        kpi.changed('data', true)
+        kpi.changed('kpi', true)
+        kpi.changed('user_id', true)
+        await kpi.save()
+    }
 
-    // const kpis = await DashboardKpi.findAll({ where: { user_id: req.user.id } })
+    const kpis = await DashboardKpi.findAll({ where: { user_id: req.user.id } })
 
-    // if(kpis.length == 0) return res.json({ status: 'error', message: 'No kpis found' })
+    if(kpis.length == 0) return res.json({ status: 'error', message: 'No kpis found' })
 
     res.json({ status: 'success' })
 })
