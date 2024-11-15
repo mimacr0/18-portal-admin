@@ -37,7 +37,7 @@ function numberKPIAnimateChange(eid) {
 const baseChartBarOptions = {
     chart: {
         type: "bar",
-        height: 165
+        height: 185
     },
     plotOptions: {
         bar: {
@@ -47,10 +47,16 @@ const baseChartBarOptions = {
         },
     },
     legend: {
-        show: true
+        show: false
     },
     dataLabels: {
         enabled: false,
+        formatter: function (val) {
+            return val.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
     },
     stroke: {
         show: true,
@@ -59,13 +65,43 @@ const baseChartBarOptions = {
     },
     fill: {
         opacity: 1
+    },
+    tooltip: {
+        y: {
+            formatter: function (val) {
+                return val.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+        }
+    },
+    xaxis: {
+        labels: {
+            formatter: function (val) {
+                return val.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+        }
+    },
+    yaxis: {
+        labels: {
+            formatter: function (val) {
+                return val.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+        }
     }
 }
 
 const baseChartPieOptions = {
     chart: {
         type: "pie",
-        height: 170
+        height: 210
     },
     series: [1],
     labels: [""],
@@ -90,8 +126,10 @@ const baseBarChartBarData = {
 }
 
 const initDashboardBarChart = (kpiId, data={}) => {
+    const element = document.querySelector(`#kpi-chart-${kpiId}`)
+    if(!element) return
     dashboardKPICharts[kpiId] = new ApexCharts(
-        document.querySelector(`#kpi-chart-${kpiId}`), {
+        element, {
         ...baseChartBarOptions,
         ...baseBarChartBarData,
         ...data
@@ -123,255 +161,14 @@ initDashboardBarChart('<%= kpi.id %>', <%- JSON.stringify(kpi.chartData) %>)
 initDashboardPieChart('<%= kpi.id %>', <%- JSON.stringify(kpi.chartData) %>)
 ##<% } %>
 
-let bankStatementsChart = {
-    chart: {
-      group: 'sparks',
-      type: 'area',
-      height: 80,
-      sparkline: {
-        enabled: true
-      },
-      dropShadow: {
-        enabled: false
-      }
-    },
-    series: [
-      {
-        name: 'Income',
-        data: [4700, 4500, 7400, 3200, 5600, 3100, 4400, 3300, 4500, 1900]
-      },
-      {
-        name: 'Expense',
-        data: [3200, 3800, 3900, 2800, 3800, 2800, 3600, 2900, 3800, 2100]
-      }
-    ],
-    stroke: {
-      curve: 'smooth',
-      width: 2
-    },
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shadeIntensity: 1,
-        opacityFrom: 0.7,
-        opacityTo: 0.3,
-        stops: [0, 100]
-      }
-    },
-    markers: {
-      size: 0
-    },
-    grid: {
-      padding: {
-        top: 5,
-        bottom: 5
-      }
-    },
-    colors: ['#28a745', '#dc3545'],
-    tooltip: {
-      fixed: {
-        enabled: false
-      },
-      x: {
-        show: false
-      },
-      y: {
-        title: {
-          formatter: function formatter(val) {
-            return '$';
-          }
-        },
-        formatter: function(value) {
-          return '$' + value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-      },
-      marker: {
-        show: false
-      }
-    },
-    yaxis: {
-      labels: {
-        formatter: function(value) {
-          return '$' + value.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-      }
-    }
-}
-
-let serverResourcesChart = {
-    chart: {
-      group: 'sparks',
-      type: 'area',
-      height: 50,
-      sparkline: {
-        enabled: true
-      },
-      dropShadow: {
-        enabled: false
-      }
-    },
-    series: [
-      {
-        name: 'CPU',
-        data: [45, 52, 38, 60, 55, 70, 48, 56, 62, 50]
-      },
-      {
-        name: 'RAM',
-        data: [65, 58, 70, 72, 68, 75, 60, 78, 72, 80]
-      },
-      {
-        name: 'Storage',
-        data: [30, 32, 35, 38, 40, 42, 45, 48, 50, 52]
-      }
-    ],
-    stroke: {
-      curve: 'smooth',
-      width: 2
-    },
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shadeIntensity: 1,
-        opacityFrom: 0.7,
-        opacityTo: 0.3,
-        stops: [0, 100]
-      }
-    },
-    markers: {
-      size: 0
-    },
-    grid: {
-      padding: {
-        top: 5,
-        bottom: 5
-      }
-    },
-    colors: ['#007bff', '#28a745', '#ffc107'],
-    tooltip: {
-      fixed: {
-        enabled: false
-      },
-      x: {
-        show: false
-      },
-      y: {
-        title: {
-          formatter: function formatter(val) {
-            return '';
-          }
-        },
-        formatter: function(value) {
-          return value.toFixed(2) + '%';
-        }
-      },
-      marker: {
-        show: false
-      }
-    },
-    yaxis: {
-      labels: {
-        formatter: function(value) {
-          return value.toFixed(0) + '%';
-        }
-      }
-    }
-}
-
-const serverResourcesChartComplete = {
-    ...serverResourcesChart,
-    chart: { ...serverResourcesChart.chart, height: 90 }
-}
-
-let usersLogChart = {
-    chart: {
-      group: 'sparks',
-      type: 'area',
-      height: 30,
-      sparkline: {
-        enabled: true
-      },
-      dropShadow: {
-        enabled: false
-      }
-    },
-    series: [
-      {
-        name: 'Users',
-        data: [10, 15, 8, 12, 18, 20, 14, 16, 22, 25]
-      }
-    ],
-    stroke: {
-      curve: 'smooth',
-      width: 2
-    },
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shadeIntensity: 1,
-        opacityFrom: 0.7,
-        opacityTo: 0.3,
-        stops: [0, 100]
-      }
-    },
-    markers: {
-      size: 0
-    },
-    grid: {
-      padding: {
-        top: 5,
-        bottom: 5
-      }
-    },
-    colors: ['#17a2b8'],
-    tooltip: {
-      fixed: {
-        enabled: false
-      },
-      x: {
-        show: false
-      },
-      y: {
-        title: {
-          formatter: function formatter(val) {
-            return '';
-          }
-        },
-        formatter: function(value) {
-          return value + ' users';
-        }
-      },
-      marker: {
-        show: false
-      }
-    },
-    yaxis: {
-      labels: {
-        formatter: function(value) {
-          return value.toFixed(0);
-        }
-      }
-    }
-}
-
-##<% for( const kpi of kpis.filter(kpi => kpi.type == 'bank') ) { %>
-new ApexCharts(document.querySelector("#bank-chart-<%= kpi.id %>"), bankStatementsChart).render()
-##<% } %>
-
-##<% for( const kpi of kpis.filter(kpi => kpi.type == 'station') ) { %>
-new ApexCharts(document.querySelector("#station-chart-<%= kpi.id %>"), <% if(kpi.hasUsers) { %>serverResourcesChart<% } else { %>serverResourcesChartComplete<% } %>).render()
-new ApexCharts(document.querySelector("#users-chart-<%= kpi.id %>"), usersLogChart).render()
-##<% } %>
-
-socket.on('dashboard fullscreen', (data) => {
-    $('body > div > nav').hide()
-    $('body > div > footer').hide()
-    $('body > div > aside').css('height', '100vh')
-    $('body > div > div.content-wrapper').css('height', '100vh')
-})
-
 socket.on('dashboard reload', (data) => {
     location.reload()
 })
+
+socket.on('dashboard kpi state update', (kpi) => {
+  $(`#kpi-value-${kpi.id}`).html(kpi.data.value)
+})
+
 
 const initPortalCustomerData = async () => {
     await jsonGet('/dashboard/init/kpi/data/action', '<%= page.translate('Loading Dashboard ...') %>')

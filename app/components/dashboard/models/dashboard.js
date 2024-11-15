@@ -2,20 +2,12 @@
 import { KPI } from './kpis/base.js'
 import { StateKPI } from './kpis/state.js'
 import { ChartKPI } from './kpis/chart.js'
-import { LogChartKPI } from './kpis/logchart.js'
-import { StationKPI } from './kpis/station.js'
-import { BankKPI } from './kpis/bank.js'
-import { ExchangeKPI } from './kpis/exchange.js'
 import { DashboardKpi } from '../../../modules/dashboard/models/dashboard.js'
 import { Page } from '../../layout/models/page.js'
 
 const kpiMap = {
     state: StateKPI,
-    chart: ChartKPI,
-    station: StationKPI,
-    bank: BankKPI,
-    exchange: ExchangeKPI,
-    logchart: LogChartKPI
+    chart: ChartKPI
 }
 
 export class Dashboard extends Page {

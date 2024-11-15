@@ -13,11 +13,7 @@ export class ChartKPI extends KPI {
             const colors = this.series.map(s => s.color).filter(s => s)
             return {
                 series: this.data.series,
-                xaxis: { categories: (this.data.labels || []).map((l) => {
-                    if(!l.includes('-')) return l
-                    const parts = l.split('-')
-                    return `${parts[0][0]}${parts[1][0]}${parts[2]}`
-                }) },
+                xaxis: { categories: this.data?.labels || [] },
                 colors
             }
         }

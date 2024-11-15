@@ -100,5 +100,14 @@
 	"Spare Parts loading ...": "Spare Parts loading ...",
 	"Number": "Number",
 	"Reception Date": "Reception Date",
-	"Create new reception": "Create new reception"
+	"Create new reception": "Create new reception",
+	"Loading Dashboard ...": "Loading Dashboard ...",
+	"Loading Expeditions ...": "Loading Expeditions ...",
+	"Loading Receptions ...": "Loading Receptions ...",
+	"Loading Stock ...": "Loading Stock ...",
+	"Loading Storage ...": "Loading Storage ...",
+	"Loading Repairs ...": "Loading Repairs ...",
+	"Loading Spare Parts ...": "Loading Spare Parts ...",
+	"Loading Invoices ...": "Loading Invoices ...",
+	"Invoice": "Invoice"
 }
