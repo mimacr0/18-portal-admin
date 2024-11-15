@@ -8,8 +8,10 @@ import { checkUser } from '../../../controllers/web/security.js'
 import { WebServiceRPC } from '../../../controllers/rpc/erp.js'
 import { Page } from '../../../components/layout/models/page.js'
 import { renderComponent, renderModule } from '../../../tools/view.js'
-import { genMD5 } from '../../../tools/sys.js'
+import { PartnerShipping } from '../models/expeditions.js'
+import { ClientAccount } from '../../base/models/base.js'
 import { ExpeditionItem } from '../models/expeditions.js'
+import { ResCountry, ResCountryZip } from '../../base/models/base.js'
 
 
 export const expeditionsRouter = express.Router()
@@ -202,10 +204,25 @@ expeditionsRouter.get('/expeditions/details/:id', checkUser, async (req, res) =>
 
 expeditionsRouter.get('/expeditions/create', checkUser, async (req, res) => {
     const page = await SysPage.getPage('expeditions-create')
+    const shippingItems = await PartnerShipping.findAll({ where: { user_id: req.user.id } })
+    const accountItems = await ClientAccount.findAll({ where: { user_id: req.user.id } })
     const renderer = new Page({
         page,
         user: req.user,
         i18n: req.i18n
     })
-    res.send(await renderer.render())
+    res.send(await renderer.render({ shippingItems, accountItems }))
+})
+
+expeditionsRouter.get('/expeditions/countries/list', checkUser, async (req, res) => {
+    const countries = await ResCountry.findAll({})
+    res.json({ status: 'success', data: await renderComponent('forms/html/fields/_options', { items: countries, null_opt: 'Select country ...' }) })
+})
+
+expeditionsRouter.post('/expeditions/create/account/zip/find', checkUser, async (req, res) => {
+    const { zip } = req.body
+
+    const zips = await ResCountryZip.findAll({ where: { user_id: req.user.id, 'data.name': { [Op.like]: '%' + zip + '%' } } })
+
+    res.json({ status: 'success', data: [] })
 })

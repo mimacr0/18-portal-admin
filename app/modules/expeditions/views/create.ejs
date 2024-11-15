@@ -1,88 +1,209 @@
 <%- await include('../../../components/layout/html/_header', { page }) %>
 
-<!-- Content Header (Page header) -->
-<div style="height: 10px;"></div>
-<!-- /.content-header -->
+   <!-- Content Header (Page header) -->
+   <div style="height: 10px;"></div>
+   <!-- /.content-header -->
 
-<!-- Main content -->
-<div class="content">
-   <div class="container-fluid">
-      <form action="/expedition/order/create" class="row o_portal_expedition_order_form" method="POST">
-         <div class="col-md-2 o_portal_details">
-            <div class="pt16 pb16 o_colored_level">
+   <!-- Main content -->
+   <div class="content">
+      <div class="container-fluid">
+         <div class="row">
+            <div class="offset-2 col-8">
+               <div class="w-100 p-2 text-sm">
+                  <a href="/expeditions">
+                     <i class="fas fa-arrow-left"></i> Go back
+                  </a>
+               </div>
             </div>
          </div>
-         <div class="col-md-8">
-            <section class="s_faq_collapse pt32 pb32 o_colored_level">
-               <div id="myCollapse" class="accordion" role="tablist">
-                  <div class="card bg-white">
-                     <a href="#" role="tab" data-toggle="collapse" aria-expanded="true" class="card-header" data-parent="#myCollapse" data-target="#basic">Expedition</a>
-                     <div class="collapse show" role="tabpanel" id="basic">
-                        <div class="card-body row">
-                           <div class="col-xl-6 form-group">
-                              <label class="col-form-label" for="client_account_id">Client Account</label>
-                              <select name="client_account_id" id="client_account_id_select" class="form-control" required>
-                                 <option value="">Client Account...</option>
-                              </select>
-                           </div>
 
-                           <div class="col-xl-6 form-group">
-                              <label class="col-form-label" for="partner_shipping_id">Partner Shipping</label>
-                              <div class="input-group mb-3">
-                                 <div class="select2-primary" style="width: 100%;">
-                                    <select name="partner_shipping_id" id="partner_shipping_id_select" class="form-control" required>
+         <form action="/expedition/order/create" class="row o_portal_expedition_order_form" method="POST">
+            <div class="col-md-2 o_portal_details">
+               <div class="pt16 pb16 o_colored_level">
+               </div>
+            </div>
+            <div class="col-md-8">
+               <section class="s_faq_collapse pt32 pb32 o_colored_level">
+                  <div role="tablist">
+                     <div class="card bg-white">
+                        <div class="card-header">Create Expedition</div>
+                        <div role="tabpanel" id="basic">
+                           <div class="card-body row">
+                              <div class="col-xl-6 form-group">
+                                 <label class="col-form-label" for="client_account_id">Client Account</label>
+                                 <select name="client_account_id" id="client_account_id_select" class="form-control"
+                                    required>
+                                    <option value="">Client Account...</option>
+                                    ##<% for(const account of accountItems) { %>
+                                       <option value="<%= account.id %>">
+                                          <%= account.name %>
+                                       </option>
+                                       ##<% } %>
+                                 </select>
+                              </div>
+
+                              <div class="col-xl-6 form-group">
+                                 <label class="col-form-label" for="partner_shipping_id">Partner Shipping</label>
+                                 <div class="d-flex">
+                                    <select name="partner_shipping_id" id="partner_shipping_id_select"
+                                       class="form-control" required>
                                        <option value="">Partner Shipping...</option>
+                                       ##<% for(const shipping of shippingItems) { %>
+                                          <option value="<%= shipping.id %>">
+                                             <%= shipping.name %>
+                                          </option>
+                                          ##<% } %>
                                     </select>
-                                 </div>
-                                 <div class="input-group-append">
-                                    <span role="button" class="btn btn-primary search_zip_code_btn" data-bs-toggle="modal" data-bs-target="#modalzip" data-backdrop='static' data-keyboard='false'><i class="fa fa-plus"></i></span>
+                                    <button type="button"
+                                       class="btn btn-primary partner_shipping_add_contact_button ml-1"><i
+                                          class="fa fa-plus"></i></button>
                                  </div>
                               </div>
-                           </div>
 
-                           <div class="clearfix"></div>
-
-                           <section id="order_product_details" class="mt32">
-                              <h3>Products</h3>
-                              <div class="table-responsive">
-                                 <table class="table table-sm">
+                              <div class="col-12 mt-32">
+                                 <h3>Products</h3>
+                                 <table class="table table-sm w-100">
                                     <thead class="bg-100">
                                        <tr>
-                                          <th class="col-md-3 text-start">Product</th>
-                                          <th class="col-md-1 text-end">Quantity</th>
+                                          <th class="col-8">Product</th>
+                                          <th class="col-4 text-right">Quantity</th>
                                        </tr>
                                     </thead>
-                                    <tbody class="sale_tbody" id="order_product_list_content"></tbody>
+                                    <tbody id="order_product_list_content"></tbody>
                                  </table>
-                              </div>
-                              <input type="hidden" name="product_ids" class="o_portal_product_ids"/>
-                           </section>
-
-                           <div class="clearfix"></div>
-
-                           <div class="row justify-content-center text-center d-print-none pt-1 pb-4 mt32">
-                              <div class="col-sm-auto mt8">
-                                 <span role="button" class="btn btn-primary o_portal_add_products_btn"><i class="fa fa-plus"></i> Add Products</span>
+                                 <input type="hidden" name="product_ids" class="o_portal_product_ids" />
+                                 <div class="text-center mt-3">
+                                    <span role="button" class="btn btn-primary o_portal_add_products_btn"><i
+                                          class="fa fa-plus"></i> Add Products</span>
+                                 </div>
                               </div>
                            </div>
                         </div>
                      </div>
                   </div>
-               </div>
-            </section>
+               </section>
 
-            <div class="clearfix">
-               <span class="btn btn-primary float-right mb32 o_portal_submit_form_btn" style="display: none;">
-                  Confirm
-                  <span class="fa fa-long-arrow-right"></span>
-               </span>
+               <div class="clearfix">
+                  <span class="btn btn-primary float-right mb32 o_portal_submit_form_btn" style="display: none;">
+                     Confirm
+                     <span class="fa fa-long-arrow-right"></span>
+                  </span>
+               </div>
+            </div>
+         </form>
+
+         <!-- Contact Modal -->
+         <div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="stockExpeditionBatchCreateModalLabel">
+                        <%= page.translate('Create expedition') %>
+                     </h5>
+                     <h5 class="modal-title init-hidden" id="stockExpeditionBatchCreateShippingModalLabel">
+                        <%= page.translate('Create shipping address') %>
+                     </h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <form id="contact_form" class="js_contact_form">
+                        <input type="hidden" id="contact_form_partner_id" name="partner_id" value="" />
+                        <div class="row">
+                           <div class="col-lg-12">
+                              <div class="alert alert-danger d-none" role="alert" id="contact_form_errorMessages">
+                              </div>
+                           </div>
+
+                           <div class="form-group o_portal_contact_name_group col-12 mt-1 mb-1">
+                              <input type="text" class="form-control" id="contact_form_search_zip_code_input"
+                                 placeholder="Search zip code..." autocomplete="off"
+                                 style="background-color:#E7F1F0;color:#003DFD;" />
+                           </div>
+
+                           <div class="col-xl-12 mt-1 mb-1" id="contact_form_select_zip_code_list_container"></div>
+
+                           <div class="form-group contact-field col-6" id="contact_form_name_group">
+                              <label class="col-form-label" for="name">Name</label>
+                              <input type="text" name="name" id="contact_form_name" class="form-control"
+                                 placeholder="Enter name" />
+                           </div>
+                           <div class="form-group contact-field col-6" id="contact_form_email_group">
+                              <label class="col-form-label" for="email">Email</label>
+                              <input type="email" name="email" id="contact_form_email" class="form-control"
+                                 placeholder="Enter email" />
+                           </div>
+
+                           <div class="form-group contact-field col-6" id="contact_form_phone_group">
+                              <label class="col-form-label" for="phone">Phone</label>
+                              <input type="tel" name="phone" id="contact_form_phone" class="form-control"
+                                 placeholder="Enter phone number" />
+                           </div>
+
+                           <div class="form-group d-none contact-field col-6" id="contact_form_parent_group">
+                              <label class="col-form-label" for="parent_id">Related Company</label>
+                              <input type="char" name="parent_id" id="contact_form_parent" class="form-control"
+                                 placeholder="Enter company name" />
+                           </div>
+
+                           <div class="form-group contact-field col-6" id="contact_form_type_group">
+                              <label class="col-form-label" for="type">Address Type</label>
+                              <select name="type" id="contact_form_type" class="form-control">
+                                 <option value="contact" selected="True">Contact</option>
+                                 <option value="invoice">Invoice Address</option>
+                                 <option value="delivery">Delivery Address</option>
+                                 <option value="other">Other Address</option>
+                              </select>
+                           </div>
+
+                           <div class="form-group contact-field col-6" id="contact_form_street_group">
+                              <label class="col-form-label" for="street">Street</label>
+                              <input type="text" name="street" id="contact_form_street" class="form-control"
+                                 placeholder="Enter street address" />
+                           </div>
+                           <div class="form-group contact-field col-6" id="contact_form_street2_group">
+                              <label class="col-form-label" for="street2">Street2</label>
+                              <input type="text" name="street2" id="contact_form_street2" class="form-control"
+                                 placeholder="Enter additional address info" />
+                           </div>
+                           <div class="form-group contact-field col-6" id="contact_form_city_group">
+                              <label class="col-form-label" for="city">City</label>
+                              <input type="text" name="city" id="contact_form_city" class="form-control"
+                                 placeholder="Enter city" />
+                           </div>
+                           <div class="form-group contact-field col-6" id="contact_form_zip_group">
+                              <label class="col-form-label" for="zipcode">Zip / Postal Code</label>
+                              <input type="text" name="zipcode" id="contact_form_zip" class="form-control"
+                                 placeholder="Enter zip code" />
+                           </div>
+                           <div class="form-group contact-field col-6" id="contact_form_country_group">
+                              <label class="col-form-label" for="country_id">Country</label>
+                              <select name="country_id" id="contact_form_country" class="form-control">
+                                 <option value="">Country...</option>
+                              </select>
+                           </div>
+                           <div class="form-group contact-field col-6" id="contact_form_state_group"
+                              style="display: none;">
+                              <label class="col-form-label" for="state_id">State / Province</label>
+                              <select name="state_id" id="contact_form_state" class="form-control">
+                                 <option value="">select...</option>
+                              </select>
+                           </div>
+                        </div>
+                     </form>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                     <button type="button" class="btn btn-primary" id="contact_form_submit">Save</button>
+                  </div>
+               </div>
             </div>
          </div>
-      </form>
+      </div>
    </div>
-</div>
 
-<%- await include('../../../components/layout/html/_footer', { page }) %>
+   <%- await include('../../../components/layout/html/_footer', { page }) %>
 
 </body>
 

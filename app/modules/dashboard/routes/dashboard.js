@@ -14,6 +14,8 @@ import { StockItem } from '../../stock/models/stock.js'
 import { StorageItem } from '../../storage/models/storage.js'
 import { SpareParts } from '../../spareparts/models/spareparts.js'
 import { InvoiceItem } from '../../invoices/models/invoices.js'
+import { ClientAccount } from '../../base/models/base.js'
+import { PartnerShipping } from '../../expeditions/models/expeditions.js'
 import { Logger } from '../../../tools/log.js'
 import { genDBID } from '../../../tools/sys.js'
 
@@ -81,6 +83,27 @@ dashboardRouter.get('/dashboard/init/kpi/data/action', checkUser, async (req, re
         await kpi.save()
     }
 
+    const accountResult = await erp.request('init.client.accounts.data', {
+        user_id: req.user.uid
+    })
+
+    if(accountResult?.status !== 'success') return res.json({ status: 'error', message: 'Error loading kpis' })
+
+    for(const account of accountResult.data) {
+        const accountItem = await ClientAccount.findOne({ where: { 'data.id': account.id } })
+
+        if(!accountItem) {
+            await ClientAccount.create({ id: genDBID(), user_id: req.user.id, data: account })
+            continue
+        }
+
+        accountItem.data = { ...accountItem.data, ...account }
+        accountItem.changed('data', true)
+        await accountItem.save()
+    }
+
+    if(result?.status !== 'success') return res.json({ status: 'error', message: 'Error loading kpis' })
+
     const kpis = await DashboardKpi.findAll({ where: { user_id: req.user.id } })
 
     if(kpis.length == 0) return res.json({ status: 'error', message: 'No kpis found' })
@@ -108,6 +131,25 @@ dashboardRouter.get('/dashboard/init/expeditions/data/action', checkUser, async 
         expedition.data = { ...expedition.data, ...data }
         expedition.changed('data', true)
         await expedition.save()
+    }
+
+    const shippingResult = await erp.request('init.shipping.data', {
+        user_id: req.user.uid
+    })
+
+    if(shippingResult?.status !== 'success') return res.json({ status: 'error', message: 'Error loading kpis' })
+
+    for(const shipping of shippingResult.data) {
+        const shippingItem = await PartnerShipping.findOne({ where: { 'data.id': shipping.id } })
+
+        if(!shippingItem) {
+            await PartnerShipping.create({ id: genDBID(), user_id: req.user.id, data: shipping })
+            continue
+        }
+
+        shippingItem.data = { ...shippingItem.data, ...shipping }
+        shippingItem.changed('data', true)
+        await shippingItem.save()
     }
 
     res.json({ status: 'success', message: 'Action completed successfully' })

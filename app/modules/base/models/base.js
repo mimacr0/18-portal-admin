@@ -252,3 +252,104 @@ SysMenu.init({
         allowNull: false
     }
 }, { sequelize: dataDB, modelName: 'sys_menu' })
+
+
+export class ClientAccount extends Model {
+    get name() {
+        return this.data?.name
+    }
+}
+
+ClientAccount.init({
+    id: {
+        type: DataTypes.STRING(32),
+        primaryKey: true
+    },
+    user_id: {
+        type: DataTypes.STRING(32),
+        allowNull: false
+    },
+    data: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: {}
+    }
+}, { sequelize: dataDB, modelName: 'client_account' })
+
+
+export class ResCountry extends Model {
+    get name() {
+        return this.data?.name
+    }
+    get code() {
+        return this.data?.code
+    }
+}
+
+ResCountry.init({
+    id: {
+        type: DataTypes.STRING(32),
+        primaryKey: true
+    },
+    data: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: {}
+    }
+}, { sequelize: dataDB, modelName: 'res_country' })
+
+
+export class ResCountryState extends Model {
+    get name() {
+        return this.data?.name
+    }
+    get code() {
+        return this.data?.code
+    }
+}
+
+ResCountryState.init({
+    id: {
+        type: DataTypes.STRING(32),
+        primaryKey: true
+    },
+    country_id: {
+        type: DataTypes.STRING(32),
+        allowNull: false
+    },
+    data: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: {}
+    }
+}, { sequelize: dataDB, modelName: 'res_country_state' })
+
+
+export class ResCountryZip extends Model {
+    get name() {
+        return this.data?.name
+    }
+    get code() {
+        return this.data?.code
+    }
+}
+
+ResCountryZip.init({
+    id: {
+        type: DataTypes.STRING(32),
+        primaryKey: true
+    },
+    country_id: {
+        type: DataTypes.STRING(32),
+        allowNull: false
+    },
+    state_id: {
+        type: DataTypes.STRING(32),
+        allowNull: true
+    },
+    data: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: {}
+    }
+}, { sequelize: dataDB, modelName: 'res_country_zip' })
