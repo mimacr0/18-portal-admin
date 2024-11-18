@@ -258,6 +258,9 @@ export class ClientAccount extends Model {
     get name() {
         return this.data?.name
     }
+    get partner_id() {
+        return this.data?.partner_id
+    }
 }
 
 ClientAccount.init({
@@ -284,6 +287,9 @@ export class ResCountry extends Model {
     get code() {
         return this.data?.code
     }
+    get dbid() {
+        return this.data?.id
+    }
 }
 
 ResCountry.init({
@@ -305,6 +311,9 @@ export class ResCountryState extends Model {
     }
     get code() {
         return this.data?.code
+    }
+    get dbid() {
+        return this.data?.id
     }
 }
 
@@ -329,8 +338,14 @@ export class ResCountryZip extends Model {
     get name() {
         return this.data?.name
     }
-    get code() {
-        return this.data?.code
+    get city() {
+        return this.data?.city
+    }
+    get state() {
+        return this.data?.state
+    }
+    get country() {
+        return this.data?.country
     }
 }
 
