@@ -1,0 +1,34 @@
+<div class="table_main_view center">
+    <h5 class="text-center"><% if (!zips.length) { %><%= page.translate('No zip found') %><% } %></h5>
+    <% if (zips.length > 0) { %>
+    <table class="table table-bordered table-sm table-hover table-striped">
+        <tbody>
+            <% for (const o of zips) { %>
+                <tr>
+                    <td class="col-md-2">
+                        <strong><%= o.name %></strong>
+                    </td>
+                    <td class="col-md-3">
+                        <span><%= o.city %></span>
+                    </td>
+                    <td class="col-md-3">
+                        <span><%= o.state %></span>
+                    </td>
+                    <td class="col-md-2">
+                        <span><%= o.country %></span>
+                    </td>
+                    <td class="col-md-2 text-center">
+                        <span
+                            role="button"
+                            class="btn btn-primary o_portal_select_zip_code_btn"
+                            data-id="<%= o.id %>"
+                            data-zip="<%= o.name %>">
+                            <i class="fa fa-arrow-right"></i>
+                        </span>
+                    </td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+    <% } %>
+</div>

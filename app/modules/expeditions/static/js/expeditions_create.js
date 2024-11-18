@@ -1,17 +1,15 @@
 const selectZipCode = async (e) => {
     const zipId = $(e.currentTarget).data('id')
-    const zipCode = $(e.currentTarget).data('zip')
-    const countryId = $(e.currentTarget).data('country-id')
-    const cityId = $(e.currentTarget).data('city')
-    const stateId = $(e.currentTarget).data('state-id')
 
     const res = await jsonPost(`/expeditions/create/account/zip/data`, { zip: zipId }, { loading: false })
     if(res?.status != 'success') return
 
-    $('#contact_form_country').val(countryId)
-    $('#contact_form_city').val(cityId)
-    $('#contact_form_state').val(stateId)
-    $('#contact_form_zip').val(zipCode)
+    $('#contact_form_country').val(res.data.countryId)
+    $('#contact_form_city').val(res.data.city)
+    $('#contact_form_state').val(res.data.stateId)
+    $('#contact_form_state_id').val(res.data.stateId)
+    $('#contact_form_zip').val(res.data.zip)
+    $('#contact_form_country').trigger('change')
     $('#contact_form_select_zip_code_list_container').html('')
     $('#contact_form_search_zip_code_input').val('')
 }
@@ -29,10 +27,14 @@ const findZipCodes = async (e) => {
 
 const submitContactForm = async (e) => {
     e.preventDefault()
+
+    if(!formValidate('#contact_form')) return
+
     const formData = new FormData(document.getElementById('contact_form'))
     const data = Object.fromEntries(formData)
+    const clientAccountId = $('#client_account_id_select').val()
 
-    const res = await jsonPost('/expeditions/contact/create', data)
+    const res = await jsonPost('/expeditions/contact/create', { client_account_id: clientAccountId, ...data })
     if(res?.status != 'success') {
         $('#contact_form_errorMessages')
             .removeClass('d-none')
@@ -40,8 +42,7 @@ const submitContactForm = async (e) => {
         return
     }
 
-    const newOption = new Option(res.data.name, res.data.id, false, true)
-    $('#partner_shipping_id_select').append(newOption).trigger('change')
+    $('#partner_shipping_id_select').html(res.data)
 
     $('#contactModal').modal('hide')
     document.getElementById('contact_form').reset()
@@ -50,6 +51,11 @@ const submitContactForm = async (e) => {
 
 const openContactModal = async (e) => {
     e.preventDefault()
+
+    const clientAccountId = $('#client_account_id_select').val()
+
+    if(!clientAccountId) return displayAlertNotification('Please select client account', 'danger')
+
     const res = await jsonGet('/expeditions/countries/list')
     if(res?.status == 'success') {
         $('#contact_form_country').html(res.data)
@@ -68,9 +74,13 @@ $('#contact_form_country').change(async function() {
         return
     }
 
+    const stateId = $('#contact_form_state_id').val()
+
     const res = await jsonGet(`/expeditions/states/${countryId}`)
     if(res?.status == 'success') {
         $('#contact_form_state').html(res.data)
+        if(stateId) $('#contact_form_state').val(stateId)
+        $('#contact_form_state_id').val('')
         $('#contact_form_state_group').show()
     }
 })

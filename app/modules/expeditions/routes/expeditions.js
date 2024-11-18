@@ -11,7 +11,10 @@ import { renderComponent, renderModule } from '../../../tools/view.js'
 import { PartnerShipping } from '../models/expeditions.js'
 import { ClientAccount } from '../../base/models/base.js'
 import { ExpeditionItem } from '../models/expeditions.js'
-import { ResCountry, ResCountryZip } from '../../base/models/base.js'
+import { Logger } from '../../../tools/log.js'
+import { genDBID } from '../../../tools/sys.js'
+import { StockItem } from '../../stock/models/stock.js'
+import { ResCountry, ResCountryState, ResCountryZip } from '../../base/models/base.js'
 
 
 export const expeditionsRouter = express.Router()
@@ -97,32 +100,20 @@ expeditionsRouter.post('/expeditions/create/account/shipping/data', checkUser, a
     res.json({ status: 'success', data: result.data })
 })
 
-expeditionsRouter.post('/expeditions/create/account/zip/find', checkUser, async (req, res) => {
-    const { account_id, zip } = req.body
-
-    const erp = new WebServiceRPC('pages.expeditions.expeditions')
-
-    const result = await erp.request('expeditions/zip/find', {
-        user_id: req.user.uid, account_id, q: zip
-    })
-
-    if (result?.status != 'success') return res.json(result)
-
-    res.json({ status: 'success', data: result.data })
-})
-
 expeditionsRouter.post('/expeditions/create/account/zip/data', checkUser, async (req, res) => {
-    const { account_id, zip } = req.body
+    const { zip: zip_id } = req.body
 
-    const erp = new WebServiceRPC('pages.expeditions.expeditions')
+    const zip = await ResCountryZip.findByPk(zip_id)
 
-    const result = await erp.request('expeditions/zip/data', {
-        user_id: req.user.uid, account_id, q: zip.toString()
+    res.json({
+        status: 'success',
+        data: {
+            countryId: zip.country_id,
+            stateId: zip.state_id,
+            zip: zip.name,
+            city: zip.city
+        }
     })
-
-    if (result?.status != 'success') return res.json(result)
-
-    res.json({ status: 'success', data: result.data })
 })
 
 expeditionsRouter.post('/expeditions/create/account/address/save', checkUser, async (req, res) => {
@@ -222,7 +213,86 @@ expeditionsRouter.get('/expeditions/countries/list', checkUser, async (req, res)
 expeditionsRouter.post('/expeditions/create/account/zip/find', checkUser, async (req, res) => {
     const { zip } = req.body
 
-    const zips = await ResCountryZip.findAll({ where: { user_id: req.user.id, 'data.name': { [Op.like]: '%' + zip + '%' } } })
+    const zips = await ResCountryZip.findAll({ where: { 'data.name': { [Op.like]: '%' + zip + '%' } }, limit: 10 })
 
-    res.json({ status: 'success', data: [] })
+    res.json({
+        status: 'success',
+        data: await renderModule('expeditions/views/_zip_result', { zips })
+    })
+})
+
+expeditionsRouter.get('/expeditions/states/:country_id', checkUser, async (req, res) => {
+    const country = await ResCountry.findByPk(req.params.country_id)
+
+    if(!country) return res.json({ status: 'error', message: 'Country not found' })
+
+    const states = await ResCountryState.findAll({ where: { country_id: country.id } })
+
+    res.json({
+        status: 'success',
+        data: await renderComponent('forms/html/fields/_options', { items: states, null_opt: 'Select state ...' })
+    })
+})
+
+expeditionsRouter.post('/expeditions/contact/create', checkUser, async (req, res) => {
+    const { client_account_id, name, type, street, street2, city, zip, country_id, state_id, phone, email } = req.body
+
+    const clientAccount = await ClientAccount.findByPk(client_account_id)
+
+    if(!clientAccount) return res.json({ status: 'error', message: 'Client account not found' })
+
+    const country = await ResCountry.findByPk(country_id)
+
+    if(!country) return res.json({ status: 'error', message: 'Country not found' })
+
+    const state = await ResCountryState.findByPk(state_id)
+
+    if(!state) return res.json({ status: 'error', message: 'State not found' })
+
+    const erp = new WebServiceRPC()
+
+    const result = await erp.request('expeditions.contact.create', {
+        name,
+        type,
+        street,
+        street2,
+        parent_id: clientAccount.partner_id,
+        city,
+        zip,
+        country_id: country.dbid,
+        state_id: state.dbid,
+        phone,
+        email
+    })
+
+    Logger.debug('Expedition contact created:', result)
+
+    if(result?.status !== 'success') return res.json({ status: 'error', message: 'Error creating contact' })
+
+    const shippingData = result.data
+
+    const shippingItem = await PartnerShipping.findOne({ where: { user_id: req.user.id, 'data.id': shippingData.id } })
+
+    const shipping = await PartnerShipping.create({ id: genDBID(), user_id: req.user.id, data: shippingData })
+
+    const shippings = await PartnerShipping.findAll({ where: { user_id: req.user.id } })
+
+    res.json({
+        status: 'success',
+        message: 'Contact created successfully',
+        data: await renderComponent('forms/html/fields/_options', {
+            value: shipping.id,
+            items: shippings,
+            null_opt: 'Select shipping ...'
+        })
+    })
+})
+
+expeditionsRouter.get('/expeditions/products/list', checkUser, async (req, res) => {
+    const products = await StockItem.findAll({ where: { user_id: req.user.id } })
+
+    res.json({
+        status: 'success',
+        data: await renderModule('expeditions/views/_stock_items', { items: products, i18n: req.i18n })
+    })
 })
