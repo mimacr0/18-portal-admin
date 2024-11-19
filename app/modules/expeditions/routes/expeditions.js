@@ -289,10 +289,50 @@ expeditionsRouter.post('/expeditions/contact/create', checkUser, async (req, res
 })
 
 expeditionsRouter.get('/expeditions/products/list', checkUser, async (req, res) => {
-    const products = await StockItem.findAll({ where: { user_id: req.user.id } })
+    const { pids } = req.query
+
+    const products = await StockItem.findAll({ where: { user_id: req.user.id, id: { [Op.notIn]: pids.split(',') } } })
 
     res.json({
         status: 'success',
         data: await renderModule('expeditions/views/_stock_items', { items: products, i18n: req.i18n })
+    })
+})
+
+expeditionsRouter.post('/expeditions/create/product/find', checkUser, async (req, res) => {
+    const { q, pids } = req.body
+    const products = await StockItem.findAll({
+        where: {
+            user_id: req.user.id,
+            id: { [Op.notIn]: pids },
+            [Op.or]: [
+                { 'data.product': { [Op.like]: '%' + q + '%' } },
+                { 'data.expedition': { [Op.like]: '%' + q + '%' } },
+                { 'data.expedition1': { [Op.like]: '%' + q + '%' } },
+                { 'data.imei': { [Op.like]: '%' + q + '%' } },
+                { 'data.internal_ref': { [Op.like]: '%' + q + '%' } },
+                { 'data.lot': { [Op.like]: '%' + q + '%' } },
+                { 'data.lpn': { [Op.like]: '%' + q + '%' } },
+                { 'data.sku': { [Op.like]: '%' + q + '%' } }
+            ]
+        }
+    })
+    res.json({
+        status: 'success',
+        data: await renderModule('expeditions/views/_stock_items', { items: products, i18n: req.i18n })
+    })
+})
+
+expeditionsRouter.post('/expeditions/create/product/add', checkUser, async (req, res) => {
+    const { product_ids } = req.body
+    const products = await StockItem.findAll({
+        where: {
+            user_id: req.user.id,
+            id: product_ids
+        }
+    })
+    res.json({
+        status: 'success',
+        data: await renderModule('expeditions/views/_expedition_items', { items: products, i18n: req.i18n })
     })
 })
