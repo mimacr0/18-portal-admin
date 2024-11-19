@@ -1,0 +1,18 @@
+<% items.forEach(function(item, count){ %>
+<tr>
+    <td style="line-height: 1.1;" class="expedition-product-item-row" data-id="<%= item.id %>">
+        <small>
+            <strong><%= i18n.__('Product') %>:</strong> <%- item.product %><br/>
+            <strong><%= i18n.__('Reception date') %>:</strong> <%- item.reception_date %><br/>
+            <strong><%= i18n.__('Tracking number') %>:</strong> <%- item.expedition1 %><br/>
+            <% if(item.expedition) { %> <strong><%= i18n.__('Other tracking number') %>:</strong> <%- item.expedition %><br/><% } %>
+            <strong><%= i18n.__('Reference') %>:</strong> <%- item.internal_ref %><br/>
+            <strong><%= i18n.__('Serie') %>:</strong> <%- item.lot %><br/>
+            <% if(item.lpn) { %><strong><%= i18n.__('LPN') %>:</strong> <%- item.lpn %><br/><% } %>
+            <% if(item.lpn) { %><strong><%= i18n.__('IMEI') %>:</strong> <%- item.imei %><br/><% } %>
+            <% if(item.sku) { %><strong><%= i18n.__('SKU') %>:</strong> <%- item.sku %> <% } %>
+        </small>
+    </td>
+    <td class="text-right align-middle"><%- item.quantity %></td>
+</tr>
+<% }) %>
