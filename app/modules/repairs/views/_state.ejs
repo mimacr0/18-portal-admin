@@ -1,0 +1,25 @@
+<% if(item.state.value == 'withdraw') { %>
+<span class="badge badge-secondary">
+    <%- i18n.__(item.state.label) %>
+</span>
+<% } %>
+<% if(item.state.value == 'cancelled') { %>
+<span class="badge badge-danger">
+    <%- i18n.__(item.state.label) %>
+</span>
+<% } %>
+<% if(item.state.value == 'done') { %>
+<span class="badge badge-success">
+    <%- i18n.__(item.state.label) %>
+</span>
+<% } %>
+<% if(['to_recieve', 'on_hold', 'assigned', 'in_progress', 'spare_pending'].includes(item.state.value)) { %>
+<span class="badge badge-warning">
+    <%- i18n.__(item.state.label) %>
+</span>
+<% } %>
+<% if(item.state.value == 'spare_pending') { %>
+<span class="badge badge-warning">
+    <%- i18n.__(item.state.label) %>
+</span>
+<% } %>

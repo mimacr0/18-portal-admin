@@ -16,9 +16,11 @@
             <div class="mailbox-controls card-controls-fixed-head">
                <div class="row">
                   <div class="col-8 d-flex justify-content-left">
+                     <div class="spareparts-batch-actions">
+                     </div>
                      <div class="ml-3">
                         <div class="input-group input-group-sm" style="max-width: 250px;">
-                           <input type="text" name="table_search" class="form-control float-right" placeholder="<%= page.translate('Search') %>" id="stock-stock-search-input">
+                           <input type="text" name="table_search" class="form-control float-right" placeholder="<%= page.translate('Search') %>" id="spareparts-search-input">
                            <div class="input-group-append">
                               <button type="submit" class="btn btn-default">
                                  <i class="fas fa-search"></i>
@@ -28,21 +30,19 @@
                      </div>
                   </div>
                   <div class="col-4">
-                     <div id="stock-stock-pager"></div>
+                     <div id="spareparts-pager"></div>
                   </div>
                </div>
             </div>
-            <div class="table-responsive mailbox-messages stock-stock-main-container table-fixed-head">
+            <div class="table-responsive mailbox-messages spareparts-main-container table-fixed-head">
                <table class="table table-hover table-striped table-sm">
                   <thead>
                      <tr>
-                        <th><span>&nbsp;</span></th>
-                        <th><%= page.translate('Product') %></th>
-                        <th><%= page.translate('State') %></th>
-                        <th class="text-right"><%= page.translate('Quantity') %></th>
+                        <th><%= page.translate('Name') %></th>
+                        <th><%= page.translate('Quantity') %></th>
                      </tr>
                   </thead>
-                  <tbody id="stock-stock-list"></tbody>
+                  <tbody id="spareparts-list"></tbody>
                </table>
             </div>
 
@@ -53,8 +53,6 @@
    </div>
 
 </div>
-
-<%- await include('_forms', { page }) %>
 
 <%- await include('../../../components/layout/html/_footer', { page }) %>
 

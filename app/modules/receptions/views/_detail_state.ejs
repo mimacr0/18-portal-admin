@@ -1,0 +1,6 @@
+##<% const colorMap = { on_hold: 'warning', done: 'success' } %>
+##<% const color = colorMap[reception.rawState.value] || 'secondary' %>
+##<% const label = reception.rawState.label %>
+<div class="badge badge-<%= color %> orders_label_text_align p-2" style="min-width: 200px;">
+    <%= page.translate(label) %>
+</div>

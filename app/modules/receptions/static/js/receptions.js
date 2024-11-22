@@ -5,9 +5,9 @@ const receptionsReceptionsReloadList = async () => {
     $('.tooltip').remove()
     const res = await jsonGet(`/receptions/receptions/list?q=${q || ''}&page=${receptionsReceptionsPage || ''}`)
     $('#receptions-receptions-list').html(res.html)
-    $('#receptions-receptions-footer').html(res.footer)
+    $('#receptions-receptions-pager').html(res.pager)
     $('[data-toggle="tooltip"]').tooltip()
-    $('#receptions-receptions-footer .page-item').click(function () {
+    $('#receptions-receptions-pager .page-item').click(function () {
         receptionsReceptionsPage = $(this).data('page')
         receptionsReceptionsReloadList()
     })

@@ -73,8 +73,8 @@ const onAddProducts = async (e) => {
     if(res?.status != 'success') return
 
     $('#order_product_list_content').html(res.data)
-
     $('#modalproducts').modal('hide')
+    updateSubmitButton()
 
 }
 

@@ -31,32 +31,47 @@ const loadSystemTabs = async () => {
     if(tabsResult?.status != 'success') return
 
     for (const tab of (tabsResult.data || [])) {
-        const pill = document.createElement('span');
-        pill.classList.add('badge', 'badge-pill', 'mr-2', 'mb-2', 'd-flex', 'align-items-center');
-        pill.classList.add(tab.url === window.location.pathname ? 'badge-primary' : 'badge-secondary');
-        pill.style.cursor = 'pointer';
+        const pill = document.createElement('li');
+        pill.classList.add('nav-item');
+        pill.style.position = 'relative';
+
+        const tabLink = document.createElement('a');
+        tabLink.classList.add('nav-link', 'd-flex', 'align-items-center');
+        if (tab.url === window.location.pathname) {
+            tabLink.classList.add('active');
+        }
+        tabLink.href = tab.url;
+        tabLink.style.paddingRight = '35px';
 
         const titleSpan = document.createElement('span');
         titleSpan.textContent = tab.title;
-        titleSpan.addEventListener('click', (e) => {
+
+        const closeButton = document.createElement('button');
+        closeButton.type = 'button';
+        closeButton.classList.add('close');
+        closeButton.innerHTML = '&times;';
+        closeButton.style.position = 'absolute';
+        closeButton.style.right = '10px';
+        closeButton.style.top = '50%';
+        closeButton.style.transform = 'translateY(-50%)';
+        closeButton.style.fontSize = '1.2rem';
+        closeButton.style.padding = '0 5px';
+        closeButton.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            await jsonPost(`/users/users/tabs/remove`, { url: tab.url }, { loading: false });
+            loadSystemTabs();
+        });
+
+        tabLink.addEventListener('click', (e) => {
             e.preventDefault();
             window.location.href = tab.url;
         });
 
-        const closeButton = document.createElement('button');
-        closeButton.type = 'button';
-        closeButton.classList.add('close', 'ml-2');
-        closeButton.innerHTML = '&times;';
-        closeButton.style.fontSize = '1.2rem';
-        closeButton.style.lineHeight = '1';
-        closeButton.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            await jsonPost(`/users/users/tabs/remove`, { url: tab.url }, { loading: false })
-            loadSystemTabs();
-        });
-
-        pill.appendChild(titleSpan);
+        tabLink.appendChild(titleSpan);
+        pill.appendChild(tabLink);
         pill.appendChild(closeButton);
+        pillContainer.classList.remove('d-flex', 'flex-wrap');
+        pillContainer.classList.add('nav', 'nav-tabs');
         pillContainer.appendChild(pill);
     }
 
@@ -66,3 +81,4 @@ const loadSystemTabs = async () => {
 loadSystemTabs();
 
 $('a[data-tab]').click(systemRegisterTabClick)
+$('div[data-tab]').click(systemRegisterTabClick)

@@ -52,8 +52,8 @@ storageRouter.get('/storage/location/list', checkUser, async (req, res) => {
     const endPage = Math.min(totalPages, currentPage + 4)
     const firstResult = (currentPage - 1) * limit + 1
     const lastResult = Math.min(currentPage * limit, count)
-    const list = await renderModule('stock/views/_locations', { user: req.user, items: rows, pconf, rstyle, count, i18n: req.i18n })
-    const footer = await renderComponent('cards/html/list/_footer', {
+    const list = await renderModule('storage/views/_items', { user: req.user, items: rows, pconf, rstyle, count, i18n: req.i18n })
+    const pager = await renderComponent('cards/html/list/_pager', {
         items: rows,
         total: count,
         totalPages, currentPage,
@@ -62,5 +62,5 @@ storageRouter.get('/storage/location/list', checkUser, async (req, res) => {
         firstResult,
         lastResult
     })
-    res.json({ html: list, footer })
+    res.json({ html: list, pager })
 })

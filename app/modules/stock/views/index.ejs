@@ -16,6 +16,9 @@
             <div class="mailbox-controls card-controls-fixed-head">
                <div class="row">
                   <div class="col-8 d-flex justify-content-left">
+                     <button type="button" class="btn btn-default btn-sm stock-stock-expedition-button" data-toggle="tooltip" data-placement="right" data title="<%= page.translate('Create expedition') %>">
+                        <i class="fa fa-truck"></i>
+                     </button>
                      <div class="ml-3">
                         <div class="input-group input-group-sm" style="max-width: 250px;">
                            <input type="text" name="table_search" class="form-control float-right" placeholder="<%= page.translate('Search') %>" id="stock-stock-search-input">
@@ -36,7 +39,9 @@
                <table class="table table-hover table-striped table-sm">
                   <thead>
                      <tr>
-                        <th><span>&nbsp;</span></th>
+                        <th class="text-center">
+                           <button type="button" class="btn btn-default btn-sm checkbox-toggle stock-stock-checkbox"><i class="far fa-square"></i></button>
+                        </th>
                         <th><%= page.translate('Product') %></th>
                         <th><%= page.translate('State') %></th>
                         <th class="text-right"><%= page.translate('Quantity') %></th>

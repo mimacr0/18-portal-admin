@@ -4,7 +4,14 @@ import { DataTypes, Model } from 'sequelize'
 import { dataDB } from '../../../controllers/db/db.js'
 
 
-export class StorageItem extends Model {}
+export class StorageItem extends Model {
+    get name() {
+        return this.data?.name
+    }
+    get state() {
+        return this.data?.state
+    }
+}
 
 StorageItem.init({
     id: {

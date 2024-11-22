@@ -50,6 +50,7 @@ export const expeditionsPages = [
                     { url: '/static/base/js/sys.js' },
                     { url: '/static/base/js/tabs.js' },
                     { url: '/static/expeditions/js/expeditions_create.js' },
+                    { url: '/static/expeditions/js/expeditions_contact.js' },
                     { url: '/static/expeditions/js/expeditions_products.js' }
                 ]
             }

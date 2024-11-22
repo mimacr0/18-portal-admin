@@ -261,6 +261,9 @@ export class ClientAccount extends Model {
     get partner_id() {
         return this.data?.partner_id
     }
+    get dbid() {
+        return this.data?.id
+    }
 }
 
 ClientAccount.init({
@@ -313,7 +316,7 @@ export class ResCountryState extends Model {
         return this.data?.code
     }
     get dbid() {
-        return this.data?.id
+        return this.data?.id || this.data?.dbid
     }
 }
 
@@ -368,3 +371,29 @@ ResCountryZip.init({
         defaultValue: {}
     }
 }, { sequelize: dataDB, modelName: 'res_country_zip' })
+
+
+export class ResPartnerUser extends Model {
+    get name() {
+        return this.data?.name
+    }
+    get dbid() {
+        return this.data?.id || this.data?.dbid
+    }
+}
+
+ResPartnerUser.init({
+    id: {
+        type: DataTypes.STRING(32),
+        primaryKey: true
+    },
+    user_id: {
+        type: DataTypes.STRING(32),
+        allowNull: false
+    },
+    data: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: {}
+    }
+}, { sequelize: dataDB, modelName: 'res_partner_user' })
