@@ -25,6 +25,21 @@ export class StockReception extends Model {
         const color = colors[state?.value] || 'secondary'
         return `<span class="badge bg-${color}">${state?.label}</span>`
     }
+    get rawState() {
+        return this.data?.state || {}
+    }
+    get sender() {
+        return this.data?.sender || ''
+    }
+    get type() {
+        return this.data?.package_type || ''
+    }
+    get carrier() {
+        return this.data?.carrier_id || {}
+    }
+    get lines() {
+        return this.data?.lines || []
+    }
 }
 
 StockReception.init({

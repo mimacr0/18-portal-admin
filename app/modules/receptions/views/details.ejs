@@ -14,21 +14,21 @@
                <div class="row">
                   <div class="col-lg-2 text-center">
                      <div class="w-100 p-2 text-center text-sm">
-                        <a href="/expeditions">
+                        <a href="/receptions">
                            <i class="fas fa-arrow-left"></i> <%= page.translate('Go back') %>
                         </a>
                      </div>
                   </div>
                </div>
 
-               <div class="row o_portal_expedition_sidebar">
+               <div class="row o_portal_reception_sidebar">
                   <div class="col-lg-3 col-xl-4 d-print-none me-lg-auto">
                      <div class="o_portal_sidebar_content d-lg-inline-block mb-4 mb-lg-0 p-3 p-lg-0" id="sidebar_content">
                         <div class="row">
-                           <%- await include('_detail_state', { expedition, page }) %>
+                           <%- await include('_detail_state', { reception, page }) %>
                         </div>
                         <div class="d-flex flex-column gap-4">
-                           <div class="d-flex flex-column gap-2" id="expedition_sidebar_button"></div>
+                           <div class="d-flex flex-column gap-2" id="reception_sidebar_button"></div>
                            <div class="navspy flex-grow-1 ps-0" role="complementary">
                               <ul class="nav flex-column bs-sidenav"></ul>
                            </div>
@@ -50,12 +50,12 @@
                         </div>
                      </div>
                   </div>
-                  <div id="expedition_content" class="o_portal_content col-12 col-lg-9 col-xl-8">
+                  <div id="reception_content" class="o_portal_content col-12 col-lg-9 col-xl-8">
                      <div id="portal_sale_content">
                         <div id="introduction">
                            <div class="row" id="intro_row">
                               <h2 class="my-0 col-12 col-lg flex-grow-1 mb-1 mb-lg-0">
-                                 <em><%= expedition.name %></em>
+                                 <em><%= reception.name %></em>
                               </h2>
                            </div>
                         </div>
@@ -70,7 +70,7 @@
                                     <tbody style="white-space:nowrap" id="sale_info_table">
                                        <tr>
                                           <th class="ps-0 pb-0"><%= page.translate('Date') %>:</th>
-                                          <td class="w-100 pb-0 text-wrap"><span><%= expedition.date_order %></span></td>
+                                          <td class="w-100 pb-0 text-wrap"><span><%= reception.date_order %></span></td>
                                        </tr>
                                     </tbody>
                                  </table>
@@ -80,26 +80,6 @@
                                     <h4 class="mt-2 mb-1"><%= page.translate('Shipping address') %></h4>
                                     <hr class="mt-1 mb-2">
                                  </span>
-                                 <address>
-                                    <div>
-                                       <span><%= expedition.shippingId.name %></span>
-                                    </div>
-                                    <div class="gap-2">
-                                       <div class="d-flex align-items-baseline gap-1">
-                                          <span class="d-block w-100 lh-sm">
-                                             <%= expedition.shippingId.street %><br>
-                                             <% if(expedition.shippingId.street2) { %>
-                                             <%= expedition.shippingId.street2 %><br>
-                                             <% } %>
-                                             <%= expedition.shippingId.city %><br>
-                                             <% if(expedition.shippingId.zip) { %>
-                                             <%= expedition.shippingId.zip %><br>
-                                             <% } %>
-                                             Alemania
-                                          </span>
-                                       </div>
-                                    </div>
-                                 </address>
                               </div>
                            </div>
                            <section id="details" style="page-break-inside: auto;">
@@ -112,14 +92,14 @@
                                        </tr>
                                     </thead>
                                     <tbody class="sale_tbody">
-                                       ##<% for(const product of expedition.products) { %>
+                                       ##<% for(const line of reception.lines) { %>
                                        <tr>
                                           <td id="product_name">
-                                             <span><%= product.product.name %></span>
+                                             <span><%= line.product_id.name %></span>
                                           </td>
                                           <td class="text-right">
                                              <div id="quote_qty">
-                                                <span><%= product.qty %></span>
+                                                <span><%= line.qty %></span>
                                                 <span><%= page.translate('Units') %></span>
                                              </div>
                                           </td>
@@ -132,7 +112,7 @@
                         </div>
                      </div>
                      <hr>
-                     <div id="expedition_communication">
+                     <div id="reception_communication">
                         <h3><%= page.translate('Communication history') %></h3>
                         <div id="discussion" class="d-print-none o_portal_chatter o_not_editable p-0">
                            <div class="o_portal_chatter p-0">

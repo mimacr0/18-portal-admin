@@ -21,7 +21,7 @@ sparePartsRouter.get('/spareparts', checkUser, async (req, res) => {
     res.send(await renderer.render())
 })
 
-sparePartsRouter.get('/spareparts/item/list', checkUser, async (req, res) => {
+sparePartsRouter.get('/spareparts/list', checkUser, async (req, res) => {
     if(!req.user.portal) return res.json({
         html: await renderComponent('portal/html/_nodata', { message: req.i18n.__('No spare parts found') })
     })
@@ -54,7 +54,7 @@ sparePartsRouter.get('/spareparts/item/list', checkUser, async (req, res) => {
     const firstResult = (currentPage - 1) * limit + 1
     const lastResult = Math.min(currentPage * limit, count)
     const list = await renderModule('spareparts/views/_items', { user: req.user, items: rows, pconf, rstyle, count, i18n: req.i18n })
-    const footer = await renderComponent('cards/html/list/_footer', {
+    const pager = await renderComponent('cards/html/list/_pager', {
         items: rows,
         total: count,
         totalPages, currentPage,
@@ -63,5 +63,5 @@ sparePartsRouter.get('/spareparts/item/list', checkUser, async (req, res) => {
         firstResult,
         lastResult
     })
-    res.json({ html: list, footer })
+    res.json({ html: list, pager })
 })

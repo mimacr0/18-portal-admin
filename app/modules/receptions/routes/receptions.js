@@ -7,6 +7,8 @@ import { ConfigConf } from '../../base/models/config.js'
 import { checkUser } from '../../../controllers/web/security.js'
 import { StockReception } from '../models/receptions.js'
 import { Page } from '../../../components/layout/models/page.js'
+import { ClientAccount } from '../../base/models/base.js'
+import { ResPartnerUser } from '../../base/models/base.js'
 import { renderComponent, renderModule } from '../../../tools/view.js'
 
 
@@ -67,8 +69,18 @@ receptionsRouter.get('/receptions/receptions/list', checkUser, async (req, res) 
     res.json({ html: list, pager })
 })
 
-receptionsRouter.get('/receptions/create/account/data', checkUser, async (req, res) => {
+receptionsRouter.get('/receptions/create', checkUser, async (req, res) => {
+    const page = await SysPage.getPage('receptions-create')
+    const accountItems = await ClientAccount.findAll({ where: { user_id: req.user.id } })
+    const renderer = new Page({
+        page,
+        user: req.user,
+        i18n: req.i18n
+    })
+    res.send(await renderer.render({ accountItems }))
+})
 
+receptionsRouter.get('/receptions/create/account/data', checkUser, async (req, res) => {
     const receptions = await receptionsClient.getreceptionsData({ user_id: req.user.uid })
 
     if (receptions?.status != 'success') return res.json(receptions)
@@ -156,4 +168,20 @@ receptionsRouter.post('/receptions/create/reception/create', checkUser, async (r
     if (result?.status != 'success') return res.json(result)
 
     res.json({ status: 'success', message: `reception ${result.data.name} created successfully` })
+})
+
+receptionsRouter.get('/receptions/details/:id', checkUser, async (req, res) => {
+    const item = await StockReception.findOne({ where: { id: req.params.id } })
+    if(!item) return res.redirect('/pages/404')
+
+    let contact = null
+
+    if(item.userId) contact = await ResPartnerUser.findOne({ where: { 'data.id': item.userId.partner_id } })
+    const page = await SysPage.getPage('receptions-details')
+    const renderer = new Page({
+        page,
+        user: req.user,
+        i18n: req.i18n
+    })
+    res.send(await renderer.render({ reception: item, contact }))
 })

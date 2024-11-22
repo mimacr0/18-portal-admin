@@ -1,4 +1,5 @@
 import express from 'express'
+import { Op } from 'sequelize'
 
 import { SysPage } from '../../base/models/base.js'
 import { ConfigConf } from '../../base/models/config.js'

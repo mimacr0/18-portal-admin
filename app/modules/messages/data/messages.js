@@ -1,12 +1,12 @@
 
 export const messagesMenu = [
-    {
-        label: 'Messages',
-        url: '/messages',
-        icon: 'fa fa-comments',
-        ref: 'messages',
-        sequence: 100
-    }
+    // {
+    //     label: 'Messages',
+    //     url: '/messages',
+    //     icon: 'fa fa-comments',
+    //     ref: 'messages',
+    //     sequence: 100
+    // }
 ]
 
 export const messagesPages = [

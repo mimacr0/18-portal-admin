@@ -24,6 +24,9 @@ export class StockItem extends Model {
     get lot() {
         return this.data?.lot
     }
+    get product() {
+        return this.data?.product
+    }
     get lpn() {
         return this.data?.lpn
     }
@@ -38,6 +41,9 @@ export class StockItem extends Model {
     }
     get quantity() {
         return this.data?.quantity
+    }
+    get dbid() {
+        return this.data?.id || this.data?.dbid
     }
 }
 

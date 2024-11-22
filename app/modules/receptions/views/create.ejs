@@ -14,14 +14,14 @@
          <div class="row">
             <div class="offset-2 col-8">
                <div class="w-100 p-2 text-sm">
-                  <a href="/expeditions">
+                  <a href="/receptions">
                      <i class="fas fa-arrow-left"></i> Go back
                   </a>
                </div>
             </div>
          </div>
 
-         <form action="#" class="row o_portal_expedition_order_form" method="POST">
+         <form action="#" class="row o_portal_reception_order_form" method="POST">
             <div class="col-md-2 o_portal_details">
                <div class="pt16 pb16 o_colored_level">
                </div>
@@ -30,7 +30,7 @@
                <section class="s_faq_collapse pt32 pb32 o_colored_level">
                   <div role="tablist">
                      <div class="card bg-white">
-                        <div class="card-header">Create Expedition</div>
+                        <div class="card-header">Create Reception</div>
                         <div role="tabpanel" id="basic">
                            <div class="card-body row">
                               <div class="col-xl-6 form-group">
@@ -44,24 +44,6 @@
                                        </option>
                                        ##<% } %>
                                  </select>
-                              </div>
-
-                              <div class="col-xl-6 form-group">
-                                 <label class="col-form-label" for="partner_shipping_id">Partner Shipping</label>
-                                 <div class="d-flex">
-                                    <select name="partner_shipping_id" id="partner_shipping_id_select"
-                                       class="form-control" required="1">
-                                       <option value="">Partner Shipping...</option>
-                                       ##<% for(const shipping of shippingItems) { %>
-                                          <option value="<%= shipping.id %>">
-                                             <%= shipping.name %>
-                                          </option>
-                                          ##<% } %>
-                                    </select>
-                                    <button type="button"
-                                       class="btn btn-primary partner_shipping_add_contact_button ml-1"><i
-                                          class="fa fa-plus"></i></button>
-                                 </div>
                               </div>
 
                               <div class="col-12 mt-32">
@@ -101,10 +83,10 @@
             <div class="modal-dialog modal-lg" role="document">
                <div class="modal-content">
                   <div class="modal-header">
-                     <h5 class="modal-title" id="stockExpeditionBatchCreateModalLabel">
-                        <%= page.translate('Create expedition') %>
+                     <h5 class="modal-title" id="stockreceptionBatchCreateModalLabel">
+                        <%= page.translate('Create reception') %>
                      </h5>
-                     <h5 class="modal-title init-hidden" id="stockExpeditionBatchCreateShippingModalLabel">
+                     <h5 class="modal-title init-hidden" id="stockreceptionBatchCreateShippingModalLabel">
                         <%= page.translate('Create shipping address') %>
                      </h5>
                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">

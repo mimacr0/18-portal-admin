@@ -16,27 +16,29 @@ import { SpareParts } from '../../spareparts/models/spareparts.js'
 import { InvoiceItem } from '../../invoices/models/invoices.js'
 import { ClientAccount } from '../../base/models/base.js'
 import { PartnerShipping } from '../../expeditions/models/expeditions.js'
+import { ResPartnerUser } from '../../base/models/base.js'
 import { Logger } from '../../../tools/log.js'
 import { genDBID } from '../../../tools/sys.js'
 
 export const dashboardRouter = express.Router()
 
 dashboardRouter.get('/', checkUser, async (req, res) => {
+    const loaded = req.query.loaded || false
     const page = await SysPage.getPage('dashboard')
+    const kpis = await DashboardKpi.findAll({ where: { user_id: req.user.id } })
+    let initSync = false
+    if(!loaded && kpis.length == 0) initSync = true
     const renderer = new Dashboard({
         page,
         user: req.user,
         i18n: req.i18n
     })
 
-    res.send(await renderer.render())
+    res.send(await renderer.render({ initSync }))
 })
 
 dashboardRouter.get('/assets/js/dashboard/page.js', checkUser, async (req, res) => {
     const page = await SysPage.getPage('dashboard')
-    const kpis = await DashboardKpi.findAll({ where: { user_id: req.user.id } })
-    let initSync = false
-    if(kpis.length == 0) initSync = true
     const renderer = new Dashboard({
         page,
         user: req.user,
@@ -44,7 +46,20 @@ dashboardRouter.get('/assets/js/dashboard/page.js', checkUser, async (req, res) 
     })
     res.setHeader('Content-disposition', `inline; filename=${page.name}.js`)
     res.setHeader('Content-type', 'text/javascript')
-    res.send(await renderer.renderJS({ initSync }))
+    res.send(await renderer.renderJS())
+})
+
+dashboardRouter.get('/dashboard/init/kpi/data/titles', checkUser, async (req, res) => {
+    return res.json({ status: 'success', data: {
+        kpis: req.i18n.__('Dashboard loading ...'),
+        expeditions: req.i18n.__('Expeditions loading ...'),
+        receptions: req.i18n.__('Receptions loading ...'),
+        stock: req.i18n.__('Stock loading ...'),
+        storage: req.i18n.__('Storage loading ...'),
+        repairs: req.i18n.__('Repairs loading ...'),
+        spareparts: req.i18n.__('Spare Parts loading ...'),
+        invoices: req.i18n.__('Invoices loading ...')
+    }})
 })
 
 dashboardRouter.get('/dashboard/init/kpi/data/action', checkUser, async (req, res) => {
@@ -102,7 +117,24 @@ dashboardRouter.get('/dashboard/init/kpi/data/action', checkUser, async (req, re
         await accountItem.save()
     }
 
-    if(result?.status !== 'success') return res.json({ status: 'error', message: 'Error loading kpis' })
+    const partnersResult = await erp.request('init.partner.users', {
+        user_id: req.user.uid
+    })
+
+    if(partnersResult?.status !== 'success') return res.json({ status: 'error', message: 'Error loading invoices' })
+
+    for(const data of partnersResult.data) {
+        const partner = await ResPartnerUser.findOne({ where: { 'data.id': data.id } })
+
+        if(!partner) {
+            await ResPartnerUser.create({ id: genDBID(), user_id: req.user.id, data })
+            continue
+        }
+
+        partner.data = { ...partner.data, ...data }
+        partner.changed('data', true)
+        await partner.save()
+    }
 
     const kpis = await DashboardKpi.findAll({ where: { user_id: req.user.id } })
 

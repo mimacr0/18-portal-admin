@@ -11,6 +11,9 @@ export class ExpeditionItem extends Model {
     get address() {
         return this.data?.address
     }
+    get dbid() {
+        return this.data?.id
+    }
     get date_order() {
         return this.data?.date_order
     }
@@ -35,6 +38,18 @@ export class ExpeditionItem extends Model {
         const color = colors[state?.value] || 'secondary'
         return `<span class="badge bg-${color}">${state?.label}</span>`
     }
+    get rawState() {
+        return this.data?.state
+    }
+    get shippingId() {
+        return this.data?.shipping_id
+    }
+    get userId() {
+        return this.data?.user_id
+    }
+    get products() {
+        return this.data?.products || []
+    }
 }
 
 ExpeditionItem.init({
@@ -57,6 +72,9 @@ ExpeditionItem.init({
 export class PartnerShipping extends Model {
     get name() {
         return this.data?.name
+    }
+    get dbid() {
+        return this.data?.id || this.data?.dbid
     }
 }
 

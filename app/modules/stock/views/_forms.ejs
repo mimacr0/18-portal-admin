@@ -92,19 +92,13 @@
 
                         <div class="row p-1">
 
-                            <div class="form-group o_portal_contact_city_id_group col-xl-4">
-                                <select name="contact_city_id" id="contact_city_id_select" class="form-control o_portal_contact_city_id" required="1">
-                                    <option value="">City...</option>
-                                </select>
+                            <div class="form-group o_portal_contact_city_id_group col-xl-6">
+                                <label class="col-form-label" for="contact_city_id">City</label>
+                                <input name="contact_city_id" id="contact_city_id_select" class="form-control o_portal_contact_city_id" placeholder="City" required="1"/>
                             </div>
 
-                            <div class="form-group o_portal_contact_state_id_group col-xl-4">
-                                <select name="contact_state_id" id="contact_state_id_select" class="form-control o_portal_contact_state_id" required="1">
-                                    <option value="">State...</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group o_portal_contact_state_id_group col-xl-4">
+                            <div class="form-group o_portal_contact_state_id_group col-xl-6">
+                                <label class="col-form-label" for="contact_zip">ZIP Code</label>
                                 <input name="contact_zip" class="form-control o_portal_contact_zip" placeholder="ZIP" required="1"/>
                                 <input type="hidden" id="stock-expedition-create-form-zip-id" name="zip_id"/>
                             </div>
@@ -113,10 +107,19 @@
 
                         <div class="row p-1">
 
-                            <div class="form-group o_portal_contact_country_id_group col-xl-4">
+                            <div class="form-group o_portal_contact_country_id_group col-xl-6">
+                                <label class="col-form-label" for="contact_country_id">Country</label>
                                 <select name="contact_country_id" id="contact_country_id_select" class="form-control o_portal_contact_country_id" required="1">
-                                    <option value="">Country...</option>
+                                    <option value="">Select a country...</option>
                                 </select>
+                            </div>
+
+                            <div class="form-group o_portal_contact_state_id_group col-xl-6" style="display: none;">
+                                <label class="col-form-label" for="contact_state_id">State</label>
+                                <select name="contact_state_id" id="contact_state_id_select" class="form-control o_portal_contact_state_id" required="1">
+                                    <option value="">Select a state...</option>
+                                </select>
+                                <input type="hidden" id="contact_state_id_select_id"/>
                             </div>
 
                         </div>

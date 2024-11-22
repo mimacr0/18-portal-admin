@@ -1,25 +1,29 @@
 <% items.forEach(function(item, count){ %>
 <tr>
-   <td style="width: 60px;">
-      <div class="icheck-primary bot-bot-checkbox">
-         <input type="checkbox" value="<%= item.internal_ref %>" id="check<% count %>">
+   <td style="width: 60px;" class="text-center align-middle">
+      <div class="icheck-primary stock-item-checkbox">
+         <input type="checkbox" value="<%= item.id %>" id="check<% count %>">
          <label for="check<% count %>"></label>
       </div>
    </td>
    <td>
       <small>
-         <strong><%= i18n.__('Product') %>:</strong> <%- item.product %><br/>
+         <strong><%= i18n.__('Product') %>:</strong> <%- item.product.name %><br/>
          <strong><%= i18n.__('Reception date') %>:</strong> <%- item.reception_date %><br/>
          <strong><%= i18n.__('Tracking number') %>:</strong> <%- item.expedition1 %><br/>
          <strong><%= i18n.__('Other tracking number') %>:</strong> <%- item.expedition %><br/>
          <strong><%= i18n.__('Reference') %>:</strong> <%- item.internal_ref %><br/>
-         <strong><%= i18n.__('Serie') %>:</strong> <%- item.lot %><br/>
+         <strong><%= i18n.__('Serie') %>:</strong> <%- item.lot.name %><br/>
          <% if(item.lpn) { %><strong><%= i18n.__('LPN') %>:</strong> <%- item.lpn %><br/><% } %>
          <% if(item.lpn) { %><strong><%= i18n.__('IMEI') %>:</strong> <%- item.imei %><br/><% } %>
          <% if(item.sku) { %><strong><%= i18n.__('SKU') %>:</strong> <%- item.sku %> <% } %>
       </small>
    </td>
-   <td><%- item.product_state.label %></td>
-   <td class="text-right"><%- item.quantity %></td>
+   <td class="align-middle">
+      <%- item.product_state.label %>
+   </td>
+   <td class="text-right align-middle">
+      <span class="badge badge-primary"><%= item.quantity %></span>
+   </td>
 </tr>
 <% }) %>

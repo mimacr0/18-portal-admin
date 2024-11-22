@@ -1,12 +1,12 @@
 
 export const invoicesMenus = [
-    {
-        url: '/invoices',
-        ref: 'invoices',
-        label: 'Invoices',
-        icon: 'fa fa-file-invoice',
-        sequence: 110
-    }
+    // {
+    //     url: '/invoices',
+    //     ref: 'invoices',
+    //     label: 'Invoices',
+    //     icon: 'fa fa-file-invoice',
+    //     sequence: 110
+    // }
 ]
 
 export const invoicesPages = [

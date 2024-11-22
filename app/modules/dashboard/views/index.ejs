@@ -40,7 +40,7 @@
                              <div class="position-relative mb-4" style="display: flex; justify-content: center; align-items: center; height: 100%;">
                                  <div style="text-align: center;">
                                      <div style="font-size: 1.5em; font-weight: bold;"><%= page.translate('Balance') %></div>
-                                     <div style="font-size: 2.5em; font-weight: bold;">50 €</div>
+                                     <div style="font-size: 2.5em; font-weight: bold;">0 €</div>
                                      <button class="btn btn-primary mt-3" onclick="payNow()"><%= page.translate('Pay Now') %></button>
                                  </div>
                              </div>
@@ -55,6 +55,10 @@
       </div>
 
 <%- await include('../../../components/layout/html/_footer', { page }) %>
+
+<% if(initSync) { %>
+<script src="/static/dashboard/js/load.js"></script>
+<% } %>
 
 </body>
 

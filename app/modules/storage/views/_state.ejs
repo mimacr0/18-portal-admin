@@ -1,0 +1,15 @@
+<% if(item.state.value == 'used') { %>
+<span class="badge badge-success">
+    <%- i18n.__(item.state.label) %>
+</span>
+<% } %>
+<% if(item.state.value == 'reserved') { %>
+<span class="badge badge-warning">
+    <%- i18n.__(item.state.label) %>
+</span>
+<% } %>
+<% if(!['reserved', 'used'].includes(item.state.value)) { %>
+<span class="badge badge-secondary">
+    <%- i18n.__(item.state.label) %>
+</span>
+<% } %>

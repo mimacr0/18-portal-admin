@@ -14,4 +14,7 @@ export class StateKPI extends KPI {
     get value() {
         return this.data?.value || '0'
     }
+    get url() {
+        return this._data?.url || ''
+    }
 }

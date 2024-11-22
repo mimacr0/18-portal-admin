@@ -5,9 +5,9 @@ const stockStockReloadList = async () => {
     $('.tooltip').remove()
     const res = await jsonGet(`/stock/stock/list?q=${q || ''}&page=${stockStockPage || ''}`)
     $('#stock-stock-list').html(res.html)
-    $('#stock-stock-footer').html(res.footer)
+    $('#stock-stock-pager').html(res.pager)
     $('[data-toggle="tooltip"]').tooltip()
-    $('#stock-stock-footer .page-item').click(function () {
+    $('#stock-stock-pager .page-item').click(function () {
         stockStockPage = $(this).data('page')
         stockStockReloadList()
     })
@@ -72,8 +72,6 @@ const selectExpeditionZipCode = async (e) => {
     const res = await jsonPost(`/expeditions/create/account/zip/data`, { zip: zipId }, { loading: false })
     if(res?.status != 'success') return
     $('#contact_country_id_select').val(countryId)
-    $('#contact_city_id_select').html(res.data.cities)
-    $('#contact_state_id_select').html(res.data.states)
     $('#contact_city_id_select').val(cityId)
     $('#contact_state_id_select').val(stateId)
     $('#stock-expedition-create-form-zip-id').val(zipId)
@@ -145,14 +143,43 @@ $('#add-shipping-address-btn').click(async () => {
     $('#stock-expedition-shipping-buttons').show()
 })
 
+const stockExpeditionBatchCreateReset = () => {
+    $('#stock-expedition-create-form-client-account-id').val('').trigger('change')
+    $('#stock-expedition-create-form-shipping-adddress-id').val('').trigger('change')
+    $('#register-shipping-address-form').hide()
+    $('#stock-expedition-create-form-data').show()
+    $('#stock-expedition-account-buttons').show()
+    $('#stockExpeditionBatchCreateModalLabel').show()
+    $('#stockExpeditionBatchCreateShippingModalLabel').hide()
+    $('#stock-expedition-shipping-buttons').hide()
+}
+
+$('#stockExpeditionBatchCreateModal').on('hidden.bs.modal', stockExpeditionBatchCreateReset)
+
 const stockExpeditionCreateFormSubmit = async (e) => {
     const res = await formPost('/expeditions/create/expedition/create', '#stock-expedition-create-form-data')
 
     if(res?.status != 'success') return
 
-    $('#stock-expedition-create-form-client-account-id').val('').trigger('change')
-    $('#stock-expedition-create-form-shipping-adddress-id').val('').trigger('change')
-    $('#stockExpeditionBatchCreateModal').modal('toggle')
+    window.location.href = `/expeditions/details/${res.data.id}`
 }
 
 $('#stock-expedition-create-form-submit').click(stockExpeditionCreateFormSubmit)
+
+$('#contact_country_id_select').change(async function() {
+    const countryId = $(this).val()
+    if(!countryId) {
+        $('.o_portal_contact_state_id_group').hide()
+        return
+    }
+
+    const stateId = $('#contact_state_id_select_id').val()
+
+    const res = await jsonGet(`/expeditions/states/${countryId}`)
+    if(res?.status == 'success') {
+        $('#contact_state_id_select').html(res.data)
+        if(stateId) $('#contact_state_id_select').val(stateId)
+        $('#contact_state_id_select_id').val('')
+        $('.o_portal_contact_state_id_group').show()
+    }
+})

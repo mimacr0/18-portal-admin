@@ -69,6 +69,7 @@ export const initRouters = () => {
 }
 
 export const initStatic = () => {
+    app.use('/static/dashboard', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "dashboard", "static")))
     app.use('/static/base', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "base", "static")))
     app.use('/static/stock', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "stock", "static")))
     app.use('/static/expeditions', checkUserAssets, express.static(path.join(sysConfig.BASE_PATH, "modules", "expeditions", "static")))
