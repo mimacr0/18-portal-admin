@@ -18,9 +18,6 @@
     ],
     'assets': {
         'portal_admin_theme.admin_assets_frontend': [
-            'portal_account_dashboard/static/src/js/dashboard_page.js'
-        ],
-        'portal_admin_theme.admin_assets_frontend': [
             'portal_account_products/static/src/js/products_page.js'
         ]
     }
