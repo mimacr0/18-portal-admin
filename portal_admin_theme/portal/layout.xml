@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_user_notification_list" name="Portal User Notification List">
+        <t t-foreach="notifications" t-as="notification">
+            <div class="px-4 py-3 border-l-4 border-cyan-500 notification-item">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 pt-0.5">
+                        <i t-attf-class="fas fa-#{notification.icon()} text-cyan-500 bg-cyan-100 p-2 rounded-full notification-icon info"></i>
+                    </div>
+                    <div class="ml-3 w-0 flex-1">
+                        <p class="text-sm font-sm text-gray-900 dark:text-white notification-title"><t t-out="notification.title()"/></p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 notification-message"><t t-out="notification.message()"/></p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1 notification-time"><t t-out="notification.time_ago()"/></p>
+                    </div>
+                    <div class="ml-4 flex-shrink-0">
+                        <button class="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_admin_layout" name="Portal Admin Layout">
+        <head>
+            <meta charset="UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <title><t t-out="page_title"/></title>
+            <t t-call-assets="web._assets_core" t-css="false" defer_load="True"/>
+            <t t-call-assets="portal_admin_theme.admin_assets_frontend" defer_load="True"/>
+            <script t-nocache="Session information should always be up to date." type="text/javascript">
+                document.addEventListener('DOMContentLoaded', () => {
+                    odoo.__session_info__ = <t t-out="json.dumps(request.env['ir.http'].get_frontend_session_info())"/>;
+                    if (!/(^|;\s)tz=/.test(document.cookie)) {
+                        const userTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                        document.cookie = `tz=${userTZ}; path=/`;
+                    }
+                });
+            </script>
+            <t t-if="page_type == 'account'">
+                <t t-call-assets="portal_admin_theme.account_page"/>
+            </t>
+            <t t-if="not page_type">
+                <t t-call-assets="portal_admin_theme.admin_page"/>
+            </t>
+        </head>
+        <body class="bg-gray-100 dark:bg-gray-900">
+            <div class="page-container">
+                <!-- Header -->
+                <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
+                    <div class="grid grid-cols-2 items-center px-4 py-3">
+                        <!-- Left section with sidebar toggle -->
+                        <div class="flex items-center justify-start">
+                            <button id="sidebar-toggle" class="size-10 rounded-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none relative" data-sidebar-state="full">
+                                <!-- Full sidebar icon (default) -->
+                                <svg id="toggle-full-icon" class="size-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-slot="icon">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                </svg>
+                                <!-- Collapsed sidebar icon (hidden by default) -->
+                                <svg id="toggle-collapsed-icon" class="size-5 text-gray-600 dark:text-gray-300 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-slot="icon">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+
+                            <!-- History Widget (desktop only) -->
+                            <div id="history-widget" class="history-widget hidden sm:flex"></div>
+                        </div>
+
+                        <!-- Right section with buttons -->
+                        <div class="flex items-center gap-2 justify-end">
+                            <!-- Theme toggle button -->
+                            <button id="theme-toggle-button" class="flex items-center justify-center size-10 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
+                                <!-- Light mode icon (default visible) -->
+                                <svg id="light-theme-icon" class="size-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-slot="icon">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"></path>
+                                </svg>
+                                <!-- Dark mode icon (hidden by default) -->
+                                <svg id="dark-theme-icon" class="size-5 text-gray-600 dark:text-gray-300 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-slot="icon">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"></path>
+                                </svg>
+                            </button>
+
+                            <!-- Language selector dropdown -->
+                            <div class="relative">
+                                <button id="language-dropdown-button" class="flex items-center justify-center size-10 rounded-md focus:outline-none transition-colors">
+                                    <img t-if="user.lang == 'en_US'" src="/portal_admin_theme/static/img/flags/en.svg" class="rounded-md w-5 h-5" alt="English"/>
+                                    <img t-if="user.lang == 'es_ES'" src="/portal_admin_theme/static/img/flags/es.svg" class="rounded-md w-5 h-5" alt="Spanish"/>
+                                    <img t-if="user.lang == 'zh_CN'" src="/portal_admin_theme/static/img/flags/zh.svg" class="rounded-md w-5 h-5" alt="Chinese"/>
+                                </button>
+                                <!-- Language dropdown menu -->
+                                <div id="language-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
+                                    <div class="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
+                                        <p class="text-sm font-sm text-gray-700 dark:text-gray-300">Select Language</p>
+                                    </div>
+                                    <div class="max-h-60 overflow-y-auto">
+                                        <!-- Current language -->
+                                        <a href="/account/user/update/lang/en_US" t-attf-class="language-item flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 #{user.lang == 'en_US' and 'bg-gray-50 dark:bg-gray-800'}">
+                                            <img src="/portal_admin_theme/static/img/flags/en.svg" class="rounded-md w-5 mr-3" alt="English"/>
+                                            <span>English</span>
+                                            <i t-if="user.lang == 'en_US'" class="fas fa-check ml-auto text-cyan-600 dark:text-cyan-400"></i>
+                                        </a>
+                                        <!-- Other languages -->
+                                        <a href="/account/user/update/lang/es_ES" t-attf-class="language-item flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 #{user.lang == 'es_ES' and 'bg-gray-50 dark:bg-gray-800'}">
+                                            <img src="/portal_admin_theme/static/img/flags/es.svg" class="rounded-md w-5 mr-3" alt="Spanish"/>
+                                            <span>Español</span>
+                                            <i t-if="user.lang == 'es_ES'" class="fas fa-check ml-auto text-cyan-600 dark:text-cyan-400"></i>
+                                        </a>
+                                        <a href="/account/user/update/lang/zh_CN" t-attf-class="language-item flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 #{user.lang == 'zh_CN' and 'bg-gray-50 dark:bg-gray-800'}">
+                                            <img src="/portal_admin_theme/static/img/flags/zh.svg" class="rounded-md w-5 mr-3" alt="Chinese"/>
+                                            <span>中文</span>
+                                            <i t-if="user.lang == 'zh_CN'" class="fas fa-check ml-auto text-cyan-600 dark:text-cyan-400"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notification dropdown -->
+                            <div class="relative">
+                                <button id="notification-dropdown-button" class="flex items-center justify-center size-10 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none relative">
+                                    <i class="fas fa-bell text-[#4b5563] dark:text-[#d1d5db]"></i>
+                                    <span class="notification-badge absolute top-2 right-2 flex h-3 w-3 pointer-events-none">
+                                        <!-- Using class from notifications.css for the effect -->
+                                        <span class="notification-indicator-animated invisible" id="layout-notifications-indicator"></span>
+                                    </span>
+                                </button>
+                                <!-- Notification dropdown menu -->
+                                <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50">
+                                    <div class="px-4 py-2 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+                                        <p class="text-sm font-sm text-gray-700 dark:text-gray-300" id="layout-notifications-title"></p>
+                                        <span class="text-xs bg-red-500 text-white px-2 py-1 rounded-full hidden" id="layout-notifications-count-badge"></span>
+                                    </div>
+                                    <div class="max-h-96 overflow-y-auto" id="layout-notifications-list"></div>
+                                    <div class="border-t border-gray-100 dark:border-gray-700 p-2 hidden" id="layout-notifications-actions">
+                                        <button type="button" class="block text-center text-xs text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 font-sm" id="layout-clear-all-notifications-button">
+                                            Clear all notifications
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- History dropdown (mobile only) -->
+                            <div class="relative history-mobile-only">
+                                <button id="history-dropdown-button" class="flex items-center justify-center size-10 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none lg:hidden md:hidden">
+                                    <i class="fas fa-history text-gray-600 dark:text-gray-300"></i>
+                                </button>
+                                <!-- History dropdown menu -->
+                                <div id="history-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 lg:hidden md:hidden">
+                                    <div class="px-4 py-2 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Recent Pages</p>
+                                        <div class="history-dropdown-actions">
+                                            <button id="clear-history" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="history-list" class="max-h-60 overflow-y-auto">
+                                        <!-- History items will be populated here dynamically -->
+                                    </div>
+                                    <div class="border-t border-gray-100 dark:border-gray-700 p-2">
+                                        <a href="#" class="block text-center text-xs text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 font-medium">
+                                            View all history
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- User dropdown -->
+                            <div class="relative">
+                                <button id="user-dropdown-button" class="flex items-center justify-center size-10 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 focus:outline-none">
+                                    <img t-if="user.partner_id.image_128" class="rounded-full" t-attf-src="/web/image/res.partner/#{user.partner_id.id}/image_128/30x30"/>
+                                    <svg t-else="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212" class="size-6" preserveAspectRatio="xMidYMid meet" id="default-user" version="1.1" x="0px" y="0px" enable-background="new 0 0 212 212"><title>default-user</title><path fill="#DFE5E7" class="background" d="M106.251,0.5C164.653,0.5,212,47.846,212,106.25S164.653,212,106.25,212C47.846,212,0.5,164.654,0.5,106.25 S47.846,0.5,106.251,0.5z"/><g><path fill="#FFFFFF" class="primary" d="M173.561,171.615c-0.601-0.915-1.287-1.907-2.065-2.955c-0.777-1.049-1.645-2.155-2.608-3.299 c-0.964-1.144-2.024-2.326-3.184-3.527c-1.741-1.802-3.71-3.646-5.924-5.47c-2.952-2.431-6.339-4.824-10.204-7.026 c-1.877-1.07-3.873-2.092-5.98-3.055c-0.062-0.028-0.118-0.059-0.18-0.087c-9.792-4.44-22.106-7.529-37.416-7.529 s-27.624,3.089-37.416,7.529c-0.338,0.153-0.653,0.318-0.985,0.474c-1.431,0.674-2.806,1.376-4.128,2.101 c-0.716,0.393-1.417,0.792-2.101,1.197c-3.421,2.027-6.475,4.191-9.15,6.395c-2.213,1.823-4.182,3.668-5.924,5.47 c-1.161,1.201-2.22,2.384-3.184,3.527c-0.964,1.144-1.832,2.25-2.609,3.299c-0.778,1.049-1.464,2.04-2.065,2.955 c-0.557,0.848-1.033,1.622-1.447,2.324c-0.033,0.056-0.073,0.119-0.104,0.174c-0.435,0.744-0.79,1.392-1.07,1.926 c-0.559,1.068-0.818,1.678-0.818,1.678v0.398c18.285,17.927,43.322,28.985,70.945,28.985c27.678,0,52.761-11.103,71.055-29.095 v-0.289c0,0-0.619-1.45-1.992-3.778C174.594,173.238,174.117,172.463,173.561,171.615z"/><path fill="#FFFFFF" class="primary" d="M106.002,125.5c2.645,0,5.212-0.253,7.68-0.737c1.234-0.242,2.443-0.542,3.624-0.896 c1.772-0.532,3.482-1.188,5.12-1.958c2.184-1.027,4.242-2.258,6.15-3.67c2.863-2.119,5.39-4.646,7.509-7.509 c0.706-0.954,1.367-1.945,1.98-2.971c0.919-1.539,1.729-3.155,2.422-4.84c0.462-1.123,0.872-2.277,1.226-3.458 c0.177-0.591,0.341-1.188,0.49-1.792c0.299-1.208,0.542-2.443,0.725-3.701c0.275-1.887,0.417-3.827,0.417-5.811 c0-1.984-0.142-3.925-0.417-5.811c-0.184-1.258-0.426-2.493-0.725-3.701c-0.15-0.604-0.313-1.202-0.49-1.793 c-0.354-1.181-0.764-2.335-1.226-3.458c-0.693-1.685-1.504-3.301-2.422-4.84c-0.613-1.026-1.274-2.017-1.98-2.971 c-2.119-2.863-4.646-5.39-7.509-7.509c-1.909-1.412-3.966-2.643-6.15-3.67c-1.638-0.77-3.348-1.426-5.12-1.958 c-1.181-0.355-2.39-0.655-3.624-0.896c-2.468-0.484-5.035-0.737-7.68-0.737c-21.162,0-37.345,16.183-37.345,37.345 C68.657,109.317,84.84,125.5,106.002,125.5z"/></g></svg>
+                                </button>
+                                <!-- User dropdown menu -->
+                                <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50">
+                                    <div class="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
+                                        <p class="text-sm font-sm text-gray-700 dark:text-gray-300"><span t-out="user.name"/></p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400"><span t-out="user.email"/></p>
+                                    </div>
+                                    <a href="/account/user/profile" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                        <i class="fas fa-user-circle mr-2 text-gray-500 dark:text-gray-400"></i> My Profile
+                                    </a>
+                                    <a href="/account/user/settings" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                        <i class="fas fa-cog mr-2 text-gray-500 dark:text-gray-400"></i> Account Settings
+                                    </a>
+                                    <div class="border-t border-gray-100 dark:border-gray-700">
+                                        <a href="/web/session/logout" class="block px-4 py-2 text-sm text-red-600 dark:text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="content-container flex h-full overflow-hidden">
+                    <!-- Sidebar -->
+                    <aside id="sidebar" class="fixed h-[calc(100vh-61px)] w-64 overflow-y-auto bg-gradient-to-br from-cyan-600 to-cyan-700 dark:from-gray-800 dark:to-gray-900 text-white transition-all duration-500 shadow-lg z-30 sidebar-collapsed-init">
+                        <div class="py-4">
+                            <div class="px-4 mb-6 flex items-center bg-gradient-to-r from-black/10 to-transparent backdrop-blur-sm border-b border-white/10 py-4">
+                                <img src="src/img/logo.svg" alt="Logo" class="size-10 rounded"/>
+                                <span id="logo-text" class="ml-3 text-xl font-bold text-white">Company</span>
+                            </div>
+
+                            <nav class="px-2">
+                                <div class="space-y-1">
+                                    <t t-foreach="menus" t-as="item">
+                                        <a
+                                            t-if="item.get('url') == page_url"
+                                            t-att-href="item.get('url')"
+                                            class="menu-item-active relative font-semibold flex items-center px-4 py-3 mx-2 my-1 rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-700"
+                                            t-att-data-history-url="item.get('url')"
+                                            t-att-data-history-title="item.get('name')"
+                                            t-att-data-history-icon="item.get('icon')"
+                                            >
+                                            <i t-attf-class="#{item.get('icon')} size-5 mr-3 text-center opacity-80 group-hover:opacity-100"></i>
+                                            <span class="menu-text transition-all duration-300" t-out="item.get('name')"/>
+                                        </a>
+                                        <a
+                                            t-else=""
+                                            t-att-href="item.get('url')"
+                                            class="menu-item group relative transition-all duration-300 text-white/90 hover:text-white flex items-center px-4 py-3 mx-2 my-1 rounded-lg hover:bg-white/10 hover:backdrop-blur-sm hover:translate-x-1"
+                                            t-att-data-history-url="item.get('url')"
+                                            t-att-data-history-title="item.get('name')"
+                                            t-att-data-history-icon="item.get('icon')"
+                                            >
+                                            <i t-attf-class="#{item.get('icon')} size-5 mr-3 text-center opacity-80 group-hover:opacity-100"></i>
+                                            <span class="menu-text transition-all duration-300" t-out="item.get('name')"/>
+                                        </a>
+                                    </t>
+                                </div>
+                            </nav>
+                        </div>
+                    </aside>
+
+                    <!-- Content overlay -->
+                    <div class="content-overlay"></div>
+
+                    <!-- Main Content -->
+                    <main id="main-content" class="flex-1 p-6 overflow-auto transition-all duration-500 ml-0 w-full h-screen">
+                        <t t-out="0"/>
+                    </main>
+
+                    <t t-out="footer_content"/>
+
+                    <!-- Loading Screen -->
+                    <div id="loading-screen" class="hidden">
+                        <div class="loading-content">
+                            <div class="loading-spinner"></div>
+                            <p class="loading-text">Loading</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <script src="/portal_admin_theme/static/src/js/layout/theme.js"></script>
+            <script src="/portal_admin_theme/static/src/js/layout/notifications.js"></script>
+            <script src="/portal_admin_theme/static/src/js/layout/sidebar.js"></script>
+            <script src="/portal_admin_theme/static/src/js/layout/history.js"></script>
+            <script src="/portal_admin_theme/static/src/js/layout/dropdown.js"></script>
+            <script src="/portal_admin_theme/static/src/js/layout/loading.js"></script>
+            <script src="/portal_admin_theme/static/src/js/layout/modals.js"></script>
+            <script src="/portal_admin_theme/static/src/js/tools/actions.js"></script>
+            <script src="/portal_admin_theme/static/src/js/tools/numbers.js"></script>
+            <script src="/portal_admin_theme/static/src/js/forms/tooltip.js"></script>
+            <script src="/portal_admin_theme/static/src/js/forms/forms.js"></script>
+
+            <t t-out="scripts"/>
+
+            <input type="hidden" id="page-storage-uid" t-att-value="request.env.uid"/>
+
+        </body>
+    </template>
+
+</odoo>

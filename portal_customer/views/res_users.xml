@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="res_users_list" model="ir.ui.view">
+            <field name="name">res.users.list</field>
+            <field name="model">res.users</field>
+            <field name="arch" type="xml">
+                <list string="Account Users" create="0">
+                    <field name="name"/>
+                    <field name="login"/>
+                    <field name="client_account_id"/>
+                    <field name="state" widget="badge" decoration-info="state == 'new'" decoration-success="state == 'active'"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="res_users_form" model="ir.ui.view">
+            <field name="name">res.users.form</field>
+            <field name="model">res.users</field>
+            <field name="arch" type="xml">
+                <form string="Account Users">
+                    <header>
+                        <button string="Send Password Reset Instructions" type="object" name="action_reset_password" invisible="state != 'active'"/>
+                        <button string="Send an Invitation Email" type="object" name="action_reset_password" context="{'create_user': 1}" invisible="state != 'new'"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_show_groups" type="object" groups="base.group_no_one" class="oe_stat_button" icon="fa-users">
+                                <field string="Groups" name="groups_count" widget="statinfo"/>
+                            </button>
+                            <button name="action_show_accesses" type="object" groups="base.group_no_one" class="oe_stat_button" icon="fa-list">
+                                <field string="Access Rights" name="accesses_count" widget="statinfo"/>
+                            </button>
+                            <button name="action_show_rules" type="object" groups="base.group_no_one" class="oe_stat_button" icon="fa-list-ul">
+                                <field string="Record Rules" name="rules_count" widget="statinfo"/>
+                            </button>
+                        </div>
+                        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                        <div class="alert alert-info text-center o_form_header"
+                            invisible="active and active_partner or not active and not active_partner or active and not active_partner"
+                            role="alert">
+                          <a class="close" data-bs-dismiss="alert" href="#">x</a>
+                          <div>
+                            <strong>The contact linked to this user is still active</strong>
+                          </div>
+                          <div>You can archive the contact
+                            <field name="partner_id" required="0" readonly="1"/>
+                          </div>
+                        </div>
+                        <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "avatar_128"}'/>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1><field name="name" placeholder="e.g. John Doe" required="1"/></h1>
+                            <field name="email" invisible="1"/><!-- needed to update partner's email from on_change_login() -->
+                            <label for="login" string="Email Address"/>
+                            <h2><field name="login" placeholder="e.g. email@yourcompany.com"/></h2>
+                            <group>
+                                <field name="partner_id" groups="base.group_no_one"
+                                        readonly="1"
+                                        required="0"
+                                        invisible="not id"/>
+                            </group>
+                        </div>
+                        <notebook colspan="4">
+                            <page string="Preferences" name="preferences">
+                                <group>
+                                    <group string="Localization" name="preferences">
+                                        <label for="lang" />
+                                        <div class="o_row">
+                                            <field name="lang" required="1"/>
+                                            <button
+                                                type="action"
+                                                name="%(base.action_view_base_language_install)d"
+                                                class="oe_edit_only btn-sm btn-link mb4 fa fa-globe"
+                                                aria-label="Add a language"
+                                                title="Add a language"/>
+                                        </div>
+                                        <field name="tz" widget="timezone_mismatch" options="{'tz_offset_field': 'tz_offset'}" />
+                                        <field name="tz_offset" invisible="1"/> <!-- needed for the timezone_mismatch widget -->
+                                    </group>
+                                    <group string="Menus Customization" groups="base.group_no_one"
+                                        invisible="share">
+                                        <field name="action_id"/>
+                                    </group>
+                                </group>
+                                <group name="messaging">
+                                    <field name="signature" options="{'codeview': true}"/>
+                                </group>
+                            </page>
+                            <page string="Account Security" name="account_security" invisible="not id"/>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="res_users_action" model="ir.actions.act_window">
+            <field name="name">Account Users</field>
+            <field name="res_model">res.users</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('share','=',True)]</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('portal_customer.res_users_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('portal_customer.res_users_form')}),]"/>
+        </record>
+
+        <record id="res_users_portal_update_action" model="ir.actions.server">
+            <field name="name">Update Portal Users</field>
+            <field name="model_id" ref="model_res_users"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = model.js_update_portal_base_data_action()
+            </field>
+        </record>
+
+    </data>
+</odoo>

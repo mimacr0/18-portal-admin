@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_user_profile_page" name="Portal User Profile Page">
+        <t t-call="portal_admin_theme.portal_admin_layout">
+
+            <div class="w-full max-w-7xl mx-auto">
+                <!-- Account Settings -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6 dark:bg-gray-800">
+                    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Account Settings</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Update your personal information and preferences</p>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex overflow-x-auto scrollbar-hide">
+                            <button id="tab-personal" class="tab-button active px-6 py-3 text-sm font-medium border-b-2 border-cyan-500 text-cyan-600 focus:outline-none transition-colors duration-200 ease-in-out dark:text-white relative">
+                                <i class="fas fa-user mr-2"></i>Personal Info
+                            </button>
+                            <button id="tab-address" class="tab-button px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none transition-colors duration-200 ease-in-out dark:text-white dark:hover:text-gray-300 relative">
+                                <i class="fas fa-map-marker-alt mr-2"></i>Address
+                            </button>
+                            <button id="tab-invoicing" class="tab-button px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none transition-colors duration-200 ease-in-out dark:text-white dark:hover:text-gray-300 relative">
+                                <i class="fas fa-file-invoice-dollar mr-2"></i>Invoicing
+                            </button>
+                            <button id="tab-security" class="tab-button px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none transition-colors duration-200 ease-in-out dark:text-white dark:hover:text-gray-300 relative">
+                                <i class="fas fa-shield-alt mr-2"></i>Security
+                            </button>
+                            <button id="tab-notifications" class="tab-button px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none transition-colors duration-200 ease-in-out dark:text-white dark:hover:text-gray-300 relative">
+                                <i class="fas fa-bell mr-2"></i>Notifications
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content -->
+                    <div class="px-6 py-6">
+                        <!-- Personal Info Tab -->
+                        <div id="personal-info" class="tab-content transition-all duration-300 ease-in-out opacity-100 transform translate-y-0 animate-fadeIn">
+                            <form id="personal-form" class="space-y-6 dark:text-white">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="first-name" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">First Name</label>
+                                        <input type="text" id="first-name" name="first-name" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" value="John"/>
+                                    </div>
+                                    <div>
+                                        <label for="last-name" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Last Name</label>
+                                        <input type="text" id="last-name" name="last-name" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" value="Doe"/>
+                                    </div>
+                                    <div>
+                                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Email Address</label>
+                                        <input type="email" id="email" name="email" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" value="john.doe@example.com"/>
+                                    </div>
+                                    <div>
+                                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Phone Number</label>
+                                        <input type="tel" id="phone" name="phone" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" value="+1 (555) 123-4567"/>
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label for="bio" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Bio</label>
+                                        <textarea id="bio" name="bio" rows="4" class="form-textarea w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50">Admin user with full system access.</textarea>
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-3 dark:text-white">Profile Picture</label>
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 mr-4">
+                                                <img id="profile-preview" src="https://randomuser.me/api/portraits/men/1.jpg" alt="Profile picture" class="size-20 rounded-full border border-gray-200 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-md dark:border-gray-700"/>
+                                            </div>
+                                            <div>
+                                                <label for="profile-upload" class="cursor-pointer inline-block text-sm font-medium px-4 py-2 bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-700">
+                                                    <i class="fas fa-upload mr-2"></i>Upload New Photo
+                                                </label>
+                                                <input id="profile-upload" type="file" class="hidden" accept="image/*"/>
+                                                <p class="mt-1 text-xs text-gray-500">JPG, GIF or PNG. 1MB max.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-6 flex items-center justify-end">
+                                    <button type="button" class="text-sm font-medium px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 mr-3 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-600 transition-all duration-300 ease-in-out">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="text-sm font-medium px-4 py-2 bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-700 dark:bg-cyan-500 dark:text-white dark:hover:bg-cyan-600 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md active:translate-y-0">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Address Tab -->
+                        <div id="address-info" class="tab-content hidden transition-all duration-300 ease-in-out opacity-0 transform translate-y-4">
+                            <form id="address-form" class="space-y-6 dark:text-white">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="md:col-span-2">
+                                        <label for="street-address" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Street Address</label>
+                                        <input type="text" id="street-address" name="street-address" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" value="123 Main Street"/>
+                                    </div>
+                                    <div>
+                                        <label for="city" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">City</label>
+                                        <input type="text" id="city" name="city" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" value="San Francisco"/>
+                                    </div>
+                                    <div>
+                                        <label for="state" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">State / Province</label>
+                                        <input type="text" id="state" name="state" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" value="California"/>
+                                    </div>
+                                    <div>
+                                        <label for="postal-code" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Postal Code</label>
+                                        <input type="text" id="postal-code" name="postal-code" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" value="94105"/>
+                                    </div>
+                                    <div>
+                                        <label for="country" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Country</label>
+                                        <select id="country" name="country" class="form-select w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50">
+                                            <option value="US" selected="selected">United States</option>
+                                            <option value="CA">Canada</option>
+                                            <option value="MX">Mexico</option>
+                                            <option value="UK">United Kingdom</option>
+                                            <option value="FR">France</option>
+                                            <option value="DE">Germany</option>
+                                            <option value="JP">Japan</option>
+                                            <option value="AU">Australia</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mt-6 flex items-center justify-end">
+                                    <button type="button" class="text-sm font-medium px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 mr-3">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="text-sm font-medium px-4 py-2 bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-700">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Invoicing Tab -->
+                        <div id="invoicing-info" class="tab-content hidden transition-all duration-300 ease-in-out opacity-0 transform translate-y-4">
+                            <form id="invoicing-form" class="space-y-6 dark:text-white">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="md:col-span-2">
+                                        <label for="company-name" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Company Name</label>
+                                        <input type="text" id="company-name" name="company-name" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" value="Acme Inc."/>
+                                    </div>
+                                    <div>
+                                        <label for="tax-id" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Tax ID / VAT Number</label>
+                                        <input type="text" id="tax-id" name="tax-id" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" value="US123456789"/>
+                                    </div>
+                                    <div>
+                                        <label for="billing-email" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Billing Email</label>
+                                        <input type="email" id="billing-email" name="billing-email" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" value="billing@acme.com"/>
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <div class="flex items-start">
+                                            <div class="flex items-center h-5">
+                                                <input id="same-as-shipping" name="same-as-shipping" type="checkbox" checked="checked" class="form-checkbox h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500"/>
+                                            </div>
+                                            <div class="ml-3 text-sm">
+                                                <label for="same-as-shipping" class="font-medium text-gray-700 dark:text-white">Billing address same as shipping address</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <h3 class="text-lg font-medium text-gray-900 mb-3 dark:text-white">Payment Methods</h3>
+                                        <div class="bg-gray-50 p-4 rounded-md border border-gray-200 mb-4">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center">
+                                                    <i class="fab fa-cc-visa text-blue-700 text-2xl mr-3"></i>
+                                                    <div>
+                                                        <p class="text-sm font-medium text-gray-900 dark:text-white">Visa ending in 4242</p>
+                                                        <p class="text-xs text-gray-500 dark:text-gray-400">Expires 12/2025</p>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
+                                                        Default
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="text-sm text-cyan-600 font-medium flex items-center dark:text-cyan-400">
+                                            <i class="fas fa-plus-circle mr-2"></i>Add Payment Method
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="mt-6 flex items-center justify-end">
+                                    <button type="button" class="text-sm font-medium px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 mr-3 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="text-sm font-medium px-4 py-2 bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-700 dark:bg-cyan-500 dark:text-white dark:hover:bg-cyan-600">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Security Tab -->
+                        <div id="security-info" class="tab-content hidden transition-all duration-300 ease-in-out opacity-0 transform translate-y-4">
+                            <form id="security-form" class="space-y-6 dark:text-white">
+                                <div class="space-y-6">
+                                    <div>
+                                        <h3 class="text-lg font-medium text-gray-900 mb-3 dark:text-white">Change Password</h3>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label for="current-password" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Current Password</label>
+                                                <input type="password" id="current-password" name="current-password" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50"/>
+                                            </div>
+                                            <div class="md:col-span-2">
+                                                <div class="border-t border-gray-200 mt-4 pt-4 dark:border-gray-700"></div>
+                                            </div>
+                                            <div>
+                                                <label for="new-password" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">New Password</label>
+                                                <input type="password" id="new-password" name="new-password" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50"/>
+                                            </div>
+                                            <div>
+                                                <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Confirm New Password</label>
+                                                <input type="password" id="confirm-password" name="confirm-password" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-gray-200 pt-6">
+                                        <h3 class="text-lg font-medium text-gray-900 mb-3 dark:text-white">Two-Factor Authentication</h3>
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">Add an extra layer of security to your account</p>
+                                                <p class="text-sm text-gray-500 mt-1 dark:text-gray-400">Current status: <span class="text-red-600 font-medium">Not enabled</span></p>
+                                            </div>
+                                            <button type="button" class="text-sm font-medium px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
+                                                Set Up
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-gray-200 pt-6">
+                                        <h3 class="text-lg font-medium text-gray-900 mb-3 dark:text-white">Sessions</h3>
+                                        <div class="bg-gray-50 p-4 rounded-md border border-gray-200 mb-4">
+                                            <div class="flex items-start">
+                                                <i class="fas fa-desktop text-gray-400 mt-1 mr-3"></i>
+                                                <div class="flex-1">
+                                                    <div class="flex items-center justify-between">
+                                                        <p class="text-sm font-medium text-gray-900 dark:text-white">Chrome on Windows</p>
+                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
+                                                            Current
+                                                        </span>
+                                                    </div>
+                                                    <p class="text-xs text-gray-500 mt-1 dark:text-gray-400">San Francisco, USA · May 5, 2023 at 2:45 PM</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="text-sm text-red-600 font-medium flex items-center dark:text-red-400">
+                                            <i class="fas fa-sign-out-alt mr-2"></i>Sign out of all other sessions
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="mt-6 flex items-center justify-end">
+                                    <button type="button" class="text-sm font-medium px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 mr-3 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="text-sm font-medium px-4 py-2 bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-700 dark:bg-cyan-500 dark:text-white dark:hover:bg-cyan-600">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Notifications Tab -->
+                        <div id="notifications-info" class="tab-content hidden transition-all duration-300 ease-in-out opacity-0 transform translate-y-4">
+                            <form id="notifications-form" class="space-y-6 dark:text-white">
+                                <div class="space-y-6">
+                                    <div>
+                                        <h3 class="text-lg font-medium text-gray-900 mb-3 dark:text-white">Email Notifications</h3>
+                                        <div class="space-y-4">
+                                            <div class="flex items-start">
+                                                <div class="flex items-center h-5">
+                                                    <input id="email-comments" name="email-comments" type="checkbox" checked="checked" class="form-checkbox h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500"/>
+                                                </div>
+                                                <div class="ml-3 text-sm">
+                                                    <label for="email-comments" class="font-medium text-gray-700 dark:text-white">Comments</label>
+                                                    <p class="text-gray-500 dark:text-gray-400">Get notified when someone comments on your posts.</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start">
+                                                <div class="flex items-center h-5">
+                                                    <input id="email-orders" name="email-orders" type="checkbox" checked="checked" class="form-checkbox h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500"/>
+                                                </div>
+                                                <div class="ml-3 text-sm">
+                                                    <label for="email-orders" class="font-medium text-gray-700 dark:text-white">Orders and deliveries</label>
+                                                    <p class="text-gray-500 dark:text-gray-400">Get updates on your orders and delivery status.</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start">
+                                                <div class="flex items-center h-5">
+                                                    <input id="email-news" name="email-news" type="checkbox" class="form-checkbox h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500"/>
+                                                </div>
+                                                <div class="ml-3 text-sm">
+                                                    <label for="email-news" class="font-medium text-gray-700 dark:text-white">News and updates</label>
+                                                    <p class="text-gray-500 dark:text-gray-400">Receive our newsletter and product updates.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-gray-200 pt-6">
+                                        <h3 class="text-lg font-medium text-gray-900 mb-3 dark:text-white">Push Notifications</h3>
+                                        <p class="text-sm text-gray-500 mb-4 dark:text-gray-400">Configure how you receive push notifications.</p>
+                                        <div class="space-y-4">
+                                            <div class="flex items-start">
+                                                <div class="flex items-center h-5">
+                                                    <input id="push-everything" name="push-notifications" type="radio" class="form-radio h-4 w-4 text-cyan-600 border-gray-300 focus:ring-cyan-500"/>
+                                                </div>
+                                                <div class="ml-3 text-sm">
+                                                    <label for="push-everything" class="font-medium text-gray-700 dark:text-white">Everything</label>
+                                                    <p class="text-gray-500 dark:text-gray-400">Receive all push notifications.</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start">
+                                                <div class="flex items-center h-5">
+                                                    <input id="push-email" name="push-notifications" type="radio" checked="checked" class="form-radio h-4 w-4 text-cyan-600 border-gray-300 focus:ring-cyan-500"/>
+                                                </div>
+                                                <div class="ml-3 text-sm">
+                                                    <label for="push-email" class="font-medium text-gray-700 dark:text-white">Same as email</label>
+                                                    <p class="text-gray-500 dark:text-gray-400">Receive the same notifications as email.</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start">
+                                                <div class="flex items-center h-5">
+                                                    <input id="push-nothing" name="push-notifications" type="radio" class="form-radio h-4 w-4 text-cyan-600 border-gray-300 focus:ring-cyan-500"/>
+                                                </div>
+                                                <div class="ml-3 text-sm">
+                                                    <label for="push-nothing" class="font-medium text-gray-700 dark:text-white">No push notifications</label>
+                                                    <p class="text-gray-500 dark:text-gray-400">Never receive push notifications.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-6 flex items-center justify-end">
+                                    <button type="button" class="text-sm font-medium px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 mr-3">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="text-sm font-medium px-4 py-2 bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-700">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </t>
+    </template>
+
+</odoo>

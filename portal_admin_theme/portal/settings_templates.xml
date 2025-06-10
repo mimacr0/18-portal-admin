@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_user_settings_page" name="Portal User Settings Page">
+        <t t-call="portal_admin_theme.portal_admin_layout">
+
+            <div class="w-full max-w-7xl mx-auto">
+
+                <!-- Config Sections -->
+                <div class="space-y-6">
+                    <!-- General Settings Section -->
+                    <div class="config-section bg-white dark:bg-gray-800 rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                            <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">General Settings</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Basic configuration for your application</p>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <!-- Site Name -->
+                            <div class="config-field">
+                                <label for="site-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Site Name</label>
+                                <input type="text" id="site-name" class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500 text-sm dark:bg-gray-700 dark:text-gray-200" value="AdminPanel"/>
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">The name of your site that appears in the header</p>
+                            </div>
+
+                            <!-- Site Description -->
+                            <div class="config-field">
+                                <label for="site-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Site Description</label>
+                                <textarea id="site-description" rows="2" class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500 text-sm dark:bg-gray-700 dark:text-gray-200">A powerful admin dashboard for managing your application</textarea>
+                            </div>
+
+                            <!-- Default Language -->
+                            <div class="config-field">
+                                <label for="default-language" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Default Language</label>
+                                <select id="default-language" class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500 text-sm dark:bg-gray-700 dark:text-gray-200">
+                                    <option value="en" selected="selected">English</option>
+                                    <option value="es">Español</option>
+                                    <option value="fr">Français</option>
+                                    <option value="de">Deutsch</option>
+                                    <option value="it">Italiano</option>
+                                </select>
+                            </div>
+
+                            <!-- Timezone -->
+                            <div class="config-field">
+                                <label for="timezone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Timezone</label>
+                                <select id="timezone" class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500 text-sm dark:bg-gray-700 dark:text-gray-200">
+                                    <option value="UTC" selected="selected">UTC</option>
+                                    <option value="EST">Eastern Standard Time (EST)</option>
+                                    <option value="CST">Central Standard Time (CST)</option>
+                                    <option value="PST">Pacific Standard Time (PST)</option>
+                                    <option value="GMT">Greenwich Mean Time (GMT)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Appearance Section -->
+                    <div class="config-section bg-white dark:bg-gray-800 rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                            <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Appearance</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Customize how the dashboard looks</p>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <!-- Theme -->
+                            <div class="config-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Default Theme</label>
+                                <div class="flex space-x-4">
+                                    <div class="flex items-center">
+                                        <input id="theme-light" name="theme" type="radio" checked="checked" class="focus:ring-cyan-500 h-4 w-4 text-cyan-600 border-gray-300 dark:border-gray-600 dark:bg-gray-700"/>
+                                        <label for="theme-light" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Light</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input id="theme-dark" name="theme" type="radio" class="focus:ring-cyan-500 h-4 w-4 text-cyan-600 border-gray-300 dark:border-gray-600 dark:bg-gray-700"/>
+                                        <label for="theme-dark" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Dark</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input id="theme-auto" name="theme" type="radio" class="focus:ring-cyan-500 h-4 w-4 text-cyan-600 border-gray-300 dark:border-gray-600 dark:bg-gray-700"/>
+                                        <label for="theme-auto" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Auto (Follow System)</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Primary Color -->
+                            <div class="config-field">
+                                <label for="primary-color" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Primary Color</label>
+                                <div class="flex items-center space-x-2">
+                                    <input type="color" id="primary-color" value="#0891b2" class="h-8 w-8 border-0 p-0 rounded"/>
+                                    <input type="text" value="#0891b2" class="block w-28 px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500 text-sm dark:bg-gray-700 dark:text-gray-200"/>
+                                </div>
+                            </div>
+
+                            <!-- Sidebar Position -->
+                            <div class="config-field">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sidebar Position</label>
+                                <div class="flex space-x-4">
+                                    <div class="flex items-center">
+                                        <input id="sidebar-left" name="sidebar-position" type="radio" checked="checked" class="focus:ring-cyan-500 h-4 w-4 text-cyan-600 border-gray-300 dark:border-gray-600 dark:bg-gray-700"/>
+                                        <label for="sidebar-left" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Left</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input id="sidebar-right" name="sidebar-position" type="radio" class="focus:ring-cyan-500 h-4 w-4 text-cyan-600 border-gray-300 dark:border-gray-600 dark:bg-gray-700"/>
+                                        <label for="sidebar-right" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Right</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Auto Collapse Sidebar -->
+                            <div class="config-field">
+                                <div class="flex items-center justify-between">
+                                    <label for="auto-collapse" class="text-sm font-medium text-gray-700 dark:text-gray-300">Auto Collapse Sidebar on Mobile</label>
+                                    <div class="mt-1 relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" name="auto-collapse" id="auto-collapse" checked="checked" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white dark:bg-gray-200 border-4 appearance-none cursor-pointer"/>
+                                        <label for="auto-collapse" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 dark:bg-gray-600 cursor-pointer"></label>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Automatically collapse sidebar on small screens</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications Section -->
+                    <div class="config-section bg-white dark:bg-gray-800 rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                            <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Notifications</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Configure notification preferences</p>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <!-- Email Notifications -->
+                            <div class="config-field">
+                                <div class="flex items-center justify-between">
+                                    <label for="email-notifications" class="text-sm font-medium text-gray-700 dark:text-gray-300">Email Notifications</label>
+                                    <div class="mt-1 relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" name="email-notifications" id="email-notifications" checked="checked" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white dark:bg-gray-200 border-4 appearance-none cursor-pointer"/>
+                                        <label for="email-notifications" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 dark:bg-gray-600 cursor-pointer"></label>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Receive notifications via email</p>
+                            </div>
+
+                            <!-- Push Notifications -->
+                            <div class="config-field">
+                                <div class="flex items-center justify-between">
+                                    <label for="push-notifications" class="text-sm font-medium text-gray-700 dark:text-gray-300">Push Notifications</label>
+                                    <div class="mt-1 relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" name="push-notifications" id="push-notifications" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white dark:bg-gray-200 border-4 appearance-none cursor-pointer"/>
+                                        <label for="push-notifications" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 dark:bg-gray-600 cursor-pointer"></label>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Receive browser push notifications</p>
+                            </div>
+
+                            <!-- Notification Types -->
+                            <div class="config-field mt-4">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Notification Types</label>
+                                <div class="space-y-2">
+                                    <div class="flex items-center">
+                                        <input id="notify-system" name="notify-system" type="checkbox" checked="checked" class="focus:ring-cyan-500 h-4 w-4 text-cyan-600 border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded"/>
+                                        <label for="notify-system" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">System Updates</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input id="notify-user" name="notify-user" type="checkbox" checked="checked" class="focus:ring-cyan-500 h-4 w-4 text-cyan-600 border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded"/>
+                                        <label for="notify-user" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">User Activities</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input id="notify-security" name="notify-security" type="checkbox" checked="checked" class="focus:ring-cyan-500 h-4 w-4 text-cyan-600 border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded"/>
+                                        <label for="notify-security" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Security Alerts</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Section -->
+                    <div class="config-section bg-white dark:bg-gray-800 rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                            <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Security</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Configure security settings</p>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <!-- 2FA -->
+                            <div class="config-field">
+                                <div class="flex items-center justify-between">
+                                    <label for="two-factor" class="text-sm font-medium text-gray-700 dark:text-gray-300">Two-Factor Authentication</label>
+                                    <div class="mt-1 relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" name="two-factor" id="two-factor" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white dark:bg-gray-200 border-4 appearance-none cursor-pointer"/>
+                                        <label for="two-factor" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 dark:bg-gray-600 cursor-pointer"></label>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Require 2FA for all admin users</p>
+                            </div>
+
+                            <!-- Session Timeout -->
+                            <div class="config-field">
+                                <label for="session-timeout" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Session Timeout (minutes)</label>
+                                <input type="number" id="session-timeout" min="5" max="1440" class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500 text-sm dark:bg-gray-700 dark:text-gray-200" value="30"/>
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Time in minutes before inactive sessions are logged out</p>
+                            </div>
+
+                            <!-- Failed Login Attempts -->
+                            <div class="config-field">
+                                <label for="failed-login-attempts" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Max Failed Login Attempts</label>
+                                <input type="number" id="failed-login-attempts" min="1" max="10" class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500 text-sm dark:bg-gray-700 dark:text-gray-200" value="5"/>
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Number of failed attempts before account is locked</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="h-30"></div>
+
+        </t>
+    </template>
+
+</odoo>

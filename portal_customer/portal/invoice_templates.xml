@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_invoices_page" name="Portal Invoices Page">
+        <t t-call="portal_admin_theme.portal_admin_layout">
+
+            <div class="w-full">
+
+                <div class="card-title-container mb-4 flex items-center">
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Invoices</h1>
+                </div>
+
+                <!-- Bulk actions toolbar - hidden by default, visible when items are selected -->
+                <div id="bulk-actions-toolbar" class="bg-white rounded-lg shadow mb-4 p-3 hidden dark:bg-gray-800">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center">
+                            <span id="selected-count" class="text-sm font-medium text-gray-700 dark:text-gray-300 mr-3">0 selected</span>
+                            <div class="h-4 border-l border-gray-300 dark:border-gray-700 mr-3"></div>
+                            <div class="flex flex-wrap gap-2">
+                                <button id="bulk-delete" class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors flex items-center">
+                                    <i class="fas fa-trash-alt mr-1.5"></i> Delete
+                                </button>
+                                <button id="bulk-status-active" class="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors flex items-center">
+                                    <i class="fas fa-check-circle mr-1.5"></i> Set Active
+                                </button>
+                                <button id="bulk-status-inactive" class="px-3 py-1 bg-yellow-600 text-white text-sm rounded hover:bg-yellow-700 transition-colors flex items-center">
+                                    <i class="fas fa-pause-circle mr-1.5"></i> Set Inactive
+                                </button>
+                                <button id="bulk-status-other" class="text-sm px-2 py-1 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 flex items-center dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 dark:hover:bg-gray-700">
+                                    <i class="fas fa-cog mr-1.5"></i> Other
+                                </button>
+                            </div>
+                        </div>
+                        <button id="clear-selection" class="text-sm text-gray-600 hover:text-gray-800">
+                            <i class="fas fa-times mr-1"></i> Clear selection
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-20 dark:bg-gray-800">
+                    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-col lg:flex-row justify-between gap-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <div class="flex items-center">
+                                    <t t-if="list_filters">
+                                        <!-- Filters row - visible on larger screens -->
+                                        <div class="hidden lg:flex items-center ml-4 space-x-2">
+                                            <t t-foreach="list_filters" t-as="list_filter">
+                                                <select t-attf-id="#{page_name}-list-filter-#{list_filter['id']}" class="px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                                                    <option t-if="list_filter.get('placeholder')" value=""><t t-out="list_filter.get('placeholder')"/></option>
+                                                    <t t-foreach="list_filter.get('values')" t-as="value">
+                                                        <option t-att-value="value[0]"><t t-out="value[1]"/></option>
+                                                    </t>
+                                                </select>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between gap-2">
+                                <!-- Search input -->
+                                <div class="relative flex-grow max-w-xs">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-search text-gray-400 dark:text-gray-500"></i>
+                                    </div>
+                                    <input type="text" id="search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-cyan-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Search ..."/>
+                                </div>
+
+                                <!-- Advanced search toggle button -->
+                                <button id="advanced-search-toggle" data-tooltip-target="tooltip-advanced-search" class="p-2 border border-gray-300 rounded-md hover:bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
+
+                                <!-- Action buttons -->
+                                <div class="flex items-center">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Advanced search panel - hidden by default -->
+                        <div id="advanced-search-panel" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 hidden">
+                            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Advanced Search</h3>
+
+                            <!-- Dynamic Advanced Filter -->
+                            <div class="w-full">
+
+                                <!-- Match Type Selector -->
+                                <div class="mb-4">
+                                    <p class="text-sm text-gray-700 dark:text-gray-300">
+                                        <select id="match-type" class="inline-block mx-1 px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                                            <option value="all" selected="selected">All</option>
+                                            <option value="any">Any</option>
+                                        </select>
+                                        of the following conditions:
+                                    </p>
+                                </div>
+
+                                <!-- Filter Lines Container -->
+                                <div id="filter-lines" class="space-y-3">
+                                    <!-- Filter Line 1 -->
+                                    <div class="filter-line flex flex-wrap md:flex-nowrap items-end gap-2">
+                                        <!-- Field Selection -->
+                                        <div class="w-full md:w-1/4">
+                                            <label class="block text-xs font-medium text-gray-700 mb-1">Field</label>
+                                            <select class="filter-field w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                                                <option value="name">Name</option>
+                                                <option value="email">Email</option>
+                                                <option value="role">Role</option>
+                                                <option value="status">Status</option>
+                                                <option value="registered">Registration Date</option>
+                                                <option value="last_login">Last Login</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Operator Selection (Text) -->
+                                        <div class="operator-container w-full md:w-1/4">
+                                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Operator</label>
+                                            <select class="filter-operator w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                                                <option value="equals">equals</option>
+                                                <option value="contains">contains</option>
+                                                <option value="not_equals">not equals</option>
+                                                <option value="starts_with">starts with</option>
+                                                <option value="ends_with">ends with</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Value Input (Text) -->
+                                        <div class="value-container w-full md:w-1/3">
+                                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Value</label>
+                                            <input type="text" class="filter-value w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700" placeholder="Enter value..."/>
+                                        </div>
+
+                                        <!-- Remove Line Button -->
+                                        <div class="flex items-center mt-1 md:mt-0">
+                                            <button class="remove-filter p-1.5 text-gray-400 dark:text-gray-500 hover:text-red-500" title="Remove condition">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Filter Line 2 (Date example) -->
+                                    <div class="filter-line flex flex-wrap md:flex-nowrap items-end gap-2">
+                                        <!-- Field Selection -->
+                                        <div class="w-full md:w-1/4">
+                                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Field</label>
+                                            <select class="filter-field w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                                                <option value="registered" selected="selected">Registration Date</option>
+                                                <option value="name">Name</option>
+                                                <option value="email">Email</option>
+                                                <option value="role">Role</option>
+                                                <option value="status">Status</option>
+                                                <option value="last_login">Last Login</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Operator Selection (Date) -->
+                                        <div class="operator-container w-full md:w-1/4">
+                                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Operator</label>
+                                            <select class="filter-operator w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                                                <option value="greater_than">greater than</option>
+                                                <option value="less_than">before than</option>
+                                                <option value="equals">same as</option>
+                                                <option value="not_equals">not same as</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Value Input (Date) -->
+                                        <div class="value-container w-full md:w-1/3">
+                                            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Value</label>
+                                            <input type="date" class="filter-value w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500"/>
+                                        </div>
+
+                                        <!-- Remove Line Button -->
+                                        <div class="flex items-center mt-1 md:mt-0">
+                                            <button class="remove-filter p-1.5 text-gray-400 hover:text-red-500" title="Remove condition">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Add Filter Line Button -->
+                                <div class="mt-3">
+                                    <button id="add-filter-line" class="flex items-center text-cyan-600 hover:text-cyan-700 text-sm font-medium">
+                                        <i class="fas fa-plus-circle mr-1.5"></i> Add filter condition
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Action buttons for advanced search -->
+                            <div class="mt-4 flex justify-end space-x-3">
+                                <button t-attf-id="page-list-#{page_name}-reset-advanced-search" class="px-3 py-1 text-sm border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700">
+                                    Reset
+                                </button>
+                                <button t-attf-id="page-list-#{page_name}-apply-advanced-search" class="px-3 py-1 text-sm bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-700 dark:bg-cyan-600 dark:text-white dark:hover:bg-cyan-700 dark:hover:text-white">
+                                    Apply Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-800">
+                                <tr>
+                                    <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            <input id="select-all-checkbox" type="checkbox" class="h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-cyan-600 dark:checked:border-cyan-600"/>
+                                        </div>
+                                    </th>
+                                    <t t-foreach="list_columns" t-as="list_column">
+                                        <th t-if="list_column.get('sortable')" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            <div class="flex items-center">
+                                                <span t-out="list_column.get('label')"/>
+                                                <i t-attf-id="list-column-#{page_name}-#{list_column.get('id')}-sort-icon" t-if="list_column.get('sortable')" class="fas fa-sort ml-1 text-gray-400"></i>
+                                            </div>
+                                        </th>
+                                        <th t-else="" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            <span t-out="list_column.get('label')"/>
+                                        </th>
+                                    </t>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="#{page_name}-page-list-items">
+                                <t t-foreach="invoices" t-as="invoice">
+                                    <t t-call="portal_customer.portal_invoice_line_template"/>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </t>
+    </template>
+
+    <template id="portal_invoice_line_template" name="Portal Invoice Line Template">
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900 dark:text-white"><span t-out="invoice.name"/></div>
+                <div class="text-sm text-gray-500 dark:text-gray-400">REF: <span t-out="invoice.ref"/></div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"><span t-out="invoice.date"/></td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"><span t-out="invoice.invoice_date_due"/></td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white"><span t-out="invoice.currency_id.symbol"/> <span t-out="invoice.amount_total"/></td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-100">
+                    <span t-out="invoice.state"/>
+                </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <a t-att-href="invoice.get_details_url()" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 mx-1"><i class="fas fa-file-invoice"></i></a>
+                <a t-att-href="invoice.get_portal_url()" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 mx-1"><i class="fas fa-eye"></i></a>
+                <a t-att-href="invoice.get_portal_url(report_type='pdf', download=True)" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 mx-1"><i class="fas fa-download"></i></a>
+            </td>
+        </tr>
+    </template>
+
+    <template id="portal_invoice_details_page" name="Portal Invoice Details Page">
+        <t t-call="portal_admin_theme.portal_admin_layout">
+
+            <!-- Details Page -->
+            <div class="w-4/5 mx-auto lg:max-w-7xl bg-white dark:bg-gray-800 rounded-xl shadow-lg print:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <!-- Document Action Bar -->
+                <div class="p-5 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    <a href="/account/account/invoices" class="inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Go back
+                    </a>
+                    <div class="flex items-center space-x-4">
+                        <div class="invoice-status-selector relative">
+                            <span class="px-3 py-1.5 bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 text-xs font-medium rounded-full flex items-center">
+                                <span class="w-2 h-2 bg-amber-500 dark:bg-amber-400 rounded-full mr-1.5"></span>
+                                Draft
+                            </span>
+                        </div>
+                        <div class="document-actions">
+                            <div class="flex space-x-2 pt-4">
+                                <a t-att-href="invoice.get_portal_url(report_type='pdf', download=True)" t-attf-target="_blank" class="action-button" data-tooltip="Download PDF">
+                                    <i class="fas fa-file-pdf text-gray-600 dark:text-gray-300"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Invoice Header -->
+                <div class="p-8 border-b border-gray-200 dark:border-gray-700 relative">
+
+                    <div class="flex flex-col md:flex-row justify-between items-start relative z-10">
+                        <div>
+                            <div class="flex items-center">
+                                <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">INVOICE</h1>
+                                <span class="ml-4 text-xl font-medium text-blue-600 dark:text-blue-400"><span t-out="invoice.ref"/></span>
+                            </div>
+                            <div class="mt-4 space-y-1">
+                                <p class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                                    <i class="far fa-calendar-alt mr-2 text-gray-500 dark:text-gray-500"></i>
+                                    Issue Date: <span class="ml-1 font-medium text-gray-800 dark:text-gray-200"><span t-out="invoice.date"/></span>
+                                </p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                                    <i class="far fa-calendar-check mr-2 text-gray-500 dark:text-gray-500"></i>
+                                    Due Date: <span class="ml-1 font-medium text-gray-800 dark:text-gray-200"><span t-out="invoice.invoice_date_due"/></span>
+                                </p>
+                                <div class="mt-3">
+                                    <div class="inline-flex items-center px-2.5 py-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                                        <i class="fas fa-clock mr-1.5 text-gray-500 dark:text-gray-500"></i>
+                                        <span class="text-xs text-gray-700 dark:text-gray-300">Due in <strong><span t-out="invoice.invoice_date_due"/></strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    <!-- Billing Address -->
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm dark:shadow-gray-900/50 border border-gray-100 dark:border-gray-600">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-file-invoice-dollar mr-2 text-blue-600 dark:text-blue-400"></i>
+                            Bill To
+                        </h3>
+                        <div class="text-sm space-y-2">
+                            <t t-set="partner" t-value="invoice.partner_id"/>
+                            <p class="font-medium text-base text-gray-800 dark:text-white"><span t-out="partner.name"/></p>
+                            <p class="text-gray-700 dark:text-gray-200"><span t-out="partner.street"/></p>
+                            <p class="text-gray-700 dark:text-gray-200"><span t-out="partner.city"/></p>
+                            <p class="text-gray-700 dark:text-gray-200"><span t-out="partner.zip"/></p>
+                            <p class="text-gray-700 dark:text-gray-200"><span t-out="partner.country_id.name"/></p>
+                            <div t-if="partner.ref" class="mt-4 pt-3 border-t border-dashed border-gray-200 dark:border-gray-500">
+                                <p class="font-medium flex items-center text-gray-800 dark:text-white">
+                                    <i class="fas fa-user-tag mr-2 text-gray-500 dark:text-gray-300"></i>
+                                    Customer ID: <span t-out="partner.ref"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm dark:shadow-gray-900/50 border border-gray-100 dark:border-gray-600">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-shipping-fast mr-2 text-blue-600 dark:text-blue-400"></i>
+                            Ship To
+                        </h3>
+                        <div class="text-sm space-y-2">
+                            <t t-set="shipping_partner" t-value="invoice.partner_shipping_id"/>
+                            <p class="font-medium text-base text-gray-800 dark:text-white"><span t-out="shipping_partner.name"/></p>
+                            <p class="text-gray-700 dark:text-gray-200"><span t-out="shipping_partner.street"/></p>
+                            <p class="text-gray-700 dark:text-gray-200"><span t-out="shipping_partner.city"/></p>
+                            <p class="text-gray-700 dark:text-gray-200"><span t-out="shipping_partner.zip"/></p>
+                            <p class="text-gray-700 dark:text-gray-200"><span t-out="shipping_partner.country_id.name"/></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Items Table -->
+                <div class="p-8 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-shopping-cart mr-2 text-blue-600 dark:text-blue-400"></i>
+                            Items
+                        </h3>
+                    </div>
+                    <div class="overflow-x-auto rounded-lg shadow dark:shadow-gray-900/70">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-gray-100 dark:bg-gray-700">
+                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Item</th>
+                                    <th class="px-6 py-4 text-right font-semibold text-gray-700 dark:text-gray-100">Price</th>
+                                    <th class="px-6 py-4 text-right font-semibold text-gray-700 dark:text-gray-100">Qty</th>
+                                    <th class="px-6 py-4 text-right font-semibold text-gray-700 dark:text-gray-100">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-800">
+                                <tr t-foreach="invoice.invoice_line_ids" t-as="line" class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                    <td class="px-6 py-4 text-gray-800 dark:text-gray-200"><span t-out="line.name"/></td>
+                                    <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200 font-medium"><span t-field="line.price_unit"/></td>
+                                    <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200"><span t-field="line.quantity"/></td>
+                                    <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200 font-medium"><span t-field="line.price_subtotal"/></td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="bg-gray-50 dark:bg-gray-700">
+                                <tr>
+                                    <td colspan="2" class="px-6 py-3"></td>
+                                    <td class="px-6 py-3 text-right font-medium text-gray-700 dark:text-gray-200">Subtotal</td>
+                                    <td class="px-6 py-3 text-right font-medium text-gray-800 dark:text-gray-200"><span t-field="invoice.amount_untaxed"/></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="px-6 py-3"></td>
+                                    <td class="px-6 py-3 text-right font-medium text-gray-700 dark:text-gray-200">Tax (21%)</td>
+                                    <td class="px-6 py-3 text-right font-medium text-gray-800 dark:text-gray-200"><span t-field="invoice.amount_tax"/></td>
+                                </tr>
+                                <tr class="bg-blue-50 dark:bg-blue-800 font-bold">
+                                    <td colspan="2" class="px-6 py-4"></td>
+                                    <td class="px-6 py-4 text-right text-lg font-bold text-gray-800 dark:text-white">Total</td>
+                                    <td class="px-6 py-4 text-right text-lg font-bold text-blue-600 dark:text-blue-200"><span t-field="invoice.amount_total"/></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Payment and Terms Section -->
+                <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-gray-200 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg shadow-sm dark:shadow-gray-900/50 border border-gray-100 dark:border-gray-600">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-file-contract mr-2 text-blue-600 dark:text-blue-400"></i>
+                            Notes
+                        </h3>
+                        <div class="text-sm space-y-3">
+                            <p class="text-gray-700 dark:text-gray-200"><i class="fas fa-circle text-xs mr-2 text-gray-400 dark:text-gray-400"></i> Payment is due within 30 days of invoice date.</p>
+                            <p class="text-gray-700 dark:text-gray-200"><i class="fas fa-circle text-xs mr-2 text-gray-400 dark:text-gray-400"></i> Please include the invoice number in your payment reference.</p>
+                            <p class="text-gray-700 dark:text-gray-200"><i class="fas fa-circle text-xs mr-2 text-gray-400 dark:text-gray-400"></i> For any questions regarding this invoice, please contact our accounting department.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Communication history -->
+                <div class="border-t border-gray-200 dark:border-gray-700">
+                    <div class="p-5" id="communication-toggle">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium dark:text-white flex items-center">
+                                <i class="fas fa-comments mr-2 text-blue-600 dark:text-blue-400"></i>
+                                Communication history
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div id="communication-content" class="p-6 pt-0">
+                        <t t-set="partner" t-value="invoice.partner_id"/>
+                        <!-- Communication content wrapper -->
+                        <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+                            <!-- Chat header -->
+                            <div class="chat-header bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 p-4 flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-blue-500 dark:bg-blue-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
+                                            <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
+                                        </svg>
+                                    </div>
+                                    <span class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-200">Chat with <span t-out="partner.name"/></span>
+                                </div>
+                            </div>
+
+                            <!-- Messages container with increased height -->
+                            <div class="space-y-4 h-[500px] overflow-y-auto p-4 messages-container bg-white dark:bg-gray-800" t-attf-id="#{page_name}-details-chat-messages" t-attf-data-invoice-id="#{invoice.id}" t-attf-data-partner-id="#{user.partner_id.id}" t-attf-data-token="#{invoice.access_token}"></div>
+
+                            <!-- Message input area in separate container -->
+                            <div class="message-composer bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 p-4">
+                                <div class="message-input-wrapper bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg shadow-sm dark:shadow-gray-900/50" id="message-input-container">
+                                    <div class="flex items-end p-2">
+                                        <div class="flex-shrink-0 mr-2">
+                                            <div class="w-8 h-8 rounded-full bg-gray-500 dark:bg-gray-600 flex items-center justify-center">
+                                                <img t-if="user.partner_id.image_128" class="w-5 h-5 rounded-full" t-attf-src="/web/image/res.partner/#{user.partner_id.id}/image_128/50x50"/>
+                                                <svg t-else="" class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow relative">
+                                            <div class="flex items-center">
+                                                <button class="message-attach-button text-gray-500 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 p-2">
+                                                    <i class="fas fa-paperclip"></i>
+                                                </button>
+                                                <div class="flex-grow">
+                                                    <input type="hidden" t-attf-id="page-details-#{page_name}-message-attachment-token" t-att-value="request.csrf_token()"/>
+                                                    <input type="file" t-attf-id="page-details-#{page_name}-message-attachment-input" class="hidden"/>
+                                                    <textarea class="message-input bg-transparent border-0 rounded-md text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 w-full py-2 resize-none focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" rows="1" placeholder="Write a message..."></textarea>
+                                                </div>
+                                                <button t-attf-id="page-details-#{page_name}-send-message" class="message-send-button text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/30 p-2 rounded-full flex items-center justify-center ml-2">
+                                                    <i class="fas fa-paper-plane"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="h-30"></div>
+
+        </t>
+    </template>
+
+</odoo>
