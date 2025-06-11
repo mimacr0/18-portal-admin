@@ -42,7 +42,7 @@ class PortalStockController(PortalAdminController):
     @http.route('/account/stock', type='http', auth="user", website=True)
     def account_stock_action(self, **post):
         ProductProducts = request.env['product.product'].sudo()
-        stock = ProductProducts.search([('is_storable', '=', True)]
+        stock = ProductProducts.search([('is_storable', '=', True)])
 
         attributes = request.env['product.attribute'].sudo().search([])
         attributes_data = []
