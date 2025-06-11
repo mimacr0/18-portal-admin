@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="portal_products_page" name="Portal Products Page">
+    <template id="portal_stock_page" name="Portal Products Page">
         <t t-call="portal_admin_theme.portal_admin_layout">
 
             <div class="w-full">
@@ -60,7 +60,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i class="fas fa-search text-gray-400 dark:text-gray-500"></i>
                                     </div>
-                                    <input type="text" t-attf-id="page-#{page_name}-products-list-search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-cyan-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Search ..."/>
+                                    <input type="text" id="page-stock-products-list-search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-cyan-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Search ..."/>
                                 </div>
 
                                 <!-- Advanced search toggle button -->
@@ -142,7 +142,7 @@
                                     </t>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" t-attf-id="#{page_name}-page-list-items"></tbody>
+                            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="stock-page-list-items"></tbody>
                         </table>
                     </div>
 
@@ -150,8 +150,8 @@
             </div>
 
             <div class="fixed bottom-0 right-0 z-10 mr-6 mb-6">
-                <input type="hidden" id="products-list-pagination-page" value="1"/>
-                <div class="pagination-container px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg flex items-center justify-between" t-attf-id="#{page_name}-list-pagination-container"></div>
+                <input type="hidden" id="stock-list-pagination-page" value="1"/>
+                <div class="pagination-container px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg flex items-center justify-between" id="stock-list-pagination-container"></div>
             </div>
 
             <div class="h-25"></div>
@@ -321,7 +321,7 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <img class="size-10 rounded-full" t-attf-src="/account/account/products/image/#{product.id}/80x80" t-att-alt="product.name"/>
+                            <img class="size-10 rounded-full" t-attf-src="/account/stock/image/#{product.id}/80x80" t-att-alt="product.name"/>
                         </div>
                         <div class="ml-4">
                             <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="product.name"/>
@@ -394,7 +394,7 @@
         </t>
     </template>
 
-    <template id="portal_products_pager" name="Portal Products Pager">
+    <template id="portal_stock_pager" name="Portal Products Pager">
         <!-- No results message -->
         <div class="sm:hidden" t-if="items_count == 0">
             <p class="text-xs text-gray-700 dark:text-gray-300 mb-2">
@@ -434,19 +434,19 @@
                 <span class="font-medium">Showing</span> <span class="font-medium">1-<span t-out="items_count"/></span> <span>of</span> <span class="font-medium" t-out="items_total"/> <span t-out="items_label"/> <span class="text-gray-500 ml-1"></span>
             </p>
             <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                <button type="button" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700" id="products-list-pagination-previous">
+                <button type="button" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700" id="stock-list-pagination-previous">
                     <span class="sr-only">Previous</span>
                     <i class="fas fa-chevron-left"></i>
                 </button>
                 <t t-foreach="pages" t-as="page">
-                    <button t-if="page.get('active')" aria-current="page" t-att-data-page="page.get('page')" class="products-list-pagination-button z-10 bg-cyan-50 dark:bg-gray-800 border-cyan-500 dark:border-cyan-500 text-cyan-600 dark:text-cyan-600 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
+                    <button t-if="page.get('active')" aria-current="page" t-att-data-page="page.get('page')" class="stock-list-pagination-button z-10 bg-cyan-50 dark:bg-gray-800 border-cyan-500 dark:border-cyan-500 text-cyan-600 dark:text-cyan-600 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
                         <span t-out="page.get('page')"/>
                     </button>
-                    <button t-else="" t-att-data-page="page.get('page')" class="products-list-pagination-button bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
+                    <button t-else="" t-att-data-page="page.get('page')" class="stock-list-pagination-button bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
                         <span t-out="page.get('page')"/>
                     </button>
                 </t>
-                <button type="button" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700" id="products-list-pagination-next">
+                <button type="button" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700" id="stock-list-pagination-next">
                     <span class="sr-only">Next</span>
                     <i class="fas fa-chevron-right"></i>
                 </button>

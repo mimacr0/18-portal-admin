@@ -1,3 +1,3 @@
 
-from . import products
+from . import stocks
 

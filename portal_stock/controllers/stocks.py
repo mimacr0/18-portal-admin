@@ -7,23 +7,23 @@ from odoo.http import request
 from odoo.osv import expression
 
 
-class PortalProductsController(PortalAdminController):
+class PortalStockController(PortalAdminController):
 
     def _get_admin_layout_menus(self):
         menus = super()._get_admin_layout_menus()
         menus.extend([
             {
-                'name': _('Products'),
-                'url': '/account/account/products',
-                'icon': 'fas fa-box'
+                'name': _('Stock'),
+                'url': '/account/stock',
+                'icon': 'fas fa-cubes'
             }
         ])
         return menus
 
-    @http.route('/account/account/products', type='http', auth="user", website=True)
-    def account_account_products_action(self, **post):
+    @http.route('/account/stock', type='http', auth="user", website=True)
+    def account_stock_action(self, **post):
         ProductProducts = request.env['product.product'].sudo()
-        products = ProductProducts.search([('is_storable', '=', True)])
+        stock = ProductProducts.search([('is_storable', '=', True)])
 
         values = self._get_admin_layout_values()
 
@@ -106,10 +106,10 @@ class PortalProductsController(PortalAdminController):
         ]
 
         values.update({
-            'page_name': 'products',
-            'products': products,
-            'page_title': _('Products'),
-            'page_url': '/account/account/products',
+            'page_name': 'stock',
+            'stock': stock,
+            'page_title': _('Stock'),
+            'page_url': '/account/stock',
             'list_filters': list_filters,
             'list_columns': list_columns,
             'tools_actions': tools_actions,
@@ -117,12 +117,12 @@ class PortalProductsController(PortalAdminController):
             'advanced_search': json.dumps(advanced_search)
         })
 
-        return request.render("portal_account_products.portal_products_page", values)
+        return request.render("portal_stock.portal_stock_page", values)
 
-    @http.route('/account/account/products/list/reload', type='json', auth='user')
-    def account_account_products_list_reload(self, page=1, search='', domain=None, match_type='all', sort=None, order='asc', **kw):
+    @http.route('/account/stock/list/reload', type='json', auth='user')
+    def account_stock_list_reload(self, page=1, search='', domain=None, match_type='all', sort=None, order='asc', **kw):
         SysParams = request.env['ir.config_parameter'].sudo()
-        limit = int(SysParams.get_param('portal_account_products.page_list_default_limit', '100'))
+        limit = int(SysParams.get_param('portal_stock.page_list_default_limit', '100'))
         offset = (page - 1) * limit
         base_domain = [('is_storable', '=', True)]
 
@@ -206,11 +206,11 @@ class PortalProductsController(PortalAdminController):
 
         return {
             'status': 'success',
-            'list': qweb._render('portal_account_products.portal_products_list', {
+            'list': qweb._render('portal_stock.portal_products_list', {
                 'products': products,
                 'batch_actions': True
             }),
-            'pager': qweb._render('portal_account_products.portal_products_pager', {
+            'pager': qweb._render('portal_stock.portal_stock_pager', {
                 'products': products,
                 'items_total': items_total,
                 'items_count': items_count,
@@ -222,8 +222,8 @@ class PortalProductsController(PortalAdminController):
             'last_page': last_page
         }
 
-    @http.route('/account/account/products/list/advanced_filters', type='json', auth='user')
-    def account_account_products_list_advanced_filters(self, **kw):
+    @http.route('/account/stock/list/advanced_filters', type='json', auth='user')
+    def account_stock_list_advanced_filters(self, **kw):
         advanced_search = [
             {
                 'id': 'name',
@@ -248,8 +248,8 @@ class PortalProductsController(PortalAdminController):
             'filters': json.dumps(advanced_search)
         }
 
-    @http.route('/account/account/products/image/<int:pid>/<int:width>x<int:height>', type='http', auth='user')
-    def account_account_products_image_action(self, pid, width, height, **kw):
+    @http.route('/account/stock/image/<int:pid>/<int:width>x<int:height>', type='http', auth='user')
+    def account_stock_image_action(self, pid, width, height, **kw):
         field = 'image_128'
         crop = True
         download = False

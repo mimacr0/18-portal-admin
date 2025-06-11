@@ -1,15 +1,14 @@
 import { rpc } from "@web/core/network/rpc";
 
-const reloadProductsListPage = async () => {
-    const pageListItems = document.getElementById('products-page-list-items');
-
+const reloadStockListPage = async () => {
+    const pageListItems = document.getElementById('stock-page-list-items');
     if(!pageListItems) return;
 
-    const currentPageInput = document.getElementById('products-list-pagination-page');
+    const currentPageInput = document.getElementById('stock-list-pagination-page');
     if(!currentPageInput) return;
     const currentPage = parseInt(currentPageInput.value);
 
-    const searchInput = document.getElementById('page-products-products-list-search');
+    const searchInput = document.getElementById('page-stock-products-list-search');
     if(!searchInput) return;
     const search = searchInput.value;
 
@@ -21,7 +20,7 @@ const reloadProductsListPage = async () => {
     const matchTypeSelect = document.getElementById('page-products-list-advanced-search-match-type');
     const matchType = matchTypeSelect ? matchTypeSelect.value : 'all';
 
-    const res = await rpc('/account/account/products/list/reload', {
+    const res = await rpc('/account/stock/list/reload', {
         page: currentPage,
         search: search,
         domain: domain,
@@ -33,42 +32,62 @@ const reloadProductsListPage = async () => {
 
     if(pageListItems) pageListItems.innerHTML = res.list;
 
-    const paginationContainer = document.getElementById('products-list-pagination-container');
+    const paginationContainer = document.getElementById('stock-list-pagination-container');
     if(paginationContainer) paginationContainer.innerHTML = res.pager;
 
-    const paginationPrevious = document.getElementById('products-list-pagination-previous');
-    const paginationButton = document.querySelectorAll('.products-list-pagination-button');
-    const paginationNext = document.getElementById('products-list-pagination-next');
+    // Paginador: IDs y clases corregidos
+    const paginationPrevious = document.getElementById('stock-list-pagination-previous');
+    const paginationButton = document.querySelectorAll('.stock-list-pagination-button');
+    const paginationNext = document.getElementById('stock-list-pagination-next');
 
     if(paginationPrevious) paginationPrevious.addEventListener('click', () => {
         if((currentPage - 1) < 1) return;
         currentPageInput.value = currentPage - 1;
-        reloadProductsListPage();
+        reloadStockListPage();
     });
 
     if(paginationButton) paginationButton.forEach(button => {
         button.addEventListener('click', () => {
             currentPageInput.value = parseInt(button.dataset.page);
-            reloadProductsListPage();
+            reloadStockListPage();
         });
     });
 
     if(paginationNext) paginationNext.addEventListener('click', () => {
         if((currentPage + 1) > res.last_page) return;
         currentPageInput.value = currentPage + 1;
-        reloadProductsListPage();
+        reloadStockListPage();
     });
 }
 
+// Implementación de debounce para controlar la frecuencia de búsqueda
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(context, args);
+        }, wait);
+    };
+}
+
 const initProductsListSearch = () => {
-    const searchInput = document.getElementById('page-products-products-list-search');
-    if(!searchInput) return;
-    const currentPageInput = document.getElementById('products-list-pagination-page');
+    const searchInput = document.getElementById('page-stock-products-list-search');
+    if(!searchInput) {
+        console.error('No se encontró el input de búsqueda con ID: page-stock-products-list-search');
+        return;
+    }
+    
+    const currentPageInput = document.getElementById('stock-list-pagination-page');
     if(!currentPageInput) return;
-    searchInput.addEventListener('input', systemDebounceAction(() => {
+    
+    // Corrigiendo el debounce - usando la función que hemos definido arriba
+    searchInput.addEventListener('input', debounce(() => {
         currentPageInput.value = 1;
-        reloadProductsListPage();
-    }), 500);
+        reloadStockListPage();
+    }, 500));
 }
 
 const initProductsManagementListPage = () => {
@@ -608,7 +627,7 @@ const portalAccountProductsInitCheckboxSelect = () => {
 }
 
 const portalAccountProductsInitAdvancedFilters = async () => {
-    const res = await rpc('/account/account/products/list/advanced_filters');
+    const res = await rpc('/account/stock/list/advanced_filters');
     if(res?.status != 'success') return;
 
     const advancedFiltersContainer = document.getElementById('page-products-list-advanced-search-fields');
@@ -779,17 +798,21 @@ function buildSearchDomain() {
 
 async function applyFiltersAndSort() {
     const searchDomain = buildSearchDomain();
-    const matchType = document.getElementById('page-products-list-advanced-search-match-type').value;
-    const currentPageInput = document.getElementById('products-list-pagination-page');
+    const matchType = document.getElementById('page-stock-list-advanced-search-match-type').value;
+    const currentPageInput = document.getElementById('stock-list-pagination-page');
     currentPageInput.value = 1;
 
-    const searchInput = document.getElementById('page-products-products-list-search');
+    const searchInput = document.getElementById('page-stock-products-list-search');
+    // Añadir una verificación y mensaje de error si no se encuentra
+    if (!searchInput) {
+        console.error('No se encontró el input de búsqueda con ID: page-stock-products-list-search');
+    }
     const search = searchInput ? searchInput.value : '';
 
-    const pageListItems = document.getElementById('products-page-list-items');
+    const pageListItems = document.getElementById('stock-page-list-items');
 
     try {
-        const res = await rpc('/account/account/products/list/reload', {
+        const res = await rpc('/account/stock/list/reload', {
             page: 1,
             search: search,
             domain: searchDomain,
@@ -802,19 +825,19 @@ async function applyFiltersAndSort() {
 
         if (pageListItems) pageListItems.innerHTML = res.list;
 
-        const paginationContainer = document.getElementById('products-list-pagination-container');
+        const paginationContainer = document.getElementById('stock-list-pagination-container');
         if (paginationContainer) paginationContainer.innerHTML = res.pager;
 
-        // Reinit pagination buttons
-        const paginationPrevious = document.getElementById('products-list-pagination-previous');
-        const paginationButton = document.querySelectorAll('.products-list-pagination-button');
-        const paginationNext = document.getElementById('products-list-pagination-next');
+        // IDs y clases corregidos para paginador
+        const paginationPrevious = document.getElementById('stock-list-pagination-previous');
+        const paginationButton = document.querySelectorAll('.stock-list-pagination-button');
+        const paginationNext = document.getElementById('stock-list-pagination-next');
 
         if (paginationPrevious) {
             paginationPrevious.addEventListener('click', () => {
                 if ((parseInt(currentPageInput.value) - 1) < 1) return;
                 currentPageInput.value = parseInt(currentPageInput.value) - 1;
-                reloadProductsListPage();
+                reloadStockListPage();
             });
         }
 
@@ -822,7 +845,7 @@ async function applyFiltersAndSort() {
             paginationButton.forEach(button => {
                 button.addEventListener('click', () => {
                     currentPageInput.value = parseInt(button.dataset.page);
-                    reloadProductsListPage();
+                    reloadStockListPage();
                 });
             });
         }
@@ -831,11 +854,10 @@ async function applyFiltersAndSort() {
             paginationNext.addEventListener('click', () => {
                 if ((parseInt(currentPageInput.value) + 1) > res.last_page) return;
                 currentPageInput.value = parseInt(currentPageInput.value) + 1;
-                reloadProductsListPage();
+                reloadStockListPage();
             });
         }
 
-        // Dispatch event for other components to react to filter changes
         document.dispatchEvent(new CustomEvent('filtersApplied'));
     } catch (error) {
         console.error('Error applying filters:', error);
@@ -881,7 +903,7 @@ function initTableSorting() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    reloadProductsListPage();
+    reloadStockListPage();
     initProductsManagementListPage();
     initFileUploadModal();
     initProductsListSearch();
