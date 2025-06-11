@@ -78,8 +78,11 @@ const initAddAttributesToProduct = () => {
         line.className = 'flex flex-col gap-2 mb-4';
 
         // Attribute select
+        // el class de select tiene que ser:
+        // class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
+
         const attrSelect = document.createElement('select');
-        attrSelect.className = 'form-input-sm border px-2 py-1 rounded attribute-select';
+        attrSelect.className = 'form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500';
         attrSelect.dataset.lineIndex = lineIndex;
 
         const defaultAttrOpt = document.createElement('option');
@@ -98,7 +101,7 @@ const initAddAttributesToProduct = () => {
 
         // Value select
         const valueSelect = document.createElement('select');
-        valueSelect.className = 'form-input-sm border px-2 py-1 rounded hidden';
+        valueSelect.className = 'form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500 hidden';
         valueSelect.dataset.lineIndex = lineIndex;
 
         // Píldoras container
@@ -182,13 +185,9 @@ const initAddAttributesToProduct = () => {
 
         lineIndex++;
     });
-
-
     // Si lo necesitas accesible globalmente:
     window.getSelectedAttributes = () => selectedAttributeValues;
 };
-
-
 
 
 // document.addEventListener('DOMContentLoaded', initProductsReceptionModal)

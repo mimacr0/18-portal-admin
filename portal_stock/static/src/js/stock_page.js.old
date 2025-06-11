@@ -485,8 +485,6 @@ const portalAccountProductsInitCheckboxSelect = () => {
                 // Asignar solo los IDs al input hidden
                 document.getElementById('portal_products_package_create_ids').value = selectedIds.join(',');
                 console.log(document.getElementById('portal_products_package_create_ids').value)
-                // Llenar la tabla con los objetos que contienen id y name
-                window.itemsMap = populateProductTable(selectedItems);
 
                 Modal.open('portal_products_package_create');
 
@@ -494,88 +492,6 @@ const portalAccountProductsInitCheckboxSelect = () => {
         });
     }
 
-    function populateProductTable(selectedItemIds) {
-        const tbody = document.querySelector('#productTable tbody');
-        tbody.innerHTML = ''; // Limpiar filas anteriores
-
-        // Crear el Map para guardar datos
-        const itemsMap = new Map();
-
-        selectedItemIds.forEach(function(item) {
-            const tr = document.createElement('tr');
-
-            // Columna numBox
-            const tdNumBox = document.createElement('td');
-            const inputNumBox = document.createElement('input');
-            inputNumBox.type = 'number';
-            inputNumBox.value = '1';
-            inputNumBox.min = '1';
-            inputNumBox.className = 'w-full p-0 text-center';
-            tdNumBox.className = 'border border-gray-300 px-4 py-2 text-center'; // Aplica el borde a la celda
-
-            tdNumBox.appendChild(inputNumBox);
-
-            // Columna Item ID
-            const tdItemName = document.createElement('td');
-            tdItemName.textContent = item.name;
-            tdItemName.className = 'border border-gray-300 px-4 py-2 text-center';
-
-            // Columna Número de Lote
-            const tdLotNumber = document.createElement('td');
-            const inputLotNumber = document.createElement('input');
-            inputLotNumber.type = 'text';
-            inputLotNumber.placeholder = 'Lote';
-            inputLotNumber.className = 'w-full border-gray-300 p-0 text-center';
-            tdLotNumber.appendChild(inputLotNumber);
-
-            // Columna cantidad
-            const tdQuantity = document.createElement('td');
-            const inputQuantity = document.createElement('input');
-            inputQuantity.type = 'number';
-            inputQuantity.value = '1';
-            inputQuantity.min = '1';
-            inputQuantity.className = 'w-full p-0 text-center';
-            tdQuantity.className = 'border border-gray-300 px-4 py-2 text-center'; // Aplica el borde a la celda
-            tdQuantity.appendChild(inputQuantity);
-
-            tr.appendChild(tdNumBox);
-            tr.appendChild(tdItemName);
-            tr.appendChild(tdLotNumber);
-            tr.appendChild(tdQuantity);
-            tbody.appendChild(tr);
-
-            // Inicializar en Map
-             itemsMap.set(item.id, {
-                box_num: Number(inputNumBox.value),
-                quantity: Number(inputQuantity.value),
-                lot_number: inputLotNumber.value
-            });
-            inputNumBox.addEventListener('input', () => {
-                const current = itemsMap.get(item.id) || {};
-                itemsMap.set(item.id, {
-                    ...current,
-                    box_num: Number(inputNumBox.value)
-                });
-            });
-
-            inputQuantity.addEventListener('input', () => {
-                const current = itemsMap.get(item.id) || {};
-                itemsMap.set(item.id, {
-                    ...current,
-                    quantity: Number(inputQuantity.value)
-                });
-            });
-            inputLotNumber.addEventListener('input', () => {
-            const current = itemsMap.get(item.id) || {};
-            itemsMap.set(item.id, {
-                ...current,
-                lot_number: inputLotNumber.value.trim()
-            });
-        });
-        });
-
-        return itemsMap; // Devuelve el mapa para usarlo externamente
-    }
 
     // Update the bulk actions toolbar based on selection state
     function updateBulkActionsToolbar() {
