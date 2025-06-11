@@ -11,14 +11,15 @@
     'license': 'AGPL-3',
     'category': 'Extra Tools',
     'summary': 'Stock',
-    'depends': ['portal_admin_theme'],
+    'depends': ['portal_account'],
     'data': [
         'security/ir.model.access.csv',
         'portal/stock_templates.xml'
     ],
     'assets': {
         'portal_admin_theme.admin_assets_frontend': [
-            'portal_stock/static/src/js/stock_page.js'
+            'portal_stock/static/src/js/frontend/components/**.js',
+            'portal_stock/static/src/js/frontend/stock_main.js'
         ]
     }
 }
