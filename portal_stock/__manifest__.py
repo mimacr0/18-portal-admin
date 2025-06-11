@@ -18,7 +18,8 @@
     ],
     'assets': {
         'portal_admin_theme.admin_assets_frontend': [
-            'portal_stock/static/src/js/stock_page.js'
+            'portal_stock/static/src/js/stock_page.js',
+            'portal_stock/static/src/js/create_modal_page.js',
         ]
     }
 }
