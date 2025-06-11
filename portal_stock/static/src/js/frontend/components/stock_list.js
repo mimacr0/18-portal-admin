@@ -67,11 +67,11 @@ export const reloadStockListPage = async () => {
 }
 
 export const initProductsManagementListPage = () => {
-    const createButton = document.getElementById('launch-create-products-form-button');
+    const createButton = document.getElementById('launch-create-stock-form-button');
     if(createButton) createButton.addEventListener('click', () => {
-        Modal.open('page-products-list-create-modal');
+        Modal.open('page-stock-list-create-modal');
     });
-    const fileUploadButton = document.getElementById('page-list-products-tools-action-import');
+    const fileUploadButton = document.getElementById('page-list-stock-tools-action-import');
     if(fileUploadButton) fileUploadButton.addEventListener('click', () => {
         Modal.open('file-upload-modal');
     });
