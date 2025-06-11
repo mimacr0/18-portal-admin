@@ -42,13 +42,21 @@ class PortalStockController(PortalAdminController):
     @http.route('/account/stock', type='http', auth="user", website=True)
     def account_stock_action(self, **post):
         ProductProducts = request.env['product.product'].sudo()
-        stock = ProductProducts.search([('is_storable', '=', True)])
+        stock = ProductProducts.search([('is_storable', '=', True)]
+
+        attributes = request.env['product.attribute'].sudo().search([])
+        attributes_data = []
+        for attr in attributes:
+            values = [{'id': v.id, 'name': v.name} for v in attr.value_ids]
+            attributes_data.append({'id': attr.id, 'name': attr.name, 'values': values})
+        
         values = self._get_admin_layout_values()
 
         # Configuración de la interfaz
         values.update({
             'page_name': 'stock',
             'stock': stock,
+            'attributes': attributes_data,
             'page_title': _('Stock'),
             'page_url': '/account/stock',
             'list_filters': [
@@ -228,3 +236,56 @@ class PortalStockController(PortalAdminController):
             send_file_kwargs['max_age'] = None
 
         return stream.get_response(**send_file_kwargs)
+
+    @http.route('/account/stock/create/product', type='json', auth='user')
+    def account_stock_create_modal_action(self, **post):
+        try:
+            name = post.get('name')
+            width = int(post['width'])
+            height = int(post['height'])
+            length = int(post['length'])
+            volume = float(post['volume'])
+            weight = float(post['weight'])
+            barcode = post['barcode']
+            sku = post['sku']
+            # list_price = float(post['list_price']) or 0.0
+            # standard_price = float(post['standard_price']) or 0.0
+            tracking = post.get('tracking')
+        except (ValueError, KeyError, json.JSONDecodeError) as e:
+            return {'status': 'error', 'message': f'Data parsing error: {e}'}
+        ProductTemplate = request.env['product.template']
+        account_partner = request.env['account.partner'].search([('partner_id', '=', 119)], limit=1)
+
+        values = {
+            'account_partner_id': account_partner.id,
+            'name': name,
+            'sale_ok': False,
+            'purchase_ok': False,
+            'type': 'consu',
+            'list_price': 0.0,
+            'taxes_id': False,
+            'standard_price': 0.0,
+            'volume': volume,
+            'weight': weight,
+            'barcode': barcode,
+            'default_code': sku,
+            'is_storable': True,
+            'tracking': tracking,
+            # 'storage_type': self.storage_type,
+            # 'categ_id': self.categ_id.id,
+            # 'product_tag_ids': self.product_tag_ids,
+        }
+
+        template = ProductTemplate.create(values)
+
+
+        return self.account_stock_action()
+        # values = self._get_admin_layout_values()
+        # values.update({
+            # 'page_name': 'products',
+            # 'page_title': _('Create Product'),
+            # 'page_url': '/account/account/products/modal/create',
+            # 'form_action': '/account/account/products/modal/create/submit'
+        # })
+
+        # return request.render("portal_account_products.portal_products_create_modal", values)
