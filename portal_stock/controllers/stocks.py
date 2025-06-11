@@ -53,12 +53,20 @@ class PortalStockController(PortalAdminController):
             'page_url': '/account/stock',
             'list_filters': [
                 {
-                    'id': 'status',
-                    'placeholder': _('All Status'),
-                    'values': [
-                        ('in_stock', _('In Stock')),
-                        ('out_of_stock', _('Out of Stock'))
-                    ]
+                    'id': 'all',
+                    'label': _('All'),
+                    'icon': 'fas fa-check-circle',
+                    'active': True
+                },
+                {
+                    'id': 'in_stock',
+                    'label': _('In Stock'),
+                    'icon': 'fas fa-check-circle'
+                },
+                {
+                    'id': 'out_of_stock',
+                    'label': _('Out of Stock'),
+                    'icon': 'fas fa-pause-circle'
                 }
             ],
             'list_columns': [
