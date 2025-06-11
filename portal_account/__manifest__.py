@@ -14,11 +14,13 @@
     'depends': ['portal_admin_theme'],
     'data': [
         'portal/home_templates.xml',
-        'portal/dashboard_templates.xml'
+        'portal/dashboard_templates.xml',
+        'views/res_users.xml',
+        'views/menu.xml'
     ],
     'assets': {
         'portal_admin_theme.admin_assets_frontend': [
-            'portal_account/static/src/js/dashboard_page.js'
+            'portal_account/static/src/js/frontend/dashboard_page.js'
         ]
     }
 }

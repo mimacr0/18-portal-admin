@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="portal_account_virtual_users_menu_main" name="Account Users" parent="client_account.menu_root" action="portal_account.res_users_action" sequence="100"/>
+
+</odoo>

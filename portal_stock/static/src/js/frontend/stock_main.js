@@ -3,6 +3,7 @@ import { initProductsListSearch, portalAccountProductsInitAdvancedFilters, initA
 import { initFileUploadModal } from "./components/stock_file_upload.js";
 import { portalAccountProductsInitCheckboxSelect } from "./components/stock_selection.js";
 import { initTableSorting } from "./components/stock_sorting.js";
+import { initStickyTableHeader } from "./components/stock_header.js";
 
 // Inicialización al cargar el documento
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,4 +15,5 @@ document.addEventListener('DOMContentLoaded', () => {
     portalAccountProductsInitAdvancedFilters();
     initAdvancedSearch();
     initTableSorting();
+    initStickyTableHeader();
 });

@@ -200,8 +200,8 @@
                     <aside id="sidebar" class="fixed h-[calc(100vh-61px)] w-64 overflow-y-auto bg-gradient-to-br from-cyan-600 to-cyan-700 dark:from-gray-800 dark:to-gray-900 text-white transition-all duration-500 shadow-lg z-30 sidebar-collapsed-init">
                         <div class="py-4">
                             <div class="px-4 mb-6 flex items-center bg-gradient-to-r from-black/10 to-transparent backdrop-blur-sm border-b border-white/10 py-4">
-                                <img src="src/img/logo.svg" alt="Logo" class="size-10 rounded"/>
-                                <span id="logo-text" class="ml-3 text-xl font-bold text-white">Company</span>
+                                <img src="/portal_admin_theme/static/img/logo.svg" alt="Logo" class="size-10 rounded"/>
+                                <span id="logo-text" class="ml-3 text-xl font-bold text-white" t-out="company.name"/>
                             </div>
 
                             <nav class="px-2">

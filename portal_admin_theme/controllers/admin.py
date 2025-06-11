@@ -12,6 +12,7 @@ class PortalAdminController(CustomerPortal):
 
     def _get_admin_layout_values(self):
         user = request.env.user.sudo()
+        company = user.company_id
         return {
             'menus': self._get_admin_layout_menus(),
             'batch_actions': [],
@@ -20,5 +21,6 @@ class PortalAdminController(CustomerPortal):
             'list_filters': [],
             'list_columns': [],
             'user': user,
+            'company': company,
             'json': json
         }
