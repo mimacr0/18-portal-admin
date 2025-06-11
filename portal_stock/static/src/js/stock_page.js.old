@@ -90,6 +90,7 @@ const initProductsListSearch = () => {
     }, 500));
 }
 
+
 const initStockManagementListPage = () => {
     const createButton = document.getElementById('launch-create-stock-form-button');
     if(createButton) createButton.addEventListener('click', () => {
