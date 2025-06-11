@@ -210,11 +210,10 @@ class PortalStockController(PortalAdminController):
             )
             if request.httprequest.args.get('access_token'):
                 stream.public = True
-        except Exception:
+        except Exception as exc:
             if download:
-                return request.not_found()
-
-            # Fallback a la imagen de marcador de posición
+                raise request.not_found() from exc
+            # Fallback to placeholder
             record = request.env.ref('web.image_placeholder').sudo()
             stream = request.env['ir.binary']._get_image_stream_from(
                 record, 'raw', width=int(width), height=int(height), crop=crop
