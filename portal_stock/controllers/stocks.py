@@ -254,8 +254,9 @@ class PortalStockController(PortalAdminController):
             length = int(post['length'])
             volume = float(post['volume'])
             weight = float(post['weight'])
-            barcode = post['barcode']
-            sku = post['sku']
+            barcode = post.get('barcode')
+            sku = post.get('sku')
+            image_base64 = post.get('image_base64')
             # list_price = float(post['list_price']) or 0.0
             # standard_price = float(post['standard_price']) or 0.0
             tracking = post.get('tracking')
@@ -263,7 +264,7 @@ class PortalStockController(PortalAdminController):
             return {'status': 'error', 'message': f'Data parsing error: {e}'}
         ProductTemplate = request.env['product.template']
         account_partner = request.env['account.partner'].search([('partner_id', '=', 119)], limit=1)
-
+        print(f"Image Base64: {image_base64}")
         values = {
             'account_partner_id': account_partner.id,
             'name': name,
@@ -279,6 +280,7 @@ class PortalStockController(PortalAdminController):
             'default_code': sku,
             'is_storable': True,
             'tracking': tracking,
+            'image_1920': image_base64,
             # 'storage_type': self.storage_type,
             # 'categ_id': self.categ_id.id,
             # 'product_tag_ids': self.product_tag_ids,
@@ -297,3 +299,10 @@ class PortalStockController(PortalAdminController):
         # })
 
         # return request.render("portal_account_products.portal_products_create_modal", values)
+
+
+    @http.route('/your/upload/route', type='json', auth='user')
+    def upload_image(self, image_data, record_id):
+        record = request.env['product.template'].sudo().browse(int(record_id))
+        record.image_1920 = image_data  # Campo binary estándar para imágenes
+        return {'status': 'ok'}
