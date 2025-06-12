@@ -194,17 +194,52 @@
                                                 t-attf-id="page-#{page_name}-list-create-form-name-error"
                                             ></div>
                                         </div>
-                                        <!-- Columna 3: Imagen -->
-                                        <div class="col-start-2 flex justify-end items-start">
-                                            <input type="file" class="hidden" id="fileInput" accept="image/*" />
-                                            <label for="fileInput" class="cursor-pointer">
-                                            <img
-                                                t-att-src="'/portal_stock/static/img/placeholder.png'"
-                                                alt="Subir imagen"
-                                                class="w-16 h-16 border-2 border-gray-400 rounded-full object-cover hover:opacity-80 transition duration-200"
-                                            />
-                                            </label>
+
+                                        <!-- Columna 2: Imagen -->
+                                       <div class="col-start-2 flex justify-end items-start">
+                                            <!-- Contenedor relativo para que el botón se posicione respecto a la imagen -->
+                                            <div class="relative group w-24 h-24">
+                                                <input
+                                                type="file"
+                                                name="image"
+                                                class="hidden"
+                                                t-attf-id="page-#{page_name}-list-create-form-image"
+                                                accept="image/*"
+                                                />
+                                                <input
+                                                type="hidden"
+                                                name="image_base64"
+                                                t-attf-id="page-#{page_name}-list-create-form-image-base64"
+                                                />
+
+                                                <!-- Label que contiene la imagen y actúa como botón para seleccionar archivo -->
+                                                <label
+                                                t-attf-for="page-#{page_name}-list-create-form-image"
+                                                class="cursor-pointer block w-full h-full"
+                                                >
+                                                <img
+                                                    t-attf-id="page-#{page_name}-list-create-form-image-preview"
+                                                    src="/portal_stock/static/img/placeholder.png"
+                                                    alt="Subir imagen"
+                                                    class="w-full h-full border-2 border-gray-400 object-cover rounded transition-opacity duration-200 group-hover:opacity-80"
+                                                />
+                                                </label>
+
+                                                <!-- Botón eliminar superpuesto en esquina inferior derecha -->
+                                                <button
+                                                    type="button"
+                                                    t-attf-id="page-#{page_name}-list-create-form-image-delete"
+                                                    class="absolute top-1 right-1 bg-white text-red-600 p-1 rounded-full shadow-md hover:bg-red-100 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                                    title="Eliminar imagen"
+                                                >
+                                                <i class="fa fa-trash"></i>
+                                                </button>
+                                            </div>
                                         </div>
+
+                            
+                                        <!-- Fin Columna 2 -->  
+
                                     </div>
                                 </div>
 
@@ -243,45 +278,49 @@
 
                                 <div class="form-group">
                                     <div class="grid grid-cols-2 sm:grid-cols-1 gap-4">
-                                        <!-- Volume -->
-                                        <div>
-                                        <div class="flex items-center">
-                                            <label t-attf-for="page-#{page_name}-list-create-form-volume" class="form-label-sm font-sm">
-                                            Volume (cm³)
-                                            </label>
-                                            <span class="text-red-500 ml-1">*</span>
-                                        </div>
-                                        <input
-                                            type="text"
-                                            name="volume"
-                                            readonly="readonly"
-                                            t-attf-id="page-#{page_name}-list-create-form-volume"
-                                            class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
-                                            placeholder="Volume"
-                                        />
-                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-volume-error"></div>
-                                        </div>
-
                                         <!-- Weight -->
                                         <div>
-                                        <div class="flex items-center">
-                                            <label t-attf-for="page-#{page_name}-list-create-form-weight" class="form-label-sm font-sm">
-                                            Weight (kg)
-                                            </label>
-                                            <span class="text-red-500 ml-1">*</span>
+                                            <div class="flex items-center">
+                                                <label t-attf-for="page-#{page_name}-list-create-form-weight" class="form-label-sm font-sm">
+                                                Weight (kg)
+                                                </label>
+                                                <span class="text-red-500 ml-1">*</span>
+                                            </div>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                name="weight"
+                                                t-attf-id="page-#{page_name}-list-create-form-weight"
+                                                class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
+                                                placeholder="Weight"
+                                            />
+                                            <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-weight-error"></div>
                                         </div>
-                                        <input
-                                            type="number"
-                                            step="0.01"
-                                            name="weight"
-                                            t-attf-id="page-#{page_name}-list-create-form-weight"
-                                            class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
-                                            placeholder="Weight"
-                                        />
-                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-weight-error"></div>
+                                        
+                                        <!-- Volume -->
+                                        <div>
+                                            <div class="flex items-center">
+                                                <label t-attf-for="page-#{page_name}-list-create-form-volume" class="form-label-sm font-sm">
+                                                Volume (cm³)
+                                                </label>
+                                                <span class="text-red-500 ml-1">*</span>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                name="volume"
+                                                readonly="readonly"
+                                                tabindex="-1"
+                                                t-attf-id="page-#{page_name}-list-create-form-volume"
+                                                class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 
+                                                    focus:outline-none focus:ring-0 pointer-events-none select-none bg-gray-100 text-gray-500"
+                                                placeholder="Volume"
+                                            />
+
+                                            <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-volume-error"></div>
                                         </div>
+
                                     </div>
-                                    </div>
+                                </div>
 
                                 <div class="form-group">
                                     <div class="flex items-center">
