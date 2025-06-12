@@ -12,11 +12,11 @@ const computeTotalVolume = (widthEl, heightEl, lengthEl, volumeEl) => {
 };
 
 const ProductListCreate = async () => {
-    if(!sysFormValidate('#page-stock-list-create-form')) return;
+    if(!sysFormValidate('#page-stock-list-product-create-form')) return;
     showLoadingScreen()
 
     // Collect all form data
-    const { formData, fileData } = sysCollectFormData('#page-stock-list-create-form');
+    const { formData, fileData } = sysCollectFormData('#page-stock-list-product-create-form');
     let hasFiles = Object.keys(fileData).length > 0;
     console.log('Form Data:', formData);
     if (window.itemsMap) {
@@ -57,136 +57,174 @@ const initProductListCreatetModal = () => {
 }
 
 const initAddAttributesToProduct = () => {
+    const modal = document.getElementById('page-stock-list-create-modal');
     const container = document.getElementById('page-stock-list-create-form-attributes-line-items-container');
-    const addBtn = document.getElementById('page-stock-list-create-form-attributes-add-attribute-btn');
-    const attrInput = document.getElementById('product-attributes-json');
-    
-    let productAttributes = [];
-    try {
-       // Reemplaza comillas simples por dobles, solo para probar:
-        const fixedJson = attrInput.value.replace(/'/g, '"');
-        productAttributes = JSON.parse(fixedJson);
-        } catch (e) {
-        console.error('Error parsing attributes JSON:', e, attrInput.value);
+    const addBtn = document.getElementById('page-stock-list-create-form-attributes-add-line-btn');
+    const addAttributeBtn = document.getElementById('page-stock-list-create-form-attributes-add-attribute-btn');
+    const addProductForm = document.getElementById('page-stock-list-product-create-form');
+    const addProductAttributesForm = document.getElementById('page-stock-list-attribute-create-form');
+    const addProductFooter = document.getElementById('page-stock-list-create-product-form-footer');
+    const addProductAttributesFooter = document.getElementById('page-stock-list-create-attribute-form-footer');
+    const attrInput = document.getElementById('page-stock-list-create-form-attributes-list');
+    const backBtn = document.getElementById('page-stock-list-create-attribute-form-back-btn');
+    const nameInput = document.getElementById('page-stock-list-create-form-attribute-name');
+    const categorySelect = jQuery(document.getElementById('page-stock-list-create-form-attribute-category-id')).select2({
+        minimumResultsForSearch: 5,
+        dropdownParent: jQuery(modal)
+    });
+
+    let lineCounter = 0;
+
+    document.addEventListener('modalClosed', (e) => {
+        if(e.detail.modalId !== 'page-stock-list-create-modal') return;
+
+        // Reset form visibility
+        addProductForm.classList.remove('hidden');
+        addProductAttributesForm.classList.add('hidden');
+        addProductFooter.classList.remove('hidden');
+        addProductAttributesFooter.classList.add('hidden');
+        addProductAttributesFooter.classList.remove('flex');
+
+        // Reset all form inputs
+        document.getElementById('page-stock-list-create-form-name').value = '';
+        document.getElementById('page-stock-list-create-form-tracking').value = 'none';
+        document.getElementById('page-stock-list-create-form-measures-width').value = '';
+        document.getElementById('page-stock-list-create-form-measures-height').value = '';
+        document.getElementById('page-stock-list-create-form-measures-length').value = '';
+        document.getElementById('page-stock-list-create-form-volume').value = '';
+        document.getElementById('page-stock-list-create-form-weight').value = '';
+        document.getElementById('page-stock-list-create-form-sku').value = '';
+        document.getElementById('page-stock-list-create-form-barcode').value = '';
+        nameInput.value = '';
+
+        // Reset attributes
+        container.innerHTML = '';
+        attrInput.value = '[]';
+
+        // Reset category select
+        if (categorySelect) {
+            categorySelect.val('').trigger('change');
         }
 
-    let selectedAttributeValues = new Map();
-    let lineIndex = 0;
-
-    addBtn?.addEventListener('click', () => {
-        const line = document.createElement('div');
-        line.className = 'flex flex-col gap-2 mb-4';
-
-        // Attribute select
-        // el class de select tiene que ser:
-        // class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
-
-        const attrSelect = document.createElement('select');
-        attrSelect.className = 'form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500';
-        attrSelect.dataset.lineIndex = lineIndex;
-
-        const defaultAttrOpt = document.createElement('option');
-        defaultAttrOpt.textContent = 'Select attribute';
-        defaultAttrOpt.value = '';
-        defaultAttrOpt.disabled = true;
-        defaultAttrOpt.selected = true;
-        attrSelect.appendChild(defaultAttrOpt);
-
-        productAttributes.forEach(attr => {
-            const opt = document.createElement('option');
-            opt.value = attr.id;
-            opt.textContent = attr.name;
-            attrSelect.appendChild(opt);
+        // Reset any error messages
+        document.querySelectorAll('.form-error').forEach(el => {
+            el.classList.add('invisible');
+            el.textContent = '';
         });
+    });
 
-        // Value select
-        const valueSelect = document.createElement('select');
-        valueSelect.className = 'form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500 hidden';
-        valueSelect.dataset.lineIndex = lineIndex;
+    backBtn.addEventListener('click', () => {
+        addProductForm.classList.remove('hidden');
+        addProductAttributesForm.classList.add('hidden');
+        addProductFooter.classList.remove('hidden');
+        addProductAttributesFooter.classList.add('hidden');
+        addProductAttributesFooter.classList.remove('flex');
+        nameInput.value = '';
+        categorySelect.val('').trigger('change');
+    });
 
-        // Píldoras container
-        const pillsContainer = document.createElement('div');
-        pillsContainer.className = 'flex flex-wrap gap-2 mt-1';
+    addAttributeBtn.addEventListener('click', async () => {
+        const categoriesResult = await rpc('/account/stock/get/attributes');
+        if(categoriesResult?.status !== 'success') return;
+        categorySelect.html(categoriesResult.attributes.map(item => `<option value="${item.id}">${item.name}</option>`).join(''));
+        categorySelect.trigger('change');
+        addProductForm.classList.add('hidden');
+        addProductAttributesForm.classList.remove('hidden');
+        addProductFooter.classList.add('hidden');
+        addProductAttributesFooter.classList.remove('hidden');
+        addProductAttributesFooter.classList.add('flex');
+    });
 
-        const selectedValues = [];
+    const updateAttributeValues = async () => {
+        const attributeLines = document.querySelectorAll('#page-stock-list-create-form-attributes-container .line-item');
+        const attributes = [];
+        for(const line of attributeLines) {
+            const attributeId = jQuery(line.querySelector('.page-stock-list-create-form-attribute-select')).val();
+            const attributeValueId = jQuery(line.querySelector('.page-stock-list-create-form-attribute-value-select')).val();
 
-        attrSelect.addEventListener('change', (e) => {
-            const attrId = parseInt(e.target.value);
-            const selectedAttr = productAttributes.find(a => a.id === attrId);
-
-            // Reset value select
-            valueSelect.innerHTML = '';
-            const placeholder = document.createElement('option');
-            placeholder.textContent = 'Select value';
-            placeholder.value = '';
-            placeholder.disabled = true;
-            placeholder.selected = true;
-            valueSelect.appendChild(placeholder);
-
-            // Show valueSelect
-            if (selectedAttr && selectedAttr.values.length) {
-                selectedAttr.values.forEach(v => {
-                    const opt = document.createElement('option');
-                    opt.value = v.id;
-                    opt.textContent = v.name;
-                    valueSelect.appendChild(opt);
-                });
-                valueSelect.classList.remove('hidden');
-            } else {
-                valueSelect.classList.add('hidden');
-            }
-
-            // 🧹 Clear selected values
-            selectedValues.length = 0;
-            pillsContainer.innerHTML = '';
-        });
-
-        valueSelect.addEventListener('change', (e) => {
-            const selectedOption = e.target.selectedOptions[0];
-            const valueId = parseInt(selectedOption.value);
-            const valueName = selectedOption.textContent;
-
-            // Avoid duplicates
-            if (selectedValues.find(v => v.id === valueId)) return;
-
-            // Store selected value
-            selectedValues.push({ id: valueId, name: valueName });
-
-            // Add pill
-            const pill = document.createElement('span');
-            pill.className = 'bg-cyan-100 text-cyan-800 px-2 py-1 text-xs rounded-full flex items-center';
-            pill.innerHTML = `${valueName} <button class="ml-1 text-red-600 hover:text-red-800" title="Remove">&times;</button>`;
-
-            const removeBtn = pill.querySelector('button');
-            removeBtn.addEventListener('click', () => {
-                pill.remove();
-                selectedValues.splice(selectedValues.findIndex(v => v.id === valueId), 1);
-
-                // Re-add option back to select
-                const reOption = document.createElement('option');
-                reOption.value = valueId;
-                reOption.textContent = valueName;
-                valueSelect.appendChild(reOption);
+            if(attributeId && attributeValueId) attributes.push({
+                attribute_id: attributeId,
+                attribute_value_id: attributeValueId
             });
+        }
+        attrInput.value = JSON.stringify(attributes);
+    }
 
-            pillsContainer.appendChild(pill);
+    const deleteLine = (lineId) => {
+        const line = document.querySelector(`[data-line-id="${lineId}"]`);
+        if(line) line.remove();
+    }
 
-            // Remove selected option from select
-            selectedOption.remove();
+    addBtn.addEventListener('click', async () => {
+        const productAttributes = await rpc('/account/stock/get/attributes');
+        if(odoo?.loader?.debug) console.log(productAttributes);
+        if(productAttributes?.status !== 'success') return;
 
-            // Reset to placeholder
-            valueSelect.selectedIndex = 0;
+        const lineId = `page-stock-list-create-form-attributes-list-${lineCounter}`;
+        const line = document.createElement('div');
+        line.className = 'line-item flex items-center gap-2 mb-2';
+        line.dataset.lineId = lineId;
+        line.innerHTML = `
+            <div class="flex-grow">
+                <select class="form-select form-select-sm item-select select2-single w-full page-stock-list-create-form-attribute-select">
+                    <option value="">Select an attribute</option>
+                    ${productAttributes.attributes.map(item => `<option value="${item.id}">${item.name}</option>`).join('')}
+                </select>
+            </div>
+            <div class="flex-grow">
+                <select class="form-select form-select-sm item-select select2-single w-full page-stock-list-create-form-attribute-value-select" multiple="">
+                    <option value="">Select an attribute value</option>
+                </select>
+            </div>
+            <div>
+                <button type="button" class="delete-line-btn p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700" data-line-id="${lineId}">
+                    <i class="fas fa-trash-alt text-red-500"></i>
+                </button>
+            </div>
+        `;
+
+        // Initialize Select2 if available
+        if (window.jQuery && jQuery.fn.select2) {
+            jQuery(line).find('.select2-single').select2({
+                minimumResultsForSearch: 5,
+                dropdownParent: jQuery(modal)
+            });
+        }
+
+        const deleteBtn = line.querySelector('.delete-line-btn');
+        if(deleteBtn) deleteBtn.addEventListener('click', () => deleteLine(lineId));
+
+        const attributeSelect = jQuery(line.querySelector(`.page-stock-list-create-form-attribute-select`)).select2({
+            minimumResultsForSearch: 5,
+            dropdownParent: jQuery(modal)
+        });
+        const attributeValueSelect = jQuery(line.querySelector(`.page-stock-list-create-form-attribute-value-select`)).select2({
+            minimumResultsForSearch: 5,
+            dropdownParent: jQuery(modal)
+        });
+        if(attributeSelect) attributeSelect.on('change', async (e) => {
+            const attributeId = e.target.value;
+            const valuesResult = await rpc('/account/stock/get/attribute/values', {
+                attribute_id: attributeId
+            });
+            if(valuesResult?.status !== 'success') return;
+            attributeValueSelect.html(valuesResult.values.map(item => `<option value="${item.id}">${item.name}</option>`).join(''));
+            attributeValueSelect.trigger('change');
+            attributeValueSelect.on('change', (e) => {
+                const attributeValueId = e.target.value;
+                const attributeValue = valuesResult.values.find(item => item.id === attributeValueId);
+                if(attributeValue) {
+                    attributeValueSelect.value = attributeValue.id;
+                }
+                updateAttributeValues(lineId);
+            });
+            updateAttributeValues(lineId);
         });
 
-        line.appendChild(attrSelect);
-        line.appendChild(valueSelect);
-        line.appendChild(pillsContainer);
         container.appendChild(line);
 
-        lineIndex++;
+        lineCounter++;
     });
-    // Si lo necesitas accesible globalmente:
-    window.getSelectedAttributes = () => selectedAttributeValues;
 };
 
 

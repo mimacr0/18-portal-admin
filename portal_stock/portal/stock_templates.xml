@@ -172,7 +172,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form t-attf-id="page-#{page_name}-list-create-form">
+                            <form t-attf-id="page-#{page_name}-list-product-create-form">
                                 <div class="form-group">
                                     <div class="grid grid-cols-2 items-start">
                                         <!-- Columna 1-2: Label + Input -->
@@ -188,6 +188,7 @@
                                                 t-attf-id="page-#{page_name}-list-create-form-name"
                                                 class="form-input text-xl rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
                                                 placeholder="Name"
+                                                required="required"
                                             />
                                             <div
                                                 class="form-error invisible mt-1"
@@ -226,15 +227,14 @@
                                 <div class="form-group">
                                     <div class="flex items-center">
                                         <label t-attf-for="page-#{page_name}-list-create-form-measures" class="form-label-sm font-sm">Measures (mm)</label>
-                                        <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
                                         <div class="flex items-center">
-                                            <input type="number" name="width" t-attf-id="page-#{page_name}-list-create-form-measures-width" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Width"/>
+                                            <input type="number" name="width" t-attf-id="page-#{page_name}-list-create-form-measures-width" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Width" min="0"/>
                                             <span class="mx-1">x</span>
-                                            <input type="number" name="height" t-attf-id="page-#{page_name}-list-create-form-measures-height" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Height"/>
+                                            <input type="number" name="height" t-attf-id="page-#{page_name}-list-create-form-measures-height" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Height" min="0"/>
                                             <span class="mx-1">x</span>
-                                            <input type="number" name="length" t-attf-id="page-#{page_name}-list-create-form-measures-length" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Length"/>
+                                            <input type="number" name="length" t-attf-id="page-#{page_name}-list-create-form-measures-length" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Length" min="0"/>
                                             <span class="mx-1 text-sm">cm</span>
                                         </div>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-measures-error"></div>
@@ -249,7 +249,6 @@
                                             <label t-attf-for="page-#{page_name}-list-create-form-volume" class="form-label-sm font-sm">
                                             Volume (cm³)
                                             </label>
-                                            <span class="text-red-500 ml-1">*</span>
                                         </div>
                                         <input
                                             type="text"
@@ -258,6 +257,7 @@
                                             t-attf-id="page-#{page_name}-list-create-form-volume"
                                             class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
                                             placeholder="Volume"
+                                            min="0"
                                         />
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-volume-error"></div>
                                         </div>
@@ -277,6 +277,8 @@
                                             t-attf-id="page-#{page_name}-list-create-form-weight"
                                             class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
                                             placeholder="Weight"
+                                            required="required"
+                                            min="0"
                                         />
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-weight-error"></div>
                                         </div>
@@ -286,7 +288,6 @@
                                 <div class="form-group">
                                     <div class="flex items-center">
                                         <label t-attf-for="page-#{page_name}-list-create-form-sku" class="form-label-sm font-sm">SKU</label>
-                                        <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
                                         <input type="text" name="sku" t-attf-id="page-#{page_name}-list-create-form-sku" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="SKU"/>
@@ -296,7 +297,6 @@
                                 <div class="form-group">
                                     <div class="flex items-center">
                                         <label t-attf-for="page-#{page_name}-list-create-form-barcode" class="form-label-sm font-sm">Barcode</label>
-                                        <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
                                         <input type="text" name="barcode" t-attf-id="page-#{page_name}-list-create-form-barcode" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Barcode"/>
@@ -304,8 +304,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <input name="attributes" type="hidden" id="product-attributes-json" t-att-value="attributes"/>
-                                    <input name="attributes_list" type="hidden" id="product-attributes-list"/>
+                                    <input name="attributes" type="hidden" t-attf-id="page-#{page_name}-list-create-form-attributes-list" required="required"/>
 
                                     <div class="mb-4">
                                         <p class="form-label-sm font-sm">Attributes</p>
@@ -317,39 +316,60 @@
                                         </div>
 
                                         <div class="mt-3 flex items-center gap-2">
+                                            <button t-attf-id="page-#{page_name}-list-create-form-attributes-add-line-btn" type="button"
+                                                    class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
+                                                <i class="fas fa-plus mr-1.5"></i> Add Line
+                                            </button>
                                             <button t-attf-id="page-#{page_name}-list-create-form-attributes-add-attribute-btn" type="button"
                                                     class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
                                                 <i class="fas fa-plus mr-1.5"></i> Add Attribute
                                             </button>
                                         </div>
-                                        
+
+                                    </div>
+
+                                    <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-attributes-list-error"></div>
+                                </div>
+                            </form>
+                            <form t-attf-id="page-#{page_name}-list-attribute-create-form" class="hidden">
+                                <div class="form-group">
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-attribute-name" class="form-label-sm font-sm">Name</label>
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </div>
+                                    <div>
+                                        <input type="text" name="name" t-attf-id="page-#{page_name}-list-create-form-attribute-name" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Name"/>
+                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-attribute-name-error"></div>
                                     </div>
                                 </div>
-                                <!-- <div class="form-group">
-                                    <div class="mb-4">
-                                        <p class="form-label-sm font-sm">Attributes</p>
+                                <div class="form-group">
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-attribute-category-id" class="form-label-sm font-sm">Category</label>
+                                        <span class="text-red-500 ml-1">*</span>
                                     </div>
-
-                                    <div t-attf-id="page-#{page_name}-list-create-form-attributes-container">
-                                        <div t-attf-id="page-#{page_name}-list-create-form-attributes-line-items-container" class="products-line-items-container"></div>
-
-                                        <div class="mt-3 flex items-center gap-2">
-                                            <button t-attf-id="page-#{page_name}-list-create-form-attributes-add-line-btn" type="button" class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
-                                                <i class="fas fa-plus mr-1.5"></i> Add Line
-                                            </button>
-                                            <button t-attf-id="page-#{page_name}-list-create-form-attributes-add-attribute-btn" type="button" class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
-                                                <i class="fas fa-plus mr-1.5"></i> Add Attribute
-                                            </button>
-                                        </div>
+                                    <div>
+                                        <select name="category_id" t-attf-id="page-#{page_name}-list-create-form-attribute-category-id"
+                                                class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500">
+                                            <option value="">Select a category</option>
+                                        </select>
+                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-category_id-error"></div>
                                     </div>
-                                </div> -->
+                                </div>
                             </form>
                         </div>
-                        <div class="modal-footer">
+                        <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700" t-attf-id="page-#{page_name}-list-create-product-form-footer">
                             <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
                                 <i class="fas fa-times"></i> Cancel
                             </button>
                             <button t-attf-id="page-#{page_name}-list-create-product-form-submit" class="modal-btn modal-btn-primary">
+                                <i class="fas fa-save"></i> Save
+                            </button>
+                        </div>
+                        <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 justify-end rounded-b-lg hidden border-t border-gray-200 dark:border-gray-700" t-attf-id="page-#{page_name}-list-create-attribute-form-footer">
+                            <button class="modal-btn modal-btn-secondary mr-2" t-attf-id="page-#{page_name}-list-create-attribute-form-back-btn">
+                                <i class="fas fa-times"></i> Go Back
+                            </button>
+                            <button t-attf-id="page-#{page_name}-list-create-attribute-form-submit" class="modal-btn modal-btn-primary">
                                 <i class="fas fa-save"></i> Save
                             </button>
                         </div>
@@ -414,7 +434,11 @@
                         </div>
                         <div class="ml-4">
                             <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="product.name"/>
-                            <div class="text-sm text-gray-500">ID: #<t t-esc="product.id"/></div>
+                            <t t-foreach="product.product_template_attribute_value_ids" t-as="attribute_value">
+                                <span class="px-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    <t t-esc="attribute_value.attribute_line_id.attribute_id.name"/>: <t t-esc="attribute_value.name"/>
+                                </span>
+                            </t>
                         </div>
                     </div>
                 </td>

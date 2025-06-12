@@ -49,7 +49,7 @@ class PortalStockController(PortalAdminController):
         for attr in attributes:
             values = [{'id': v.id, 'name': v.name} for v in attr.value_ids]
             attributes_data.append({'id': attr.id, 'name': attr.name, 'values': values})
-        
+
         values = self._get_admin_layout_values()
 
         # Configuración de la interfaz
@@ -59,6 +59,7 @@ class PortalStockController(PortalAdminController):
             'attributes': attributes_data,
             'page_title': _('Stock'),
             'page_url': '/account/stock',
+            'select2': True,
             'list_filters': [
                 {
                     'id': 'all',
@@ -245,33 +246,55 @@ class PortalStockController(PortalAdminController):
 
         return stream.get_response(**send_file_kwargs)
 
-    @http.route('/account/stock/create/product', type='json', auth='user')
-    def account_stock_create_modal_action(self, **post):
-        try:
-            name = post.get('name')
-            width = int(post['width'])
-            height = int(post['height'])
-            length = int(post['length'])
-            volume = float(post['volume'])
-            weight = float(post['weight'])
-            barcode = post['barcode']
-            sku = post['sku']
-            # list_price = float(post['list_price']) or 0.0
-            # standard_price = float(post['standard_price']) or 0.0
-            tracking = post.get('tracking')
-        except (ValueError, KeyError, json.JSONDecodeError) as e:
-            return {'status': 'error', 'message': f'Data parsing error: {e}'}
-        ProductTemplate = request.env['product.template']
-        account_partner = request.env['account.partner'].search([('partner_id', '=', 119)], limit=1)
+    @http.route('/account/stock/get/attributes', type='json', auth='user')
+    def account_stock_get_attributes(self, **kw):
+        """Return all product attributes for the product creation form"""
+        attributes = request.env['product.attribute'].sudo().search([])
+        return {
+            'status': 'success',
+            'attributes': [{'id': attr.id, 'name': attr.name} for attr in attributes]
+        }
 
+    @http.route('/account/stock/get/attribute/values', type='json', auth='user')
+    def account_stock_get_attribute_values(self, attribute_id, **kw):
+        """Return values for a specific attribute"""
+        try:
+            attribute_id = int(attribute_id)
+            attribute = request.env['product.attribute'].sudo().browse(attribute_id)
+            values = attribute.value_ids
+            return {
+                'status': 'success',
+                'values': [{'id': value.id, 'name': value.name} for value in values]
+            }
+        except (ValueError, Exception) as e:
+            return {'status': 'error', 'message': str(e)}
+
+    @http.route('/account/stock/create/product', type='json', auth='user')
+    def account_stock_create_product(self, **post):
+        # Extract basic product data
+        name = post.get('name')
+        width = float(post.get('width', 0) or 0)
+        height = float(post.get('height', 0) or 0)
+        length = float(post.get('length', 0) or 0)
+        volume = float(post.get('volume', 0) or 0)
+        weight = float(post.get('weight', 0) or 0)
+        barcode = post.get('barcode')
+        sku = post.get('sku')
+        tracking = post.get('tracking', 'none')
+
+        # Get current user's account partner
+        partner = request.env.user.partner_id
+        account_partner = request.env['account.partner'].sudo().search([('partner_id', '=', partner.id)], limit=1)
+
+        # Create product template
+        ProductTemplate = request.env['product.template'].sudo()
         values = {
-            'account_partner_id': account_partner.id,
+            'account_partner_id': account_partner.id if account_partner else False,
             'name': name,
             'sale_ok': False,
             'purchase_ok': False,
             'type': 'consu',
             'list_price': 0.0,
-            'taxes_id': False,
             'standard_price': 0.0,
             'volume': volume,
             'weight': weight,
@@ -279,21 +302,34 @@ class PortalStockController(PortalAdminController):
             'default_code': sku,
             'is_storable': True,
             'tracking': tracking,
-            # 'storage_type': self.storage_type,
-            # 'categ_id': self.categ_id.id,
-            # 'product_tag_ids': self.product_tag_ids,
         }
 
         template = ProductTemplate.create(values)
 
+        # Handle attributes if provided
+        if post.get('attributes'):
+            attributes_data = json.loads(post.get('attributes') or '[]')
 
-        return self.account_stock_action()
-        # values = self._get_admin_layout_values()
-        # values.update({
-            # 'page_name': 'products',
-            # 'page_title': _('Create Product'),
-            # 'page_url': '/account/account/products/modal/create',
-            # 'form_action': '/account/account/products/modal/create/submit'
-        # })
+            # Create attribute lines
+            for attr_data in attributes_data:
+                attribute_id = attr_data.get('attribute_id')
+                value_ids = attr_data.get('attribute_value_id')
 
-        # return request.render("portal_account_products.portal_products_create_modal", values)
+                if attribute_id and value_ids:
+                    # Convert single value to list if needed
+                    if not isinstance(value_ids, list):
+                        value_ids = [value_ids]
+
+                    # Create attribute line
+                    template.write({
+                        'attribute_line_ids': [(0, 0, {
+                            'attribute_id': int(attribute_id),
+                            'value_ids': [(6, 0, [int(v) for v in value_ids if v])]
+                        })]
+                    })
+
+        return {
+            'status': 'success',
+            'message': _('Product created successfully'),
+            'product_id': template.id
+        }
