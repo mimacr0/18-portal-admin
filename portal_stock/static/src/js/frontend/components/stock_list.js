@@ -48,6 +48,10 @@ export const reloadStockListPage = async () => {
     const matchTypeSelect = document.getElementById('page-products-list-advanced-search-match-type');
     const matchType = matchTypeSelect ? matchTypeSelect.value : 'all';
 
+    // Obtener el valor del input de filtros rápidos
+    const quickFiltersInput = document.getElementById('page-stock-list-quick-filter-active');
+    const quickFilter = quickFiltersInput ? quickFiltersInput.value : '';
+
     // Realizar petición RPC al servidor con todos los parámetros recopilados
     const res = await rpc('/account/stock/list/reload', {
         page: currentPage,
@@ -55,7 +59,8 @@ export const reloadStockListPage = async () => {
         domain: domain,
         match_type: matchType,
         sort: sortConfig.column,
-        order: sortConfig.direction
+        order: sortConfig.direction,
+        quick_filter: quickFilter
     });
 
     // Verificar si la respuesta es exitosa
