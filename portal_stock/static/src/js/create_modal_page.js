@@ -244,8 +244,51 @@ const initComputeTotalVolume = () => {
 }
 
 
+const initManageProductImage = () => {
+    const imageInput = document.getElementById('page-stock-list-create-form-image');
+    if (!imageInput) return;
+
+    const imagePreview = document.getElementById('page-stock-list-create-form-image-preview');
+    if (!imagePreview) return
+
+    const base64Field = document.getElementById('page-stock-list-create-form-image-base64');
+    if (!base64Field) return
+    
+    const deleteButton = document.getElementById('page-stock-list-create-form-image-delete');
+
+    imageInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const base64Data = event.target.result.split(',')[1]; // remove the "data:image/...;base64," part
+                imagePreview.src = event.target.result;
+                base64Field.value = base64Data;
+                deleteButton.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.src = '/portal_stock/static/img/placeholder.png';
+            base64Field.value = '';
+        }
+    });
+
+    if (deleteButton) {
+        deleteButton.addEventListener('click', () => {
+            imagePreview.src = '/portal_stock/static/img/placeholder.png';
+            imageInput.value = ''; // Reset file input
+            document.getElementById('image-base64-field').value = ''; // Limpiar base64
+        });
+    }
+
+    // Si ya hay una imagen previa cargada, se podría mostrar aquí (opcional)
+};
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
     initProductListCreatetModal();
     initComputeTotalVolume();
     initAddAttributesToProduct();
-});
+    initManageProductImage();
+}); 
