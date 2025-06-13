@@ -14,7 +14,8 @@
     'depends': ['portal_account'],
     'data': [
         'security/ir.model.access.csv',
-        'portal/stock_templates.xml'
+        'portal/stock_templates.xml',
+        'portal/portal_file_upload_modal.xml',
     ],
     'assets': {
         'portal_admin_theme.admin_assets_frontend': [
