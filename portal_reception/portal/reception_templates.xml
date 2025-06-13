@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_reception_page" name="Portal Reception Page">
+        <t t-call="portal_admin_theme.portal_admin_layout">
+
+            <div class="w-full">
+
+                <div class="card-title-container mb-4 flex items-center">
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Receptions</h1>
+                </div>
+
+                <!-- Barra de herramientas de acciones masivas: oculta por defecto, visible cuando se seleccionan elementos. -->
+                <div id="bulk-actions-toolbar" class="bg-white rounded-lg shadow mb-4 p-3 hidden dark:bg-gray-800">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center">
+                            <span id="selected-count" class="text-sm font-medium text-gray-700 dark:text-gray-300 mr-3">0 selected</span>
+                            <div class="h-4 border-l border-gray-300 dark:border-gray-700 mr-3"></div>
+                            <div class="flex flex-wrap gap-2">
+                                <button t-foreach="batch_actions" t-as="batch_action" t-attf-id="page-list-#{page_name}-batch-action-#{batch_action.get('name')}" class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors flex items-center">
+                                    <i t-attf-class="#{batch_action.get('icon')} mr-1.5"></i> <t t-out="batch_action.get('label')"/>
+                                </button>
+                            </div>
+                        </div>
+                        <button id="clear-selection" class="text-sm text-gray-600 hover:text-gray-800">
+                            <i class="fas fa-times mr-1"></i> Clear selection
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Acciones rápidas de filtrado -->
+                <t t-if="list_filters">
+                    <div class="border-b border-gray-200 dark:border-gray-700 mb-2">
+                        <div class="flex overflow-x-auto scrollbar-hide">
+                            <input type="hidden" t-attf-id="page-#{page_name}-list-filter-active" value="[]"/>
+                            <t t-foreach="list_filters" t-as="list_filter">
+                                <button t-if="list_filter.get('active')" type="button" t-attf-id="page-#{page_name}-list-filter-#{list_filter.get('id')}" class="tab-button active px-6 py-3 text-sm font-medium border-b-2 border-cyan-500 text-cyan-600 focus:outline-none transition-colors duration-200 ease-in-out dark:text-white relative">
+                                    <i t-attf-class="#{list_filter.get('icon')} mr-2"></i>
+                                    <t t-out="list_filter.get('label')"/>
+                                </button>
+                                <button t-else="" type="button" t-attf-id="page-#{page_name}-list-filter-#{list_filter.get('id')}" class="tab-button px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none transition-colors duration-200 ease-in-out dark:text-white dark:hover:text-gray-300 relative">
+                                    <i t-attf-class="#{list_filter.get('icon')} mr-2"></i>
+                                    <t t-out="list_filter.get('label')"/>
+                                </button>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Tabla de usuarios -->
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-20 dark:bg-gray-800">
+                    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-col lg:flex-row justify-between gap-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <div class="flex items-center">
+                                    <button t-attf-id="launch-create-#{page_name}-form-button" class="px-3 py-1.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors flex items-center">
+                                        <i class="fas fa-plus mr-1.5"></i> <span class="hidden sm:inline">Create</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between gap-2">
+                                <!-- Buscar entrada -->
+                                <div class="relative flex-grow max-w-xs">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-search text-gray-400 dark:text-gray-500"></i>
+                                    </div>
+                                    <input type="text" id="page-stock-products-list-search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-cyan-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Search ..."/>
+                                </div>
+
+                                <!-- Botón de búsqueda avanzada -->
+                                <button t-if="advanced_search" t-attf-id="page-#{page_name}-list-advanced-search-toggle" data-tooltip-target="tooltip-advanced-search" class="p-2 border border-gray-300 rounded-md hover:bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
+
+                                <!-- Botones de acción-->
+                                <div class="flex items-center">
+                                    <button t-foreach="tools_actions" t-as="tools_action" t-attf-data-tooltip-target="page-list-#{page_name}-tools-action-#{tools_action.get('name')}" t-attf-id="page-list-#{page_name}-tools-action-#{tools_action.get('name')}" class="p-2 rounded-md hover:bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
+                                        <i t-att-class="tools_action.get('icon')"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Panel de búsqueda avanzada - oculto por defecto -->
+                        <div t-attf-id="page-#{page_name}-list-advanced-search-panel" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 hidden">
+                            <input type="hidden" t-attf-id="page-#{page_name}-list-advanced-search-domain" value="[]"/>
+                            <input type="hidden" t-attf-id="page-#{page_name}-list-advanced-search-fields" t-att-value="advanced_search"/>
+                            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Advanced Search</h3>
+
+                            <!-- Filtro dinámico avanzado -->
+                            <div class="w-full">
+
+                                <!-- Match Type Selector -->
+                                <div class="mb-4">
+                                    <p class="text-sm text-gray-700 dark:text-gray-300">
+                                        <select t-attf-id="page-#{page_name}-list-advanced-search-match-type" class="inline-block mx-1 px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                                            <option value="all" selected="selected">All</option>
+                                            <option value="any">Any</option>
+                                        </select>
+                                        of the following conditions:
+                                    </p>
+                                </div>
+
+                                <!-- Contenedor de líneas de filtrado -->
+                                <div t-attf-id="page-#{page_name}-list-advanced-search-lines-container" class="space-y-3"></div>
+
+                                <!-- Botón de añadir línea de filtro -->
+                                <div class="mt-3">
+                                    <button t-attf-id="page-#{page_name}-list-advanced-search-add-line-btn" class="flex items-center text-cyan-600 hover:text-cyan-700 text-sm font-medium">
+                                        <i class="fas fa-plus-circle mr-1.5"></i> Add filter condition
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Botones de acción para la búsqueda avanzada -->
+                            <div class="mt-4 flex justify-end space-x-3">
+                                <button t-attf-id="page-#{page_name}-list-advanced-search-reset-btn" class="px-3 py-1 text-sm border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700">
+                                    Reset
+                                </button>
+                                <button t-attf-id="page-#{page_name}-list-advanced-search-apply-btn" class="px-3 py-1 text-sm bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-700 dark:bg-cyan-600 dark:text-white dark:hover:bg-cyan-700 dark:hover:text-white">
+                                    Apply Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Estructura de tabla para la lista de recepciones -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-800">
+                                <tr>
+                                    <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox" type="checkbox" class="h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-cyan-600 dark:checked:border-cyan-600"/>
+                                        </div>
+                                    </th>
+                                    <t t-foreach="list_columns" t-as="list_column">
+                                        <th t-if="list_column.get('sortable')" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider #{list_column.get('md') and 'hidden md:table-cell' or ''} #{list_column.get('lg') and 'hidden lg:table-cell' or ''}">
+                                            <div class="flex items-center">
+                                                <span t-out="list_column.get('label')"/>
+                                                <i t-attf-id="list-column-#{page_name}-#{list_column.get('id')}-sort-icon" t-if="list_column.get('sortable')" class="fas fa-sort ml-1 text-gray-400"></i>
+                                            </div>
+                                        </th>
+                                        <th t-else="" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            <span t-out="list_column.get('label')"/>
+                                        </th>
+                                    </t>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="reception-page-list-items">
+                                <t t-call="portal_reception.portal_reception_list"/>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="fixed bottom-0 right-0 z-10 mr-6 mb-6">
+                <input type="hidden" id="stock-list-pagination-page" value="1"/>
+                <div class="pagination-container px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg flex items-center justify-between" id="reception-list-pagination-container"></div>
+            </div>
+
+            <div class="h-25"></div>
+
+            <t t-set="footer_content">
+
+                <!-- Stock Create Modal -->
+                <div t-attf-id="page-#{page_name}-list-create-modal" class="modal" data-outside-close="false">
+                    <div class="modal-content max-w-2xl w-full mx-auto">
+                        <div class="modal-header">
+                            <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">Product Create</h3>
+                            <button data-modal-close="true" class="close-modal" aria-label="Close modal">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form t-attf-id="page-#{page_name}-list-create-form">
+                                <div class="form-group">
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-name" class="form-label-sm font-sm">Name</label>
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </div>
+                                    <div>
+                                        <input type="text" name="name" t-attf-id="page-#{page_name}-list-create-form-name" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Name"/>
+                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-name-error"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-tracking" class="form-label-sm font-sm">Tracking</label>
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </div>
+                                    <div>
+                                        <select name="tracking" t-attf-id="page-#{page_name}-list-create-form-tracking"
+                                                class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
+                                                >
+                                            <option value="none">None</option>
+                                            <option value="serial">Serial</option>
+                                        </select>
+                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-tracking-error"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-measures" class="form-label-sm font-sm">Measures (mm)</label>
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center">
+                                            <input type="number" name="width" t-attf-id="page-#{page_name}-list-create-form-measures-width" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Width"/>
+                                            <span class="mx-1">x</span>
+                                            <input type="number" name="height" t-attf-id="page-#{page_name}-list-create-form-measures-height" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Height"/>
+                                            <span class="mx-1">x</span>
+                                            <input type="number" name="length" t-attf-id="page-#{page_name}-list-create-form-measures-length" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Length"/>
+                                            <span class="mx-1 text-sm">cm</span>
+                                        </div>
+                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-measures-error"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="flex flex-col sm:flex-row gap-4">
+                                        <!-- Volume -->
+                                        <div class="flex-1">
+                                            <div class="flex items-center">
+                                                <label t-attf-for="page-#{page_name}-list-create-form-volume" class="form-label-sm font-sm">
+                                                    Volume (cm³)
+                                                </label>
+                                                <span class="text-red-500 ml-1">*</span>
+                                            </div>
+                                            <input type="text" name="volume" readonly="readonly"
+                                                t-attf-id="page-#{page_name}-list-create-form-volume"
+                                                class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
+                                                placeholder="Volume"/>
+                                            <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-volume-error"></div>
+                                        </div>
+
+                                        <!-- Weight -->
+                                        <div class="flex-1">
+                                            <div class="flex items-center">
+                                                <label t-attf-for="page-#{page_name}-list-create-form-weight" class="form-label-sm font-sm">
+                                                    Weight (kg)
+                                                </label>
+                                                <span class="text-red-500 ml-1">*</span>
+                                            </div>
+                                            <input type="number" step="0.01" name="weight"
+                                                t-attf-id="page-#{page_name}-list-create-form-weight"
+                                                class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
+                                                placeholder="Weight"/>
+                                            <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-weight-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-sku" class="form-label-sm font-sm">SKU</label>
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </div>
+                                    <div>
+                                        <input type="text" name="sku" t-attf-id="page-#{page_name}-list-create-form-sku" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="SKU"/>
+                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-sku-error"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-barcode" class="form-label-sm font-sm">Barcode</label>
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </div>
+                                    <div>
+                                        <input type="text" name="barcode" t-attf-id="page-#{page_name}-list-create-form-barcode" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Barcode"/>
+                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-barcode-error"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input name="attributes" type="hidden" id="product-attributes-json" t-att-value="attributes"/>
+                                    <input name="attributes_list" type="hidden" id="product-attributes-list"/>
+
+                                    <div class="mb-4">
+                                        <p class="form-label-sm font-sm">Attributes</p>
+                                    </div>
+
+                                    <div t-attf-id="page-#{page_name}-list-create-form-attributes-container">
+                                        <div t-attf-id="page-#{page_name}-list-create-form-attributes-line-items-container"
+                                            class="products-line-items-container">
+                                        </div>
+
+                                        <div class="mt-3 flex items-center gap-2">
+                                            <button t-attf-id="page-#{page_name}-list-create-form-attributes-add-attribute-btn" type="button"
+                                                    class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
+                                                <i class="fas fa-plus mr-1.5"></i> Add Attribute
+                                            </button>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                <!-- <div class="form-group">
+                                    <div class="mb-4">
+                                        <p class="form-label-sm font-sm">Attributes</p>
+                                    </div>
+
+                                    <div t-attf-id="page-#{page_name}-list-create-form-attributes-container">
+                                        <div t-attf-id="page-#{page_name}-list-create-form-attributes-line-items-container" class="products-line-items-container"></div>
+
+                                        <div class="mt-3 flex items-center gap-2">
+                                            <button t-attf-id="page-#{page_name}-list-create-form-attributes-add-line-btn" type="button" class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
+                                                <i class="fas fa-plus mr-1.5"></i> Add Line
+                                            </button>
+                                            <button t-attf-id="page-#{page_name}-list-create-form-attributes-add-attribute-btn" type="button" class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
+                                                <i class="fas fa-plus mr-1.5"></i> Add Attribute
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                            <button t-attf-id="page-#{page_name}-list-create-product-form-submit" class="modal-btn modal-btn-primary">
+                                <i class="fas fa-save"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal de carga de archivos -->
+                <div id="file-upload-modal" class="modal" data-outside-close="false">
+                    <div class="modal-content max-w-lg w-full mx-auto">
+                        <div class="modal-header">
+                            <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">File Upload</h3>
+                            <button data-modal-close="true" class="close-modal" aria-label="Close modal">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-flex">
+                                <div class="form-group-flex">
+                                    <label for="fileInput" class="form-label form-label-sm">Upload File</label>
+                                    <div class="form-field-container">
+                                        <div class="file-drop-area rounded-md border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 text-center cursor-pointer">
+                                            <input type="file" id="fileInput" name="fileInput" class="hidden focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" required="required" multiple="multiple"/>
+                                            <div class="file-input-content">
+                                                <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 dark:text-gray-500"></i>
+                                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop a file here, or <span class="text-cyan-600 dark:text-cyan-400 browse-link">browse</span></p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Maximum file size: 5MB</p>
+                                            </div>
+                                        </div>
+                                        <div class="file-preview mt-3 flex flex-col items-center"></div>
+                                        <div class="form-error" id="fileInputError">Please select a file to upload.</div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                            <button class="modal-btn modal-btn-primary">
+                                <i class="fas fa-save"></i> Upload
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </t>
+
+        </t>
+    </template>
+
+    <template id="portal_reception_list" name="Portal Receptions List">
+        <t t-foreach="packages" t-as="package">
+            <!-- Fila de pantallas grandes -->
+            <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 hidden lg:table-row">
+                <td class="px-3 py-4 whitespace-nowrap">
+                    <input type="checkbox" class="packages-list-checkbox h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500" t-att-data-package-id="package.id"/>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                        <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="package.name"/>
+                            <div class="text-sm text-gray-500">ID: #<t t-esc="package.id"/></div>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="package.package_type_id.name"/>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="package.shipping_weight"/>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="package.pack_date"/>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button t-attf-data-tooltip-target="tooltip-edit-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button t-attf-data-tooltip-target="tooltip-delete-#{package.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+
+            <!-- Fila de pantallas medianas -->
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 hidden md:table-row lg:hidden">
+                <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
+                    <input type="checkbox" class="package-checkbox h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500" t-att-data-package-id="package.id"/>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="package.name"/>
+                    <div class="text-sm text-gray-500" t-esc="package.package_type_id.display_name"/>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="package.shipping_weight"/>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="package.pack_date"/>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button t-attf-data-tooltip-target="tooltip-edit-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button t-attf-data-tooltip-target="tooltip-delete-#{package.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+
+            <!-- Fila de pantallas pequeñas -->
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 table-row md:hidden">
+                <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
+                    <input type="checkbox" class="package-checkbox h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500" t-att-data-package-id="package.id"/>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="package.name"/>
+                    <div class="text-sm text-gray-500" t-esc="package.package_type_id.display_name"/>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button t-attf-data-tooltip-target="tooltip-edit-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button t-attf-data-tooltip-target="tooltip-delete-#{package.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        </t>
+    </template>
+
+    <template id="portal_reception_pager" name="Portal Reception Pager">
+        <!-- No hay resultados -->
+        <div class="sm:hidden" t-if="items_count == 0">
+            <p class="text-xs text-gray-700 dark:text-gray-300 mb-2">
+                <span class="font-medium">No results found</span>
+            </p>
+        </div>
+
+
+        <!-- Controles de paginación móviles -->
+        <div class="sm:hidden" t-if="items_count > 0">
+            <p class="text-xs text-gray-700 dark:text-gray-300 mb-2">
+                <span class="font-medium">Showing 1-<span t-out="items_count"/></span> of <span class="font-medium" t-out="items_total"/> <span t-out="items_label"/>
+            </p>
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <button type="button" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="sr-only">Previous</span>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <t t-foreach="pages" t-as="page">
+                    <button type="button" t-if="page.get('active')" class="z-10 bg-cyan-50 dark:bg-gray-800 border-cyan-500 dark:border-cyan-500 text-cyan-600 dark:text-cyan-600 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
+                        <span t-out="page.get('page')"/>
+                    </button>
+                    <button type="button" t-else="" class="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
+                        <span t-out="page.get('page')"/>
+                    </button>
+                </t>
+                <button type="button" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="sr-only">Next</span>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Paginación de escritorio -->
+        <div class="hidden sm:flex sm:items-center" t-if="items_count > 0">
+            <p class="text-sm text-gray-700 dark:text-gray-300 mr-4">
+                <span class="font-medium">Showing</span> <span class="font-medium">1-<span t-out="items_count"/></span> <span>of</span> <span class="font-medium" t-out="items_total"/> <span t-out="items_label"/> <span class="text-gray-500 ml-1"></span>
+            </p>
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <button type="button" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700" id="stock-list-pagination-previous">
+                    <span class="sr-only">Previous</span>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <t t-foreach="pages" t-as="page">
+                    <button t-if="page.get('active')" aria-current="page" t-att-data-page="page.get('page')" class="reception-list-pagination-button z-10 bg-cyan-50 dark:bg-gray-800 border-cyan-500 dark:border-cyan-500 text-cyan-600 dark:text-cyan-600 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
+                        <span t-out="page.get('page')"/>
+                    </button>
+                    <button t-else="" t-att-data-page="page.get('page')" class="reception-list-pagination-button bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
+                        <span t-out="page.get('page')"/>
+                    </button>
+                </t>
+                <button type="button" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700" id="stock-list-pagination-next">
+                    <span class="sr-only">Next</span>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </nav>
+        </div>
+    </template>
+
+</odoo>
+
