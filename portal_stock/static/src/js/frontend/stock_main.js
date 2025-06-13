@@ -4,6 +4,7 @@ import { initFileUploadModal } from "./components/stock_file_upload.js";
 import { portalAccountProductsInitCheckboxSelect } from "./components/stock_selection.js";
 import { initTableSorting } from "./components/stock_sorting.js";
 import { initStickyTableHeader } from "./components/stock_header.js";
+import { initStockQuickSortFilters } from "./components/stock_quick_filter.js";
 
 // Inicialización al cargar el documento
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,4 +17,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initAdvancedSearch();
     initTableSorting();
     initStickyTableHeader();
+    initStockQuickSortFilters();
 });
