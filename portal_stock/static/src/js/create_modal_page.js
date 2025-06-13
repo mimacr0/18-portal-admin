@@ -18,35 +18,52 @@ const ProductListCreate = async () => {
     // Collect all form data
     const { formData, fileData } = sysCollectFormData('#page-stock-list-product-create-form');
     let hasFiles = Object.keys(fileData).length > 0;
-    console.log('Form Data:', formData);
-    if (window.itemsMap) {
-        // Convertir Map a objeto
-        const itemsObject = {};
-        window.itemsMap.forEach((value, key) => {
-            itemsObject[key] = value;
-        });
-        // Agregar al formData como JSON string (puedes usar otro nombre)
-        formData['items_data'] = JSON.stringify(itemsObject);
+
+    // Process attributes
+    const attributes = [];
+    const attributeLines = document.querySelectorAll('#page-stock-list-create-form-attributes-line-items-container .line-item');
+    for(const line of attributeLines) {
+        const attributeId = jQuery(line.querySelector('.page-stock-list-create-form-attribute-select')).val();
+        const attributeValueId = jQuery(line.querySelector('.page-stock-list-create-form-attribute-value-select')).val();
+
+        if(attributeId && attributeValueId) {
+            attributes.push({
+                attribute_id: attributeId,
+                attribute_value_id: attributeValueId
+            });
+        }
     }
 
-    const response = await rpc('/account/stock/create/product', formData)
+    // Add attributes to form data
+    formData.attributes = JSON.stringify(attributes);
 
-    console.log(response)
-    hideLoadingScreen()
-    Modal.close('page-stock-list-create-modal')
+    // Call API to create product
+    const response = await rpc('/account/stock/create/product', formData);
+
+    console.log(response);
+    hideLoadingScreen();
+    Modal.close('page-stock-list-create-modal');
 
     systemShowNotification(response.message, {
         type: response.status === 'success' ? 'success' : 'error',
         duration: 5000
-    })
+    });
+
+    // If success, reload the list
+    if(response.status === 'success') {
+        const listReloadEvent = new CustomEvent('list:reload');
+        document.dispatchEvent(listReloadEvent);
+    }
 
     document.querySelectorAll('.list-product-checkbox').forEach(checkbox => {
         checkbox.checked = false;
     });
     document.querySelector('#bulk-actions-toolbar').classList.add('hidden');
-    const selectAllCheckbox = document.querySelector('page-stock-list-select-all-checkbox');
-    selectAllCheckbox.checked = false;
-    selectAllCheckbox.indeterminate = false;
+    const selectAllCheckbox = document.querySelector('#page-stock-list-select-all-checkbox');
+    if(selectAllCheckbox) {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = false;
+    }
 }
 
 const initProductListCreatetModal = () => {
@@ -147,7 +164,7 @@ const initAddAttributesToProduct = () => {
                 attribute_value_id: attributeValueId
             });
         }
-        attrInput.value = JSON.stringify(attributes);
+        document.getElementById('page-stock-list-create-form-attributes-list').value = JSON.stringify(attributes);
     }
 
     const deleteLine = (lineId) => {
@@ -253,7 +270,7 @@ const initManageProductImage = () => {
 
     const base64Field = document.getElementById('page-stock-list-create-form-image-base64');
     if (!base64Field) return
-    
+
     const deleteButton = document.getElementById('page-stock-list-create-form-image-delete');
 
     imageInput.addEventListener('change', (e) => {
@@ -291,4 +308,4 @@ document.addEventListener('DOMContentLoaded', () => {
     initComputeTotalVolume();
     initAddAttributesToProduct();
     initManageProductImage();
-}); 
+});
