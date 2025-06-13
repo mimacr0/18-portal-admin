@@ -49,7 +49,7 @@ class PortalStockController(PortalAdminController):
         for attr in attributes:
             values = [{'id': v.id, 'name': v.name} for v in attr.value_ids]
             attributes_data.append({'id': attr.id, 'name': attr.name, 'values': values})
-        
+
         values = self._get_admin_layout_values()
 
         # Configuración de la interfaz
@@ -59,6 +59,7 @@ class PortalStockController(PortalAdminController):
             'attributes': attributes_data,
             'page_title': _('Stock'),
             'page_url': '/account/stock',
+            'select2': True,
             'list_filters': [
                 {
                     'id': 'all',
@@ -266,13 +267,12 @@ class PortalStockController(PortalAdminController):
         account_partner = request.env['account.partner'].search([('partner_id', '=', 119)], limit=1)
         print(f"Image Base64: {image_base64}")
         values = {
-            'account_partner_id': account_partner.id,
+            'account_partner_id': account_partner.id if account_partner else False,
             'name': name,
             'sale_ok': False,
             'purchase_ok': False,
             'type': 'consu',
             'list_price': 0.0,
-            'taxes_id': False,
             'standard_price': 0.0,
             'volume': volume,
             'weight': weight,

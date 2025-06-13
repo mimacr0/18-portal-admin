@@ -45,6 +45,12 @@
             <t t-if="not page_type">
                 <t t-call-assets="portal_admin_theme.admin_page"/>
             </t>
+            <t t-if="select2">
+                <!-- Select2 for advanced select boxes -->
+                <link href="/portal_admin_theme/static/src/vendor/select2/css/select2.min.css" rel="stylesheet" />
+                <script src="/portal_admin_theme/static/src/vendor/jquery/js/jquery.min.js"></script>
+                <script src="/portal_admin_theme/static/src/vendor/select2/js/select2.min.js"></script>
+            </t>
         </head>
         <body class="bg-gray-100 dark:bg-gray-900">
             <div class="page-container">

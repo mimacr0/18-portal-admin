@@ -3,7 +3,7 @@ const sysFormValidate = (ref) => {
 
     // Check if form exists
     if (!form) {
-        showNotification('Form not found', { type: 'error' })
+        systemShowNotification('Form not found', { type: 'error' })
         console.error(`Form not found: ${ref}`)
         return false
     }
@@ -1206,7 +1206,7 @@ const sysInitClipboardFields = () => {
                         if (!isPassword) {
                             fallbackCopyMethod();
                         } else {
-                            showNotification('Copying password requires permission in this browser', 'warning');
+                            systemShowNotification('Copying password requires permission in this browser', { type: 'warning' });
                         }
                     });
             } else {
@@ -1406,12 +1406,12 @@ function initFormModal() {
             const isValid = validateForm();
             if (isValid) {
                 // Show success notification
-                showNotification('Form submitted successfully!', { type: 'success' });
+                systemShowNotification('Form submitted successfully!', { type: 'success' });
                 // Close the modal
                 Modal.close('formModal');
             } else {
                 // Show error notification
-                showNotification('Please fix the errors in the form', { type: 'error' });
+                systemShowNotification('Please fix the errors in the form', { type: 'error' });
 
                 // Scroll to the first error if possible
                 const firstError = document.querySelector('.form-error[style*="display: block"]');
@@ -1889,7 +1889,7 @@ function setupSaveButtonEvents(modal) {
         if (isValid) {
             // Show success notification
             if (typeof showNotification === 'function') {
-                showNotification('Form saved successfully!', 'success');
+                systemShowNotification('Form saved successfully!', 'success');
             }
 
             // Trigger confetti celebration
@@ -1902,7 +1902,7 @@ function setupSaveButtonEvents(modal) {
         } else {
             // Show error notification
             if (typeof showNotification === 'function') {
-                showNotification('Please fill in all required fields', 'error');
+                systemShowNotification('Please fill in all required fields', 'error');
             }
 
             // Find first error and scroll to it
