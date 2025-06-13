@@ -105,12 +105,12 @@
                                             required="required"
                                             class="w-4 h-4 text-cyan-600 border-gray-300 focus:ring-cyan-500"
                                         />
-                                        <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-name-error"/>
                                         <label for="tracking_serial" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                                             Serial
                                         </label>
                                     </div>
                                 </div>
+                                <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-tracking-error"/>
                             </div>
                         </div>
 
@@ -120,16 +120,30 @@
                                 <span class="text-red-500 ml-1">*</span>
                             </div>
                             <div>
-                                <div class="flex items-center">
-                                    <input type="number" required="required" name="width" t-attf-id="page-#{page_name}-list-create-form-measures-width" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Width" min="0"/>
-                                    <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-name-error"/>
-                                    <span class="mx-1">x</span>
-                                    <input type="number" required="required" name="height" t-attf-id="page-#{page_name}-list-create-form-measures-height" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Height" min="0"/>
-                                    <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-name-error"/>
-                                    <span class="mx-1">x</span>
-                                    <input type="number" required="required" name="length" t-attf-id="page-#{page_name}-list-create-form-measures-length" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Length" min="0"/>
-                                    <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-name-error"/>
-                                    <span class="mx-1 text-sm">cm</span>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex flex-col">
+                                        <div class="flex items-center">
+                                            <input type="number" required="required" name="width" t-attf-id="page-#{page_name}-list-create-form-measures-width" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Width" min="0"/>
+                                            <span class="mx-1">x</span>
+                                        </div>
+                                        <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-width-error"/>
+                                    </div>
+
+                                    <div class="flex flex-col">
+                                        <div class="flex items-center">
+                                            <input type="number" required="required" name="height" t-attf-id="page-#{page_name}-list-create-form-measures-height" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Height" min="0"/>
+                                            <span class="mx-1">x</span>
+                                        </div>
+                                        <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-height-error"/>
+                                    </div>
+
+                                    <div class="flex flex-col">
+                                        <div class="flex items-center">
+                                            <input type="number" required="required" name="length" t-attf-id="page-#{page_name}-list-create-form-measures-length" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Length" min="0"/>
+                                            <span class="mx-1 text-sm">cm</span>
+                                        </div>
+                                        <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-length-error"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -155,9 +169,9 @@
                                                 class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
                                                 placeholder="Weight"
                                         />
-                                        <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-name-error"/>
                                         <span class="mx-1 text-sm">kg</span>
                                     </div>
+                                    <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-weight-error"/>
                                 </div>
 
                                 <!-- Volume -->
@@ -182,9 +196,9 @@
                                                 focus:outline-none focus:ring-0 select-none bg-gray-100 text-gray-700 font-medium pr-10"
                                                 placeholder="Width x Height x Length"
                                         />
-                                        <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-name-error"/>
                                         <span class="mx-1 text-sm">cm³</span>
                                     </div>
+                                    <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-name-error"/>
                                 </div>
 
                             </div>
