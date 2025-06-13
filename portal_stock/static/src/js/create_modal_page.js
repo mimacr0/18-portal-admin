@@ -77,18 +77,9 @@ const initAddAttributesToProduct = () => {
     const modal = document.getElementById('page-stock-list-create-modal');
     const container = document.getElementById('page-stock-list-create-form-attributes-line-items-container');
     const addBtn = document.getElementById('page-stock-list-create-form-attributes-add-line-btn');
-    const addAttributeBtn = document.getElementById('page-stock-list-create-form-attributes-add-attribute-btn');
     const addProductForm = document.getElementById('page-stock-list-product-create-form');
-    const addProductAttributesForm = document.getElementById('page-stock-list-attribute-create-form');
     const addProductFooter = document.getElementById('page-stock-list-create-product-form-footer');
-    const addProductAttributesFooter = document.getElementById('page-stock-list-create-attribute-form-footer');
     const attrInput = document.getElementById('page-stock-list-create-form-attributes-list');
-    const backBtn = document.getElementById('page-stock-list-create-attribute-form-back-btn');
-    const nameInput = document.getElementById('page-stock-list-create-form-attribute-name');
-    const categorySelect = jQuery(document.getElementById('page-stock-list-create-form-attribute-category-id')).select2({
-        minimumResultsForSearch: 5,
-        dropdownParent: jQuery(modal)
-    });
 
     let lineCounter = 0;
 
@@ -97,10 +88,7 @@ const initAddAttributesToProduct = () => {
 
         // Reset form visibility
         addProductForm.classList.remove('hidden');
-        addProductAttributesForm.classList.add('hidden');
         addProductFooter.classList.remove('hidden');
-        addProductAttributesFooter.classList.add('hidden');
-        addProductAttributesFooter.classList.remove('flex');
 
         // Reset all form inputs
         document.getElementById('page-stock-list-create-form-name').value = '';
@@ -112,44 +100,16 @@ const initAddAttributesToProduct = () => {
         document.getElementById('page-stock-list-create-form-weight').value = '';
         document.getElementById('page-stock-list-create-form-sku').value = '';
         document.getElementById('page-stock-list-create-form-barcode').value = '';
-        nameInput.value = '';
 
         // Reset attributes
         container.innerHTML = '';
         attrInput.value = '[]';
-
-        // Reset category select
-        if (categorySelect) {
-            categorySelect.val('').trigger('change');
-        }
 
         // Reset any error messages
         document.querySelectorAll('.form-error').forEach(el => {
             el.classList.add('invisible');
             el.textContent = '';
         });
-    });
-
-    backBtn.addEventListener('click', () => {
-        addProductForm.classList.remove('hidden');
-        addProductAttributesForm.classList.add('hidden');
-        addProductFooter.classList.remove('hidden');
-        addProductAttributesFooter.classList.add('hidden');
-        addProductAttributesFooter.classList.remove('flex');
-        nameInput.value = '';
-        categorySelect.val('').trigger('change');
-    });
-
-    addAttributeBtn.addEventListener('click', async () => {
-        const categoriesResult = await rpc('/account/stock/get/attributes');
-        if(categoriesResult?.status !== 'success') return;
-        categorySelect.html(categoriesResult.attributes.map(item => `<option value="${item.id}">${item.name}</option>`).join(''));
-        categorySelect.trigger('change');
-        addProductForm.classList.add('hidden');
-        addProductAttributesForm.classList.remove('hidden');
-        addProductFooter.classList.add('hidden');
-        addProductAttributesFooter.classList.remove('hidden');
-        addProductAttributesFooter.classList.add('flex');
     });
 
     const updateAttributeValues = async () => {

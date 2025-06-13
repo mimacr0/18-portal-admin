@@ -68,14 +68,14 @@ class PortalStockController(PortalAdminController):
                     'active': True
                 },
                 {
-                    'id': 'in_stock',
-                    'label': _('In Stock'),
-                    'icon': 'fas fa-check-circle'
+                    'id': 'stock_reference',
+                    'label': _('Reference'),
+                    'icon': 'fas fa-boxes'
                 },
                 {
-                    'id': 'out_of_stock',
-                    'label': _('Out of Stock'),
-                    'icon': 'fas fa-pause-circle'
+                    'id': 'stock_qty',
+                    'label': _('Quantity'),
+                    'icon': 'fas fa-cubes'
                 }
             ],
             'list_columns': [
@@ -166,13 +166,20 @@ class PortalStockController(PortalAdminController):
         }
 
     @http.route('/account/stock/list/reload', type='json', auth='user')
-    def account_stock_list_reload(self, page=1, search='', domain=None, match_type='all', sort=None, order='asc', **kw):
+    def account_stock_list_reload(self, page=1, search='', domain=None, match_type='all', sort=None, order='asc', quick_filter=None, **kw):
         SysParams = request.env['ir.config_parameter'].sudo()
         limit = int(SysParams.get_param(self.DEFAULT_LIMIT_PARAM, self.DEFAULT_LIMIT_VALUE))
         offset = (page - 1) * limit
 
         # Construir dominio de búsqueda
         base_domain = self._build_product_domain(search, domain, match_type)
+
+        # Apply quick filters
+        if quick_filter and quick_filter != 'all':
+            if quick_filter == 'stock_reference':
+                base_domain.append(('tracking', '=', 'lot'))
+            elif quick_filter == 'stock_qty':
+                base_domain.append(('tracking', '=', 'none'))
 
         # Configurar ordenamiento
         order_by = 'id'
