@@ -8,6 +8,7 @@ import { initStockQuickSortFilters } from "./components/stock_quick_filter.js";
 
 // Inicialización al cargar el documento
 document.addEventListener('DOMContentLoaded', () => {
+    if(!document.getElementById('stock-page-list-items')) return;
     reloadStockListPage();
     initProductsManagementListPage();
     initFileUploadModal();

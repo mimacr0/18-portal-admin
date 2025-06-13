@@ -148,9 +148,7 @@
                                     </t>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="reception-page-list-items">
-                                <t t-call="portal_reception.portal_reception_list"/>
-                            </tbody>
+                            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="reception-page-list-items"></tbody>
                         </table>
                     </div>
 
@@ -165,12 +163,11 @@
             <div class="h-25"></div>
 
             <t t-set="footer_content">
-
-                <!-- Stock Create Modal -->
+                <!-- Reception Create Modal -->
                 <div t-attf-id="page-#{page_name}-list-create-modal" class="modal" data-outside-close="false">
                     <div class="modal-content max-w-2xl w-full mx-auto">
                         <div class="modal-header">
-                            <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">Product Create</h3>
+                            <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">Reception Create</h3>
                             <button data-modal-close="true" class="close-modal" aria-label="Close modal">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -179,140 +176,55 @@
                             <form t-attf-id="page-#{page_name}-list-create-form">
                                 <div class="form-group">
                                     <div class="flex items-center">
-                                        <label t-attf-for="page-#{page_name}-list-create-form-name" class="form-label-sm font-sm">Name</label>
+                                        <label t-attf-for="page-#{page_name}-list-create-form-scheduled-date" class="form-label-sm font-sm">Scheduled Date</label>
                                         <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
-                                        <input type="text" name="name" t-attf-id="page-#{page_name}-list-create-form-name" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Name"/>
-                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-name-error"></div>
+                                        <input type="text" name="scheduled_date" t-attf-id="page-#{page_name}-list-create-form-scheduled-date" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Scheduled Date"/>
+                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-scheduled-date-error"></div>
                                     </div>
                                 </div>
+
+                                <!-- Tracking number field -->
                                 <div class="form-group">
                                     <div class="flex items-center">
-                                        <label t-attf-for="page-#{page_name}-list-create-form-tracking" class="form-label-sm font-sm">Tracking</label>
+                                        <label t-attf-for="page-#{page_name}-list-create-form-tracking-number" class="form-label-sm font-sm">Tracking Number</label>
                                         <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
-                                        <select name="tracking" t-attf-id="page-#{page_name}-list-create-form-tracking"
-                                                class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
-                                                >
-                                            <option value="none">None</option>
-                                            <option value="serial">Serial</option>
-                                        </select>
-                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-tracking-error"></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="flex items-center">
-                                        <label t-attf-for="page-#{page_name}-list-create-form-measures" class="form-label-sm font-sm">Measures (mm)</label>
-                                        <span class="text-red-500 ml-1">*</span>
-                                    </div>
-                                    <div>
-                                        <div class="flex items-center">
-                                            <input type="number" name="width" t-attf-id="page-#{page_name}-list-create-form-measures-width" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Width"/>
-                                            <span class="mx-1">x</span>
-                                            <input type="number" name="height" t-attf-id="page-#{page_name}-list-create-form-measures-height" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Height"/>
-                                            <span class="mx-1">x</span>
-                                            <input type="number" name="length" t-attf-id="page-#{page_name}-list-create-form-measures-length" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Length"/>
-                                            <span class="mx-1 text-sm">cm</span>
-                                        </div>
-                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-measures-error"></div>
+                                        <input type="text" name="tracking_number" t-attf-id="page-#{page_name}-list-create-form-tracking-number" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Tracking Number"/>
+                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-tracking-number-error"></div>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <div class="flex flex-col sm:flex-row gap-4">
-                                        <!-- Volume -->
-                                        <div class="flex-1">
-                                            <div class="flex items-center">
-                                                <label t-attf-for="page-#{page_name}-list-create-form-volume" class="form-label-sm font-sm">
-                                                    Volume (cm³)
-                                                </label>
-                                                <span class="text-red-500 ml-1">*</span>
-                                            </div>
-                                            <input type="text" name="volume" readonly="readonly"
-                                                t-attf-id="page-#{page_name}-list-create-form-volume"
-                                                class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
-                                                placeholder="Volume"/>
-                                            <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-volume-error"></div>
-                                        </div>
-
-                                        <!-- Weight -->
-                                        <div class="flex-1">
-                                            <div class="flex items-center">
-                                                <label t-attf-for="page-#{page_name}-list-create-form-weight" class="form-label-sm font-sm">
-                                                    Weight (kg)
-                                                </label>
-                                                <span class="text-red-500 ml-1">*</span>
-                                            </div>
-                                            <input type="number" step="0.01" name="weight"
-                                                t-attf-id="page-#{page_name}-list-create-form-weight"
-                                                class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
-                                                placeholder="Weight"/>
-                                            <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-weight-error"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="flex items-center">
-                                        <label t-attf-for="page-#{page_name}-list-create-form-sku" class="form-label-sm font-sm">SKU</label>
-                                        <span class="text-red-500 ml-1">*</span>
-                                    </div>
-                                    <div>
-                                        <input type="text" name="sku" t-attf-id="page-#{page_name}-list-create-form-sku" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="SKU"/>
-                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-sku-error"></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="flex items-center">
-                                        <label t-attf-for="page-#{page_name}-list-create-form-barcode" class="form-label-sm font-sm">Barcode</label>
-                                        <span class="text-red-500 ml-1">*</span>
-                                    </div>
-                                    <div>
-                                        <input type="text" name="barcode" t-attf-id="page-#{page_name}-list-create-form-barcode" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Barcode"/>
-                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-barcode-error"></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <input name="attributes" type="hidden" id="product-attributes-json" t-att-value="attributes"/>
-                                    <input name="attributes_list" type="hidden" id="product-attributes-list"/>
+                                    <input name="products" type="hidden" t-attf-id="page-#{page_name}-list-create-form-products-list" required="required"/>
 
                                     <div class="mb-4">
-                                        <p class="form-label-sm font-sm">Attributes</p>
+                                        <p class="form-label-sm font-sm">Products</p>
                                     </div>
 
-                                    <div t-attf-id="page-#{page_name}-list-create-form-attributes-container">
-                                        <div t-attf-id="page-#{page_name}-list-create-form-attributes-line-items-container"
-                                            class="products-line-items-container">
+                                    <div t-attf-id="page-#{page_name}-list-create-form-products-container">
+                                        <div t-attf-id="page-#{page_name}-list-create-form-products-line-items-container"
+                                             class="reception-products-line-items-container">
                                         </div>
 
                                         <div class="mt-3 flex items-center gap-2">
-                                            <button t-attf-id="page-#{page_name}-list-create-form-attributes-add-attribute-btn" type="button"
+                                            <button t-attf-id="page-#{page_name}-list-create-form-products-add-line-btn" type="button"
                                                     class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
-                                                <i class="fas fa-plus mr-1.5"></i> Add Attribute
+                                                <i class="fas fa-plus mr-1.5"></i> Add Product
+                                            </button>
+                                            <button t-attf-id="page-#{page_name}-list-create-form-products-add-catalog-btn" type="button"
+                                                    class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
+                                                <i class="fas fa-plus mr-1.5"></i> Catalog
                                             </button>
                                         </div>
-                                        
+
                                     </div>
+
+                                    <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-products-list-error"></div>
                                 </div>
-                                <!-- <div class="form-group">
-                                    <div class="mb-4">
-                                        <p class="form-label-sm font-sm">Attributes</p>
-                                    </div>
 
-                                    <div t-attf-id="page-#{page_name}-list-create-form-attributes-container">
-                                        <div t-attf-id="page-#{page_name}-list-create-form-attributes-line-items-container" class="products-line-items-container"></div>
-
-                                        <div class="mt-3 flex items-center gap-2">
-                                            <button t-attf-id="page-#{page_name}-list-create-form-attributes-add-line-btn" type="button" class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
-                                                <i class="fas fa-plus mr-1.5"></i> Add Line
-                                            </button>
-                                            <button t-attf-id="page-#{page_name}-list-create-form-attributes-add-attribute-btn" type="button" class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
-                                                <i class="fas fa-plus mr-1.5"></i> Add Attribute
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div> -->
                             </form>
                         </div>
                         <div class="modal-footer">
@@ -325,46 +237,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Modal de carga de archivos -->
-                <div id="file-upload-modal" class="modal" data-outside-close="false">
-                    <div class="modal-content max-w-lg w-full mx-auto">
-                        <div class="modal-header">
-                            <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">File Upload</h3>
-                            <button data-modal-close="true" class="close-modal" aria-label="Close modal">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form class="form-flex">
-                                <div class="form-group-flex">
-                                    <label for="fileInput" class="form-label form-label-sm">Upload File</label>
-                                    <div class="form-field-container">
-                                        <div class="file-drop-area rounded-md border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 text-center cursor-pointer">
-                                            <input type="file" id="fileInput" name="fileInput" class="hidden focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" required="required" multiple="multiple"/>
-                                            <div class="file-input-content">
-                                                <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 dark:text-gray-500"></i>
-                                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop a file here, or <span class="text-cyan-600 dark:text-cyan-400 browse-link">browse</span></p>
-                                                <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Maximum file size: 5MB</p>
-                                            </div>
-                                        </div>
-                                        <div class="file-preview mt-3 flex flex-col items-center"></div>
-                                        <div class="form-error" id="fileInputError">Please select a file to upload.</div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
-                                <i class="fas fa-times"></i> Cancel
-                            </button>
-                            <button class="modal-btn modal-btn-primary">
-                                <i class="fas fa-save"></i> Upload
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
             </t>
 
         </t>
@@ -511,4 +383,3 @@
     </template>
 
 </odoo>
-

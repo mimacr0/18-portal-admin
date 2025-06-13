@@ -264,6 +264,7 @@ const initManageProductImage = () => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    if(!document.getElementById('stock-page-list-items')) return;
     initProductListCreatetModal();
     initComputeTotalVolume();
     initAddAttributesToProduct();
