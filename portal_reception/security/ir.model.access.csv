@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_portal_reception_stock_picking,portal.reception.stock.picking,stock.model_stock_picking,base.group_portal,1,0,0,0
+access_portal_reception_stock_move,portal.reception.stock.move,stock.model_stock_move,base.group_portal,1,0,0,0
+access_portal_reception_stock_move_line,portal.reception.stock.move.line,stock.model_stock_move_line,base.group_portal,1,0,0,0
