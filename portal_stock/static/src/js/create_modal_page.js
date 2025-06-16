@@ -259,18 +259,36 @@ const initManageProductImage = () => {
     }
 };
 
-// Metodos para volver invisible los campos de SKU y Barcode si hay atributos
+// Metodos para volver invisible los campos de SKU, Barcode, Save y Next si hay atributos
 const initProductAttributesVisibility = () => {
     const attributesContainer = document.getElementById('page-stock-list-create-form-attributes-line-items-container');
     const skuContainer = document.getElementById('page-stock-list-create-form-sku-container');
     const barcodeContainer = document.getElementById('page-stock-list-create-form-barcode-container');
+    const submitButton = document.getElementById('page-stock-list-create-product-form-submit');
+    const nextButton = document.getElementById('page-stock-list-create-product-form-next');
 
-    if (!attributesContainer || !skuContainer || !barcodeContainer) return;
-    const updateFieldsVisibility = () => {
-        const hasAttributes = attributesContainer.children.length > 0;
-        skuContainer.classList.toggle('hidden', hasAttributes);
-        barcodeContainer.classList.toggle('hidden', hasAttributes);
-    };
+    if (!attributesContainer || !skuContainer || !barcodeContainer || !submitButton || !nextButton) return;
+
+        const updateFieldsVisibility = () => {
+            const hasAttributes = attributesContainer.children.length > 0;
+
+            // Usar tanto clases como estilos directos para asegurar la visibilidad correcta
+            skuContainer.classList.toggle('hidden', hasAttributes);
+            barcodeContainer.classList.toggle('hidden', hasAttributes);
+
+            // Aplicar estilo display directamente para los botones
+            if (hasAttributes) {
+                submitButton.classList.add('hidden');
+                submitButton.style.display = 'none';
+                nextButton.classList.remove('hidden');
+                nextButton.style.display = '';
+            } else {
+                submitButton.classList.remove('hidden');
+                submitButton.style.display = '';
+                nextButton.classList.add('hidden');
+                nextButton.style.display = 'none';
+            }
+        };
 
     const observer = new MutationObserver(updateFieldsVisibility);
     observer.observe(attributesContainer, { childList: true });

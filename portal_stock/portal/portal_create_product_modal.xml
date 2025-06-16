@@ -259,6 +259,9 @@
                     <button t-attf-id="page-#{page_name}-list-create-product-form-submit" class="modal-btn modal-btn-primary">
                         <i class="fas fa-save"></i> Save
                     </button>
+                    <button t-attf-id="page-#{page_name}-list-create-product-form-next" class="modal-btn modal-btn-primary">
+                        <i class="fas fa-arrow-right"></i> Variants
+                    </button>
                 </div>
             </div>
         </div>
