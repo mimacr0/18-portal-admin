@@ -75,6 +75,16 @@ export const initReceptionCreateForm = () => {
     const submitButton = document.getElementById('page-reception-list-create-product-form-submit');
     const form = document.getElementById('page-reception-list-create-form');
     const closeButtons = document.querySelectorAll('[data-modal-close="true"]');
+    const scheduledDateInput = document.getElementById('page-reception-list-create-form-scheduled-date');
+
+    if (!scheduledDateInput) return;
+
+    // https://flatpickr.js.org/examples/
+    flatpickr(scheduledDateInput, {
+        dateFormat: 'd-m-Y',
+        // minDate: new Date(new Date().setDate(new Date().getDate() + 3)),
+        // maxDate: new Date(new Date().setDate(new Date().getDate() + 20))
+    });
 
     createButton.addEventListener('click', () => {
         Modal.open('page-reception-list-create-modal');
