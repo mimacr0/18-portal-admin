@@ -14,7 +14,7 @@
     'summary': """
         Modulo para para recepciones en el portal del cliente.
     """,
-    'depends': ['portal_account'],
+    'depends': ['portal_admin_theme', 'portal_catalog'],
     'license': 'LGPL-3',
     'website': "https://www.dafe.es",
     'data': [

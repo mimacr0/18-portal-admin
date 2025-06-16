@@ -350,3 +350,16 @@ class PortalReceptionController(PortalAdminController):
             }
         except Exception as e:
             return {'status': 'error', 'message': str(e)}
+
+    @http.route('/account/reception/product-catalog', type='json', auth='user')
+    def account_reception_product_catalog(self, **post):
+        """Get the product catalog"""
+        ProductProduct = request.env['product.product'].sudo()
+        products = ProductProduct.search([('is_storable', '=', True)])
+        qweb = request.env['ir.qweb']
+        return {
+            'status': 'success',
+            'products': qweb._render('portal_catalog.portal_products_catalog_kanban', {
+                'products': products
+            })
+        }

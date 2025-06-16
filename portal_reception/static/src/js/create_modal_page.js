@@ -73,9 +73,12 @@ export const initReceptionCreateForm = () => {
     const createButton = document.getElementById('launch-create-reception-form-button');
     const createModal = document.getElementById('page-reception-list-create-modal');
     const submitButton = document.getElementById('page-reception-list-create-product-form-submit');
+    const catalogButton = document.getElementById('page-reception-list-create-form-products-add-catalog-btn');
     const form = document.getElementById('page-reception-list-create-form');
     const closeButtons = document.querySelectorAll('[data-modal-close="true"]');
     const scheduledDateInput = document.getElementById('page-reception-list-create-form-scheduled-date');
+    const pageMainContainer = document.querySelector('#page-reception-main-container');
+    const productCatalogSelectContainer = document.querySelector('#page-reception-product-catalog-select');
 
     if (!scheduledDateInput) return;
 
@@ -84,6 +87,16 @@ export const initReceptionCreateForm = () => {
         dateFormat: 'd-m-Y',
         // minDate: new Date(new Date().setDate(new Date().getDate() + 3)),
         // maxDate: new Date(new Date().setDate(new Date().getDate() + 20))
+    });
+
+    catalogButton.addEventListener('click', async () => {
+        productCatalogSelectContainer.classList.remove('hidden');
+        pageMainContainer.classList.add('hidden');
+        createModal.dataset.open = 'false';
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        createModal.dataset.open = 'true';
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        createModal.dataset.open = 'false';
     });
 
     createButton.addEventListener('click', () => {
