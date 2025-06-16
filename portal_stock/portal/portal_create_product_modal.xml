@@ -169,7 +169,7 @@
                                 <div class="flex items-center gap-2">
                                     <div class="flex flex-col">
                                         <div class="flex items-center">
-                                            <input type="number" required="required" name="width" t-attf-id="page-#{page_name}-list-create-form-measures-width" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Width" min="0"/>
+                                            <input type="number" required="required" name="width" t-attf-id="page-#{page_name}-list-create-form-measures-width" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Width" min="0" step="0.01"/>
                                             <span class="mx-1">x</span>
                                         </div>
                                         <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-width-error"/>
@@ -177,7 +177,7 @@
 
                                     <div class="flex flex-col">
                                         <div class="flex items-center">
-                                            <input type="number" required="required" name="height" t-attf-id="page-#{page_name}-list-create-form-measures-height" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Height" min="0"/>
+                                            <input type="number" required="required" name="height" t-attf-id="page-#{page_name}-list-create-form-measures-height" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Height" min="0" step="0.01"/>
                                             <span class="mx-1">x</span>
                                         </div>
                                         <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-height-error"/>
@@ -185,7 +185,7 @@
 
                                     <div class="flex flex-col">
                                         <div class="flex items-center">
-                                            <input type="number" required="required" name="length" t-attf-id="page-#{page_name}-list-create-form-measures-length" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Length" min="0"/>
+                                            <input type="number" required="required" name="length" t-attf-id="page-#{page_name}-list-create-form-measures-length" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Length" min="0" step="0.01"/>
                                             <span class="mx-1 text-sm">cm</span>
                                         </div>
                                         <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-length-error"/>
@@ -259,9 +259,9 @@
                     <button t-attf-id="page-#{page_name}-list-create-product-form-submit" class="modal-btn modal-btn-primary">
                         <i class="fas fa-save"></i> Save
                     </button>
-                    <button t-attf-id="page-#{page_name}-list-create-product-form-next" class="modal-btn modal-btn-primary">
-                        <i class="fas fa-arrow-right"></i> Variants
-                    </button>
+<!--                    <button t-attf-id="page-#{page_name}-list-create-product-form-next" class="modal-btn modal-btn-primary">-->
+<!--                        <i class="fas fa-arrow-right"></i> Variants-->
+<!--                    </button>-->
                 </div>
             </div>
         </div>

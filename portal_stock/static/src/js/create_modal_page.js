@@ -264,10 +264,11 @@ const initProductAttributesVisibility = () => {
     const attributesContainer = document.getElementById('page-stock-list-create-form-attributes-line-items-container');
     const skuContainer = document.getElementById('page-stock-list-create-form-sku-container');
     const barcodeContainer = document.getElementById('page-stock-list-create-form-barcode-container');
-    const submitButton = document.getElementById('page-stock-list-create-product-form-submit');
-    const nextButton = document.getElementById('page-stock-list-create-product-form-next');
+//    const submitButton = document.getElementById('page-stock-list-create-product-form-submit');
+//    const nextButton = document.getElementById('page-stock-list-create-product-form-next');
 
-    if (!attributesContainer || !skuContainer || !barcodeContainer || !submitButton || !nextButton) return;
+    if (!attributesContainer || !skuContainer || !barcodeContainer) return;
+//     || !submitButton || !nextButton) return;
 
         const updateFieldsVisibility = () => {
             const hasAttributes = attributesContainer.children.length > 0;
@@ -279,14 +280,14 @@ const initProductAttributesVisibility = () => {
             // Aplicar estilo display directamente para los botones
             if (hasAttributes) {
                 submitButton.classList.add('hidden');
-                submitButton.style.display = 'none';
+//                submitButton.style.display = 'none';
                 nextButton.classList.remove('hidden');
-                nextButton.style.display = '';
+//                nextButton.style.display = '';
             } else {
                 submitButton.classList.remove('hidden');
-                submitButton.style.display = '';
+//                submitButton.style.display = '';
                 nextButton.classList.add('hidden');
-                nextButton.style.display = 'none';
+//                nextButton.style.display = 'none';
             }
         };
 
