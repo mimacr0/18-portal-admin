@@ -40,7 +40,7 @@ const ProductListCreate = async () => {
     // Call API to create product
     const response = await rpc('/account/stock/create/product', formData);
 
-    console.log(response);
+//    console.log(response);
     hideLoadingScreen();
     Modal.close('page-stock-list-create-modal');
 
