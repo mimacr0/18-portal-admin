@@ -62,6 +62,7 @@ class PortalReceptionController(PortalAdminController):
             'packages': packages,
             'page_title': _('Receptions'),
             'page_url': '/account/reception',
+            'flatpickr': True,
             'list_filters': [
                 {'id': 'all', 'label': _('All'), 'icon': 'fas fa-check-circle', 'active': True},
                 {'id': 'pending', 'label': _('Pending'), 'icon': 'fas fa-clock'},
