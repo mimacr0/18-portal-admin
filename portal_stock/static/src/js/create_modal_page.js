@@ -42,7 +42,7 @@ const ProductListCreate = async () => {
 
 //    console.log(response);
     hideLoadingScreen();
-    Modal.close('page-stock-list-create-modal');
+    // Modal.close('page-stock-list-create-modal');
 
     systemShowNotification(response.message, {
         type: response.status === 'success' ? 'success' : 'error',
@@ -54,6 +54,16 @@ const ProductListCreate = async () => {
         const listReloadEvent = new CustomEvent('list:reload');
         document.dispatchEvent(listReloadEvent);
     }
+
+    const attributesForm = document.querySelector('#page-stock-list-product-attributes-form');
+    const productForm = document.querySelector('#page-stock-list-product-create-form');
+
+    attributesForm.innerHTML = response.product_attributes;
+    attributesForm.classList.remove('hidden');
+    attributesForm.classList.add('block');
+
+    productForm.classList.add('hidden');
+    productForm.classList.remove('block');
 
     document.querySelectorAll('.list-product-checkbox').forEach(checkbox => {
         checkbox.checked = false;

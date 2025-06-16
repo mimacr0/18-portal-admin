@@ -141,25 +141,6 @@
                             <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-attributes-list-error"></div>
                         </div>
 
-                        <div class="form-group" t-attf-id="page-#{page_name}-list-create-form-sku-container">
-                            <div class="flex items-center">
-                                <label t-attf-for="page-#{page_name}-list-create-form-sku" class="form-label-sm font-sm">SKU</label>
-                            </div>
-                            <div>
-                                <input type="text" name="sku" t-attf-id="page-#{page_name}-list-create-form-sku" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="SKU"/>
-                                <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-sku-error"></div>
-                            </div>
-                        </div>
-                        <div class="form-group" t-attf-id="page-#{page_name}-list-create-form-barcode-container">
-                            <div class="flex items-center">
-                                <label t-attf-for="page-#{page_name}-list-create-form-barcode" class="form-label-sm font-sm">Barcode</label>
-                            </div>
-                            <div>
-                                <input type="text" name="barcode" t-attf-id="page-#{page_name}-list-create-form-barcode" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Barcode"/>
-                                <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-barcode-error"></div>
-                            </div>
-                        </div>
-
                         <div class="form-group">
                             <div class="flex items-center">
                                 <label t-attf-for="page-#{page_name}-list-create-form-measures" class="form-label-sm font-sm">Measures (cm)</label>
@@ -251,6 +232,7 @@
                         </div>
 
                     </form>
+                    <form t-attf-id="page-#{page_name}-list-product-attributes-form"></form>
                 </div>
                 <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700" t-attf-id="page-#{page_name}-list-create-product-form-footer">
                     <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
@@ -259,11 +241,54 @@
                     <button t-attf-id="page-#{page_name}-list-create-product-form-submit" class="modal-btn modal-btn-primary">
                         <i class="fas fa-save"></i> Save
                     </button>
-<!--                    <button t-attf-id="page-#{page_name}-list-create-product-form-next" class="modal-btn modal-btn-primary">-->
-<!--                        <i class="fas fa-arrow-right"></i> Variants-->
-<!--                    </button>-->
                 </div>
+                <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700 hidden" t-attf-id="page-#{page_name}-list-product-attributes-form-footer">
+                    <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button t-attf-id="page-#{page_name}-list-product-attributes-form-submit" class="modal-btn modal-btn-primary">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                </div>
+
             </div>
         </div>
+    </template>
+
+    <template id="portal_create_product_attributes_modal" name="Portal Create Product Attributes Modal">
+
+        <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="template.name"/>
+
+        <t t-foreach="products" t-as="product">
+
+            <div class="mb-2">
+                <t t-foreach="product.product_template_attribute_value_ids" t-as="attribute_value">
+                    <span class="px-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 mt-1">
+                        <t t-esc="attribute_value.attribute_line_id.attribute_id.name"/>: <t t-esc="attribute_value.name"/>
+                    </span>
+                </t>
+            </div>
+
+            <div class="form-group" t-attf-id="page-#{page_name}-list-create-form-sku-container-#{product.id}">
+                <div class="flex items-center">
+                    <label t-attf-for="page-#{page_name}-list-create-form-sku-#{product.id}" class="form-label-sm font-sm">SKU</label>
+                </div>
+                <div>
+                    <input type="text" name="sku" t-attf-id="page-#{page_name}-list-create-form-sku-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="SKU"/>
+                    <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-sku-error-#{product.id}"></div>
+                </div>
+            </div>
+            <div class="form-group" t-attf-id="page-#{page_name}-list-create-form-barcode-container-#{product.id}">
+                <div class="flex items-center">
+                    <label t-attf-for="page-#{page_name}-list-create-form-barcode-#{product.id}" class="form-label-sm font-sm">Barcode</label>
+                </div>
+                <div>
+                    <input type="text" name="barcode" t-attf-id="page-#{page_name}-list-create-form-barcode-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Barcode"/>
+                    <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-barcode-error-#{product.id}"></div>
+                </div>
+            </div>
+
+        </t>
+
     </template>
 </odoo>

@@ -293,4 +293,104 @@
         </t>
     </template>
 
+    <template id="portal_products_catalog_kanban" name="Portal Products Catalog Page">
+
+            <!-- Products Page Header -->
+            <div class="flex justify-center items-center mb-8">
+                <div class="relative max-w-md w-full">
+                    <input type="text" id="product-search" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-full shadow-md focus:ring-cyan-500 focus:border-cyan-500 block w-full p-3.5 pl-12 pr-12" placeholder="Search products..."/>
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selected products preview -->
+            <div id="selected-products-container" class="mb-4 bg-white dark:bg-gray-800 rounded-md shadow overflow-hidden text-sm">
+                <div class="bg-gradient-to-r from-cyan-500 to-cyan-600 dark:from-cyan-800 dark:to-cyan-900 px-3 py-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i class="fas fa-shopping-cart text-white text-xs mr-2"></i>
+                            <h2 class="text-sm font-semibold text-white">Products Selected</h2>
+                            <span id="selected-count" class="ml-2 bg-white text-cyan-700 dark:bg-gray-700 dark:text-cyan-300 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                        </div>
+                        <div>
+                            <button id="clear-selection" class="text-white hover:text-gray-200 transition-colors text-xs">
+                                <i class="fas fa-trash-alt mr-1"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="no-products-message" class="p-3 text-center text-xs">
+                    <i class="fas fa-box-open text-gray-400 dark:text-gray-500 text-lg mb-1"></i>
+                    <p class="text-gray-500 dark:text-gray-400">No products selected</p>
+                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Add products using the "Add" button</p>
+                </div>
+
+                <div id="selected-products-list" class="hidden max-h-64 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 p-2">
+                    <!-- Selected products will be added here dynamically -->
+                </div>
+
+                <div id="selected-products-summary" class="hidden p-3 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-xs">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-gray-600 dark:text-gray-300">Subtotal:</span>
+                        <span id="subtotal" class="font-medium text-gray-800 dark:text-white">0,00 €</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-600 dark:text-gray-300">IVA (21%):</span>
+                        <span id="tax" class="font-medium text-gray-800 dark:text-white">0,00 €</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-1 border-t border-gray-200 dark:border-gray-700">
+                        <span class="font-semibold text-gray-800 dark:text-white">Total:</span>
+                        <span id="total" class="font-bold text-cyan-600 dark:text-cyan-400">0,00 €</span>
+                    </div>
+                    <div class="mt-2">
+                        <button id="checkout-button" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-xs font-medium py-1.5 px-3 rounded transition-colors shadow-sm flex items-center justify-center">
+                            <i class="fas fa-check-circle mr-1"></i> Complete Budget
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Content -->
+            <div class="flex flex-col md:flex-row">
+
+                <!-- Products Grid -->
+                <div id="products-grid" class="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+
+                    <!-- Product Card 1 -->
+                    <div t-foreach="products" t-as="product" t-key="product.id" class="bg-[#232f45] rounded-md shadow-sm overflow-hidden product-card hover:shadow transition-all duration-300" t-att-data-product-id="product.id">
+                        <div class="p-3 relative">
+                            <button class="absolute right-2 top-2 star-btn text-gray-400 hover:text-yellow-400 transition-colors">
+                                <i class="far fa-star"></i>
+                            </button>
+
+                            <div class="text-center mb-2">
+                                <h3 class="text-sm font-medium text-white truncate" t-field="product.name"/>
+                                <div class="text-xs text-gray-400 mb-2" t-field="product.default_code"/>
+                            </div>
+
+                            <div class="flex justify-center mb-3">
+                                <div class="text-lg font-medium text-cyan-400" t-field="product.list_price"/>
+                            </div>
+
+                            <div class="flex justify-center mb-2">
+                                <span t-attf-class="text-xs #{'text-green-500' if product.qty_available > 0 else 'text-red-500'} flex items-center">
+                                    <i t-attf-class="fas fa-circle mr-1 text-xs #{'text-green-500' if product.qty_available > 0 else 'text-red-500'}"></i>
+                                    Stock: <span t-field="product.qty_available"/>
+                                </span>
+                            </div>
+
+                            <button t-attf-id="add-product-#{product.id}" class="w-full px-2 py-1.5 bg-purple-700 hover:bg-purple-800 text-white text-xs rounded flex items-center justify-center transition-colors add-product-btn">
+                                <i class="fas fa-plus mr-1.5"></i> Add
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+    </template>
+
 </odoo>

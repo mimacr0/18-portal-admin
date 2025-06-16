@@ -90,10 +90,15 @@ class ProductModalController(PortalAdminController):
                             })]
                         })
 
+            qweb = request.env['ir.qweb']
             return {
                 'status': 'success',
                 'message': _('Product created successfully'),
-                'product_id': template.id
+                'product_id': template.id,
+                'product_attributes': qweb._render('portal_stock.portal_create_product_attributes_modal', {
+                    'products': template.product_variant_ids,
+                    'template': template
+                })
             }
         except Exception as e:
             return {'status': 'error', 'message': str(e)}
