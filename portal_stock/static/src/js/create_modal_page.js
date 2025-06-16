@@ -257,16 +257,36 @@ const initManageProductImage = () => {
             document.getElementById('image-base64-field').value = ''; // Limpiar base64
         });
     }
-
-    // Si ya hay una imagen previa cargada, se podría mostrar aquí (opcional)
 };
 
+// Metodos para volver invisible los campos de SKU y Barcode si hay atributos
+const initProductAttributesVisibility = () => {
+    const attributesContainer = document.getElementById('page-stock-list-create-form-attributes-line-items-container');
+    const skuContainer = document.getElementById('page-stock-list-create-form-sku-container');
+    const barcodeContainer = document.getElementById('page-stock-list-create-form-barcode-container');
 
+    if (!attributesContainer || !skuContainer || !barcodeContainer) return;
+    const updateFieldsVisibility = () => {
+        const hasAttributes = attributesContainer.children.length > 0;
+        skuContainer.classList.toggle('hidden', hasAttributes);
+        barcodeContainer.classList.toggle('hidden', hasAttributes);
+    };
 
+    const observer = new MutationObserver(updateFieldsVisibility);
+    observer.observe(attributesContainer, { childList: true });
+    updateFieldsVisibility();
+
+    // Agregar evento al botón usando encadenamiento opcional
+    document.querySelector('#page-stock-list-create-form-attributes-add-line-btn')
+        ?.addEventListener('click', updateFieldsVisibility);
+};
+
+// Inicializa todos los modales y eventos necesarios al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
     if(!document.getElementById('stock-page-list-items')) return;
     initProductListCreatetModal();
     initComputeTotalVolume();
     initAddAttributesToProduct();
     initManageProductImage();
+    initProductAttributesVisibility();
 });

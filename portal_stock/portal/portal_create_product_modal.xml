@@ -93,7 +93,7 @@
                                             class="w-4 h-4 text-cyan-600 border-gray-300 focus:ring-cyan-500"
                                         />
                                         <label for="tracking_none" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                                            None
+                                            New
                                         </label>
                                     </div>
                                     <div class="flex items-center">
@@ -106,11 +106,57 @@
                                             class="w-4 h-4 text-cyan-600 border-gray-300 focus:ring-cyan-500"
                                         />
                                         <label for="tracking_serial" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                                            Serial
+                                            Return
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-tracking-error"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <input name="attributes" type="hidden" t-attf-id="page-#{page_name}-list-create-form-attributes-list" required="required"/>
+
+<!--                            <div class="mb-4">-->
+<!--                                <p class="form-label-sm font-sm">Attributes</p>-->
+<!--                            </div>-->
+
+                            <div t-attf-id="page-#{page_name}-list-create-form-attributes-container">
+                                <div t-attf-id="page-#{page_name}-list-create-form-attributes-line-items-container"
+                                     class="products-line-items-container">
+                                </div>
+
+                                <div class="mt-3 flex items-center gap-2">
+                                    <button t-attf-id="page-#{page_name}-list-create-form-attributes-add-line-btn" type="button"
+                                            class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
+                                        <i class="fas fa-plus mr-1.5"></i> Add Attribute
+                                    </button>
+                                    <span class="ml-2 text-xs text-gray-500 italic">
+                                        <i class="fas fa-long-arrow-right"></i> Add only if the product has variants, e.g. Hair Dryer (Color: White, Red, Green).
+                                    </span>
+                                </div>
+
+                            </div>
+
+                            <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-attributes-list-error"></div>
+                        </div>
+
+                        <div class="form-group" t-attf-id="page-#{page_name}-list-create-form-sku-container">
+                            <div class="flex items-center">
+                                <label t-attf-for="page-#{page_name}-list-create-form-sku" class="form-label-sm font-sm">SKU</label>
+                            </div>
+                            <div>
+                                <input type="text" name="sku" t-attf-id="page-#{page_name}-list-create-form-sku" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="SKU"/>
+                                <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-sku-error"></div>
+                            </div>
+                        </div>
+                        <div class="form-group" t-attf-id="page-#{page_name}-list-create-form-barcode-container">
+                            <div class="flex items-center">
+                                <label t-attf-for="page-#{page_name}-list-create-form-barcode" class="form-label-sm font-sm">Barcode</label>
+                            </div>
+                            <div>
+                                <input type="text" name="barcode" t-attf-id="page-#{page_name}-list-create-form-barcode" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Barcode"/>
+                                <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-barcode-error"></div>
                             </div>
                         </div>
 
@@ -203,48 +249,7 @@
 
                             </div>
                         </div>
-                        <div class="form-group">
-                            <input name="attributes" type="hidden" t-attf-id="page-#{page_name}-list-create-form-attributes-list" required="required"/>
 
-                            <div class="mb-4">
-                                <p class="form-label-sm font-sm">Attributes</p>
-                            </div>
-
-                            <div t-attf-id="page-#{page_name}-list-create-form-attributes-container">
-                                <div t-attf-id="page-#{page_name}-list-create-form-attributes-line-items-container"
-                                     class="products-line-items-container">
-                                </div>
-
-                                <div class="mt-3 flex items-center gap-2">
-                                    <button t-attf-id="page-#{page_name}-list-create-form-attributes-add-line-btn" type="button"
-                                            class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
-                                        <i class="fas fa-plus mr-1.5"></i> Add Attribute
-                                    </button>
-                                </div>
-
-                            </div>
-
-                            <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-attributes-list-error"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="flex items-center">
-                                <label t-attf-for="page-#{page_name}-list-create-form-sku" class="form-label-sm font-sm">SKU</label>
-                            </div>
-                            <div>
-                                <input type="text" name="sku" t-attf-id="page-#{page_name}-list-create-form-sku" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="SKU"/>
-                                <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-sku-error"></div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="flex items-center">
-                                <label t-attf-for="page-#{page_name}-list-create-form-barcode" class="form-label-sm font-sm">Barcode</label>
-                            </div>
-                            <div>
-                                <input type="text" name="barcode" t-attf-id="page-#{page_name}-list-create-form-barcode" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Barcode"/>
-                                <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-barcode-error"></div>
-                            </div>
-                        </div>
                     </form>
                 </div>
                 <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700" t-attf-id="page-#{page_name}-list-create-product-form-footer">
