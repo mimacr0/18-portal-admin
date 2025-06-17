@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo> 
+    <template id="portal_sale_details_page" name="Portal Sale Details Page">
+        <t t-call="portal_admin_theme.portal_admin_layout">
+
+            <div id="expedition-details-container" class="mt-6">
+               <div class="w-4/5 mx-auto lg:max-w-11xl bg-white dark:bg-gray-800 rounded-xl shadow-lg print:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
+                    <!-- Document Action Bar -->
+                    <div class="p-5 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        <a href="/account/expedition" class="inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            Go back
+                        </a>
+                        <div class="flex items-center space-x-4">
+                            <div class="stock-status-selector relative">
+                                <!-- <span class="px-3 py-1.5 bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-gray-900 text-xs font-medium rounded-full flex items-center">
+                                    <span class="w-2 h-2 bg-amber-500 rounded-full mr-1.5"></span>
+                                    Draft
+                                </span> -->
+                            </div>
+                            <div class="document-actions">
+                                <div class="flex space-x-2">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-8 border-b border-gray-200 dark:border-gray-700 relative">
+                        <div class="flex flex-col md:flex-row justify-between items-start relative z-10">
+                            <div>
+                                <div class="flex items-center p-8">
+                                    <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Product <t t-esc="sale.name"/> Stock Information</h1>
+                                    <span class="ml-4 text-xl font-medium text-blue-600 dark:text-blue-400"/>
+                                </div>
+                                <div class="px-2 inline-flex text-l leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-8 border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white flex items-center">
+                                Location Data
+                            </h3>
+                        </div>
+                        <div class="overflow-x-auto rounded-lg shadow">
+                        </div>
+                    </div>
+
+                    <!-- Movement Table -->
+                    <div class="p-8 border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white flex items-center">
+                                Movement History
+                            </h3>
+                        </div>
+                        <div class="overflow-x-auto rounded-lg shadow">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
