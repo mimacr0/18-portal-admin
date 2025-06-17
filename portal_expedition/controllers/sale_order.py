@@ -243,3 +243,22 @@ class PortalExpeditionController(PortalAdminController):
             'status': 'success',
             'filters': json.dumps(self._get_expedition_advanced_search_fields())
         }
+
+    @http.route('/account/expedition/details/<int:order_id>', type='http', auth='user')
+    def account_expedition_details(self, order_id, **kw):
+        SaleOrder = request.env['sale.order'].sudo()
+        order = SaleOrder.browse(order_id)
+
+        if not order.exists():
+            return {
+                'status': 'error',
+                'message': _('The requested expedition does not exist.')
+            }
+
+        qweb = request.env['ir.qweb']
+        return request.render('portal_expedition.portal_sale_details_page', {
+            'sale': order,
+            'user': request.env.user, 
+            'company': request.env.company,        # ✅ esto soluciona el nuevo error
+
+        })
