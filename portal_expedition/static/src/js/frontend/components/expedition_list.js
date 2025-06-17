@@ -1,4 +1,5 @@
 import { rpc } from "@web/core/network/rpc";
+import { initDetailsPage } from "./expedition_details.js";
 
 /**
  * Configuración de ordenamiento para la lista de recepciones.
@@ -63,6 +64,7 @@ export const reloadExpeditionListPage = async () => {
         quick_filter: quickFilter
     });
 
+    
     // Verificar si la respuesta es exitosa
     if(res?.status != 'success') return;
 
@@ -99,6 +101,8 @@ export const reloadExpeditionListPage = async () => {
         currentPageInput.value = currentPage + 1;
         reloadExpeditionListPage();
     });
+    initDetailsPage()
+
 }
 
 /**

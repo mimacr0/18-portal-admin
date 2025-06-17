@@ -74,7 +74,7 @@
 
                                 <!-- Botones de acción-->
                                 <div class="flex items-center">
-                                    <button t-foreach="tools_actions" t-as="tools_action" t-attf-data-tooltip-target="page-list-#{page_name}-tools-action-#{tools_action.get('name')}" t-attf-id="page-list-#{page_name}-tools-action-#{tools_action.get('name')}" class="p-2 rounded-md hover:bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
+                                    <button t-foreach="tools_actions" t-as="tools_action" t-attf-data-tooltip-target="page-#{page_name}-list-#{tools_action.get('name')}-action-tool" t-attf-id="page-#{page_name}-list-#{tools_action.get('name')}-action-tool" class="p-2 rounded-md hover:bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
                                         <i t-att-class="tools_action.get('icon')"></i>
                                     </button>
                                 </div>
@@ -211,6 +211,8 @@
     </template>
 
     <template id="portal_expedition_list" name="Portal Expeditions List">
+        <input type="hidden" id="csrf_token" name="csrf_token" t-att-value="request.csrf_token()"/>
+
         <t t-foreach="orders" t-as="order">
             <!-- Fila de pantallas grandes -->
             <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 hidden lg:table-row">
@@ -221,7 +223,7 @@
                     <div class="flex items-center">
                         <div class="ml-4">
                             <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="order.name"/>
-                            <div class="text-sm text-gray-500">ID: #<t t-esc="order.id"/></div>
+                            <div class="text-sm text-gray-500">Client Order Ref: <t t-esc="order.client_order_ref"/></div>
                         </div>
                     </div>
                 </td>
@@ -353,7 +355,7 @@
                 </td>
 
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button t-attf-data-tooltip-target="tooltip-edit-#{order.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <button t-attf-data-tooltip-target="tooltip-edit-#{order.id}"  t-attf-id="tooltip-edit-#{order.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-edit"></i>
                     </button>
                     <button t-attf-data-tooltip-target="tooltip-delete-#{order.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">

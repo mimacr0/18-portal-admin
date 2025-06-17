@@ -5,6 +5,7 @@ import { portalAccountExpeditionInitCheckboxSelect } from "./components/expediti
 import { initTableSorting } from "./components/expedition_sorting.js";
 import { initStickyTableHeader } from "./components/expedition_header.js";
 import { initExpeditionQuickSortFilters } from "./components/expedition_quick_filter.js";
+import { initDetailsPage } from "./components/expedition_details.js";
 
 // Inicialización al cargar el documento
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,4 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initTableSorting();
     initStickyTableHeader();
     initExpeditionQuickSortFilters();
+    initDetailsPage()
+
 });
