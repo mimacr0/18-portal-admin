@@ -21,11 +21,11 @@
     'data': [
         'portal/products_template.xml'
     ],
-    'assets': {
-        'portal_admin_theme.admin_assets_frontend': [
-            'portal_catalog/static/src/frontend/js/products_catalog.js'
-        ],
-    },
+    # 'assets': {
+    #     'portal_admin_theme.admin_assets_frontend': [
+    #         'portal_catalog/static/src/frontend/js/products_catalog.js'
+    #     ],
+    # },
     'images': ['static/description/icon.png'],
     'installable': True,
     'auto_install': False,

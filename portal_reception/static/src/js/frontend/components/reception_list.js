@@ -31,12 +31,12 @@ export const reloadReceptionListPage = async () => {
     if(!pageListItems) return;
 
     // Obtener y validar el input de página actual
-    const currentPageInput = document.getElementById('reception-list-pagination-page');
+    const currentPageInput = document.getElementById('page-reception-list-pagination-page');
     if(!currentPageInput) return;
     const currentPage = parseInt(currentPageInput.value);
 
     // Obtener y validar el campo de búsqueda
-    const searchInput = document.getElementById('page-reception-products-list-search');
+    const searchInput = document.getElementById('page-reception-list-quick-search');
     if(!searchInput) return;
     const search = searchInput.value;
 
@@ -70,8 +70,13 @@ export const reloadReceptionListPage = async () => {
     if(pageListItems) pageListItems.innerHTML = res.list;
 
     // Actualizar el paginador
-    const paginationContainer = document.getElementById('reception-list-pagination-container');
+    const paginationContainer = document.getElementById('page-reception-list-pagination-container');
     if(paginationContainer) paginationContainer.innerHTML = res.pager;
+
+    // Actualizar el paginador
+    const paginationContainerMain = document.getElementById('page-reception-list-pagination-container-main');
+    if(paginationContainerMain && res.last_page == 0) paginationContainerMain.classList.add('hidden');
+    else paginationContainerMain.classList.remove('hidden');
 
     // Configurar eventos para el PAGINADOR
     const paginationPrevious = document.getElementById('reception-list-pagination-previous');

@@ -26,6 +26,7 @@
             'portal_reception/static/src/js/frontend/components/**.js',
             'portal_reception/static/src/js/frontend/reception_main.js',
             'portal_reception/static/src/js/create_modal_page.js',
+            'portal_reception/static/src/css/custom.css'
         ]
     },
     'images': ['static/description/icon.png'],
