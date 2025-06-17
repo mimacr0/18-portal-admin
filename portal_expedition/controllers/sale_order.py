@@ -61,19 +61,12 @@ class PortalExpeditionController(PortalAdminController):
             'page_url': '/account/expedition',
             'list_filters': [
                 {'id': 'all', 'label': _('All'), 'icon': 'fas fa-check-circle', 'active': True},
-                {'id': 'draft', 'label': _('Draft'), 'icon': 'fas fa-check-circle'},
-                # Draft => Los Sale order que estén en estado draft 
-                {'id': 'billing', 'label': _('Billing'), 'icon': 'fas fa-pause-circle'},
-                # Billing => Los Sale order que estén en estado sale 
-                {'id': 'preparing', 'label': _('Preparing'), 'icon': 'fas fa-pause-circle'},
-                # Preparing => Los Stock Pinking cuyo estado sea confirmed o assigned, y sean de movimiento internal
-                {'id': 'to be shipped', 'label': _('To be Shipped'), 'icon': 'fas fa-pause-circle'},
-                # To be shipped => Los Stock Pinking cuyo estado sea confirmed o assigned, y sean de movimiento outgoing
-                {'id': 'shipped', 'label': _('Shipped'), 'icon': 'fas fa-pause-circle'},
-                # Shipped => Los Stock Pinking cuyo estado sea done, y sean de movimiento outgoing
-                {'id': 'cancel', 'label': _('Cancelled'), 'icon': 'fas fa-pause-circle'},
-                # Cancel => Los Sale order que estén en estado cancelled 
-            # Tener en cuenta que sea el que sea el estado del picking, lo que se muestra es el sale.
+                {'id': 'draft', 'label': _('Draft'), 'icon': 'fas fa-file'},
+                {'id': 'billing', 'label': _('Billing'), 'icon': 'fas fa-file-text'},
+                {'id': 'preparing', 'label': _('Preparing'), 'icon': 'fas fa-cart-arrow-down'},
+                {'id': 'to-be-shipped', 'label': _('To be Shipped'), 'icon': 'fas fa-inbox'},
+                {'id': 'shipped', 'label': _('Shipped'), 'icon': 'fas fa-truck'},
+                {'id': 'cancel', 'label': _('Cancelled'), 'icon': 'fas fa-stop-circle'},
             ],
 
             'list_columns': [
@@ -126,6 +119,7 @@ class PortalExpeditionController(PortalAdminController):
         if search:
             base_domain.extend(expression.OR([
                 [('name', 'ilike', search)],
+                [('picking_ids.carrier_tracking_ref', 'ilike', search)],
             ]))
         # # Aplicar dominio de búsqueda avanzada
         if domain and isinstance(domain, list) and domain:
@@ -155,9 +149,49 @@ class PortalExpeditionController(PortalAdminController):
                     base_domain.append(expression.OR(adv_domain))
                 else:  # 'all' es el predeterminado
                     base_domain.extend(adv_domain)
-        print("Base domain:", base_domain)
+
         return base_domain
+    
+    def get_quick_filter_domain(self, quick_filter, env):
+        """
+        Retorna el dominio adicional según el filtro rápido (quick_filter).
         
+        :param quick_filter: str, el nombre del filtro
+        :param env: el entorno Odoo para hacer búsquedas (request.env)
+        :return: lista con dominio o None
+        """
+        simple_states = {
+            'draft': [('state', 'in', ['draft', 'sent'])],  
+            'billing': [('state', '=', 'sale')],
+            'cancel': [('state', '=', 'cancel')],
+        }
+
+        picking_filters = {
+            'preparing': [
+                ('state', 'in', ['confirmed', 'assigned']),
+                ('picking_type_code', '!=', 'outgoing'),
+            ],
+            'toBeShipped': [
+                ('state', 'in', ['confirmed', 'assigned']),
+                ('picking_type_code', '=', 'outgoing'),
+            ],
+            'shipped': [
+                ('picking_type_code', '=', 'outgoing'),
+                ('state', '=', 'done'),
+            ],
+        }
+
+        if quick_filter in simple_states:
+            return simple_states[quick_filter]
+
+        elif quick_filter in picking_filters:
+            picking_model = env['stock.picking'].sudo()
+            picking_ids = picking_model.search(picking_filters[quick_filter]).ids
+            return [('picking_ids', 'in', picking_ids)]
+
+        return None
+
+
     @http.route('/account/expedition/list/reload', type='json', auth='user')
     def account_expedition_list_reload(self, page=1, search='', domain=None, match_type='all', sort=None, order='asc', quick_filter=None, **kw):
         SysParams = request.env['ir.config_parameter'].sudo()
@@ -168,21 +202,19 @@ class PortalExpeditionController(PortalAdminController):
         base_domain = self._build_sale_domain(search, domain, match_type)
 
         # # Apply quick filters
-        # if quick_filter and quick_filter != 'all':
-        #     if quick_filter == 'expedition_reference':
-        #         base_domain.append(('tracking', '=', 'lot'))
-        #     elif quick_filter == 'expedition_qty':
-        #         base_domain.append(('tracking', '=', 'none'))
+        if quick_filter and quick_filter != 'all':
+            domain_addition = self.get_quick_filter_domain(quick_filter, request.env)
+            if domain_addition:
+                base_domain.extend(domain_addition)
 
         # Configurar ordenamiento
         order_by = 'id'
         if sort and sort in self.EXPEDITION_FIELDS_MAPPING:
             order_by = f"{self.EXPEDITION_FIELDS_MAPPING[sort]} {order}"
-
-        # Obtener productos y contar
+        
         SaleOrder = request.env['sale.order'].sudo()
+        # Obtener productos y contar
         orders = SaleOrder.search(base_domain, limit=limit, offset=offset, order=order_by)
-        print("Orders found:", len(orders))
         items_total = SaleOrder.search_count(base_domain)
         items_count = len(orders)
 

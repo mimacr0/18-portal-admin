@@ -50,9 +50,8 @@ export const reloadExpeditionListPage = async () => {
     const matchType = matchTypeSelect ? matchTypeSelect.value : 'all';
 
     // Obtener el valor del input de filtros rápidos
-    const quickFiltersInput = document.getElementById('page-expedition-list-quick-filter-active');
+    const quickFiltersInput = document.getElementById('page-expedition-list-filter-active');
     const quickFilter = quickFiltersInput ? quickFiltersInput.value : '';
-
     // Realizar petición RPC al servidor con todos los parámetros recopilados
     const res = await rpc('/account/expedition/list/reload', {
         page: currentPage,
