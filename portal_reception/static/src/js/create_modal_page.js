@@ -85,6 +85,9 @@ const debouncedSearch = debounce(function() {
     loadProductCatalog();
 }, 300);
 
+// Add a shared product registry to track products across views
+const selectedProductsRegistry = new Map();
+
 /**
  * Inicializa el formulario de creación de recepciones
  *
@@ -463,10 +466,23 @@ function setupProductCardEvents() {
     });
 }
 
-// Add helper function to add product to selection
+// Update the addProductToSelection function to add to registry
 function addProductToSelection(id, name, sku, qty = 1, price = '', stockInfo = '', inStock = true, imgSrc = '', attributeTags = []) {
     const pageName = "reception";
     const selectedProductsList = document.getElementById(`page-${pageName}-product-catalog-select-selected-products-list`);
+
+    // Add to registry
+    selectedProductsRegistry.set(id, {
+        id,
+        name,
+        sku,
+        quantity: qty,
+        price,
+        stockInfo,
+        inStock,
+        imgSrc,
+        attributeTags
+    });
 
     // Check if product already exists
     const existingProduct = selectedProductsList.querySelector(`[data-product-id="${id}"]`);
@@ -475,6 +491,11 @@ function addProductToSelection(id, name, sku, qty = 1, price = '', stockInfo = '
         const qtyInput = existingProduct.querySelector('.product-quantity');
         if (qtyInput) {
             qtyInput.value = parseInt(qtyInput.value) + 1;
+            // Update registry quantity
+            const product = selectedProductsRegistry.get(id);
+            if (product) {
+                product.quantity = parseInt(qtyInput.value);
+            }
         }
         return;
     }
@@ -584,24 +605,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Modify closeProductCatalog to use Select2 for added products
 function closeProductCatalog() {
     const pageName = "reception";
     const productCatalogSelectContainer = document.querySelector(`#page-${pageName}-product-catalog-select`);
     const pageMainContainer = document.querySelector('#page-reception-main-container');
+    const modal = document.getElementById(`page-${pageName}-list-create-modal`);
 
-    // Get selected products
-    const selectedProductsList = document.getElementById(`page-${pageName}-product-catalog-select-selected-products-list`);
-    const selectedProducts = [];
-    if (selectedProductsList) {
-        selectedProductsList.querySelectorAll('[data-product-id]').forEach(item => {
-            const qtyInput = item.querySelector('.product-quantity');
-            selectedProducts.push({
-                id: item.dataset.productId,
-                name: item.dataset.productName,
-                quantity: qtyInput ? parseInt(qtyInput.value) : 1
-            });
-        });
-    }
+    // Get selected products from registry
+    const selectedProducts = Array.from(selectedProductsRegistry.values());
 
     // Hide catalog view
     productCatalogSelectContainer.classList.add('hidden');
@@ -624,10 +636,11 @@ function closeProductCatalog() {
 
                 newRow.innerHTML = `
                     <div class="flex-grow">
-                        <input type="hidden" name="product_id[]" value="${product.id}"/>
-                        <input type="text" name="product_name[]" value="${product.name}" readonly
-                            class="form-select form-select-sm w-full rounded-md border border-gray-300
-                            focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"/>
+                        <select name="product_id[]" class="product-select form-select-sm w-full rounded-md border border-gray-300
+                            focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500">
+                            <option value="${product.id}" selected>${product.name}</option>
+                        </select>
+                        <input type="hidden" name="product_name[]" class="product-name" value="${product.name}"/>
                     </div>
                     <div class="w-24">
                         <input type="number" name="product_qty[]" value="${product.quantity}" min="1"
@@ -648,8 +661,38 @@ function closeProductCatalog() {
                 if (removeBtn) {
                     removeBtn.addEventListener('click', () => {
                         productsContainer.removeChild(newRow);
+                        // Also remove from registry
+                        selectedProductsRegistry.delete(product.id);
                     });
                 }
+
+                // Initialize Select2
+                const select = newRow.querySelector('.product-select');
+                $(select).select2({
+                    placeholder: 'Search product...',
+                    minimumInputLength: 2,
+                    dropdownParent: $(modal),
+                    ajax: {
+                        transport: function(params, success, failure) {
+                            rpc('/account/reception/product-search', {
+                                term: params.data.term
+                            })
+                            .then(function(result) {
+                                success({ results: result.items });
+                            })
+                            .catch(function(error) {
+                                console.error('Error fetching products:', error);
+                                failure('Failed to load products');
+                            });
+                        },
+                        processResults: function(data) {
+                            return data;
+                        },
+                        delay: 250
+                    },
+                    templateResult: formatProduct,
+                    templateSelection: formatProductSelection
+                });
             });
         }
     }
@@ -658,7 +701,7 @@ function closeProductCatalog() {
     Modal.open('page-reception-list-create-modal');
 }
 
-// Update the function to initialize manual product add with Select2
+// Update the initManualProductAdd function to sync with registry
 function initManualProductAdd() {
     const pageName = "reception";
     const addBtn = document.getElementById(`page-${pageName}-list-create-form-products-add-line-btn`);
@@ -698,6 +741,7 @@ function initManualProductAdd() {
             // Initialize Select2 for this row
             const select = newRow.querySelector('.product-select');
             const nameInput = newRow.querySelector('.product-name');
+            const qtyInput = newRow.querySelector('input[name="product_qty[]"]');
 
             $(select).select2({
                 placeholder: 'Search product...',
@@ -705,12 +749,10 @@ function initManualProductAdd() {
                 dropdownParent: $(modal),
                 ajax: {
                     transport: function(params, success, failure) {
-                        // Use rpc function directly instead of Select2's built-in AJAX
                         rpc('/account/reception/product-search', {
                             term: params.data.term
                         })
                         .then(function(result) {
-                            // Result comes directly from our controller
                             success({ results: result.items });
                         })
                         .catch(function(error) {
@@ -719,7 +761,6 @@ function initManualProductAdd() {
                         });
                     },
                     processResults: function(data) {
-                        // The data is already correctly formatted by our transport function
                         return data;
                     },
                     delay: 250
@@ -733,10 +774,31 @@ function initManualProductAdd() {
                 const data = $(this).select2('data')[0];
                 if (data) {
                     nameInput.value = data.text;
+                    // Add to registry
+                    selectedProductsRegistry.set(data.id, {
+                        id: data.id,
+                        name: data.text,
+                        sku: data.default_code || '',
+                        quantity: parseInt(qtyInput.value),
+                        attributes: data.attributes || []
+                    });
+
+                    // Store the product ID in the row
+                    newRow.dataset.productId = data.id;
+
                     // Optionally store attribute data in a data attribute if needed for later
                     if (data.attributes) {
                         newRow.dataset.productAttributes = JSON.stringify(data.attributes);
                     }
+                }
+            });
+
+            // Update registry when quantity changes
+            qtyInput.addEventListener('change', function() {
+                const productId = newRow.dataset.productId;
+                if (productId && selectedProductsRegistry.has(productId)) {
+                    const product = selectedProductsRegistry.get(productId);
+                    product.quantity = parseInt(this.value);
                 }
             });
 
@@ -746,6 +808,10 @@ function initManualProductAdd() {
             const removeBtn = newRow.querySelector('.product-remove-btn');
             if (removeBtn) {
                 removeBtn.addEventListener('click', () => {
+                    const productId = newRow.dataset.productId;
+                    if (productId) {
+                        selectedProductsRegistry.delete(productId);
+                    }
                     container.removeChild(newRow);
                 });
             }
