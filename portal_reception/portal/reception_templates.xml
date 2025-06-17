@@ -1,7 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="portal_reception_page" name="Portal Reception Page">
+    <template id="portal_reception_product_card" name="Portal Reception Product Catalog">
+
+        <div class="bg-white dark:bg-gray-800 rounded-md shadow-sm overflow-hidden product-card hover:shadow transition-all duration-300 text-xs" data-product-id="1">
+            <div class="p-3">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-sm font-medium text-gray-800 dark:text-white truncate">Escritorio personalizable</h3>
+                    <i class="far fa-star text-gray-400 dark:text-gray-500 product-favorite cursor-pointer hover:text-yellow-500 transition-colors"></i>
+                </div>
+
+                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">[DESK0005]</div>
+
+                <div class="flex items-center justify-between mb-2">
+                    <div>
+                        <div class="font-medium text-xs text-gray-700 dark:text-gray-300">962,55 €</div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs"></i>
+                            <span class="text-xs text-green-600 dark:text-green-400">Stock: 65,00</span>
+                        </div>
+                    </div>
+                    <div class="w-14 h-14 flex items-center justify-center">
+                        <img src="src/img/products/desk1.png" alt="Escritorio personalizable" class="max-h-full max-w-full"/>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap mb-2 gap-1">
+                    <span class="bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Personalizado</span>
+                    <span class="bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Blanco</span>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <!-- Quantity selector (hidden by default, shown when product is added) -->
+                    <div class="quantity-selector hidden flex items-center border border-gray-300 dark:border-gray-600 rounded overflow-hidden">
+                        <button class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 product-decrease transition-colors text-xs">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="text" value="1" class="w-8 px-1 py-0.5 text-center border-none focus:ring-0 product-quantity bg-white dark:bg-gray-800 text-xs"/>
+                        <button class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 product-increase transition-colors text-xs">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+
+                    <!-- Default view (Add button) -->
+                    <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 transition-colors shadow-sm text-xs">
+                        <i class="fas fa-plus mr-1"></i> Añadir
+                    </button>
+
+                    <!-- Action buttons (hidden by default, shown when product is added) -->
+                    <div class="product-actions hidden flex gap-1">
+                        <button class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 product-delete transition-colors text-xs">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                        <button class="px-2 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 product-add transition-colors shadow-sm text-xs">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </template>
+
+    <template id="portal_reception_page_main" name="Portal Reception Page">
         <t t-call="portal_admin_theme.portal_admin_layout">
 
             <div class="w-full" t-attf-id="page-#{page_name}-main-container">
@@ -47,7 +108,7 @@
                     </div>
                 </t>
 
-                <!-- Tabla de usuarios -->
+                <!-- Tabla de recepciones -->
                 <div class="bg-white rounded-lg shadow overflow-hidden mb-20 dark:bg-gray-800">
                     <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                         <div class="flex flex-col lg:flex-row justify-between gap-4">
@@ -65,7 +126,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i class="fas fa-search text-gray-400 dark:text-gray-500"></i>
                                     </div>
-                                    <input type="text" id="page-stock-products-list-search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-cyan-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Search ..."/>
+                                    <input type="text" t-attf-id="page-#{page_name}-list-quick-search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-cyan-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Search ..."/>
                                 </div>
 
                                 <!-- Botón de búsqueda avanzada -->
@@ -157,9 +218,14 @@
 
             <div class="w-full hidden" t-attf-id="page-#{page_name}-product-catalog-select">
                 <!-- Products Page Header -->
-                <div class="flex justify-center items-center mb-8 mt-5">
+                <div class="flex justify-between items-center mb-8 mt-5">
+                    <div class="relative">
+                        <button t-attf-id="page-#{page_name}-product-catalog-select-close-btn" class="px-3 py-1.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors flex items-center">
+                            <i class="fas fa-arrow-left mr-1.5"></i> Go Back
+                        </button>
+                    </div>
                     <div class="relative max-w-md w-full">
-                        <input type="text" id="product-search" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-full shadow-md focus:ring-cyan-500 focus:border-cyan-500 block w-full p-3.5 pl-12 pr-12" placeholder="Search products..."/>
+                        <input type="text" t-attf-id="page-#{page_name}-product-catalog-select-search" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-full shadow-md focus:ring-cyan-500 focus:border-cyan-500 block w-full p-3.5 pl-12 pr-12" placeholder="Search products..."/>
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-search text-gray-400"></i>
                         </div>
@@ -167,7 +233,7 @@
                 </div>
 
                 <!-- Selected products preview -->
-                <div id="selected-products-container" class="mb-4 bg-white dark:bg-gray-800 rounded-md shadow overflow-hidden text-sm">
+                <div t-attf-id="page-#{page_name}-product-catalog-select-selected-products-container" class="mb-4 bg-white dark:bg-gray-800 rounded-md shadow overflow-hidden text-sm">
                     <div class="bg-gradient-to-r from-cyan-500 to-cyan-600 dark:from-cyan-800 dark:to-cyan-900 px-3 py-2">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
@@ -176,319 +242,40 @@
                                 <span id="selected-count" class="ml-2 bg-white text-cyan-700 dark:bg-gray-700 dark:text-cyan-300 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
                             </div>
                             <div>
-                                <button id="clear-selection" class="text-white hover:text-gray-200 transition-colors text-xs">
+                                <button t-attf-id="page-#{page_name}-product-catalog-select-clear-selection-btn" class="text-white hover:text-gray-200 transition-colors text-xs">
                                     <i class="fas fa-trash-alt mr-1"></i> Clear
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <div id="no-products-message" class="p-3 text-center text-xs">
+                    <div t-attf-id="page-#{page_name}-product-catalog-select-no-products-message" class="p-3 text-center text-xs">
                         <i class="fas fa-box-open text-gray-400 dark:text-gray-500 text-lg mb-1"></i>
                         <p class="text-gray-500 dark:text-gray-400">No products selected</p>
                         <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Add products using the "Add" button</p>
                     </div>
 
-                    <div id="selected-products-list" class="hidden max-h-64 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 p-2"></div>
+                    <div t-attf-id="page-#{page_name}-product-catalog-select-selected-products-list" class="hidden max-h-80 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 p-3"></div>
 
                 </div>
 
                 <!-- Products Content -->
-                <div class="flex flex-col md:flex-row">
-                                        <!-- Products Grid -->
-                    <div id="products-grid" class="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-                        <!-- Product Card 1 -->
-                        <div class="bg-white dark:bg-gray-800 rounded-md shadow-sm overflow-hidden product-card hover:shadow transition-all duration-300 text-xs" data-product-id="1">
-                            <div class="p-3">
-                                <div class="flex items-center justify-between mb-2">
-                                    <h3 class="text-sm font-medium text-gray-800 dark:text-white truncate">Escritorio personalizable</h3>
-                                    <i class="far fa-star text-gray-400 dark:text-gray-500 product-favorite cursor-pointer hover:text-yellow-500 transition-colors"></i>
-                                </div>
-
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">[DESK0005]</div>
-
-                                <div class="flex items-center justify-between mb-2">
-                                    <div>
-                                        <div class="font-medium text-xs text-gray-700 dark:text-gray-300">962,55 €</div>
-                                        <div class="flex items-center">
-                                            <i class="fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs"></i>
-                                            <span class="text-xs text-green-600 dark:text-green-400">Stock: 65,00</span>
-                                        </div>
-                                    </div>
-                                    <div class="w-14 h-14 flex items-center justify-center">
-                                        <img src="src/img/products/desk1.png" alt="Escritorio personalizable" class="max-h-full max-w-full"/>
-                                    </div>
-                                </div>
-
-                                <div class="flex flex-wrap mb-2 gap-1">
-                                    <span class="bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Personalizado</span>
-                                    <span class="bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Blanco</span>
-                                </div>
-
-                                                                <div class="flex items-center justify-between">
-                                    <!-- Quantity selector (hidden by default, shown when product is added) -->
-                                    <div class="quantity-selector hidden flex items-center border border-gray-300 dark:border-gray-600 rounded overflow-hidden">
-                                        <button class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 product-decrease transition-colors text-xs">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input type="text" value="1" class="w-8 px-1 py-0.5 text-center border-none focus:ring-0 product-quantity bg-white dark:bg-gray-800 text-xs"/>
-                                        <button class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 product-increase transition-colors text-xs">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-
-                                    <!-- Default view (Add button) -->
-                                    <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 transition-colors shadow-sm text-xs">
-                                        <i class="fas fa-plus mr-1"></i> Añadir
-                                    </button>
-
-                                    <!-- Action buttons (hidden by default, shown when product is added) -->
-                                    <div class="product-actions hidden flex gap-1">
-                                        <button class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 product-delete transition-colors text-xs">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="px-2 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 product-add transition-colors shadow-sm text-xs">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Product Card 2 -->
-                        <div class="bg-white dark:bg-gray-800 rounded-md shadow-sm overflow-hidden product-card hover:shadow transition-all duration-300 text-xs" data-product-id="2">
-                            <div class="p-3">
-                                <div class="flex items-center justify-between mb-2">
-                                    <h3 class="text-sm font-medium text-gray-800 dark:text-white truncate">Escritorio personalizable</h3>
-                                    <i class="far fa-star text-gray-400 dark:text-gray-500 product-favorite cursor-pointer hover:text-yellow-500 transition-colors"></i>
-                                </div>
-
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">[DESK0006]</div>
-
-                                <div class="flex items-center justify-between mb-2">
-                                    <div>
-                                        <div class="font-medium text-xs text-gray-700 dark:text-gray-300">962,55 €</div>
-                                        <div class="flex items-center">
-                                            <i class="fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs"></i>
-                                            <span class="text-xs text-green-600 dark:text-green-400">Stock: 70,00</span>
-                                        </div>
-                                    </div>
-                                    <div class="w-14 h-14 flex items-center justify-center">
-                                        <img src="src/img/products/desk2.png" alt="Escritorio personalizable" class="max-h-full max-w-full"/>
-                                    </div>
-                                </div>
-
-                                <div class="flex flex-wrap mb-2 gap-1">
-                                    <span class="bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Personalizado</span>
-                                    <span class="bg-gray-800 text-white text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Negro</span>
-                                </div>
-
-                                                                <div class="flex items-center justify-between">
-                                    <!-- Quantity selector (hidden by default, shown when product is added) -->
-                                    <div class="quantity-selector hidden flex items-center border border-gray-300 dark:border-gray-600 rounded overflow-hidden">
-                                        <button class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 product-decrease transition-colors text-xs">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input type="text" value="1" class="w-8 px-1 py-0.5 text-center border-none focus:ring-0 product-quantity bg-white dark:bg-gray-800 text-xs"/>
-                                        <button class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 product-increase transition-colors text-xs">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-
-                                    <!-- Default view (Add button) -->
-                                    <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 transition-colors shadow-sm text-xs">
-                                        <i class="fas fa-plus mr-1"></i> Añadir
-                                    </button>
-
-                                    <!-- Action buttons (hidden by default, shown when product is added) -->
-                                    <div class="product-actions hidden flex gap-1">
-                                        <button class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 product-delete transition-colors text-xs">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="px-2 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 product-add transition-colors shadow-sm text-xs">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                                                <!-- Product Card 3 -->
-                        <div class="bg-white dark:bg-gray-800 rounded-md shadow-sm overflow-hidden product-card hover:shadow transition-all duration-300 text-xs" data-product-id="3">
-                            <div class="p-3">
-                                <div class="flex items-center justify-between mb-2">
-                                    <h3 class="text-sm font-medium text-gray-800 dark:text-white truncate">Gabinete grande</h3>
-                                    <i class="far fa-star text-gray-400 dark:text-gray-500 product-favorite cursor-pointer hover:text-yellow-500 transition-colors"></i>
-                                </div>
-
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">[E-COM07]</div>
-
-                                <div class="flex items-center justify-between mb-2">
-                                    <div>
-                                        <div class="font-medium text-xs text-gray-700 dark:text-gray-300">410,69 €</div>
-                                        <div class="flex items-center">
-                                            <i class="fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs"></i>
-                                            <span class="text-xs text-green-600 dark:text-green-400">Stock: 500,00</span>
-                                        </div>
-                                    </div>
-                                    <div class="w-14 h-14 flex items-center justify-center">
-                                        <img src="src/img/products/cabinet.png" alt="Gabinete grande" class="max-h-full max-w-full"/>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-center justify-between">
-                                    <!-- Quantity selector (hidden by default, shown when product is added) -->
-                                    <div class="quantity-selector hidden flex items-center border border-gray-300 dark:border-gray-600 rounded overflow-hidden">
-                                        <button class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 product-decrease transition-colors text-xs">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input type="text" value="1" class="w-8 px-1 py-0.5 text-center border-none focus:ring-0 product-quantity bg-white dark:bg-gray-800 text-xs"/>
-                                        <button class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 product-increase transition-colors text-xs">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-
-                                    <!-- Default view (Add button) -->
-                                    <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 transition-colors shadow-sm text-xs">
-                                        <i class="fas fa-plus mr-1"></i> Añadir
-                                    </button>
-
-                                    <!-- Action buttons (hidden by default, shown when product is added) -->
-                                    <div class="product-actions hidden flex gap-1">
-                                        <button class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 product-delete transition-colors text-xs">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="px-2 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 product-add transition-colors shadow-sm text-xs">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Product Card 4 -->
-                        <div class="bg-white dark:bg-gray-800 rounded-md shadow-sm overflow-hidden product-card hover:shadow transition-all duration-300 text-xs" data-product-id="4">
-                            <div class="p-3">
-                                <div class="flex items-center justify-between mb-2">
-                                    <h3 class="text-sm font-medium text-gray-800 dark:text-white truncate">Armario con puertas</h3>
-                                    <i class="far fa-star text-gray-400 dark:text-gray-500 product-favorite cursor-pointer hover:text-yellow-500 transition-colors"></i>
-                                </div>
-
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">[E-COM11]</div>
-
-                                <div class="flex items-center justify-between mb-2">
-                                    <div>
-                                        <div class="font-medium text-xs text-gray-700 dark:text-gray-300">179,68 €</div>
-                                        <div class="flex items-center">
-                                            <i class="fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs"></i>
-                                            <span class="text-xs text-green-600 dark:text-green-400">Stock: 33,00</span>
-                                        </div>
-                                    </div>
-                                    <div class="w-14 h-14 flex items-center justify-center">
-                                        <img src="src/img/products/cabinet-doors.png" alt="Armario con puertas" class="max-h-full max-w-full"/>
-                                    </div>
-                                </div>
-
-                                                                <div class="flex items-center justify-between">
-                                    <!-- Quantity selector (hidden by default, shown when product is added) -->
-                                    <div class="quantity-selector hidden flex items-center border border-gray-300 dark:border-gray-600 rounded overflow-hidden">
-                                        <button class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 product-decrease transition-colors text-xs">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input type="text" value="1" class="w-8 px-1 py-0.5 text-center border-none focus:ring-0 product-quantity bg-white dark:bg-gray-800 text-xs"/>
-                                        <button class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 product-increase transition-colors text-xs">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-
-                                    <!-- Default view (Add button) -->
-                                    <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 transition-colors shadow-sm text-xs">
-                                        <i class="fas fa-plus mr-1"></i> Añadir
-                                    </button>
-
-                                    <!-- Action buttons (hidden by default, shown when product is added) -->
-                                    <div class="product-actions hidden flex gap-1">
-                                        <button class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 product-delete transition-colors text-xs">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="px-2 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 product-add transition-colors shadow-sm text-xs">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="flex flex-col md:flex-row mb-4">
+                    <div t-attf-id="page-#{page_name}-product-catalog-select-products-grid" class="product-catalog-list w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3"></div>
                 </div>
-            </div>
 
-            <!-- <div class="fixed bottom-0 right-0 z-10 mr-6 mb-6">
-                <input type="hidden" id="stock-list-pagination-page" value="1"/>
-                <div class="pagination-container px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg flex items-center justify-between" id="reception-list-pagination-container"></div>
+                <!-- Pagination -->
+                <div t-attf-id="page-#{page_name}-product-catalog-select-pagination" class="fixed bottom-0 right-0 z-10 mr-6 mb-6"></div>
             </div>
-
-            <div class="h-25"></div> -->
 
             <t t-set="footer_content">
 
-                <!-- <div t-attf-id="page-#{page_name}-product-catalog-select" class="w-full h-full fixed inset-0 z-[99999] bg-gray-900 bg-opacity-90 hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 99999;">
-                    <div class="w-full h-full max-w-7xl mx-auto my-4 bg-[#1e293b] rounded-lg shadow-xl flex flex-col overflow-hidden">
-                        <div class="px-6 py-4 border-b border-gray-700 flex justify-between items-center">
-                            <h3 class="text-lg font-medium text-white">Product Catalog</h3>
-                            <button t-attf-id="page-#{page_name}-product-catalog-close" class="text-gray-400 hover:text-gray-200">
-                                <i class="fas fa-times text-xl"></i>
-                            </button>
-                        </div>
+                <div class="fixed bottom-0 right-0 z-10 mr-6 mb-6" t-attf-id="page-#{page_name}-list-pagination-container-main">
+                    <input type="hidden" t-attf-id="page-#{page_name}-list-pagination-page" value="1"/>
+                    <div class="pagination-container px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg flex items-center justify-between" t-attf-id="page-#{page_name}-list-pagination-container"></div>
+                </div>
 
-                        <div class="p-4 border-b border-gray-700">
-                            <div class="flex flex-col md:flex-row justify-between gap-4">
-                                <div class="relative flex-grow">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-search text-gray-400"></i>
-                                    </div>
-                                    <input t-attf-id="page-#{page_name}-product-catalog-search" type="text" class="block w-full pl-10 pr-3 py-2 bg-[#171f2e] border border-gray-700 rounded-full text-white focus:outline-none focus:ring-1 focus:ring-cyan-500" placeholder="Search products..."/>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button t-attf-id="page-#{page_name}-product-catalog-filter" class="px-3 py-2 flex items-center text-white">
-                                        <i class="fas fa-filter mr-2"></i> Filter
-                                    </button>
-                                    <button t-attf-id="page-#{page_name}-product-catalog-confirm" class="px-3 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 flex items-center">
-                                        <i class="fas fa-check mr-2"></i> Confirm Selection
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex-grow overflow-auto p-4">
-                            <div class="mb-4 flex justify-between items-center">
-                                <div class="flex items-center">
-                                    <i class="fas fa-shopping-cart text-cyan-500 mr-2"></i>
-                                    <span t-attf-id="page-#{page_name}-products-selected-counter" class="text-white">Products Selected</span>
-                                    <span t-attf-id="page-#{page_name}-products-selected-count" class="ml-2 bg-cyan-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
-                                </div>
-                                <button t-attf-id="page-#{page_name}-product-catalog-clear" class="px-3 py-1 border border-gray-600 text-gray-300 rounded-md hover:bg-gray-700">
-                                    <i class="fas fa-trash-alt mr-2"></i> Clear
-                                </button>
-                            </div>
-
-                            <div t-attf-id="page-#{page_name}-product-catalog-items" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"></div>
-                        </div>
-
-                        <div class="p-4 border-t border-gray-700 bg-[#1a2234]">
-                            <div class="flex justify-between items-center">
-                                <span t-attf-id="page-#{page_name}-product-catalog-selected-count" class="text-sm text-gray-300">0 products selected</span>
-                                <div class="flex gap-2">
-                                    <button t-attf-id="page-#{page_name}-product-catalog-cancel" class="px-3 py-2 border border-gray-600 text-white rounded-md hover:bg-gray-700">
-                                        Cancel
-                                    </button>
-                                    <button t-attf-id="page-#{page_name}-product-catalog-add-selected" class="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center">
-                                        <i class="fas fa-plus mr-2"></i> Add Selected Products
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
+                <div class="h-25"></div>
 
                 <!-- Reception Create Modal -->
                 <div t-attf-id="page-#{page_name}-list-create-modal" class="modal" data-outside-close="false">
@@ -533,7 +320,7 @@
 
                                     <div t-attf-id="page-#{page_name}-list-create-form-products-container">
                                         <div t-attf-id="page-#{page_name}-list-create-form-products-line-items-container"
-                                             class="reception-products-line-items-container">
+                                             class="products-line-items-container">
                                         </div>
 
                                         <div class="mt-3 flex items-center gap-2">
@@ -545,6 +332,9 @@
                                                     class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
                                                 <i class="fas fa-plus mr-1.5"></i> Catalog
                                             </button>
+                                            <span class="ml-2 text-xs text-gray-500 italic">
+                                                <i class="fas fa-info-circle"></i> Add products manually or select from catalog
+                                            </span>
                                         </div>
 
                                     </div>
@@ -579,19 +369,19 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
                         <div class="ml-4">
-                            <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="package.name"/>
-                            <div class="text-sm text-gray-500">ID: #<t t-esc="package.id"/></div>
+                            <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-out="package.name"/>
+                            <div class="text-sm text-gray-500">ID: #<t t-out="package.id"/></div>
                         </div>
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="package.package_type_id.name"/>
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.package_type_id.name"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="package.shipping_weight"/>
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.shipping_weight"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="package.pack_date"/>
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.pack_date"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button t-attf-data-tooltip-target="tooltip-edit-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
@@ -609,14 +399,14 @@
                     <input type="checkbox" class="package-checkbox h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500" t-att-data-package-id="package.id"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="package.name"/>
-                    <div class="text-sm text-gray-500" t-esc="package.package_type_id.display_name"/>
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.name"/>
+                    <div class="text-sm text-gray-500" t-out="package.package_type_id.display_name"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="package.shipping_weight"/>
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.shipping_weight"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="package.pack_date"/>
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.pack_date"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button t-attf-data-tooltip-target="tooltip-edit-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
@@ -634,8 +424,8 @@
                     <input type="checkbox" class="package-checkbox h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500" t-att-data-package-id="package.id"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="package.name"/>
-                    <div class="text-sm text-gray-500" t-esc="package.package_type_id.display_name"/>
+                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-out="package.name"/>
+                    <div class="text-sm text-gray-500" t-out="package.package_type_id.display_name"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button t-attf-data-tooltip-target="tooltip-edit-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
@@ -706,6 +496,115 @@
                     <i class="fas fa-chevron-right"></i>
                 </button>
             </nav>
+        </div>
+    </template>
+
+    <template id="portal_product_catalog_items" name="Product Catalog Items">
+        <t t-if="products">
+            <t t-foreach="products" t-as="product">
+                <div class="bg-white dark:bg-gray-800 rounded-md shadow-sm overflow-hidden product-card hover:shadow transition-all duration-300 text-xs" t-att-data-product-id="product.id">
+                    <div class="p-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-gray-800 dark:text-white truncate"><t t-out="product.name"/></h3>
+                        </div>
+
+                        <div t-if="product.default_code" class="text-xs text-gray-500 dark:text-gray-400 mb-2">[<t t-out="product.default_code"/>]</div>
+
+                        <div class="flex items-center justify-between mb-2">
+                            <div>
+                                <div class="font-medium text-xs text-gray-700 dark:text-gray-300">
+                                    <span t-field="product.list_price"/>
+                                    <span t-field="product.currency_id.symbol"/>
+                                </div>
+                                <div class="flex items-center">
+                                    <t t-if="product.qty_available &gt; 0">
+                                        <i class="fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs"></i>
+                                        <span class="text-xs text-green-600 dark:text-green-400">Stock: <t t-out="product.qty_available"/></span>
+                                    </t>
+                                    <t t-else="">
+                                        <i class="fas fa-times-circle text-red-600 dark:text-red-400 mr-1 text-xs"></i>
+                                        <span class="text-xs text-red-600 dark:text-red-400">Out of Stock</span>
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="w-14 h-14 flex items-center justify-center">
+                                <t t-if="product.image_128">
+                                    <img t-att-src="'data:image/png;base64,' + product.image_128.decode('utf-8')" t-att-alt="product.name" class="max-h-full max-w-full"/>
+                                </t>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap mb-2 gap-1" t-if="product.product_template_attribute_value_ids">
+                            <t t-foreach="product.product_template_attribute_value_ids" t-as="attribute_value">
+                                <span class="bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">
+                                    <t t-out="attribute_value.name"/>
+                                </span>
+                            </t>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <!-- Quantity selector (hidden by default, shown when product is added) -->
+                            <div class="quantity-selector hidden flex items-center border border-gray-300 dark:border-gray-600 rounded overflow-hidden">
+                                <button class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 product-decrease transition-colors text-xs">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="text" value="1" class="w-8 px-1 py-0.5 text-center border-none focus:ring-0 product-quantity bg-white dark:bg-gray-800 text-xs"/>
+                                <button class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 product-increase transition-colors text-xs">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+
+                            <!-- Default view (Add button) -->
+                            <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 transition-colors shadow-sm text-xs">
+                                <i class="fas fa-plus mr-1"></i> Add
+                            </button>
+
+                            <!-- Action buttons (hidden by default, shown when product is added) -->
+                            <div class="product-actions hidden flex gap-1">
+                                <button class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 product-delete transition-colors text-xs">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                                <button class="px-2 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 product-add transition-colors shadow-sm text-xs">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+        <t t-else="">
+            <div class="col-span-full p-6 text-center">
+                <i class="fas fa-search text-gray-400 text-4xl mb-3"></i>
+                <p class="text-lg text-gray-500 dark:text-gray-400">No products found</p>
+                <p class="text-sm text-gray-400 dark:text-gray-500">Try changing your search criteria</p>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_product_catalog_pagination" name="Product Catalog Pagination">
+        <div class="flex items-center justify-between px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg">
+            <div class="flex items-center">
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                    <span class="font-medium">Page <t t-out="page"/></span> of <span class="font-medium"><t t-out="total_pages"/></span>
+                    <span class="text-xs text-gray-500 ml-2">(<t t-out="total_count"/> products)</span>
+                </p>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button t-att-class="'product-catalog-page-btn px-2 py-1 rounded ' + ('' if has_previous else 'opacity-50 cursor-not-allowed')" t-att-data-page="page - 1" t-att-disabled="not has_previous">
+                    <i class="fas fa-chevron-left text-gray-600 dark:text-gray-400"></i>
+                </button>
+
+                <t t-foreach="pages" t-as="p">
+                    <button t-att-class="'product-catalog-page-btn px-3 py-1 rounded ' + ('bg-cyan-100 text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300' if p['active'] else 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700')" t-att-data-page="p['page']">
+                        <t t-out="p['page']"/>
+                    </button>
+                </t>
+
+                <button t-att-class="'product-catalog-page-btn px-2 py-1 rounded ' + ('' if has_next else 'opacity-50 cursor-not-allowed')" t-att-data-page="page + 1" t-att-disabled="not has_next">
+                    <i class="fas fa-chevron-right text-gray-600 dark:text-gray-400"></i>
+                </button>
+            </div>
         </div>
     </template>
 
