@@ -6,6 +6,8 @@
 
 import math
 import json
+import pytz
+from datetime import datetime
 from functools import lru_cache
 
 from odoo import http, _
@@ -71,7 +73,6 @@ class PortalReceptionController(PortalAdminController):
             ],
             'list_columns': [
                 {'id': 'name', 'label': _('Name'), 'sortable': True},
-                {'id': 'package_type', 'label': _('Type'), 'sortable': True, 'lg': True},
                 {'id': 'weight', 'label': _('Weight'), 'sortable': True, 'lg': True},
                 {'id': 'date', 'label': _('Date'), 'sortable': True, 'md': True},
                 {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True}
@@ -246,108 +247,86 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/account/reception/create', type='json', auth='user')
     def account_reception_create(self, **post):
         """Create a new reception package"""
-        try:
-            # Extract package data
-            name = post.get('name')
-            tracking_number = post.get('tracking_number')  # New field
-            width = float(post.get('width', 0) or 0)
-            height = float(post.get('height', 0) or 0)
-            length = float(post.get('length', 0) or 0)
-            volume = float(post.get('volume', 0) or 0)
-            weight = float(post.get('weight', 0) or 0)
-            barcode = post.get('barcode')
-            sku = post.get('sku')
-            tracking = post.get('tracking', 'none')
-            products = post.get('products', [])  # New products list
 
-            # Get current user's partner
-            partner = request.env.user.partner_id
+        # Get current user's partner
+        partner = request.env.user.partner_id
 
-            # Create package
-            StockPickingType = request.env['stock.picking.type'].sudo()
-            StockPicking = request.env['stock.picking'].sudo()
-            StockMove = request.env['stock.move'].sudo()
-            ProductTemplate = request.env['product.template'].sudo()
+        # Create package
+        StockPickingType = request.env['stock.picking.type'].sudo()
+        StockPicking = request.env['stock.picking'].sudo()
+        ProductProduct = request.env['product.product'].sudo()
+        AccountPartner = request.env['account.partner'].sudo()
 
-            # Get reception type
-            reception_type = request.env.ref('stock.picking_type_in')
+        # Get reception type
+        reception_type = request.env.ref('stock.picking_type_in').sudo()
+        tracking_number = post.get('tracking_number')
+        scheduled_date_value = post.get('scheduled_date')
+        carrier_id = post.get('carrier_id')
+        products = json.loads(post.get('products', '[]'))
+        account_partner = AccountPartner.search([('partner_id', '=', partner.commercial_partner_id.id)], limit=1)
+        scheduled_date_dt = datetime.strptime(scheduled_date_value, '%d-%m-%Y %H:%M')
 
-            # Create the reception
-            picking = StockPicking.create({
-                'picking_type_id': reception_type.id,
-                'partner_id': partner.id,
-                'origin': f'Portal: {name}',
-                'location_id': reception_type.default_location_src_id.id,
-                'location_dest_id': reception_type.default_location_dest_id.id,
-                'move_type': 'direct',
-                'carrier_tracking_ref': tracking_number,  # Add tracking number
-            })
+        # Assume the input datetime is in user's timezone, make it timezone-aware
+        user_tz = pytz.timezone(request.env.user.tz or 'UTC')
+        local_dt = user_tz.localize(scheduled_date_dt)
 
-            # Process each product in the list
-            if products:
-                for product_data in products:
-                    product_name = product_data.get('name')
-                    product_sku = product_data.get('sku')
-                    product_qty = product_data.get('quantity', 1)
+        # Convert to UTC for storing in database
+        utc_dt = local_dt.astimezone(pytz.UTC)
+        scheduled_date = utc_dt.strftime('%Y-%m-%d %H:%M:%S')
 
-                    if not product_name:
-                        continue
+        def get_date_diff(date1, date2):
+            d1 = datetime.strptime(date1.strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+            d2 = datetime.strptime(date2.strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+            return d2 - d1
 
-                    # Find or create product
-                    product = ProductTemplate.search([('default_code', '=', product_sku)], limit=1)
-                    if not product:
-                        product = ProductTemplate.create({
-                            'name': product_name,
-                            'type': 'product',
-                            'default_code': product_sku or f"{sku}-{product_name}",
-                            'barcode': barcode,
-                            'tracking': tracking,
-                            'weight': weight,
-                            'volume': volume,
-                        })
+        moves = []
+        for product in products:
+            pid = product.get('product_id')
+            qty = product.get('quantity')
 
-                    # Create move line for this product
-                    StockMove.create({
-                        'name': product_name,
-                        'picking_id': picking.id,
-                        'product_id': product.product_variant_id.id,
-                        'product_uom_qty': product_qty,
-                        'product_uom': product.uom_id.id,
-                        'location_id': reception_type.default_location_src_id.id,
-                        'location_dest_id': reception_type.default_location_dest_id.id,
-                    })
-            else:
-                # Original code for single product if no products list
-                product = ProductTemplate.search([('default_code', '=', sku)], limit=1)
-                if not product:
-                    product = ProductTemplate.create({
-                        'name': name,
-                        'type': 'product',
-                        'default_code': sku,
-                        'barcode': barcode,
-                        'tracking': tracking,
-                        'weight': weight,
-                        'volume': volume,
-                    })
+            if not pid:
+                return { 'status': 'error', 'message': _('Product not found') }
 
-                # Create the move line
-                move = StockMove.create({
-                    'name': name,
-                    'picking_id': picking.id,
-                    'product_id': product.product_variant_id.id,
-                    'product_uom_qty': 1,
-                    'product_uom': product.uom_id.id,
-                    'location_id': reception_type.default_location_src_id.id,
-                    'location_dest_id': reception_type.default_location_dest_id.id,
-                })
+            if not pid.isdigit():
+                return { 'status': 'error', 'message': _('Invalid product ID') }
 
-            return {
-                'status': 'success',
-                'message': _('Reception created successfully'),
-                'picking_id': picking.id
-            }
-        except Exception as e:
-            return {'status': 'error', 'message': str(e)}
+            product = ProductProduct.browse(int(pid))
+
+            if not product:
+                return { 'status': 'error', 'message': _('Product not found') }
+
+            if '.' in qty and not qty.replace('.', '').isdigit():
+                return { 'status': 'error', 'message': _('Invalid quantity') }
+
+            if '.' not in qty and not qty.isdigit():
+                return { 'status': 'error', 'message': _('Invalid quantity') }
+
+            moves.append([0, 0, {
+                'name': product.display_name,
+                'product_id': product.id,
+                'product_uom_qty': float(qty)
+            }])
+
+        # Create the reception
+        picking = StockPicking.create({
+            'picking_type_id': reception_type.id,
+            'account_partner_id': account_partner.id,
+            'partner_id': partner.commercial_partner_id.id,
+            'carrier_id': carrier_id,
+            'origin': f'Portal: {tracking_number}',
+            'location_id': reception_type.default_location_src_id.id,
+            'location_dest_id': reception_type.default_location_dest_id.id,
+            'move_type': 'direct',
+            'carrier_tracking_ref': tracking_number,
+            'scheduled_date': (local_dt + get_date_diff(local_dt, utc_dt)).strftime('%Y-%m-%d %H:%M:%S'),
+            'move_ids': moves
+        })
+
+        picking.action_confirm()
+        picking.action_put_in_pack()
+
+        return { 'status': 'success', 'message': _('Reception created successfully') }
+
 
     @http.route('/account/reception/product-catalog', type='json', auth='user')
     def account_reception_product_catalog(self, page=1, search='', **post):
@@ -452,3 +431,159 @@ class PortalReceptionController(PortalAdminController):
             'status': 'success',
             'items': result_items
         }
+
+    @http.route('/account/reception/carrier-search', type='json', auth='user')
+    def account_reception_carrier_search(self, term='', **kw):
+        """Search carriers based on term for select2"""
+        DeliveryCarrier = request.env['delivery.carrier'].sudo()
+        domain = []
+
+        if term:
+            domain = expression.OR([
+                [('name', 'ilike', term)],
+                [('delivery_type', 'ilike', term)]
+            ])
+
+        carriers = DeliveryCarrier.search(domain, limit=10)
+
+        # Prepare carrier data
+        result_items = []
+        for carrier in carriers:
+            result_items.append({
+                'id': carrier.id,
+                'text': carrier.name,
+                'delivery_type': carrier.delivery_type
+            })
+
+        return {
+            'items': result_items
+        }
+
+    @http.route('/account/reception/details/<int:reception_id>', type='http', auth="user", website=True)
+    def account_reception_details_action(self, reception_id, access_token=None, **post):
+        StockPicking = request.env['stock.picking'].sudo()
+        reception_type = request.env.ref('stock.picking_type_in')
+        partner_id = request.env.user.partner_id
+        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
+
+        # Get the reception
+        picking = StockPicking.search([
+            ('id', '=', reception_id),
+            ('picking_type_id', '=', reception_type.id),
+            ('partner_id', 'in', partner_ids)
+        ], limit=1)
+
+        if not picking:
+            return request.redirect('/account/reception')
+
+        values = self._get_admin_layout_values()
+        values.update({
+            'page_name': 'reception_details',
+            'picking': picking,
+            'page_title': _('Reception Details'),
+            'page_url': '/account/reception/details/%s' % reception_id,
+        })
+
+        return request.render("portal_reception.portal_reception_details_page", values)
+
+    @http.route('/portal_reception/reception/details/chatter/fetch', type='json', auth='public', website=True)
+    def portal_reception_details_chatter_fetch(self, reception_id=None, limit=10, after=None, before=None, **kw):
+        """Add compatible route matching the JS client call pattern"""
+        if not reception_id:
+            return {
+                'data': {'mail.message': []},
+                'status': 'success'
+            }
+
+        StockPicking = request.env['stock.picking'].sudo()
+        domain = [
+            ('res_id', '=', int(reception_id)),
+            ('model', '=', 'stock.picking'),
+            ('message_type', '=', 'comment'),
+            ('subtype_id', '=', request.env.ref('mail.mt_comment').id),
+            '|', ('body', '!=', ''), ('attachment_ids', '!=', False)
+        ]
+
+        # Fetch the messages
+        Message = request.env['mail.message']
+        # Non-employee see only messages with not internal subtype
+        if not request.env.user._is_internal():
+            domain = expression.AND([Message._get_search_domain_share(), domain])
+
+        messages = Message.sudo().search(domain, limit=limit, order='date DESC, id DESC')
+        formatted_messages = messages.portal_message_format() if messages else []
+
+        return {
+            'data': {
+                'mail.message': formatted_messages
+            },
+            'status': 'success'
+        }
+
+    @http.route('/portal_reception/reception/details/chatter/post', type='http', auth="user", methods=['POST'])
+    def portal_reception_details_chatter_post(self, reception_id, access_token=None, **post):
+        """Add compatible route for posting messages from JS client"""
+        if not str(reception_id).isdigit():
+            return json.dumps({'status': 'error', 'message': 'Invalid reception ID'})
+
+        StockPicking = request.env['stock.picking'].sudo()
+        reception_type = request.env.ref('stock.picking_type_in')
+        partner_id = request.env.user.partner_id
+        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
+
+        # Get the reception
+        picking = StockPicking.search([
+            ('id', '=', int(reception_id)),
+            ('picking_type_id', '=', reception_type.id),
+            ('partner_id', 'in', partner_ids)
+        ], limit=1)
+
+        if not picking:
+            return json.dumps({'status': 'error', 'message': 'Access denied'})
+
+        # Process attachment if provided
+        attachment_id = False
+        attachment_data = post.get('attachment')
+        if attachment_data and hasattr(attachment_data, 'filename'):
+            ufile = attachment_data
+            if ufile:
+                # Create attachment
+                vals = {
+                    "name": ufile.filename,
+                    "raw": ufile.read(),
+                    "res_id": int(reception_id),
+                    "res_model": 'stock.picking',
+                }
+
+                if request.env.user.share:
+                    # Generate access token for shared users
+                    vals["access_token"] = request.env["ir.attachment"]._generate_access_token()
+
+                try:
+                    attachment = request.env["ir.attachment"].sudo().create(vals)
+                    attachment_id = attachment.id
+                except AccessError:
+                    return json.dumps({"status": "error", "message": _("You are not allowed to upload an attachment here.")})
+
+        # Post message
+        message_content = post.get('message', '')
+        attachment_ids = [attachment_id] if attachment_id else []
+
+        try:
+            message = picking.sudo().with_user(request.env.user).message_post(
+                body=message_content,
+                message_type='comment',
+                subtype_xmlid='mail.mt_comment',
+                attachment_ids=attachment_ids,
+                author_id=request.env.user.partner_id.id
+            )
+
+            return json.dumps({
+                'status': 'success',
+                'message_id': message.id
+            })
+        except Exception as e:
+            return json.dumps({
+                'status': 'error',
+                'message': str(e)
+            })

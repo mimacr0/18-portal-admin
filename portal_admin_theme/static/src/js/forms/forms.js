@@ -100,6 +100,7 @@ const sysCollectFormData = (formSelector) => {
     // Process file inputs
     form.querySelectorAll('input[type="file"]').forEach(fileInput => {
         specialFields.add(fileInput.name);
+        if(!fileInput.hasAttribute('name')) return;
 
         if (fileInput.files.length > 0) {
             // For multiple files
@@ -115,12 +116,14 @@ const sysCollectFormData = (formSelector) => {
     // Process select-multiple inputs
     form.querySelectorAll('select[multiple]').forEach(select => {
         specialFields.add(select.name);
+        if(!select.hasAttribute('name')) return;
         formData[select.name] = Array.from(select.selectedOptions).map(option => option.value);
     });
 
     // Process checkboxes
     form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         if (!checkbox.name) return;
+        if(!checkbox.hasAttribute('name')) return;
 
         // Skip if this is part of a checkbox group which we'll handle separately
         if (form.querySelectorAll(`input[type="checkbox"][name="${checkbox.name}"]`).length > 1) {
@@ -140,6 +143,7 @@ const sysCollectFormData = (formSelector) => {
     const radioGroups = new Set();
     form.querySelectorAll('input[type="radio"]').forEach(radio => {
         if (!radio.name || radioGroups.has(radio.name)) return;
+        if(!radio.hasAttribute('name')) return;
 
         radioGroups.add(radio.name);
         specialFields.add(radio.name);
@@ -150,7 +154,8 @@ const sysCollectFormData = (formSelector) => {
 
     // Process int fields
     form.querySelectorAll('input[type="number"]').forEach(input => {
-        if (specialFields.has(input.name)) return;
+        if(specialFields.has(input.name)) return;
+        if(!input.hasAttribute('name')) return;
 
         formData[input.name] = parseInt(input.value);
         specialFields.add(input.name);
@@ -161,6 +166,7 @@ const sysCollectFormData = (formSelector) => {
     basicInputs.forEach(input => {
         // Skip fields already processed
         if (specialFields.has(input.name)) return;
+        if (!input.hasAttribute('name')) return;
 
         // Add the standard field value
         formData[input.name] = input.value;

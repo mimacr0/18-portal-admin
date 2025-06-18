@@ -1,67 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="portal_reception_product_card" name="Portal Reception Product Catalog">
-
-        <div class="bg-white dark:bg-gray-800 rounded-md shadow-sm overflow-hidden product-card hover:shadow transition-all duration-300 text-xs" data-product-id="1">
-            <div class="p-3">
-                <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-sm font-medium text-gray-800 dark:text-white truncate">Escritorio personalizable</h3>
-                    <i class="far fa-star text-gray-400 dark:text-gray-500 product-favorite cursor-pointer hover:text-yellow-500 transition-colors"></i>
-                </div>
-
-                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">[DESK0005]</div>
-
-                <div class="flex items-center justify-between mb-2">
-                    <div>
-                        <div class="font-medium text-xs text-gray-700 dark:text-gray-300">962,55 €</div>
-                        <div class="flex items-center">
-                            <i class="fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs"></i>
-                            <span class="text-xs text-green-600 dark:text-green-400">Stock: 65,00</span>
-                        </div>
-                    </div>
-                    <div class="w-14 h-14 flex items-center justify-center">
-                        <img src="src/img/products/desk1.png" alt="Escritorio personalizable" class="max-h-full max-w-full"/>
-                    </div>
-                </div>
-
-                <div class="flex flex-wrap mb-2 gap-1">
-                    <span class="bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Personalizado</span>
-                    <span class="bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Blanco</span>
-                </div>
-
-                <div class="flex items-center justify-between">
-                    <!-- Quantity selector (hidden by default, shown when product is added) -->
-                    <div class="quantity-selector hidden flex items-center border border-gray-300 dark:border-gray-600 rounded overflow-hidden">
-                        <button class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 product-decrease transition-colors text-xs">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                        <input type="text" value="1" class="w-8 px-1 py-0.5 text-center border-none focus:ring-0 product-quantity bg-white dark:bg-gray-800 text-xs"/>
-                        <button class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 product-increase transition-colors text-xs">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-
-                    <!-- Default view (Add button) -->
-                    <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 transition-colors shadow-sm text-xs">
-                        <i class="fas fa-plus mr-1"></i> Añadir
-                    </button>
-
-                    <!-- Action buttons (hidden by default, shown when product is added) -->
-                    <div class="product-actions hidden flex gap-1">
-                        <button class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 product-delete transition-colors text-xs">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                        <button class="px-2 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 product-add transition-colors shadow-sm text-xs">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </template>
-
     <template id="portal_reception_page_main" name="Portal Reception Page">
         <t t-call="portal_admin_theme.portal_admin_layout">
 
@@ -294,7 +233,7 @@
                                         <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
-                                        <input type="text" name="scheduled_date" t-attf-id="page-#{page_name}-list-create-form-scheduled-date" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Scheduled Date"/>
+                                        <input type="text" name="scheduled_date" t-attf-id="page-#{page_name}-list-create-form-scheduled-date" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Scheduled Date" required="required"/>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-scheduled-date-error"></div>
                                     </div>
                                 </div>
@@ -306,17 +245,35 @@
                                         <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
-                                        <input type="text" name="tracking_number" t-attf-id="page-#{page_name}-list-create-form-tracking-number" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Tracking Number"/>
+                                        <input type="text" name="tracking_number" t-attf-id="page-#{page_name}-list-create-form-tracking-number" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Tracking Number" required="required"/>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-tracking-number-error"></div>
                                     </div>
                                 </div>
 
+                                <!-- Tracking number field -->
                                 <div class="form-group">
-                                    <input name="products" type="hidden" t-attf-id="page-#{page_name}-list-create-form-products-list" required="required"/>
-
-                                    <div class="mb-4">
-                                        <p class="form-label-sm font-sm">Products</p>
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-carrier-id" class="form-label-sm font-sm">Carrier</label>
+                                        <span class="text-red-500 ml-1">*</span>
                                     </div>
+                                    <div>
+                                        <select name="carrier_id" t-attf-id="page-#{page_name}-list-create-form-carrier-id" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"></select>
+                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-carrier-id-error"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-products-list" class="form-label-sm font-sm">Products</label>
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </div>
+
+                                    <div class="field-help mb-2">
+                                        <span class="help-text">Enter package number, product and quantity respectively.</span>
+                                    </div>
+
+                                    <input name="products" type="hidden" t-attf-id="page-#{page_name}-list-create-form-products-list" required="required"/>
 
                                     <div t-attf-id="page-#{page_name}-list-create-form-products-container">
                                         <div t-attf-id="page-#{page_name}-list-create-form-products-line-items-container"
@@ -375,15 +332,15 @@
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.package_type_id.name"/>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.shipping_weight"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.pack_date"/>
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.scheduled_date"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <a t-att-href="package.get_details_url()" t-attf-data-tooltip-target="tooltip-details-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
                     <button t-attf-data-tooltip-target="tooltip-edit-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -400,13 +357,13 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.name"/>
-                    <div class="text-sm text-gray-500" t-out="package.package_type_id.display_name"/>
+                    <div class="text-sm text-gray-500" t-out="package.picking_type_id.display_name"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.shipping_weight"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.pack_date"/>
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.scheduled_date"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button t-attf-data-tooltip-target="tooltip-edit-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
@@ -425,7 +382,7 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-out="package.name"/>
-                    <div class="text-sm text-gray-500" t-out="package.package_type_id.display_name"/>
+                    <div class="text-sm text-gray-500" t-out="package.picking_type_id.display_name"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button t-attf-data-tooltip-target="tooltip-edit-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
@@ -606,6 +563,228 @@
                 </button>
             </div>
         </div>
+    </template>
+
+    <template id="portal_reception_details_page" name="Portal Reception Details Page">
+        <t t-call="portal_admin_theme.portal_admin_layout">
+
+            <!-- Details Page -->
+            <div class="w-4/5 mx-auto lg:max-w-7xl bg-white dark:bg-gray-800 rounded-xl shadow-lg print:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <!-- Document Action Bar -->
+                <div class="p-5 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    <a href="/account/reception" class="inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Go back
+                    </a>
+                    <div class="flex items-center space-x-4">
+                        <div class="reception-status-selector relative">
+                            <span t-attf-class="px-3 py-1.5 bg-#{picking.state == 'done' and 'green' or (picking.state == 'cancel' and 'red' or 'amber')}-100 text-#{picking.state == 'done' and 'green' or (picking.state == 'cancel' and 'red' or 'amber')}-800 dark:bg-#{picking.state == 'done' and 'green' or (picking.state == 'cancel' and 'red' or 'amber')}-900 dark:text-#{picking.state == 'done' and 'green' or (picking.state == 'cancel' and 'red' or 'amber')}-200 text-xs font-medium rounded-full flex items-center">
+                                <span t-attf-class="w-2 h-2 bg-#{picking.state == 'done' and 'green' or (picking.state == 'cancel' and 'red' or 'amber')}-500 dark:bg-#{picking.state == 'done' and 'green' or (picking.state == 'cancel' and 'red' or 'amber')}-400 rounded-full mr-1.5"></span>
+                                <t t-if="picking.state == 'done'">Completed</t>
+                                <t t-elif="picking.state == 'cancel'">Cancelled</t>
+                                <t t-else="">Pending</t>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reception Header -->
+                <div class="p-8 border-b border-gray-200 dark:border-gray-700 relative">
+                    <div class="flex flex-col md:flex-row justify-between items-start relative z-10">
+                        <div>
+                            <div class="flex items-center">
+                                <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">RECEPTION</h1>
+                                <span class="ml-4 text-xl font-medium text-blue-600 dark:text-blue-400"><t t-out="picking.name"/></span>
+                            </div>
+                            <div class="mt-4 space-y-1">
+                                <p class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                                    <i class="far fa-calendar-alt mr-2 text-gray-500 dark:text-gray-500"></i>
+                                    Scheduled Date: <span class="ml-1 font-medium text-gray-800 dark:text-gray-200"><t t-out="picking.scheduled_date"/></span>
+                                </p>
+                                <p t-if="picking.origin" class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                                    <i class="fas fa-tag mr-2 text-gray-500 dark:text-gray-500"></i>
+                                    Origin: <span class="ml-1 font-medium text-gray-800 dark:text-gray-200"><t t-out="picking.origin"/></span>
+                                </p>
+                                <p t-if="picking.carrier_tracking_ref" class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                                    <i class="fas fa-truck mr-2 text-gray-500 dark:text-gray-500"></i>
+                                    Tracking: <span class="ml-1 font-medium text-gray-800 dark:text-gray-200"><t t-out="picking.carrier_tracking_ref"/></span>
+                                </p>
+                                <div t-if="picking.carrier_id" class="mt-3">
+                                    <div class="inline-flex items-center px-2.5 py-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                                        <i class="fas fa-shipping-fast mr-1.5 text-gray-500 dark:text-gray-500"></i>
+                                        <span class="text-xs text-gray-700 dark:text-gray-300">Carrier: <strong><t t-out="picking.carrier_id.name"/></strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    <!-- Partner Information -->
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm dark:shadow-gray-900/50 border border-gray-100 dark:border-gray-600">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-user mr-2 text-blue-600 dark:text-blue-400"></i>
+                            Partner
+                        </h3>
+                        <div class="text-sm space-y-2">
+                            <t t-set="partner" t-value="picking.partner_id"/>
+                            <p class="font-medium text-base text-gray-800 dark:text-white"><t t-out="partner.name"/></p>
+                            <p t-if="partner.street" class="text-gray-700 dark:text-gray-200"><t t-out="partner.street"/></p>
+                            <p t-if="partner.city" class="text-gray-700 dark:text-gray-200"><t t-out="partner.city"/></p>
+                            <p t-if="partner.zip" class="text-gray-700 dark:text-gray-200"><t t-out="partner.zip"/></p>
+                            <p t-if="partner.country_id" class="text-gray-700 dark:text-gray-200"><t t-out="partner.country_id.name"/></p>
+                            <div t-if="partner.ref" class="mt-4 pt-3 border-t border-dashed border-gray-200 dark:border-gray-500">
+                                <p class="font-medium flex items-center text-gray-800 dark:text-white">
+                                    <i class="fas fa-user-tag mr-2 text-gray-500 dark:text-gray-300"></i>
+                                    Customer ID: <span t-out="partner.ref"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reception Information -->
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm dark:shadow-gray-900/50 border border-gray-100 dark:border-gray-600">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-info-circle mr-2 text-blue-600 dark:text-blue-400"></i>
+                            Reception Info
+                        </h3>
+                        <div class="text-sm space-y-2">
+                            <p class="text-gray-700 dark:text-gray-200">
+                                <span class="font-medium">Status:</span>
+                                <span t-attf-class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-#{picking.state == 'done' and 'green' or (picking.state == 'cancel' and 'red' or 'amber')}-100 text-#{picking.state == 'done' and 'green' or (picking.state == 'cancel' and 'red' or 'amber')}-800">
+                                    <t t-if="picking.state == 'done'">Completed</t>
+                                    <t t-elif="picking.state == 'cancel'">Cancelled</t>
+                                    <t t-else="">Pending</t>
+                                </span>
+                            </p>
+                            <p class="text-gray-700 dark:text-gray-200">
+                                <span class="font-medium">Created:</span> <t t-out="picking.create_date"/>
+                            </p>
+                            <p t-if="picking.date_done" class="text-gray-700 dark:text-gray-200">
+                                <span class="font-medium">Completed:</span> <t t-out="picking.date_done"/>
+                            </p>
+                            <p t-if="picking.weight" class="text-gray-700 dark:text-gray-200">
+                                <span class="font-medium">Weight:</span> <t t-out="picking.weight"/> kg
+                            </p>
+                            <p t-if="picking.carrier_id" class="text-gray-700 dark:text-gray-200">
+                                <span class="font-medium">Shipping Method:</span> <t t-out="picking.carrier_id.name"/>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Items Table -->
+                <div class="p-8 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-box mr-2 text-blue-600 dark:text-blue-400"></i>
+                            Products
+                        </h3>
+                    </div>
+                    <div class="overflow-x-auto rounded-lg shadow dark:shadow-gray-900/70">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-gray-100 dark:bg-gray-700">
+                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Product</th>
+                                    <th class="px-6 py-4 text-right font-semibold text-gray-700 dark:text-gray-100">Quantity</th>
+                                    <th class="px-6 py-4 text-right font-semibold text-gray-700 dark:text-gray-100">UoM</th>
+                                    <th class="px-6 py-4 text-right font-semibold text-gray-700 dark:text-gray-100">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-800">
+                                <tr t-foreach="picking.move_ids" t-as="move" class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                    <td class="px-6 py-4 text-gray-800 dark:text-gray-200">
+                                        <div><span t-out="move.product_id.display_name"/></div>
+                                        <div t-if="move.product_id.default_code" class="text-xs text-gray-500 dark:text-gray-400">
+                                            [<t t-out="move.product_id.default_code"/>]
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200 font-medium"><span t-out="move.product_uom_qty"/></td>
+                                    <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200"><span t-out="move.product_uom.name"/></td>
+                                    <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200">
+                                        <span t-attf-class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-#{move.state == 'done' and 'green' or (move.state == 'cancel' and 'red' or 'blue')}-100 text-#{move.state == 'done' and 'green' or (move.state == 'cancel' and 'red' or 'blue')}-800">
+                                            <t t-out="move.state"/>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Communication history -->
+                <div class="border-t border-gray-200 dark:border-gray-700">
+                    <div class="p-5" id="communication-toggle">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium dark:text-white flex items-center">
+                                <i class="fas fa-comments mr-2 text-blue-600 dark:text-blue-400"></i>
+                                Communication history
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div id="communication-content" class="p-6 pt-0">
+                        <t t-set="partner" t-value="picking.partner_id"/>
+                        <!-- Communication content wrapper -->
+                        <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+                            <!-- Chat header -->
+                            <div class="chat-header bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 p-4 flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-blue-500 dark:bg-blue-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
+                                            <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
+                                        </svg>
+                                    </div>
+                                    <span class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-200">Chat with <span t-out="partner.name"/></span>
+                                </div>
+                            </div>
+
+                            <!-- Messages container with increased height -->
+                            <div class="space-y-4 h-[500px] overflow-y-auto p-4 messages-container bg-white dark:bg-gray-800" id="reception_details-details-chat-messages" t-att-data-picking-id="picking.id" t-att-data-partner-id="user.partner_id.id"></div>
+
+                            <!-- Message input area in separate container -->
+                            <div class="message-composer bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 p-4">
+                                <div class="message-input-wrapper bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg shadow-sm dark:shadow-gray-900/50" id="message-input-container">
+                                    <div class="flex items-end p-2">
+                                        <div class="flex-shrink-0 mr-2">
+                                            <div class="w-8 h-8 rounded-full bg-gray-500 dark:bg-gray-600 flex items-center justify-center">
+                                                <img t-if="user.partner_id.image_128" class="w-5 h-5 rounded-full" t-attf-src="/web/image/res.partner/#{user.partner_id.id}/image_128/50x50"/>
+                                                <svg t-else="" class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow relative">
+                                            <div class="flex items-center">
+                                                <button class="message-attach-button text-gray-500 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 p-2">
+                                                    <i class="fas fa-paperclip"></i>
+                                                </button>
+                                                <div class="flex-grow">
+                                                    <input type="hidden" id="page-details-reception_details-message-attachment-token" t-att-value="request.csrf_token()"/>
+                                                    <input type="file" id="page-details-reception_details-message-attachment-input" class="hidden"/>
+                                                    <textarea class="message-input bg-transparent border-0 rounded-md text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 w-full py-2 resize-none focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" rows="1" placeholder="Write a message..."></textarea>
+                                                </div>
+                                                <button id="page-details-reception_details-send-message" class="message-send-button text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/30 p-2 rounded-full flex items-center justify-center ml-2">
+                                                    <i class="fas fa-paper-plane"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="h-30"></div>
+
+        </t>
     </template>
 
 </odoo>
