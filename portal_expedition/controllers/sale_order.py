@@ -74,7 +74,7 @@ class PortalExpeditionController(PortalAdminController):
                 {'id': 'product_info', 'label': _('Products Information'), 'sortable': False, 'md': True},
                 {'id': 'total_info', 'label': _('Total Information'), 'sortable': False, 'md': True},
                 {'id': 'tracking_info', 'label': _('Tracking Information'), 'sortable': False, 'md': True},
-                {'id': 'dates_info', 'label': _('Dates Information'), 'sortable': False, 'md': True},
+                {'id': 'traceability_info', 'label': _('Traceability Information'), 'sortable': False, 'md': True},
                 {'id': 'states_info', 'label': _('States'), 'sortable': False, 'md': True},
                 {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True}
             ],
@@ -256,9 +256,9 @@ class PortalExpeditionController(PortalAdminController):
             }
 
         qweb = request.env['ir.qweb']
-        return request.render('portal_expedition.portal_sale_details_page', {
+        return request.render('portal_expedition.portal_expedition_details_page', {
             'sale': order,
             'user': request.env.user, 
-            'company': request.env.company,        # ✅ esto soluciona el nuevo error
+            'company': request.env.company, 
 
         })
