@@ -86,7 +86,7 @@
                                 <p class="form-label-sm font-sm">Attributes
                                     <span class="text-red-500 text-xl">*</span>
                                     <span class="ml-2 text-xs text-gray-500 italic">
-                                        <i class="fas fa-long-arrow-right"/> Add only if the product has variants, e.g. Hair Dryer (Color: White, Red, Green).
+                                        <i class="fas fa-info-circle"/> Add only if the product has variants, e.g. Hair Dryer (Color: White, Red, Green).
                                     </span>
                                 </p>
                             </div>
@@ -105,6 +105,81 @@
                             </div>
                             <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-attributes-list-error"/>
                         </div>
+
+                                                <!-- Medidas para calcular el volumen-->
+                        <div class="form-group">
+                            <div class="flex items-center">
+                                <label t-attf-for="page-#{page_name}-list-create-form-measures" class="form-label-sm font-sm">Measures (cm)</label>
+                                <span class="text-red-500 ml-1">*</span>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex flex-col">
+                                        <div class="flex items-center">
+                                            <input type="number" required="required" name="width" t-attf-id="page-#{page_name}-list-create-form-measures-width" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Width" min="0" step="0.01"/>
+                                            <span class="mx-1">x</span>
+                                        </div>
+                                        <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-width-error"/>
+                                    </div>
+
+                                    <div class="flex flex-col">
+                                        <div class="flex items-center">
+                                            <input type="number" required="required" name="height" t-attf-id="page-#{page_name}-list-create-form-measures-height" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Height" min="0" step="0.01"/>
+                                            <span class="mx-1">x</span>
+                                        </div>
+                                        <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-height-error"/>
+                                    </div>
+
+                                    <div class="flex flex-col">
+                                        <div class="flex items-center">
+                                            <input type="number" required="required" name="length" t-attf-id="page-#{page_name}-list-create-form-measures-length" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Length" min="0" step="0.01"/>
+                                            <span class="mx-1 text-sm">cm</span>
+                                        </div>
+                                        <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-length-error"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Peso y Volumen -->
+                        <div class="form-group">
+                            <!-- Peso -->
+                            <div class="grid grid-cols-2 sm:grid-cols-1 gap-4">
+                                <div>
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-weight" class="form-label-sm font-sm">Weight (kg)</label>
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" step="0.01" min="0" name="weight" required="required" t-attf-id="page-#{page_name}-list-create-form-weight"
+                                                class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
+                                                placeholder="Weight"/>
+                                        <span class="mx-1 text-sm">kg</span>
+                                    </div>
+                                    <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-weight-error"/>
+                                </div>
+
+                                <!-- Volumen -->
+                                <div>
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-volume" class="form-label-sm font-sm">Volume (cm³)</label>
+                                        <span class="text-gray-500 ml-1">*</span>
+                                        <span class="ml-2 text-xs text-gray-500 italic">
+                                            <i class="fas fa-info-circle"/> Auto Calculated
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" name="volume" readonly="readonly" tabindex="-1" t-attf-id="page-#{page_name}-list-create-form-volume"
+                                               class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-0 select-none bg-gray-100 text-gray-700 font-medium pr-10"
+                                               placeholder="Width x Height x Length"/>
+                                        <span class="mx-1 text-sm">cm³</span>
+                                    </div>
+                                    <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-name-error"/>
+                                </div>
+                            </div>
+                        </div>
+
                     </form>
                     <form t-attf-id="page-#{page_name}-list-product-attributes-form"/>
                 </div>
@@ -127,114 +202,5 @@
                 </div>
             </div>
         </div>
-    </template>
-
-    <!-- Modal para crear atributos de productos -->
-    <template id="portal_create_product_attributes_modal" name="Portal Create Product Attributes Modal">
-        <div class="text-lg font-medium text-gray-900 dark:text-gray-100" t-esc="template.name"/>
-        <hr class="my-4 border-t border-gray-200 dark:border-gray-700"/>
-        <t t-foreach="products" t-as="product">
-            <div class="mb-2">
-                <t t-foreach="product.product_template_attribute_value_ids" t-as="attribute_value">
-                    <span class="px-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 mt-1">
-                        <t t-esc="attribute_value.attribute_line_id.attribute_id.name"/>: <t t-esc="attribute_value.name"/>
-                    </span>
-                </t>
-            </div>
-
-            <div class="form-group" t-attf-id="page-#{page_name}-list-create-form-sku-container-#{product.id}">
-                <div class="flex items-center">
-                    <label t-attf-for="page-#{page_name}-list-create-form-sku-#{product.id}" class="form-label-sm font-sm">SKU</label>
-                </div>
-                <div>
-                    <input type="text" name="sku" t-attf-id="page-#{page_name}-list-create-form-sku-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="SKU"/>
-                    <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-sku-error-#{product.id}"/>
-                </div>
-            </div>
-
-            <div class="form-group" t-attf-id="page-#{page_name}-list-create-form-barcode-container-#{product.id}">
-                <div class="flex items-center">
-                    <label t-attf-for="page-#{page_name}-list-create-form-barcode-#{product.id}" class="form-label-sm font-sm">Barcode</label>
-                </div>
-                <div>
-                    <input type="text" name="barcode" t-attf-id="page-#{page_name}-list-create-form-barcode-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Barcode"/>
-                    <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-barcode-error-#{product.id}"/>
-                </div>
-            </div>
-
-            <!-- Medidas para calcular el volumen-->
-            <div class="form-group">
-                <div class="flex items-center">
-                    <label t-attf-for="page-#{page_name}-list-create-form-measures" class="form-label-sm font-sm">Measures (cm)</label>
-                    <span class="text-red-500 ml-1">*</span>
-                </div>
-
-                <div>
-                    <div class="flex items-center gap-2">
-                        <div class="flex flex-col">
-                            <div class="flex items-center">
-                                <input type="number" required="required" name="width" t-attf-id="page-#{page_name}-list-create-form-measures-width" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Width" min="0" step="0.01"/>
-                                <span class="mx-1">x</span>
-                            </div>
-                            <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-width-error"/>
-                        </div>
-
-                        <div class="flex flex-col">
-                            <div class="flex items-center">
-                                <input type="number" required="required" name="height" t-attf-id="page-#{page_name}-list-create-form-measures-height" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Height" min="0" step="0.01"/>
-                                <span class="mx-1">x</span>
-                            </div>
-                            <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-height-error"/>
-                        </div>
-
-                        <div class="flex flex-col">
-                            <div class="flex items-center">
-                                <input type="number" required="required" name="length" t-attf-id="page-#{page_name}-list-create-form-measures-length" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Length" min="0" step="0.01"/>
-                                <span class="mx-1 text-sm">cm</span>
-                            </div>
-                            <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-length-error"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Peso y Volumen -->
-            <div class="form-group">
-                <!-- Peso -->
-                <div class="grid grid-cols-2 sm:grid-cols-1 gap-4">
-                    <div>
-                        <div class="flex items-center">
-                            <label t-attf-for="page-#{page_name}-list-create-form-weight" class="form-label-sm font-sm">Weight (kg)</label>
-                            <span class="text-red-500 ml-1">*</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <input type="number" step="0.01" min="0" name="weight" required="required" t-attf-id="page-#{page_name}-list-create-form-weight"
-                                    class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
-                                    placeholder="Weight"/>
-                            <span class="mx-1 text-sm">kg</span>
-                        </div>
-                        <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-weight-error"/>
-                    </div>
-
-                    <!-- Volumen -->
-                    <div>
-                        <div class="flex items-center">
-                            <label t-attf-for="page-#{page_name}-list-create-form-volume" class="form-label-sm font-sm">Volume (cm³)</label>
-                            <span class="text-gray-500 ml-1">*</span>
-                            <span class="ml-2 text-xs text-gray-500 italic">
-                                <i class="fas fa-calculator"/> Auto Calculated
-                            </span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <input type="text" name="volume" readonly="readonly" tabindex="-1" t-attf-id="page-#{page_name}-list-create-form-volume"
-                                   class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-0 select-none bg-gray-100 text-gray-700 font-medium pr-10"
-                                   placeholder="Width x Height x Length"/>
-                            <span class="mx-1 text-sm">cm³</span>
-                        </div>
-                        <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-name-error"/>
-                    </div>
-                </div>
-            </div>
-        </t>
     </template>
 </odoo>

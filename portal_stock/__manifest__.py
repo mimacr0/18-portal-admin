@@ -16,6 +16,7 @@
         'security/ir.model.access.csv',
         'portal/stock_templates.xml',
         'portal/portal_create_product_modal.xml',
+        'portal/portal_update_product_modal.xml',
         'portal/portal_file_upload_modal.xml',
     ],
     'assets': {

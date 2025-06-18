@@ -95,7 +95,7 @@ class ProductModalController(PortalAdminController):
                 'status': 'success',
                 'message': _('Product created successfully'),
                 'product_id': template.id,
-                'product_attributes': qweb._render('portal_stock.portal_create_product_attributes_modal', {
+                'product_attributes': qweb._render('portal_stock.portal_update_product_modal', {
                     'products': template.product_variant_ids,
                     'template': template
                 })
