@@ -4,7 +4,7 @@
         <t t-call="portal_admin_theme.portal_admin_layout">
 
             <div id="expedition-details-container" class="mt-6">
-               <div class="w-4/5 mx-auto lg:max-w-11xl bg-white dark:bg-gray-800 rounded-xl shadow-lg print:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
+               <div class="w-4/5 mx-auto lg:max-w-7xl bg-white dark:bg-gray-800 rounded-xl shadow-lg print:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
                     <!-- Document Action Bar -->
                     <div class="p-5 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                         <a href="/account/expedition" class="inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
@@ -34,11 +34,13 @@
                         <div class="flex flex-col md:flex-row justify-between items-start relative z-10">
                             <div>
                                 <div class="flex items-center p-8">
-                                    <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Sale <t t-esc="sale.name"/> Information</h1>
+                                    <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Sale <t t-esc="order.name"/> Information</h1>
                                     <span class="ml-4 text-xl font-medium text-blue-600 dark:text-blue-400"/>
+                                    <br/>
                                 </div>
-                                <div class="px-2 inline-flex text-l leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-        
+                                <div class="flex items-center p-8">
+                                    <span class="text-gray-500 dark:text-gray-400">Client Order Reference: <t t-esc="order.client_order_ref"/></span>
+
                                 </div>
                             </div>
                             <div class="flex items-center space-x-4">
@@ -59,13 +61,13 @@
                                 <i class="fas fa-shipping-fast mr-2 text-blue-600 dark:text-blue-400"></i>
                                 Ship To
                             </h3>
-                            <!-- <div class="text-sm space-y-2 dark:text-gray-300">
-                                <p><t t-esc="sale.partner_shipping_id.name"/></p>
-                                <p><t t-esc="sale.partner_shipping_id.street"/>, <t t-esc="sale.partner_shipping_id.street2"/> </p>
-                                <p><t t-esc="sale.partner_shipping_id.city"/>, <t t-esc="sale.partner_shipping_id.state_id.name"/></p>
-                                <p><t t-esc="sale.partner_shipping_id.zip"/></p>
-                                <p><t t-esc="sale.partner_shipping_id.country_id.name"/></p>
-                            </div> -->
+                            <div class="text-sm space-y-2 dark:text-gray-300">
+                                <p><t t-esc="order.partner_shipping_id.name"/></p>
+                                <p><t t-esc="order.partner_shipping_id.street"/>, <t t-esc="order.partner_shipping_id.street2"/> </p>
+                                <p><t t-esc="order.partner_shipping_id.city"/>, <t t-esc="order.partner_shipping_id.state_id.name"/></p>
+                                <p><t t-esc="order.partner_shipping_id.zip"/></p>
+                                <p><t t-esc="order.partner_shipping_id.country_id.name"/></p>
+                            </div>
                         </div>
                         <!-- Billing Address -->
                         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
@@ -73,19 +75,19 @@
                                 <i class="fas fa-file-sale-dollar mr-2 text-blue-600 dark:text-blue-400"></i>
                                 Bill To
                             </h3>
-                            <!-- <div class="text-sm space-y-2 dark:text-gray-300">
-                                <p><t t-esc="sale.partner_invoice_id.name"/></p>
-                                <p><t t-esc="sale.partner_invoice_id.street"/>, <t t-esc="sale.partner_invoice_id.street2"/> </p>
-                                <p><t t-esc="sale.partner_invoice_id.city"/>, <t t-esc="sale.partner_invoice_id.state_id.name"/></p>
-                                <p><t t-esc="sale.partner_invoice_id.zip"/></p>
-                                <p><t t-esc="sale.partner_invoice_id.country_id.name"/></p>
+                            <div class="text-sm space-y-2 dark:text-gray-300">
+                                <p><t t-esc="order.partner_invoice_id.name"/></p>
+                                <p><t t-esc="order.partner_invoice_id.street"/>, <t t-esc="order.partner_invoice_id.street2"/> </p>
+                                <p><t t-esc="order.partner_invoice_id.city"/>, <t t-esc="order.partner_invoice_id.state_id.name"/></p>
+                                <p><t t-esc="order.partner_invoice_id.zip"/></p>
+                                <p><t t-esc="order.partner_invoice_id.country_id.name"/></p>
                                 <div class="mt-4 pt-3 border-t border-dashed border-gray-200 dark:border-gray-700">
                                     <p class="font-medium flex items-center">
                                         <i class="fas fa-user-tag mr-2 text-gray-500"></i>
-                                        Customer ID: <t t-esc="sale.partner_invoice_id.account"/>
+                                        Customer ID: <t t-esc="order.partner_invoice_id.account"/>
                                     </p>
                                 </div>
-                            </div> -->
+                            </div>
                         </div>
                     </div>
 
@@ -100,60 +102,24 @@
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" id="page-expedition-list-table">
                                 <thead class="bg-gray-50 dark:bg-gray-600">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                            Name
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                            Quantity
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                            Actual Location
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                            Price Unit
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                            Total Price
-                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
+                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Quantity</th>
+                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actual Location</th>
+                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Price Unit</th>
+                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Price</th>
                                     </tr>
                                 </thead>
 
                                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="expedition-page-list-items">
-                                    <tr>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            Lavadora Domotic
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            2
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            WH/Zona de empaquetado
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            987.00
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            1974.00
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            Nevera Robotic
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            3
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            WH/Zona de empaquetado
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            1500.00
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            4500.00
-                                        </td>
-                                    </tr>
-
+                                    <t t-foreach="order.order_line" t-as="line">
+                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700"><t t-esc="line.product_id.name"/></td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700"><t t-esc="line.product_uom_qty"/></td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700"><!-- <t t-esc="line.location_final_id.name"/> --></td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700"><t t-out="line.price_unit"/></td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700"><t t-out="line.price_total"/></td>
+                                        </tr>
+                                    </t>
                                 </tbody>
                             </table>
                         </div>
@@ -170,68 +136,38 @@
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" id="page-expedition-list-table">
                                 <thead class="bg-gray-50 dark:bg-gray-600">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                            Reference
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                            Origin Location
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                            Destination Location
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                            Scheduled Date
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                            Done Date
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                            Previous Movement
-                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Reference</th>
+                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Origin Location</th>
+                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Destination Location</th>
+                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Scheduled Date</th>
+                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Done Date</th>
+                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Previous Movement</th>
                                     </tr>
                                 </thead>
 
                                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="expedition-page-list-items">
-                                    <tr>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium">
-                                            WH/PICK/00004
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium">
-                                            WH/Stock
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium">
-                                            WH/Zona de empaquetado
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium">
-                                            16-06-2025 13:47:23
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium">
-                                            16-06-2025 13:47:23
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium">
-                                            WH/PACK/00004
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium">
-                                            WH/Zona de empaquetado
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium">
-                                            WH/Salida
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium">
-                                            16-06-2025 15:47:23
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium">
-                                            16-06-2025 15:47:23
-                                        </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium">
-                                            WH/PICK/00004
-                                        </td>
-                                    </tr>
-
+                                    <t t-foreach="order.picking_ids" t-as="picking">
+                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-yellow-100 dark:hover:bg-yellow-100 hover:text-gray-800" >
+                                                <t t-esc="picking.name"/>
+                                            </td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-yellow-100 dark:hover:bg-yellow-100 hover:text-gray-800">
+                                                <t t-esc="picking.location_id.name"/>
+                                            </td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-yellow-100 dark:hover:bg-yellow-100 hover:text-gray-800">
+                                                <t t-esc="picking.location_dest_id.name"/>
+                                            </td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-yellow-100 dark:hover:bg-yellow-100 hover:text-gray-800">
+                                                <t t-out="picking.scheduled_date"/>
+                                            </td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-yellow-100 dark:hover:bg-yellow-100 hover:text-gray-800">
+                                                <t t-out="picking.date_done"/>
+                                            </td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-yellow-100 dark:hover:bg-yellow-100 hover:text-gray-800">
+                                                <!-- Previous movement can be added here if needed -->
+                                            </td>
+                                        </tr>
+                                    </t>
                                 </tbody>
                             </table>
                         </div>
@@ -270,23 +206,21 @@
                                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="expedition-page-list-items">
                                     <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
                                         <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-200 dark:hover:bg-gray-600">
-                                            Entrega estándar
+                                            <t t-esc="order.carrier_id.name"/>
                                         </td>
                                         <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-200 dark:hover:bg-gray-600">
-                                            5474.00 kg
+                                            <t t-out="order.shipping_weight"/>
                                         </td>
                                         <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-200 dark:hover:bg-gray-600">
-                                            16-06-2025 13:47:23
+                                            <t t-out="order.commitment_date"/>
                                         </td>
                                         <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-200 dark:hover:bg-gray-600">
-                                            16-06-2025 13:47:23
+                                            <t t-out="order.effective_date"/>
                                         </td>
                                         <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-200 dark:hover:bg-gray-600">
-                                            No entregado
+                                            <t t-out="order.delivery_status"/>
                                         </td>
                                     </tr>
-                              
-
                                 </tbody>
                             </table>
                         </div>
@@ -321,8 +255,8 @@
                                 </div>
 
                                 <!-- Messages container with increased height -->
-                                <div class="space-y-4 h-[500px] overflow-y-auto p-4 messages-container bg-white dark:bg-gray-800" t-attf-id="#{page_name}-details-chat-messages" 
-                                    t-attf-data-partner-id="#{user.partner_id.id}"></div>
+                                <div class="space-y-4 h-[500px] overflow-y-auto p-4 messages-container bg-white dark:bg-gray-800" t-attf-id="#{page_name}-details-chat-messages" t-attf-data-order-id="#{order.id}"
+                                    t-attf-data-partner-id="#{user.partner_id.id}" t-attf-data-token="#{order.access_token}"></div>
 
                                 <!-- Message input area in separate container -->
                                 <div class="message-composer bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 p-4">
@@ -342,11 +276,11 @@
                                                         <i class="fas fa-paperclip"></i>
                                                     </button>
                                                     <div class="flex-grow">
-                                                        <input type="hidden" t-attf-id="page-details-#{page_name}-message-attachment-token" t-att-value="request.csrf_token()"/>
-                                                        <input type="file" t-attf-id="page-details-#{page_name}-message-attachment-input" class="hidden"/>
+                                                        <input type="hidden" t-attf-id="page-details-expedition-message-attachment-token" t-att-value="request.csrf_token()"/>
+                                                        <input type="file" t-attf-id="page-details-expedition-message-attachment-input" class="hidden"/>
                                                         <textarea class="message-input bg-transparent border-0 rounded-md text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 w-full py-2 resize-none focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" rows="1" placeholder="Write a message..."></textarea>
                                                     </div>
-                                                    <button t-attf-id="page-details-#{page_name}-send-message" class="message-send-button text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/30 p-2 rounded-full flex items-center justify-center ml-2">
+                                                    <button t-attf-id="page-details-expedition-send-message" class="message-send-button text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/30 p-2 rounded-full flex items-center justify-center ml-2">
                                                         <i class="fas fa-paper-plane"></i>
                                                     </button>
                                                 </div>

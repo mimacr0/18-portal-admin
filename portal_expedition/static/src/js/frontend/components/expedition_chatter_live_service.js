@@ -33,7 +33,7 @@ const initInvoiceDetailsChatterLiveService = () => {
         for(const action of data) {
             const message = action.message;
             if(message.type === 'portal_exoedition.portal_expedition_details_page') {
-                document.dispatchEvent(new CustomEvent('portal_exoedition.portal_expedition_details_page', { detail: message.payload }));
+                document.dispatchEvent(new CustomEvent('portal_expedition.portal_expedition_details_page', { detail: message.payload }));
             }
         }
     });
@@ -41,5 +41,5 @@ const initInvoiceDetailsChatterLiveService = () => {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    initInvoiceDetailsChatterLiveService();
+    // initInvoiceDetailsChatterLiveService();
 });
