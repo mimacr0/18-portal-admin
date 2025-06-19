@@ -72,19 +72,19 @@ const cleanupAttachments = (messageInputContainer, selectedFile, fileInput) => {
     if (fileInput) { fileInput.value = ''; }
 };
 
-const reloadInvoiceDetailsChatter = async () => {
-    const chatter = document.getElementById('invoice_details-details-chat-messages');
+const reloadExpeditionDetailsChatter = async () => {
+    const chatter = document.getElementById('expedition_details-details-chat-messages');
     if (!chatter) return;
 
-    const invoiceId = parseInt(chatter.dataset.invoiceId);
+    const orderId = parseInt(chatter.dataset.orderId);
     const partnerId = parseInt(chatter.dataset.partnerId);
     const token = chatter.dataset.token;
-
-    const response = await rpc('/portal_expedition/invoice/details/chatter/fetch', {
-        invoice_id: invoiceId,
+    
+    const response = await rpc('/portal_expedition/expedition/details/chatter/fetch', {
+        expedition_id: orderId,
         token
     })
-
+    console.log('Chatter response:', response);
     const messages = response?.data['mail.message'] || [];
     if (messages.length === 0) {
         chatter.innerHTML = '<p class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">No messages found.</p>';
@@ -164,10 +164,10 @@ const reloadInvoiceDetailsChatter = async () => {
 }
 
 const initMessageSending = () => {
-    const chatter = document.getElementById('invoice_details-details-chat-messages');
+    const chatter = document.getElementById('expedition_details-details-chat-messages');
     if (!chatter) return;
 
-    const invoiceId = parseInt(chatter.dataset.invoiceId);
+    const orderId = parseInt(chatter.dataset.orderId);
     const token = chatter.dataset.token;
 
     // Get message sending elements
@@ -175,8 +175,8 @@ const initMessageSending = () => {
     const sendButton = document.querySelector('.message-send-button');
     const messageInputContainer = document.getElementById('message-input-container');
     const attachButton = document.querySelector('.message-attach-button');
-    const fileInput = document.getElementById('page-details-invoice_details-message-attachment-input');
-    const tokenInput = document.getElementById('page-details-invoice_details-message-attachment-token');
+    const fileInput = document.getElementById('page-details-expedition_details-message-attachment-input');
+    const tokenInput = document.getElementById('page-details-expedition-message-attachment-token');
     let selectedFile = null;
 
     if (!messageInput || !sendButton || !messageInputContainer) return;
@@ -196,9 +196,9 @@ const initMessageSending = () => {
         if (messageText === '' && !selectedFile) return;
 
         const formData = new FormData();
-        formData.append('invoice_id', parseInt(invoiceId));
+        formData.append('expedition_id', parseInt(orderId));
         formData.append('access_token', token);
-        formData.append('csrf_token', tokenInput.value);
+        formData.append('csrf_token', tokenInput?.value || '');
         formData.append('message', messageText);
         formData.append('attachment', selectedFile);
 
@@ -206,7 +206,7 @@ const initMessageSending = () => {
 
         // Send message to server
         try {
-            const result = await fetch('/portal_expedition/invoice/details/chatter/post', {
+            const result = await fetch('/portal_expedition/expedition/details/chatter/post', {
                 method: 'POST',
                 body: formData
             });
@@ -256,11 +256,11 @@ const initMessageSending = () => {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    reloadInvoiceDetailsChatter();
+    reloadExpeditionDetailsChatter();
     initMessageSending();
 
     document.addEventListener('portal_expedition.portal_expedition_details_page', (event) => {
-        console.log('Reloading invoice details chatter', event.detail);
-        reloadInvoiceDetailsChatter();
+        console.log('Reloading expedition details chatter', event.detail);
+        reloadExpeditionDetailsChatter();
     });
 });

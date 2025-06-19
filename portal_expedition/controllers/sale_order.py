@@ -16,7 +16,7 @@ from datetime import datetime
 
 class PortalExpeditionController(PortalAdminController):
     # Constantes de configuración
-    EXPEDITION_FIELDS_MAPPING = {
+    EXPEDITION_FIELDS_MAPPING = {               
         'name': 'name',
         'tracking_ref': 'picking_ids.carrier_tracking_ref',
         'date_order': 'date_order',
@@ -255,9 +255,9 @@ class PortalExpeditionController(PortalAdminController):
                 'message': _('The requested expedition does not exist.')
             }
 
-        qweb = request.env['ir.qweb']
         return request.render('portal_expedition.portal_expedition_details_page', {
-            'sale': order,
+            'page_name': 'expedition_details',
+            'order': order,
             'user': request.env.user, 
             'company': request.env.company, 
 

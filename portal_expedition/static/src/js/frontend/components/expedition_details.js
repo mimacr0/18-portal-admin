@@ -12,7 +12,7 @@ export const initDetailsPage = async () => {
     expeditionDetails.forEach(button => {
         button.addEventListener('click', async () => {
             const tooltipTarget = button.getAttribute('data-tooltip-target');
-            const matches = tooltipTarget.match(/tooltip-\w+-(\d+)/);
+            const matches = tooltipTarget.match(/tooltip-details+-(\d+)/);
             if (!matches) return;
             const orderId = parseInt(matches[1], 10);
             window.location.href = `/account/expedition/details/${orderId}`;

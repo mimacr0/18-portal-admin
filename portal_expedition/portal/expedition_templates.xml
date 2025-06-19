@@ -355,6 +355,10 @@
                 </td>
 
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+
+                    <a t-att-href="order.get_details_url()" t-attf-data-tooltip-target="tooltip-details-#{order.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
                     <button t-attf-data-tooltip-target="tooltip-edit-#{order.id}"  t-attf-id="tooltip-edit-#{order.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -494,6 +498,7 @@
                     <i class="fas fa-chevron-left"></i>
                 </button>
                 <t t-foreach="pages" t-as="page">
+
                     <button t-if="page.get('active')" aria-current="page" t-att-data-page="page.get('page')" class="expedition-list-pagination-button z-10 bg-cyan-50 dark:bg-gray-800 border-cyan-500 dark:border-cyan-500 text-cyan-600 dark:text-cyan-600 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
                         <span t-out="page.get('page')"/>
                     </button>
