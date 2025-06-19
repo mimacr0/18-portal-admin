@@ -61,12 +61,12 @@ const animateNumber = (element, targetValue, duration = 1000, prefix = '', suffi
 
 /**
  * Updates a number with animation, automatically detecting increment or decrement
- * @param {string} elementId - The element ID to update
+ * @param {string} selector - The element selector to update
  * @param {number} newValue - The new value to set
  * @param {number} duration - Animation duration in ms (default: 1000)
  */
-const updateNumber = (elementId, newValue, duration = 1000) => {
-    const element = document.getElementById(elementId);
+const sysToolsUdateNumber = (selector, newValue, duration = 1000) => {
+    const element = document.querySelector(selector);
     if (!element) return;
 
     const prefix = element.getAttribute('data-prefix') || '';
