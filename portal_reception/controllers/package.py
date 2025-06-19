@@ -187,6 +187,12 @@ class PortalReceptionController(PortalAdminController):
         # Construir dominio de búsqueda
         base_domain = self._build_reception_domain(search, domain, match_type, quick_filter)
 
+        if quick_filter and quick_filter == 'pending':
+            base_domain.append(('state', '=', 'assigned'))
+
+        if quick_filter and quick_filter == 'done':
+            base_domain.append(('state', '=', 'done'))
+
         # Configurar ordenamiento
         order_by = 'id'
         if sort and sort in self.RECEPTION_FIELDS_MAPPING:
