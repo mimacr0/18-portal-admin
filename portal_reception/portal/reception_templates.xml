@@ -207,14 +207,14 @@
                 <div t-attf-id="page-#{page_name}-product-catalog-select-pagination" class="fixed bottom-0 right-0 z-10 mr-6 mb-6"></div>
             </div>
 
+            <div class="fixed bottom-0 right-0 z-10 mr-6 mb-6" t-attf-id="page-#{page_name}-list-pagination-container-main">
+                <input type="hidden" t-attf-id="page-#{page_name}-list-pagination-page" value="1"/>
+                <div class="pagination-container px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg flex items-center justify-between" t-attf-id="page-#{page_name}-list-pagination-container"></div>
+            </div>
+
+            <div class="h-25"></div>
+
             <t t-set="footer_content">
-
-                <div class="fixed bottom-0 right-0 z-10 mr-6 mb-6" t-attf-id="page-#{page_name}-list-pagination-container-main">
-                    <input type="hidden" t-attf-id="page-#{page_name}-list-pagination-page" value="1"/>
-                    <div class="pagination-container px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg flex items-center justify-between" t-attf-id="page-#{page_name}-list-pagination-container"></div>
-                </div>
-
-                <div class="h-25"></div>
 
                 <!-- Reception Create Modal -->
                 <div t-attf-id="page-#{page_name}-list-create-modal" class="modal" data-outside-close="false">
@@ -336,6 +336,20 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.scheduled_date"/>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span t-if="package.state == 'assigned'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                        <span t-field="package.state"/>
+                    </span>
+                    <span t-if="package.state == 'cancel'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                        <span t-field="package.state"/>
+                    </span>
+                    <span t-if="package.state == 'done'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        <span t-field="package.state"/>
+                    </span>
+                    <span t-if="package.state not in ['assigned', 'cancel', 'done']" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                        <span t-field="package.state"/>
+                    </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <a t-att-href="package.get_details_url()" t-attf-data-tooltip-target="tooltip-details-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
@@ -782,8 +796,7 @@
                 </div>
             </div>
 
-            <div class="h-30"></div>
-
+            <div class="h-25"></div>
         </t>
     </template>
 
