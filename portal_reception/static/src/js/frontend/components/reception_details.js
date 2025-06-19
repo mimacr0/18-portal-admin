@@ -76,13 +76,11 @@ const reloadReceptionDetailsChatter = async () => {
     const chatter = document.getElementById('reception_details-details-chat-messages');
     if (!chatter) return;
 
-    const receptionId = parseInt(chatter.dataset.receptionId);
+    const pickingId = parseInt(chatter.dataset.pickingId);
     const partnerId = parseInt(chatter.dataset.partnerId);
-    const token = chatter.dataset.token;
 
     const response = await rpc('/portal_reception/reception/details/chatter/fetch', {
-        reception_id: receptionId,
-        token
+        reception_id: pickingId
     })
 
     const messages = response?.data['mail.message'] || [];
@@ -166,8 +164,7 @@ const initMessageSending = () => {
     const chatter = document.getElementById('reception_details-details-chat-messages');
     if (!chatter) return;
 
-    const receptionId = parseInt(chatter.dataset.receptionId);
-    const token = chatter.dataset.token;
+    const pickingId = parseInt(chatter.dataset.pickingId);
 
     // Get message sending elements
     const messageInput = document.querySelector('.message-input');
@@ -195,8 +192,7 @@ const initMessageSending = () => {
         if (messageText === '' && !selectedFile) return;
 
         const formData = new FormData();
-        formData.append('reception_id', parseInt(receptionId));
-        formData.append('access_token', token);
+        formData.append('reception_id', pickingId);
         formData.append('csrf_token', tokenInput.value);
         formData.append('message', messageText);
         formData.append('attachment', selectedFile);
