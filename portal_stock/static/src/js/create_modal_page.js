@@ -13,11 +13,10 @@ const computeTotalVolume = (widthEl, heightEl, lengthEl, volumeEl) => {
 
 const ProductListCreate = async () => {
     if(!sysFormValidate('#page-stock-list-product-create-form')) return;
-    showLoadingScreen()
+    showLoadingScreen();
 
     // Collect all form data
     const { formData, fileData } = sysCollectFormData('#page-stock-list-product-create-form');
-    let hasFiles = Object.keys(fileData).length > 0;
 
     // Process attributes
     const attributes = [];
@@ -39,40 +38,38 @@ const ProductListCreate = async () => {
 
     // Call API to create product
     const response = await rpc('/account/stock/create/product', formData);
-
-//    console.log(response);
     hideLoadingScreen();
-    // Modal.close('page-stock-list-create-modal');
 
     systemShowNotification(response.message, {
         type: response.status === 'success' ? 'success' : 'error',
         duration: 5000
     });
 
-    // If success, reload the list
     if(response.status === 'success') {
-        const listReloadEvent = new CustomEvent('list:reload');
-        document.dispatchEvent(listReloadEvent);
-    }
+        // Obtener formularios y footers
+        const attributesForm = document.querySelector('#page-stock-list-product-attributes-form');
+        const productForm = document.querySelector('#page-stock-list-product-create-form');
+        const productFooter = document.querySelector('#page-stock-list-create-product-form-footer');
+        const attributesFooter = document.querySelector('#page-stock-list-product-attributes-form-footer');
 
-    const attributesForm = document.querySelector('#page-stock-list-product-attributes-form');
-    const productForm = document.querySelector('#page-stock-list-product-create-form');
+        // Insertar HTML de variantes y cambiar visibilidad
+        attributesForm.innerHTML = response.product_attributes;
 
-    attributesForm.innerHTML = response.product_attributes;
-    attributesForm.classList.remove('hidden');
-    attributesForm.classList.add('block');
+        // Mostrar segundo formulario y su footer
+        attributesForm.classList.remove('hidden');
+        attributesForm.classList.add('block');
+        attributesFooter.classList.remove('hidden');
 
-    productForm.classList.add('hidden');
-    productForm.classList.remove('block');
+        // Ocultar primer formulario y su footer
+        productForm.classList.add('hidden');
+        productForm.classList.remove('block');
+        productFooter.classList.add('hidden');
 
-    document.querySelectorAll('.list-product-checkbox').forEach(checkbox => {
-        checkbox.checked = false;
-    });
-    document.querySelector('#bulk-actions-toolbar').classList.add('hidden');
-    const selectAllCheckbox = document.querySelector('#page-stock-list-select-all-checkbox');
-    if(selectAllCheckbox) {
-        selectAllCheckbox.checked = false;
-        selectAllCheckbox.indeterminate = false;
+        // Configurar evento del botón de guardar
+        const submitButton = document.getElementById('page-stock-list-product-attributes-form-submit');
+        if(submitButton) {
+            submitButton.addEventListener('click', ProductAttributesUpdate);
+        }
     }
 }
 
@@ -310,12 +307,88 @@ const initProductAttributesVisibility = () => {
         ?.addEventListener('click', updateFieldsVisibility);
 };
 
-// Inicializa todos los modales y eventos necesarios al cargar la página
+const ProductAttributesUpdate = async () => {
+    showLoadingScreen();
+
+    // Array para almacenar los datos de las variantes
+    const variantData = [];
+
+    // Seleccionamos el formulario
+    const form = document.getElementById('page-stock-list-product-attributes-form');
+
+    // Depuración: verificar qué contiene el formulario
+    console.log("Contenido del formulario:", form.innerHTML);
+
+    // Buscamos todas las filas de productos (cada una tiene un SKU y un Barcode)
+    const productRows = form.querySelectorAll('div.mb-2');
+
+    productRows.forEach(row => {
+        // Buscamos el siguiente div que contiene los inputs
+        const inputsContainer = row.nextElementSibling;
+        if (!inputsContainer) return;
+
+        // Buscamos los inputs dentro de ese contenedor
+        const skuInput = inputsContainer.querySelector('input[name="sku"]');
+        const barcodeInput = inputsContainer.querySelector('input[name="barcode"]');
+
+        if (skuInput && barcodeInput) {
+            // Extraemos el ID del producto del atributo id del input
+            const productId = skuInput.id.split('-').pop();
+
+            console.log("Encontrado producto:", {
+                productId: productId,
+                sku: skuInput.value,
+                barcode: barcodeInput.value
+            });
+
+            variantData.push({
+                product_id: productId,
+                sku: skuInput.value || '',
+                barcode: barcodeInput.value || ''
+            });
+        }
+    });
+
+    console.log("Total variantes encontradas:", variantData.length);
+    console.log("Datos a enviar:", variantData);
+
+    // Solo enviar si hay datos
+    if (variantData.length > 0) {
+        const response = await rpc('/account/stock/update/product/variants', {
+            variants: JSON.stringify(variantData)
+        });
+
+        hideLoadingScreen();
+
+        systemShowNotification(response.message || 'Producto actualizado correctamente', {
+            type: response.status === 'success' ? 'success' : 'error',
+            duration: 5000
+        });
+
+        if(response.status === 'success') {
+            Modal.close('page-stock-list-create-modal');
+            const listReloadEvent = new CustomEvent('list:reload');
+            document.dispatchEvent(listReloadEvent);
+        }
+    } else {
+        hideLoadingScreen();
+        systemShowNotification('No se encontraron variantes para actualizar', {
+            type: 'error',
+            duration: 5000
+        });
+    }
+}
+
+// Esta es la única inicialización que debe existir
 document.addEventListener('DOMContentLoaded', () => {
     if(!document.getElementById('stock-page-list-items')) return;
+
+    // Inicializar todos los componentes necesarios
     initProductListCreatetModal();
     initComputeTotalVolume();
     initAddAttributesToProduct();
     initManageProductImage();
     initProductAttributesVisibility();
+
+    // No es necesario manejar el botón aquí, ya que se configura en ProductListCreate
 });
