@@ -64,7 +64,7 @@ export const reloadExpeditionListPage = async () => {
         quick_filter: quickFilter
     });
 
-    
+
     // Verificar si la respuesta es exitosa
     if(res?.status != 'success') return;
 

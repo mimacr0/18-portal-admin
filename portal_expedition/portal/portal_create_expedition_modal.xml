@@ -2,6 +2,12 @@
 <odoo>
     <template id="portal_create_expedition_modal" name="Portal Create Expedition Modal">
         <!-- Sale Order Create Modal -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- Select2 (si también usas esta librería) -->
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
         <div t-attf-id="page-#{page_name}-list-create-modal" class="modal" data-outside-close="false">
             <div class="modal-content max-w-2xl w-full mx-auto">
                 <div class="modal-header">
@@ -136,25 +142,14 @@
                             <!-- Other Information -->
                             <div class="form-group">
                                 <div class="flex items-center">
-                                    <label t-attf-for="page-#{page_name}-list-create-form-scheduled-date" class="form-label-sm font-sm">Scheduled Date</label>
+                                    <label t-attf-for="page-#{page_name}-list-create-form-carrier-id" class="form-label-sm font-sm">Carrier</label>
                                     <span class="text-red-500 ml-1">*</span>
                                 </div>
                                 <div>
-                                    <input type="text" name="scheduled_date" t-attf-id="page-#{page_name}-list-create-form-scheduled-date" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Scheduled Date"/>
-                                    <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-scheduled-date-error"></div>
+                                    <select name="carrier_id" t-attf-id="page-#{page_name}-list-create-form-carrier-id" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"></select>
+                                    <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-carrier-id-error"></div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="flex items-center">
-                                    <label t-attf-for="page-#{page_name}-list-create-form-tracking-number" class="form-label-sm font-sm">Tracking Number</label>
-                                    <span class="text-red-500 ml-1">*</span>
-                                </div>
-                                <div>
-                                    <input type="text" name="tracking_number" t-attf-id="page-#{page_name}-list-create-form-tracking-number" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Tracking Number"/>
-                                    <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-tracking-number-error"></div>
-                                </div>
-                            </div>
-
                             <div class="form-group">
                                 <input name="products" type="hidden" t-attf-id="page-#{page_name}-list-create-form-products-list" required="required"/>
 
