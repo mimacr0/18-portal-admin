@@ -208,7 +208,7 @@ class PortalExpeditionController(PortalAdminController):
                 base_domain.extend(domain_addition)
 
         # Configurar ordenamiento
-        order_by = 'id'
+        order_by = 'id desc'
         if sort and sort in self.EXPEDITION_FIELDS_MAPPING:
             order_by = f"{self.EXPEDITION_FIELDS_MAPPING[sort]} {order}"
         
