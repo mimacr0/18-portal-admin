@@ -82,7 +82,7 @@ const reloadExpeditionDetailsChatter = async () => {
     const response = await rpc('/portal_expedition/expedition/details/chatter/fetch', {
         expedition_id: orderId,
     })
-    console.log('Chatter response:', response);
+
     const messages = response?.data['mail.message'] || [];
     if (messages.length === 0) {
         chatter.innerHTML = '<p class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">No messages found.</p>';
@@ -162,7 +162,6 @@ const reloadExpeditionDetailsChatter = async () => {
 }
 
 const initMessageSending = () => {
-    console.log("Inicializar el Chatter")
     const chatter = document.getElementById('expedition_details-details-chat-messages');
     if (!chatter) return;
 
@@ -209,7 +208,6 @@ const initMessageSending = () => {
                 body: formData
             });
             response = await result.json();
-            console.log('Message sent:', response);
         } catch (error) {
             console.error('Error sending message:', error);
         }

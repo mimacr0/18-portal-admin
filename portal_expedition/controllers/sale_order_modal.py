@@ -4,6 +4,7 @@
 #
 ##############################################################################
 
+import math
 import json
 from functools import lru_cache
 
@@ -43,32 +44,68 @@ class PortalExpeditionController(PortalAdminController):
             'items': result_items
         }
 
-    # @http.route('/account/expedition/address-search', type='json', auth='user')
-    # def account_expedition_address_search(self, term='', **kw):
-    #     """Search carriers based on term for select2"""
-    #     ResCityZip = request.env['res.city.zip'].sudo()
-    #     ResCountry = request.env['res.country'].sudo()
-    #     ResCountryState = request.env['res.country.state'].sudo()
-    #     domain = []
+    @http.route('/account/expedition/create', type='json', auth='user')
+    def account_expedition_create(self, term='', **kw):
+        return { 'status': 'success', 'message': _('Reception created successfully') }
 
-    #     if term:
-    #         domain = expression.OR([
-    #             [('name', 'ilike', term)],
-    #         ])
+    @http.route('/account/expedition/product-search', type='json', auth='user')
+    def account_expedition_product_search(self, term='', **kw):
 
-    #     cities_zip = ResCityZip.search(domain, limit=10)
+        # si al final lo metemos en una raíz o algo esto se debvería cambiar por el método en la raíz, 
+        # si no se va a hacer, a lo mejor deberíamos dejar el código
+        return self.account_reception_product_search(term, **kw)
 
-    #     # Prepare carrier data
-    #     result_items = []
-    #     for city_zip in cities_zip:
-    #         result_items.append({
-    #             'id': city_zip.id,
-    #             'text': city_zip.name,
-    #         })
-    #     print(f"Cities Zip found: {len(result_items)}")
-    #     return {
-    #         'items': result_items
-    #     }
+        ## Este return sustituye al código siguiente
+        # """Search products based on term for select2 with product attributes"""
+        # ProductProduct = request.env['product.product'].sudo()
+        # domain = [('is_storable', '=', True)]  # Only storable products
+
+        # if term:
+        #     # Search in product name, code, barcode AND product attributes
+        #     domain = expression.AND([
+        #         domain,
+        #         expression.OR([
+        #             [('name', 'ilike', term)],
+        #             [('default_code', 'ilike', term)],
+        #             [('barcode', 'ilike', term)],
+        #             # Search in attributes
+        #             [('product_template_attribute_value_ids.name', 'ilike', term)],
+        #             [('product_template_attribute_value_ids.attribute_id.name', 'ilike', term)]
+        #         ])
+        #     ])
+
+        # products = ProductProduct.search(domain, limit=10)
+
+        # # Prepare product data with attributes
+        # result_items = []
+        # for product in products:
+        #     # Get product attribute values
+        #     attributes = []
+        #     for attr_value in product.product_template_attribute_value_ids:
+        #         attributes.append({
+        #             'id': attr_value.id,
+        #             'name': attr_value.name,
+        #             'attribute_name': attr_value.attribute_id.name,
+        #             'value': attr_value.name,
+        #             'display_name': f"{attr_value.attribute_id.name}: {attr_value.name}"
+        #         })
+
+        #     result_items.append({
+        #         'id': product.id,
+        #         'text': product.name,
+        #         'default_code': product.default_code or '',
+        #         'barcode': product.barcode or '',
+        #         'price': product.list_price,
+        #         'currency': product.currency_id.symbol,
+        #         'attributes': attributes,
+        #         'image': product.image_128 and f"data:image/png;base64,{product.image_128.decode('utf-8')}" or False
+        #     })
+
+        # return {
+        #     'status': 'success',
+        #     'items': result_items
+        # }
+
 
     @http.route('/account/expedition/address-search', type='json', auth='user')
     def address_search(self, term='', **kwargs):
@@ -104,38 +141,97 @@ class PortalExpeditionController(PortalAdminController):
                 'state_name': state_val,
                 'country_name': country_val
             }
+            
+        MAX_RESULTS = 10
+        results = []
 
         for fragment in fragments:
-            # Buscar ZIPs
-            zip_matches = ResZip.search([('name', 'ilike', fragment)], limit=10)
-            for zip_rec in zip_matches:
-                results.append(format_result(zip_rec=zip_rec))
-
-            if results:
+            # Buscar por ZIP
+            zip_matches = ResZip.search([('name', 'ilike', fragment)], limit=MAX_RESULTS)
+            results += [format_result(zip_rec=z) for z in zip_matches]
+            if len(results) >= MAX_RESULTS:
                 break
 
-            # Buscar Ciudades
-            city_matches = ResCity.search([('name', 'ilike', fragment)], limit=10)
+            # Buscar por ciudad
+            city_matches = ResCity.search([('name', 'ilike', fragment)], limit=5)
             for city in city_matches:
-                results.append(format_result(city=city, state=city.state_id, country=city.country_id))
-
-            if results:
+                zips = ResZip.search([('city_id', '=', city.id)], limit=3)
+                if zips:
+                    results += [format_result(zip_rec=z) for z in zips]
+                else:
+                    results.append(format_result(city=city, state=city.state_id, country=city.country_id))
+                if len(results) >= MAX_RESULTS:
+                    break
+            if len(results) >= MAX_RESULTS:
                 break
 
-            # Buscar Estados
-            state_matches = ResState.search([('name', 'ilike', fragment)], limit=10)
-            for state in state_matches:
-                results.append(format_result(state=state, country=state.country_id))
-
-            if results:
+            # Buscar ZIPs relacionados al estado directamente
+            state_zip_matches = ResZip.search([
+                ('city_id.state_id.name', 'ilike', fragment)
+            ], limit=MAX_RESULTS - len(results))
+            results += [format_result(zip_rec=z) for z in state_zip_matches]
+            if len(results) >= MAX_RESULTS:
                 break
 
-            # Buscar Países
-            country_matches = ResCountry.search([('name', 'ilike', fragment)], limit=10)
-            for country in country_matches:
-                results.append(format_result(country=country))
-
-            if results:
+            # Buscar ZIPs relacionados al país directamente
+            country_zip_matches = ResZip.search([
+                ('city_id.country_id.name', 'ilike', fragment)
+            ], limit=MAX_RESULTS - len(results))
+            results += [format_result(zip_rec=z) for z in country_zip_matches]
+            if len(results) >= MAX_RESULTS:
                 break
 
-        return {'items': results}
+        return {'items': results[:MAX_RESULTS]}
+
+    @http.route('/account/expedition/product-catalog', type='json', auth='user')
+    def account_expedition_product_catalog(self, page=1, search='', **post):
+        """Get the product catalog with pagination"""
+        ProductProduct = request.env['product.product'].sudo()
+
+        # Set limit to 20 items per page
+        limit = 20
+        page = int(page)
+        offset = (page - 1) * limit
+
+        # Build domain with optional search
+        domain = [('is_storable', '=', True)]  # Only storable products
+        if search:
+            domain = expression.AND([
+                domain,
+                expression.OR([
+                    [('name', 'ilike', search)],
+                    [('default_code', 'ilike', search)],
+                    [('barcode', 'ilike', search)]
+                ])
+            ])
+
+        # Get products with pagination
+        products = ProductProduct.search(domain, limit=limit, offset=offset)
+        total_count = ProductProduct.search_count(domain)
+        total_pages = math.ceil(total_count / limit)
+
+        # Create pages for pagination template
+        pages = []
+        for i in range(max(1, page - 2), min(total_pages + 1, page + 3)):
+            pages.append({
+                'page': i,
+                'active': i == page
+            })
+
+        # Return both products and pagination data rendered with templates
+        qweb = request.env['ir.qweb']
+        print("HOLA MUNDO", products)
+        return {
+            'status': 'success',
+            'products_html': qweb._render('portal_reception.portal_product_catalog_items', {
+                'products': products
+            }),
+            'pagination_html': qweb._render('portal_reception.portal_product_catalog_pagination', {
+                'page': page,
+                'pages': pages,
+                'total_pages': total_pages,
+                'total_count': total_count,
+                'has_next': page < total_pages,
+                'has_previous': page > 1
+            })
+        }

@@ -3,7 +3,7 @@
     <template id="portal_expedition_page" name="Portal Expedition Page">
         <t t-call="portal_admin_theme.portal_admin_layout">
 
-            <div class="w-full">
+            <div class="w-full" t-attf-id="page-#{page_name}-main-container">
 
                 <div class="card-title-container mb-4 flex items-center">
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Expeditions</h1>
