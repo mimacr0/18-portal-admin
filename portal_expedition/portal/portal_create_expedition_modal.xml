@@ -54,11 +54,24 @@
                                     <div class="form-group">
                                     <div class="flex items-center">
                                         <label t-attf-for="page-#{page_name}-list-create-form-mobile" class="form-label-sm font-sm">Mobile</label>
-                                        <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
                                         <input type="text" name="mobile" t-attf-id="page-#{page_name}-list-create-form-mobile" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Mobile"/>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-mobile-error"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Client Additional Information-->
+                            <label class="form-label-md font-md">Additional Information</label>
+                            <div class="mb-4">
+                                <div class="form-group">
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-client-ref" class="form-label-sm font-sm">Client Reference</label>
+                                    </div>
+                                    <div>
+                                        <input type="text" name="client_ref" t-attf-id="page-#{page_name}-list-create-form-client-ref" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Client Reference"/>
+                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-client-ref-error"></div>
                                     </div>
                                 </div>
                             </div>

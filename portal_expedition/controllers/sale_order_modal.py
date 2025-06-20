@@ -47,6 +47,11 @@ class PortalExpeditionController(PortalAdminController):
     def account_expedition_create(self, **post):
         partner = request.env.user.partner_id
 
+        ResPartner = request.env['res.partner'].sudo()
+        ProductProduct = request.env['product.product'].sudo()
+        SaleOrder = request.env['sale.order'].sudo()
+        AccountPartner = request.env['account.partner'].sudo()
+
         partner_name = post.get('name')
         street = post.get('street')
         street2 = post.get('street2')
@@ -60,13 +65,11 @@ class PortalExpeditionController(PortalAdminController):
         mobile = post.get('mobile') or ''
         email = post.get('email')
         carrier_id = post.get('carrier_id')
+        client_order_ref = post.get('client_ref')
         products = json.loads(post.get('products', '[]'))
-
+        account_partner = AccountPartner.search([('partner_id', '=', partner.commercial_partner_id.id)], limit=1)
+        
         # Create shipping partner 
-        ResPartner = request.env['res.partner'].sudo()
-        ProductProduct = request.env['product.product'].sudo()
-        SaleOrder = request.env['sale.order'].sudo()
-
         partner_shipping = ResPartner.create({
             'name': partner_name,
             'street': street,
@@ -113,12 +116,13 @@ class PortalExpeditionController(PortalAdminController):
             }])
 
         order = SaleOrder.create({
-            # 'account_partner_id': account_partner.id,
+            'account_partner_id': account_partner.id,
             'partner_id': partner.commercial_partner_id.id,
             'partner_invoice_id':  partner.commercial_partner_id.id,
             'partner_shipping_id': partner_shipping.id,
             'order_line': moves,
-            'carrier_id': carrier_id
+            'carrier_id': carrier_id,
+            'client_order_ref': client_order_ref,
         })
         
         return { 'status': 'success', 'message': _('Reception created successfully') }
