@@ -21,7 +21,7 @@
                             Go back
                         </a>
                         <!-- Section to add actions -->
-                    <div class="flex items-center space-x-4">
+                    <!-- <div class="flex items-center space-x-4">
                         <div class="document-actions flex space-x-4">
                             <div class="flex space-x-2 text-gray-900 dark:text-white ">
                                 <span>Print</span>
@@ -33,35 +33,34 @@
                                 <span>Edit</span>
                             </div>
                         </div>
+                    </div> -->
+                    <div class="flex items-center space-x-4">
+                        <div class="reception-status-selector relative">
+                            <span t-attf-class="px-3 py-1.5 bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or 'amber')}-100 text-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or 'amber')}-800 dark:bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or 'amber')}-900 dark:text-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or 'amber')}-200 text-xs font-medium rounded-full flex items-center">
+                                <span t-attf-class="w-2 h-2 bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or 'amber')}-500 dark:bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or 'amber')}-400 rounded-full mr-1.5"></span>
+                                <t t-if="order.state == 'done'">Completed</t>
+                                <t t-elif="order.state == 'cancel'">Cancelled</t>
+                                <t t-else="">Draft</t>
+                            </span>
+                        </div>
                     </div>
+                </div>
 
-                    </div>
-
-                    <div class="p-8 border-b border-gray-200 dark:border-gray-700 relative">
-                        <div class="flex flex-col md:flex-row justify-between items-start relative z-10">
+                <div class="p-8 border-b border-gray-200 dark:border-gray-700 relative">
+                    <div class="flex flex-col md:flex-row justify-between items-start relative z-10">
                             <div>
                                 <div class="flex items-center p-8">
-                                    <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Sale <t t-esc="order.name"/> Information</h1>
-                                    <span class="ml-4 text-xl font-medium text-blue-600 dark:text-blue-400"/>
-                                    <br/>
+                                    <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">SALE</h1>
+                                    <span class="ml-4 text-xl font-medium text-blue-600 dark:text-blue-400"><t t-out="order.name"/></span>
                                 </div>
-                                <div class="flex items-center p-8">
-                                    <span class="text-gray-500 dark:text-gray-400">Client Order Reference: <t t-esc="order.client_order_ref"/></span>
-
+                                <div class="mt-4 space-y-1">
+                                    <span class="text-gray-500 dark:text-gray-400">Reference: <t t-esc="order.client_order_ref"/></span>
                                 </div>
                             </div>
-                            <div class="flex items-center space-x-4">
-                                <div class="expedition-status-information relative">
-                                    <span class="px-3 py-1.5 bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-gray-100 text-xs font-medium rounded-full flex items-center">
-                                        <span class="w-2 h-2 bg-amber-500 rounded-full mr-1.5"></span>
-                                        Draft
-                                    </span>
-                                </div>
-                            </div>  
                         </div>
                     </div>
 
-                    <div class="p-8 grid grid-cols-1 md:grid-cols-2 border-b border-gray-200 dark:border-gray-700 relative ">
+                    <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                         <!-- Shipping Address -->
                         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                             <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
@@ -69,11 +68,11 @@
                                 Ship To
                             </h3>
                             <div class="text-sm space-y-2 dark:text-gray-300">
-                                <p><t t-esc="order.partner_shipping_id.name"/></p>
-                                <p><t t-esc="order.partner_shipping_id.street"/>, <t t-esc="order.partner_shipping_id.street2"/> </p>
-                                <p><t t-esc="order.partner_shipping_id.city"/>, <t t-esc="order.partner_shipping_id.state_id.name"/></p>
-                                <p><t t-esc="order.partner_shipping_id.zip"/></p>
-                                <p><t t-esc="order.partner_shipping_id.country_id.name"/></p>
+                                <p class="font-medium text-base text-gray-800 dark:text-white"><t t-esc="order.partner_shipping_id.name"/></p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_shipping_id.street"/>, <t t-esc="order.partner_shipping_id.street2"/> </p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_shipping_id.city"/>, <t t-esc="order.partner_shipping_id.state_id.name"/></p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_shipping_id.zip"/></p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_shipping_id.country_id.name"/></p>
                             </div>
                         </div>
                         <!-- Billing Address -->
@@ -83,11 +82,11 @@
                                 Bill To
                             </h3>
                             <div class="text-sm space-y-2 dark:text-gray-300">
-                                <p><t t-esc="order.partner_invoice_id.name"/></p>
-                                <p><t t-esc="order.partner_invoice_id.street"/>, <t t-esc="order.partner_invoice_id.street2"/> </p>
-                                <p><t t-esc="order.partner_invoice_id.city"/>, <t t-esc="order.partner_invoice_id.state_id.name"/></p>
-                                <p><t t-esc="order.partner_invoice_id.zip"/></p>
-                                <p><t t-esc="order.partner_invoice_id.country_id.name"/></p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_invoice_id.name"/></p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_invoice_id.street"/>, <t t-esc="order.partner_invoice_id.street2"/> </p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_invoice_id.city"/>, <t t-esc="order.partner_invoice_id.state_id.name"/></p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_invoice_id.zip"/></p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_invoice_id.country_id.name"/></p>
                                 <div class="mt-4 pt-3 border-t border-dashed border-gray-200 dark:border-gray-700">
                                     <p class="font-medium flex items-center">
                                         <i class="fas fa-user-tag mr-2 text-blue-600 dark:text-blue-400"></i>
@@ -106,26 +105,26 @@
                                 Products Sold List
                             </h3>
                         </div>
-                        <div class="overflow-x-auto rounded-lg shadow">
-                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" id="page-expedition-list-table">
-                                <thead class="bg-gray-50 dark:bg-gray-600">
-                                    <tr>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Quantity</th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actual Location</th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Price Unit</th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Price</th>
+                        <div class="overflow-x-auto rounded-lg shadow dark:shadow-gray-900/70">
+                            <table  class="w-full text-sm" id="page-expedition-list-table">
+                                <thead>
+                                    <tr class="bg-gray-100 dark:bg-gray-600">
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Name</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Quantity</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Actual Location</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Price Unit</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Total Price</th>
                                     </tr>
                                 </thead>
 
                                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="expedition-page-list-items">
                                     <t t-foreach="order.order_line" t-as="line">
-                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700"><t t-esc="line.product_id.name"/></td>
-                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700"><t t-esc="line.product_uom_qty"/></td>
-                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700"><!-- <t t-esc="line.location_final_id.name"/> --></td>
-                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700"><t t-out="line.price_unit"/></td>
-                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-700"><t t-out="line.price_total"/></td>
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                            <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200"><t t-esc="line.product_id.name"/></td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200"><t t-esc="line.product_uom_qty"/></td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200"><!-- <t t-esc="line.location_final_id.name"/> --></td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200"><t t-out="line.price_unit"/></td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200"><t t-out="line.price_total"/></td>
                                         </tr>
                                     </t>
                                 </tbody>
@@ -142,39 +141,42 @@
                             </h3>
                         </div>
                         <div class="overflow-x-auto rounded-lg shadow">
-                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" id="page-expedition-list-table">
-                                <thead class="bg-gray-50 dark:bg-gray-600">
-                                    <tr>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Reference</th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Origin Location</th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Destination Location</th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Scheduled Date</th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Done Date</th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Previous Movement</th>
+                            <table class="w-full text-sm" id="page-expedition-list-table">
+                                <thead>
+                                    <tr class="bg-gray-100 dark:bg-gray-600">
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Reference</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Origin Location</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Destination Location</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Scheduled Date</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Done Date</th>
+                                        <!-- <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Previous Movement</th> -->
                                     </tr>
                                 </thead>
 
                                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="expedition-page-list-items">
                                     <t t-foreach="order.picking_ids" t-as="picking">
-                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-yellow-100 dark:hover:bg-yellow-100 hover:text-gray-800" >
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                            <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200" >
                                                 <t t-esc="picking.name"/>
                                             </td>
-                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-yellow-100 dark:hover:bg-yellow-100 hover:text-gray-800">
+                                            <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
                                                 <t t-esc="picking.location_id.name"/>
                                             </td>
-                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-yellow-100 dark:hover:bg-yellow-100 hover:text-gray-800">
+                                            <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
                                                 <t t-esc="picking.location_dest_id.name"/>
                                             </td>
-                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-yellow-100 dark:hover:bg-yellow-100 hover:text-gray-800">
-                                                <t t-out="picking.scheduled_date"/>
+                                            <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                                <t t-esc="picking.scheduled_date.strftime('%d-%m-%Y %H:%M:%S')"/>
                                             </td>
-                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-yellow-100 dark:hover:bg-yellow-100 hover:text-gray-800">
-                                                <t t-out="picking.date_done"/>
+                                            <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                                <t t-if="picking.date_done">
+                                                    <t t-esc="picking.date_done.strftime('%d-%m-%Y %H:%M:%S')"/>
+                                                </t>
+                                                <t t-else="">-</t>
                                             </td>
-                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-yellow-100 dark:hover:bg-yellow-100 hover:text-gray-800">
+                                            <!-- <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200"> -->
                                                 <!-- Previous movement can be added here if needed -->
-                                            </td>
+                                            <!-- </td> -->
                                         </tr>
                                     </t>
                                 </tbody>
@@ -191,22 +193,22 @@
                             </h3>
                         </div>
                         <div class="overflow-x-auto rounded-lg shadow">
-                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" id="page-expedition-list-table">
-                                <thead class="bg-gray-50 dark:bg-gray-600">
-                                    <tr>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <table  class="w-full text-sm" id="page-expedition-list-table">
+                                <thead>
+                                    <tr class="bg-gray-100 dark:bg-gray-600">
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">
                                             Método de envío
                                         </th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">
                                             Shipping Weight
                                         </th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">
                                             Commitment Date (Fecha de entrega)
                                         </th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">
                                             Effective Date (Fecha efectiva)
                                         </th>
-                                        <th scope="col" class="px-6 py-3 text-center font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">
                                             Delivery Status (Estado de entrega)s
                                         </th>
 
@@ -214,20 +216,20 @@
                                 </thead>
 
                                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="expedition-page-list-items">
-                                    <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-200 dark:hover:bg-gray-600">
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
                                             <t t-esc="order.carrier_id.name"/>
                                         </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-200 dark:hover:bg-gray-600">
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
                                             <t t-out="order.shipping_weight"/>
                                         </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-200 dark:hover:bg-gray-600">
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
                                             <t t-out="order.commitment_date"/>
                                         </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-200 dark:hover:bg-gray-600">
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
                                             <t t-out="order.effective_date"/>
                                         </td>
-                                        <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200 font-medium hover:bg-gray-200 dark:hover:bg-gray-600">
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
                                             <t t-out="order.delivery_status"/>
                                         </td>
                                     </tr>

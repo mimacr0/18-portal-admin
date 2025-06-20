@@ -779,9 +779,9 @@ function formatProductSelection(product) {
 
 // Update the document ready function
 document.addEventListener('DOMContentLoaded', () => {
-
+    const modalEl = document.getElementById('page-expedition-list-create-modal');
+    if (!modalEl) return; 
     initExpeditionCreateForm();
-    const el2 = document.getElementById('page-expedition-list-pagination-container-main');
     initManualProductAdd();
 
     // Set up the close button for product catalog
