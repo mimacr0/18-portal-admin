@@ -20,7 +20,7 @@
           donde tendremos una carpeta para el JS 'static/src/js', otra para los QWeb 'static/src/xml'
           y otra para los estilos 'static/src/scss'.
     """,
-    'depends': ['base', 'portal_admin_theme'],
+    'depends': ['base', 'portal_admin_theme', 'stock_reception'],
     'license': 'LGPL-3',
     'website': "https://www.dafe.es",
     'data': [
