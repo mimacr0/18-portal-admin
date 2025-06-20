@@ -13,7 +13,7 @@ export const initReceptionQuickSortFilters = () => {
     const doneButton = document.getElementById('page-reception-list-filter-done');
 
     // Input oculto para almacenar el filtro activo
-    const activeFilterInput = document.getElementById('page-reception-list-filter-active');
+    const activeFilterInput = document.getElementById('page-reception-list-quick-filter-active');
 
     if (!activeFilterInput) return;
     if (!allButton && !pendingButton && !doneButton) return;

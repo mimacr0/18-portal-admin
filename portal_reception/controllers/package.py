@@ -75,6 +75,7 @@ class PortalReceptionController(PortalAdminController):
                 {'id': 'name', 'label': _('Name'), 'sortable': True},
                 {'id': 'weight', 'label': _('Weight'), 'sortable': True, 'lg': True},
                 {'id': 'date', 'label': _('Date'), 'sortable': True, 'md': True},
+                {'id': 'state', 'label': _('Status'), 'sortable': True, 'md': True},
                 {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True}
             ],
             'batch_actions': [
@@ -123,7 +124,8 @@ class PortalReceptionController(PortalAdminController):
 
         base_domain = [
             ('picking_type_id', '=', reception_type.id),
-            ('partner_id', 'in', partner_ids)
+            ('partner_id', 'in', partner_ids),
+            ('state', '!=', 'draft')
         ]
 
         # Apply quick filters
@@ -184,6 +186,12 @@ class PortalReceptionController(PortalAdminController):
 
         # Construir dominio de búsqueda
         base_domain = self._build_reception_domain(search, domain, match_type, quick_filter)
+
+        if quick_filter and quick_filter == 'pending':
+            base_domain.append(('state', '=', 'assigned'))
+
+        if quick_filter and quick_filter == 'done':
+            base_domain.append(('state', '=', 'done'))
 
         # Configurar ordenamiento
         order_by = 'id'
@@ -486,6 +494,9 @@ class PortalReceptionController(PortalAdminController):
 
         return request.render("portal_reception.portal_reception_details_page", values)
 
+    def _setup_portal_message_fetch_extra_domain(self, data):
+        return []
+
     @http.route('/portal_reception/reception/details/chatter/fetch', type='json', auth='public', website=True)
     def portal_reception_details_chatter_fetch(self, reception_id=None, limit=10, after=None, before=None, **kw):
         """Add compatible route matching the JS client call pattern"""
@@ -495,22 +506,45 @@ class PortalReceptionController(PortalAdminController):
                 'status': 'success'
             }
 
-        StockPicking = request.env['stock.picking'].sudo()
+        # Only search into website_message_ids, so apply the same domain to perform only one search
+        # extract domain from the 'website_message_ids' field
+        model = request.env['stock.picking']
+        field = model._fields['website_message_ids']
         domain = [
             ('res_id', '=', int(reception_id)),
             ('model', '=', 'stock.picking'),
-            ('message_type', '=', 'comment'),
             ('subtype_id', '=', request.env.ref('mail.mt_comment').id),
-            '|', ('body', '!=', ''), ('attachment_ids', '!=', False)
+            '|',
+            ('body', '!=', ''),
+            ('attachment_ids', '!=', False)
         ]
 
-        # Fetch the messages
+        # Check access
         Message = request.env['mail.message']
+        StockPicking = request.env['stock.picking'].sudo()
+        reception_type = request.env.ref('stock.picking_type_in')
+        partner_id = request.env.user.partner_id
+        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
+
+        # Verify user has access to this reception
+        picking = StockPicking.search([
+            ('id', '=', int(reception_id)),
+            ('picking_type_id', '=', reception_type.id),
+            ('partner_id', 'in', partner_ids)
+        ], limit=1)
+
+        if not picking:
+            return {
+                'data': {'mail.message': []},
+                'status': 'error',
+                'message': 'Access denied'
+            }
+
         # Non-employee see only messages with not internal subtype
         if not request.env.user._is_internal():
             domain = expression.AND([Message._get_search_domain_share(), domain])
 
-        messages = Message.sudo().search(domain, limit=limit, order='date DESC, id DESC')
+        messages = Message.sudo().search(domain, limit=limit, order='date ASC, id ASC')
         formatted_messages = messages.portal_message_format() if messages else []
 
         return {

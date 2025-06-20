@@ -18,7 +18,7 @@ class StockPicking(models.Model):
     @api.returns('mail.message', lambda value: value.id)
     def message_post(self, **kwargs):
         res = super().message_post(**kwargs)
-        user = self.env['res.users'].sudo().search([('partner_id', '=', self.partner_id.id)],limit=1)
+        user = self.env['res.users'].sudo().search([('partner_id', '=', self.user_id.partner_id.id)],limit=1)
         partner_ids = []
         partner_ids.extend(self.partner_id.ids)
         partner_ids.extend(self.user_id.partner_id.ids)

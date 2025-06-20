@@ -31,7 +31,7 @@ class ProductModalController(PortalAdminController):
     @http.route('/account/stock/create/product', type='json', auth='user')
     def account_stock_create_product(self, **post):
         try:
-            # Extract basic product data
+            # Extraer los datos básicos del producto
             name = post.get('name')
             width = float(post.get('width', 0) or 0)
             height = float(post.get('height', 0) or 0)
@@ -43,11 +43,11 @@ class ProductModalController(PortalAdminController):
             tracking = post.get('tracking', 'none')
             image_base64 = post.get('image_base64')
 
-            # Get current user's account partner
+            # Obtener la cuenta del usuario actual
             partner = request.env.user.partner_id
             account_partner = request.env['account.partner'].sudo().search([('partner_id', '=', partner.id)], limit=1)
 
-            # Create product template
+            # Crear plantilla de producto
             ProductTemplate = request.env['product.template'].sudo()
             values = {
                 'account_partner_id': account_partner.id if account_partner else False,
@@ -68,21 +68,21 @@ class ProductModalController(PortalAdminController):
 
             template = ProductTemplate.create(values)
 
-            # Handle attributes if provided
+            # Manejar atributos si se proporcionan
             if post.get('attributes'):
                 attributes_data = json.loads(post.get('attributes') or '[]')
 
-                # Create attribute lines
+                # Crear líneas de atributos
                 for attr_data in attributes_data:
                     attribute_id = attr_data.get('attribute_id')
                     value_ids = attr_data.get('attribute_value_id')
 
                     if attribute_id and value_ids:
-                        # Convert single value to list if needed
+                        # Convertir un valor en una lista si es necesario
                         if not isinstance(value_ids, list):
                             value_ids = [value_ids]
 
-                        # Create attribute line
+                        # Crear línea de atributos
                         template.write({
                             'attribute_line_ids': [(0, 0, {
                                 'attribute_id': int(attribute_id),
@@ -108,3 +108,27 @@ class ProductModalController(PortalAdminController):
         record = request.env['product.template'].sudo().browse(int(record_id))
         record.image_1920 = image_data  # Campo binary estándar para imágenes
         return {'status': 'ok'}
+
+    @http.route('/account/stock/update/product/variants', type='json', auth='user')
+    def account_stock_update_product_variants(self, **post):
+        try:
+            variants_data = json.loads(post.get('variants', '[]'))
+
+            for variant_data in variants_data:
+                product_id = int(variant_data.get('product_id'))
+                sku = variant_data.get('sku')
+                barcode = variant_data.get('barcode')
+
+                product = request.env['product.product'].sudo().browse(product_id)
+                if product.exists():
+                    product.write({
+                        'default_code': sku,
+                        'barcode': barcode
+                    })
+
+            return {
+                'status': 'success',
+                'message': _('Product variants updated successfully')
+            }
+        except Exception as e:
+            return {'status': 'error', 'message': str(e)}
