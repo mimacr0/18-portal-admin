@@ -73,9 +73,13 @@ export const initExpeditionCreateForm = () => {
     const searchSelectInput = document.getElementById('page-expedition-list-create-form-address');
 
     const zipInput = document.getElementById('page-expedition-list-create-form-zip')
+    const zipInputId = document.getElementById('page-expedition-list-create-form-zip-id')
     const cityInput = document.getElementById('page-expedition-list-create-form-city')
+    const cityInputId = document.getElementById('page-expedition-list-create-form-city-id')
     const stateInput = document.getElementById('page-expedition-list-create-form-state')
+    const stateInputId = document.getElementById('page-expedition-list-create-form-state-id')
     const countryInput = document.getElementById('page-expedition-list-create-form-country')
+    const countryInputId = document.getElementById('page-expedition-list-create-form-country-id')
 
     $(carrierSelectInput).select2({
         placeholder: 'Select Carrier',
@@ -136,6 +140,11 @@ export const initExpeditionCreateForm = () => {
         cityInput.value = data.city_name || '';
         stateInput.value = data.state_name || '';
         countryInput.value = data.country_name || '';
+
+        zipInputId.value = data.zip_id || '';
+        cityInputId.value = data.city_id || '';
+        stateInputId.value = data.state_id || '';
+        countryInputId.value = data.country_id || '';
     });
 
     catalogButton.addEventListener('click', async () => {
@@ -170,9 +179,12 @@ export const initExpeditionCreateForm = () => {
 
         const { formData } = sysCollectFormData('#page-expedition-list-create-form');
 
+        console.log(formData)
         const resp = await rpc('/account/expedition/create', formData);
 
         if(resp?.status !== 'success') return;
+
+        console.log(resp.message)
 
         Modal.close('page-expedition-list-create-modal');
 

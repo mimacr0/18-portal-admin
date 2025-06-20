@@ -44,7 +44,83 @@ class PortalExpeditionController(PortalAdminController):
         }
 
     @http.route('/account/expedition/create', type='json', auth='user')
-    def account_expedition_create(self, term='', **kw):
+    def account_expedition_create(self, **post):
+        partner = request.env.user.partner_id
+
+        partner_name = post.get('name')
+        street = post.get('street')
+        street2 = post.get('street2')
+        zip_id = post.get('zip_id')
+        zip = post.get('zip')
+        city_id = post.get('city_id')
+        city = post.get('city')
+        state_id = post.get('state_id')
+        country_id = post.get('country_id')
+        phone = post.get('phone')
+        mobile = post.get('mobile') or ''
+        email = post.get('email')
+        carrier_id = post.get('carrier_id')
+        products = json.loads(post.get('products', '[]'))
+
+        # Create shipping partner 
+        ResPartner = request.env['res.partner'].sudo()
+        ProductProduct = request.env['product.product'].sudo()
+        SaleOrder = request.env['sale.order'].sudo()
+
+        partner_shipping = ResPartner.create({
+            'name': partner_name,
+            'street': street,
+            'street2': street2,
+            # 'zip_id': zip_id,
+            'zip': zip,
+            'city_id': city_id,
+            'city': city,
+            'state_id': state_id,
+            'country_id': country_id,
+            'phone': phone,
+            'mobile': mobile,
+            'email': email,
+            'type': 'delivery',
+        })
+
+
+        moves = []
+        for product in products:
+            pid = product.get('product_id')
+            qty = product.get('quantity')
+
+            if not pid:
+                return { 'status': 'error', 'message': _('Product not found') }
+
+            if not pid.isdigit():
+                return { 'status': 'error', 'message': _('Invalid product ID') }
+
+            product = ProductProduct.browse(int(pid))
+
+            if not product:
+                return { 'status': 'error', 'message': _('Product not found') }
+
+            if '.' in qty and not qty.replace('.', '').isdigit():
+                return { 'status': 'error', 'message': _('Invalid quantity') }
+
+            if '.' not in qty and not qty.isdigit():
+                return { 'status': 'error', 'message': _('Invalid quantity') }
+
+            moves.append([0, 0, {
+                'name': product.display_name,
+                'product_id': product.id,
+                'product_uom_qty': float(qty)
+            }])
+
+        order = SaleOrder.create({
+            # 'account_partner_id': account_partner.id,
+            'partner_id': partner.commercial_partner_id.id,
+            'partner_invoice_id':  partner.commercial_partner_id.id,
+            'partner_shipping_id': partner_shipping.id,
+            'order_line': moves,
+            'carrier_id': carrier_id
+        })
+        
         return { 'status': 'success', 'message': _('Reception created successfully') }
 
     @http.route('/account/expedition/product-search', type='json', auth='user')
@@ -119,27 +195,37 @@ class PortalExpeditionController(PortalAdminController):
 
         def format_result(zip_rec=None, city=None, state=None, country=None):
             zip_val = zip_rec.name if zip_rec else ''
-            city_val = city.name if city else (zip_rec.city_id.name if zip_rec and zip_rec.city_id else '')
-            state_val = state.name if state else (
-                zip_rec.city_id.state_id.name if zip_rec and zip_rec.city_id and zip_rec.city_id.state_id else
-                city.state_id.name if city and city.state_id else ''
+            city_obj = city or (zip_rec.city_id if zip_rec else None)
+            city_val = city_obj.name if city_obj else ''
+            
+            state_obj = state or (
+                zip_rec.city_id.state_id if zip_rec and zip_rec.city_id else
+                city_obj.state_id if city_obj else None
             )
-            country_val = country.name if country else (
-                zip_rec.city_id.country_id.name if zip_rec and zip_rec.city_id and zip_rec.city_id.country_id else
-                city.country_id.name if city and city.country_id else
-                state.country_id.name if state and state.country_id else ''
+            state_val = state_obj.name if state_obj else ''
+            
+            country_obj = country or (
+                zip_rec.city_id.country_id if zip_rec and zip_rec.city_id else
+                city_obj.country_id if city_obj else
+                state_obj.country_id if state_obj else None
             )
+            country_val = country_obj.name if country_obj else ''
 
             full_text = ', '.join(filter(None, [zip_val, city_val, state_val, country_val]))
 
             return {
-                'id': f"{zip_rec.id if zip_rec else city.id if city else state.id if state else country.id}",
+                'id': f"{zip_rec.id if zip_rec else city_obj.id if city_obj else state_obj.id if state_obj else country_obj.id if country_obj else ''}",
                 'text': full_text,
                 'zip': zip_val,
+                'zip_id': zip_rec.id if zip_rec else None,
                 'city_name': city_val,
+                'city_id': city_obj.id if city_obj else None,
                 'state_name': state_val,
-                'country_name': country_val
+                'state_id': state_obj.id if state_obj else None,
+                'country_name': country_val,
+                'country_id': country_obj.id if country_obj else None
             }
+
             
         MAX_RESULTS = 10
         results = []
