@@ -39,7 +39,6 @@ class PortalExpeditionController(PortalAdminController):
                 'text': carrier.name,
                 'delivery_type': carrier.delivery_type
             })
-        print(f"Carriers found: {len(result_items)}")
         return {
             'items': result_items
         }
@@ -220,7 +219,6 @@ class PortalExpeditionController(PortalAdminController):
 
         # Return both products and pagination data rendered with templates
         qweb = request.env['ir.qweb']
-        print("HOLA MUNDO", products)
         return {
             'status': 'success',
             'products_html': qweb._render('portal_reception.portal_product_catalog_items', {

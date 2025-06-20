@@ -55,7 +55,6 @@ class PortalExpeditionController(PortalAdminController):
 
         messages = Message.sudo().search(domain, limit=limit, order='date ASC, id ASC')
         formatted_messages = messages.portal_message_format() if messages else []
-        print(f"Fetched {len(formatted_messages)} messages for expedition ID: {expedition_id}")
         return {
             'data': {
                 'mail.message': formatted_messages
@@ -117,7 +116,6 @@ class PortalExpeditionController(PortalAdminController):
                 attachment_ids=attachment_ids,
                 author_id=request.env.user.partner_id.id
             )
-            print("Message created")
             return json.dumps({
                 'status': 'success',
                 'message_id': message.id
