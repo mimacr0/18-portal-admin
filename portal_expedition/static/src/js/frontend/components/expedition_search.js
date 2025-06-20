@@ -16,7 +16,7 @@ export const initExpeditionListSearch = () => {
     newSearchInput.addEventListener('keyup', function(e) {
         if(e.key === 'Enter' || this.value.trim() === '') {
             // Resetear página
-            const currentPageInput = document.getElementById('expedition-list-pagination-page');
+            const currentPageInput = document.getElementById('page-expedition-list-pagination-page');
             if(currentPageInput) currentPageInput.value = 1;
 
             // Recargar la lista
@@ -126,7 +126,7 @@ export const initAdvancedSearch = () => {
         searchDomainInput.value = JSON.stringify(domain);
 
         // Resetear página actual
-        const currentPageInput = document.getElementById('expedition-list-pagination-page');
+        const currentPageInput = document.getElementById('page-expedition-list-pagination-page');
         if (currentPageInput) currentPageInput.value = 1;
 
         // Recargar la lista con los filtros aplicados
@@ -145,7 +145,7 @@ export const initAdvancedSearch = () => {
         searchDomainInput.value = '[]';
 
         // Resetear página actual
-        const currentPageInput = document.getElementById('expedition-list-pagination-page');
+        const currentPageInput = document.getElementById('page-expedition-list-pagination-page');
         if (currentPageInput) currentPageInput.value = 1;
 
         // Reestablecer el tipo de coincidencia

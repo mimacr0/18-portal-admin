@@ -68,7 +68,7 @@ export const initExpeditionQuickSortFilters = () => {
         });
 
         // Resetear la página actual
-        const currentPageInput = document.getElementById('expedition-list-pagination-page');
+        const currentPageInput = document.getElementById('page-expedition-list-pagination-page');
         if (currentPageInput) currentPageInput.value = 1;
 
         // Recargar la lista con el nuevo filtro

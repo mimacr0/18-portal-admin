@@ -39,7 +39,7 @@
         'portal_admin_theme.admin_assets_frontend': [
             'portal_expedition/static/src/js/frontend/components/**.js',
             'portal_expedition/static/src/js/frontend/expedition_main.js',
-            # 'portal_expedition/static/src/js/create_expedition_modal.js',
+            'portal_expedition/static/src/js/create_expedition_modal.js',
         ],
     },
     'images': ['static/description/icon.png'],

@@ -260,5 +260,6 @@ class PortalExpeditionController(PortalAdminController):
             'order': order,
             'user': request.env.user, 
             'company': request.env.company, 
-
+            'page_title': _('Expedition Details'),
+            'page_url': '/account/expedition/details/%s' % order_id,
         })

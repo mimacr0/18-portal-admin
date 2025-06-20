@@ -33,7 +33,7 @@ export const reloadExpeditionListPage = async () => {
     if(!pageListItems) return;
 
     // Obtener y validar el input de página actual
-    const currentPageInput = document.getElementById('expedition-list-pagination-page');
+    const currentPageInput = document.getElementById('page-expedition-list-pagination-page');
     if(!currentPageInput) return;
     const currentPage = parseInt(currentPageInput.value);
 
@@ -64,7 +64,7 @@ export const reloadExpeditionListPage = async () => {
         quick_filter: quickFilter
     });
 
-    
+
     // Verificar si la respuesta es exitosa
     if(res?.status != 'success') return;
 
