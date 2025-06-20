@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo> 
     <template id="portal_expedition_details_page" name="Portal Sale Details Page">
+                <!-- Sale Order Create Modal -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- Select2 (si también usas esta librería) -->
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
         <t t-call="portal_admin_theme.portal_admin_layout">
 
             <div id="expedition-details-container" class="mt-6">
@@ -256,7 +263,7 @@
 
                                 <!-- Messages container with increased height -->
                                 <div class="space-y-4 h-[500px] overflow-y-auto p-4 messages-container bg-white dark:bg-gray-800" t-attf-id="#{page_name}-details-chat-messages" t-attf-data-order-id="#{order.id}"
-                                    t-attf-data-partner-id="#{user.partner_id.id}" t-attf-data-token="#{order.access_token}"></div>
+                                    t-attf-data-partner-id="#{user.partner_id.id}"></div>
 
                                 <!-- Message input area in separate container -->
                                 <div class="message-composer bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 p-4">

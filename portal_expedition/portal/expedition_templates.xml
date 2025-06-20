@@ -156,8 +156,60 @@
                 </div>
             </div>
 
-            <div class="fixed bottom-0 right-0 z-10 mr-6 mb-6">
-                <input type="hidden" id="expedition-list-pagination-page" value="1"/>
+            <div class="w-full hidden" t-attf-id="page-#{page_name}-product-catalog-select">
+                <!-- Products Page Header -->
+                <div class="flex justify-between items-center mb-8 mt-5">
+                    <div class="relative">
+                        <button t-attf-id="page-#{page_name}-product-catalog-select-close-btn" class="px-3 py-1.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors flex items-center">
+                            <i class="fas fa-arrow-left mr-1.5"></i> Go Back
+                        </button>
+                    </div>
+                    <div class="relative max-w-md w-full">
+                        <input type="text" t-attf-id="page-#{page_name}-product-catalog-select-search" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-full shadow-md focus:ring-cyan-500 focus:border-cyan-500 block w-full p-3.5 pl-12 pr-12" placeholder="Search products..."/>
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selected products preview -->
+                <div t-attf-id="page-#{page_name}-product-catalog-select-selected-products-container" class="mb-4 bg-white dark:bg-gray-800 rounded-md shadow overflow-hidden text-sm">
+                    <div class="bg-gradient-to-r from-cyan-500 to-cyan-600 dark:from-cyan-800 dark:to-cyan-900 px-3 py-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fas fa-shopping-cart text-white text-xs mr-2"></i>
+                                <h2 class="text-sm font-semibold text-white">Selected Products</h2>
+                                <span id="selected-count" class="ml-2 bg-white text-cyan-700 dark:bg-gray-700 dark:text-cyan-300 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                            </div>
+                            <div>
+                                <button t-attf-id="page-#{page_name}-product-catalog-select-clear-selection-btn" class="text-white hover:text-gray-200 transition-colors text-xs">
+                                    <i class="fas fa-trash-alt mr-1"></i> Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div t-attf-id="page-#{page_name}-product-catalog-select-no-products-message" class="p-3 text-center text-xs">
+                        <i class="fas fa-box-open text-gray-400 dark:text-gray-500 text-lg mb-1"></i>
+                        <p class="text-gray-500 dark:text-gray-400">No products selected</p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Add products using the "Add" button</p>
+                    </div>
+
+                    <div t-attf-id="page-#{page_name}-product-catalog-select-selected-products-list" class="hidden max-h-80 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 p-3"></div>
+
+                </div>
+
+                <!-- Products Content -->
+                <div class="flex flex-col md:flex-row mb-4">
+                    <div t-attf-id="page-#{page_name}-product-catalog-select-products-grid" class="product-catalog-list w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3"></div>
+                </div>
+
+                <!-- Pagination -->
+                <div t-attf-id="page-#{page_name}-product-catalog-select-pagination" class="fixed bottom-0 right-0 z-10 mr-6 mb-6"></div>
+            </div>
+
+            <div class="fixed bottom-0 right-0 z-10 mr-6 mb-6" t-attf-id="page-#{page_name}-list-pagination-container-main">
+                <input type="hidden" t-attf-id="page-#{page_name}-list-pagination-page" value="1"/>
                 <div class="pagination-container px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg flex items-center justify-between" id="expedition-list-pagination-container"></div>
             </div>
 

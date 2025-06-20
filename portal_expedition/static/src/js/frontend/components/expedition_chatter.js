@@ -78,11 +78,9 @@ const reloadExpeditionDetailsChatter = async () => {
 
     const orderId = parseInt(chatter.dataset.orderId);
     const partnerId = parseInt(chatter.dataset.partnerId);
-    const token = chatter.dataset.token;
     
     const response = await rpc('/portal_expedition/expedition/details/chatter/fetch', {
         expedition_id: orderId,
-        token
     })
     console.log('Chatter response:', response);
     const messages = response?.data['mail.message'] || [];
@@ -164,6 +162,7 @@ const reloadExpeditionDetailsChatter = async () => {
 }
 
 const initMessageSending = () => {
+    console.log("Inicializar el Chatter")
     const chatter = document.getElementById('expedition_details-details-chat-messages');
     if (!chatter) return;
 
@@ -175,7 +174,7 @@ const initMessageSending = () => {
     const sendButton = document.querySelector('.message-send-button');
     const messageInputContainer = document.getElementById('message-input-container');
     const attachButton = document.querySelector('.message-attach-button');
-    const fileInput = document.getElementById('page-details-expedition_details-message-attachment-input');
+    const fileInput = document.getElementById('page-details-expedition-message-attachment-input');
     const tokenInput = document.getElementById('page-details-expedition-message-attachment-token');
     let selectedFile = null;
 
@@ -197,7 +196,6 @@ const initMessageSending = () => {
 
         const formData = new FormData();
         formData.append('expedition_id', parseInt(orderId));
-        formData.append('access_token', token);
         formData.append('csrf_token', tokenInput?.value || '');
         formData.append('message', messageText);
         formData.append('attachment', selectedFile);
