@@ -275,7 +275,7 @@
                     <div class="flex items-center">
                         <div class="ml-4">
                             <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="order.name"/>
-                            <div class="text-sm text-gray-500 dark:text-gray-200">Reference: <t t-esc="order.client_order_ref"/></div>
+                            <div class="text-sm text-gray-500 dark:text-gray-200">REF: <t t-esc="order.client_order_ref"/></div>
                         </div>
                     </div>
                 </td>
