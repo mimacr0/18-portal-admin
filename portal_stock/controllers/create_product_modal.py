@@ -90,6 +90,13 @@ class ProductModalController(PortalAdminController):
                             })]
                         })
 
+            # Asegurarse de que todas las variantes tengan los mismos valores de volumen y peso
+            for variant in template.product_variant_ids:
+                variant.write({
+                    'volume': volume,
+                    'weight': weight
+                })
+
             qweb = request.env['ir.qweb']
             return {
                 'status': 'success',
@@ -118,12 +125,16 @@ class ProductModalController(PortalAdminController):
                 product_id = int(variant_data.get('product_id'))
                 sku = variant_data.get('sku')
                 barcode = variant_data.get('barcode')
+                volume = float(variant_data.get('volume', 0) or 0)
+                weight = float(variant_data.get('weight', 0) or 0)
 
                 product = request.env['product.product'].sudo().browse(product_id)
                 if product.exists():
                     product.write({
                         'default_code': sku,
-                        'barcode': barcode
+                        'barcode': barcode,
+                        'volume': volume,
+                        'weight': weight
                     })
 
             return {

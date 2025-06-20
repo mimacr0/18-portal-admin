@@ -310,41 +310,39 @@ const initProductAttributesVisibility = () => {
 const ProductAttributesUpdate = async () => {
     showLoadingScreen();
 
-    // Array para almacenar los datos de las variantes
     const variantData = [];
-
-    // Seleccionamos el formulario
     const form = document.getElementById('page-stock-list-product-attributes-form');
 
-    // Depuración: verificar qué contiene el formulario
     console.log("Contenido del formulario:", form.innerHTML);
 
-    // Buscamos todas las filas de productos (cada una tiene un SKU y un Barcode)
     const productRows = form.querySelectorAll('div.mb-2');
 
     productRows.forEach(row => {
-        // Buscamos el siguiente div que contiene los inputs
         const inputsContainer = row.nextElementSibling;
         if (!inputsContainer) return;
 
-        // Buscamos los inputs dentro de ese contenedor
         const skuInput = inputsContainer.querySelector('input[name="sku"]');
         const barcodeInput = inputsContainer.querySelector('input[name="barcode"]');
+        const volumeInput = inputsContainer.querySelector('input[name="volume"]');
+        const weightInput = inputsContainer.querySelector('input[name="weight"]');
 
         if (skuInput && barcodeInput) {
-            // Extraemos el ID del producto del atributo id del input
             const productId = skuInput.id.split('-').pop();
 
             console.log("Encontrado producto:", {
                 productId: productId,
                 sku: skuInput.value,
-                barcode: barcodeInput.value
+                barcode: barcodeInput.value,
+                volume: volumeInput ? volumeInput.value : '',
+                weight: weightInput ? weightInput.value : ''
             });
 
             variantData.push({
                 product_id: productId,
                 sku: skuInput.value || '',
-                barcode: barcodeInput.value || ''
+                barcode: barcodeInput.value || '',
+                volume: volumeInput ? volumeInput.value || '0' : '0',
+                weight: weightInput ? weightInput.value || '0' : '0'
             });
         }
     });
@@ -352,7 +350,6 @@ const ProductAttributesUpdate = async () => {
     console.log("Total variantes encontradas:", variantData.length);
     console.log("Datos a enviar:", variantData);
 
-    // Solo enviar si hay datos
     if (variantData.length > 0) {
         const response = await rpc('/account/stock/update/product/variants', {
             variants: JSON.stringify(variantData)
