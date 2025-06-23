@@ -56,6 +56,10 @@
                 <link href="/portal_admin_theme/static/src/vendor/flatpickr/css/flatpickr.min.css" rel="stylesheet" />
                 <script src="/portal_admin_theme/static/src/vendor/flatpickr/js/flatpickr.min.js"></script>
             </t>
+            <t t-if="apexcharts">
+                <!-- ApexCharts -->
+                <script src="/portal_admin_theme/static/src/vendor/apexcharts/apexcharts.min.js"></script>
+            </t>
         </head>
         <body class="bg-gray-100 dark:bg-gray-900">
             <div class="page-container">

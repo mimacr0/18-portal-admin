@@ -15,6 +15,8 @@
     'data': [
         'portal/home_templates.xml',
         'portal/dashboard_templates.xml',
+        'portal/account_templates.xml',
+        'portal/settings_templates.xml',
         'views/res_users.xml',
         'views/menu.xml'
     ],
