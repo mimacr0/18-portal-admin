@@ -14,9 +14,7 @@
     'depends': ['client_account'],
     'data': [
         'portal/layout.xml',
-        'security/ir.model.access.csv',
-        'portal/account_templates.xml',
-        'portal/settings_templates.xml'
+        'security/ir.model.access.csv'
     ],
     'assets': {
         'portal_admin_theme.fontawesome': [

@@ -38,6 +38,23 @@ const sysLayoutBuildDesktopHistoryItem = (item) => {
     const closeBtn = document.createElement('span');
     closeBtn.className = 'history-item-close w-5 text-center hidden lg:block';
     closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+
+    closeBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Remove this item from history
+        const history = sysLayoutHistoryLoadHistory();
+        const updatedHistory = history.filter(item => item.path !== historyItem.getAttribute('data-history-id'));
+        sysLayoutHistorySaveHistory(updatedHistory);
+
+        // Update UI
+        sysLayoutReloadPagesHistory();
+
+        // If the updateHistoryDropdown function exists in this scope, call it
+        if (typeof updateHistoryDropdown === 'function') updateHistoryDropdown();
+    });
+
     historyItem.appendChild(closeBtn);
 
     historyItem.addEventListener('click', function(e) {
@@ -176,10 +193,7 @@ const sysLayoutInitPagesHistory = () => {
     if (!historyActionElements) return;
 
     // DOM Elements
-    const historyButton = document.getElementById('history-dropdown-button');
-    const historyDropdown = document.getElementById('history-dropdown');
     const historyList = document.getElementById('history-list');
-    const historyWidget = document.getElementById('history-widget');
     const clearHistoryBtn = document.getElementById('clear-history');
 
     // Process history action elements
@@ -275,24 +289,6 @@ const sysLayoutInitPagesHistory = () => {
             clearHistory();
         });
     }
-
-    // Handle individual item deletion
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.history-item-close')) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            const historyItem = e.target.closest('.history-widget-item');
-            const itemId = historyItem.getAttribute('data-history-id');
-
-            const history = sysLayoutHistoryLoadHistory();
-            const updatedHistory = history.filter(item => item.path !== itemId);
-            sysLayoutHistorySaveHistory(updatedHistory);
-
-            updateHistoryDropdown();
-            sysLayoutReloadPagesHistory();
-        }
-    });
 
     // Initial setup
     sysLayoutReloadPagesHistory();

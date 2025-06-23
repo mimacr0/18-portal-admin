@@ -6,7 +6,7 @@
 
 from odoo import http, _
 from odoo.http import request
-from .admin import PortalAdminController
+from odoo.addons.portal_admin_theme.controllers.admin import PortalAdminController
 
 
 class PortalDashboardController(PortalAdminController):
@@ -15,4 +15,4 @@ class PortalDashboardController(PortalAdminController):
     def account_user_settings_action_main(self, **post):
         values = self._get_admin_layout_values()
         values['page_url'] = '/account/user/settings'
-        return request.render("portal_admin_theme.portal_user_settings_page", values)
+        return request.render("portal_account.portal_user_settings_page", values)

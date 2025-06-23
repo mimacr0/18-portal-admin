@@ -6,7 +6,7 @@
 
 from odoo import http, _
 from odoo.http import request
-from .admin import PortalAdminController
+from odoo.addons.portal_admin_theme.controllers.admin import PortalAdminController
 
 
 class PortalDashboardController(PortalAdminController):
@@ -15,7 +15,7 @@ class PortalDashboardController(PortalAdminController):
     def account_user_profile_action_main(self, **post):
         values = self._get_admin_layout_values()
         values['page_url'] = '/account/user/profile'
-        return request.render("portal_admin_theme.portal_user_profile_page", values)
+        return request.render("portal_account.portal_user_profile_page", values)
 
     @http.route('/account/user/update/lang/<string:lang>', type='http', auth="user")
     def account_user_update_lang_action_main(self, lang, **post):
