@@ -93,20 +93,46 @@ const initAddAttributesToProduct = () => {
     document.addEventListener('modalClosed', (e) => {
         if(e.detail.modalId !== 'page-stock-list-create-modal') return;
 
-        // Reset form visibility
+        // Reset forms visibility
         addProductForm.classList.remove('hidden');
+        addProductForm.classList.add('block');
         addProductFooter.classList.remove('hidden');
+
+        // Hide attributes form
+        const attributesForm = document.querySelector('#page-stock-list-product-attributes-form');
+        const attributesFooter = document.querySelector('#page-stock-list-product-attributes-form-footer');
+        if(attributesForm) {
+            attributesForm.innerHTML = '';
+            attributesForm.classList.add('hidden');
+            attributesForm.classList.remove('block');
+        }
+        if(attributesFooter) {
+            attributesFooter.classList.add('hidden');
+        }
 
         // Reset all form inputs
         document.getElementById('page-stock-list-create-form-name').value = '';
-        document.getElementById('page-stock-list-create-form-tracking').value = 'none';
+
+        // Reset radio buttons
+        const radioNone = document.getElementById('tracking_none');
+        const radioSerial = document.getElementById('tracking_serial');
+        if(radioNone) radioNone.checked = false;
+        if(radioSerial) radioSerial.checked = false;
+
+        // Reset measurements
         document.getElementById('page-stock-list-create-form-measures-width').value = '';
         document.getElementById('page-stock-list-create-form-measures-height').value = '';
         document.getElementById('page-stock-list-create-form-measures-length').value = '';
         document.getElementById('page-stock-list-create-form-volume').value = '';
         document.getElementById('page-stock-list-create-form-weight').value = '';
-        document.getElementById('page-stock-list-create-form-sku').value = '';
-        document.getElementById('page-stock-list-create-form-barcode').value = '';
+
+        // Reset image
+        const imagePreview = document.getElementById('page-stock-list-create-form-image-preview');
+        const imageInput = document.getElementById('page-stock-list-create-form-image');
+        const base64Field = document.getElementById('page-stock-list-create-form-image-base64');
+        if(imagePreview) imagePreview.src = '/portal_stock/static/img/placeholder.png';
+        if(imageInput) imageInput.value = '';
+        if(base64Field) base64Field.value = '';
 
         // Reset attributes
         container.innerHTML = '';
