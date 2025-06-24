@@ -1,4 +1,5 @@
 import { rpc } from "@portal_admin_theme/network/rpc";
+import { _t } from "@web/core/l10n/translation";
 
 // Constantes globales
 const PLACEHOLDER_IMAGE = '/portal_stock/static/img/placeholder.png';
@@ -77,7 +78,7 @@ const initManageProductImage = () => {
 
         // Validar tipo de archivo
         if (!file.type.startsWith('image/')) {
-            systemShowNotification('Por favor, seleccione un archivo de imagen válido', {
+            systemShowNotification(_t('Por favor, seleccione un archivo de imagen válido'), {
                 type: 'error',
                 duration: 3000
             });
@@ -95,7 +96,7 @@ const initManageProductImage = () => {
         };
 
         reader.onerror = () => {
-            systemShowNotification('Error al leer el archivo de imagen', {
+            systemShowNotification(_t('Error al leer el archivo de imagen'), {
                 type: 'error',
                 duration: 3000
             });
@@ -142,8 +143,8 @@ const ProductListCreate = async () => {
             }
         }
     } catch (error) {
-        console.error('Error al crear producto:', error);
-        systemShowNotification('Ha ocurrido un error al crear el producto', {
+        console.error(_t('Error al crear producto:'), error);
+        systemShowNotification(_t('Ha ocurrido un error al crear el producto'), {
             type: 'error',
             duration: 5000
         });
@@ -305,7 +306,7 @@ const initAddAttributesToProduct = () => {
         try {
             const productAttributes = await rpc('/account/stock/get/attributes');
             if (productAttributes?.status !== 'success') {
-                throw new Error('Error al obtener atributos');
+                throw new Error(_t('Error al obtener atributos'));
             }
 
             // Crear nueva línea
@@ -331,7 +332,7 @@ const initAddAttributesToProduct = () => {
 
         } catch (error) {
             console.error('Error al añadir atributo:', error);
-            systemShowNotification('Error al añadir atributo', {
+            systemShowNotification(_t('Error al añadir atributo'), {
                 type: 'error',
                 duration: 3000
             });
@@ -391,7 +392,7 @@ const initAddAttributesToProduct = () => {
                     });
 
                     if (valuesResult?.status !== 'success') {
-                        throw new Error('Error al obtener valores de atributo');
+                        throw new Error(_t('Error al obtener valores de atributo'));
                     }
 
                     // Actualizar opciones de valores
@@ -409,7 +410,7 @@ const initAddAttributesToProduct = () => {
                     updateAttributeValues();
 
                 } catch (error) {
-                    console.error('Error al cargar valores de atributo:', error);
+                    console.error(_t('Error al cargar valores de atributo:'), error);
                 }
             });
         }
@@ -483,7 +484,7 @@ const ProductAttributesUpdate = async () => {
                 variants: JSON.stringify(variantData)
             });
 
-            systemShowNotification(response.message || 'Producto actualizado correctamente', {
+            systemShowNotification(response.message || _t('Producto actualizado correctamente'), {
                 type: response.status === 'success' ? 'success' : 'error',
                 duration: 5000
             });
@@ -493,14 +494,14 @@ const ProductAttributesUpdate = async () => {
                 document.dispatchEvent(new CustomEvent('list:reload'));
             }
         } else {
-            systemShowNotification('No se encontraron variantes para actualizar', {
+            systemShowNotification(_t('No se encontraron variantes para actualizar'), {
                 type: 'error',
                 duration: 5000
             });
         }
     } catch (error) {
-        console.error('Error al actualizar variantes:', error);
-        systemShowNotification('Error al actualizar variantes de producto', {
+        console.error(_t('Error al actualizar variantes:'), error);
+        systemShowNotification(_t('Error al actualizar variantes de producto'), {
             type: 'error',
             duration: 5000
         });
