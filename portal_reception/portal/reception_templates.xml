@@ -227,6 +227,70 @@
                         </div>
                         <div class="modal-body">
                             <form t-attf-id="page-#{page_name}-list-create-form">
+                                <!-- Package type field -->
+                                <div class="form-group">
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-package-type" class="form-label-sm font-sm">Package Type</label>
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </div>
+                                    <div>
+                                        <select name="package_type_id" t-attf-id="page-#{page_name}-list-create-form-package-type-id" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"></select>
+                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-package-type-id-error"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Medidas para calcular el volumen-->
+                                <div class="form-group">
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-measures" class="form-label-sm font-sm">Measures (cm)</label>
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </div>
+
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <div class="flex flex-col">
+                                                <div class="flex items-center">
+                                                    <input type="number" required="required" name="width" t-attf-id="page-#{page_name}-list-create-form-measures-width" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Width" min="0" step="0.01"/>
+                                                    <span class="mx-1">x</span>
+                                                </div>
+                                                <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-width-error"/>
+                                            </div>
+
+                                            <div class="flex flex-col">
+                                                <div class="flex items-center">
+                                                    <input type="number" required="required" name="height" t-attf-id="page-#{page_name}-list-create-form-measures-height" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Height" min="0" step="0.01"/>
+                                                    <span class="mx-1">x</span>
+                                                </div>
+                                                <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-height-error"/>
+                                            </div>
+
+                                            <div class="flex flex-col">
+                                                <div class="flex items-center">
+                                                    <input type="number" required="required" name="length" t-attf-id="page-#{page_name}-list-create-form-measures-length" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Length" min="0" step="0.01"/>
+                                                    <span class="mx-1 text-sm">cm</span>
+                                                </div>
+                                                <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-length-error"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Weight field -->
+                                <div class="form-group">
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-weight" class="form-label-sm font-sm">Weight (kg)</label>
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" step="0.01" min="0" name="weight" required="required" t-attf-id="page-#{page_name}-list-create-form-weight"
+                                                class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
+                                                placeholder="Weight"/>
+                                        <span class="mx-1 text-sm">kg</span>
+                                    </div>
+                                    <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-weight-error"/>
+                                </div>
+
+                                <!-- Scheduled Date field -->
                                 <div class="form-group">
                                     <div class="flex items-center">
                                         <label t-attf-for="page-#{page_name}-list-create-form-scheduled-date" class="form-label-sm font-sm">Scheduled Date</label>
@@ -250,6 +314,17 @@
                                     </div>
                                 </div>
 
+                                <!-- Optional tracking number field -->
+                                <div class="form-group">
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-tracking-number-optional" class="form-label-sm font-sm">Tracking Number (Optional)</label>
+                                    </div>
+                                    <div>
+                                        <input type="text" name="tracking_number_optional" t-attf-id="page-#{page_name}-list-create-form-tracking-number-optional" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Tracking Number (Optional)"/>
+                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-tracking-number-optional-error"></div>
+                                    </div>
+                                </div>
+
                                 <!-- Tracking number field -->
                                 <div class="form-group">
                                     <div class="flex items-center">
@@ -259,6 +334,17 @@
                                     <div>
                                         <select name="carrier_id" t-attf-id="page-#{page_name}-list-create-form-carrier-id" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"></select>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-carrier-id-error"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Carrier name field -->
+                                <div class="form-group">
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-carrier-name" class="form-label-sm font-sm">Carrier Name</label>
+                                    </div>
+                                    <div>
+                                        <input type="text" name="carrier_name" t-attf-id="page-#{page_name}-list-create-form-carrier-name" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Carrier Name"/>
+                                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-carrier-name-error"></div>
                                     </div>
                                 </div>
 
@@ -327,12 +413,17 @@
                     <div class="flex items-center">
                         <div class="ml-4">
                             <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-out="package.name"/>
-                            <div class="text-sm text-gray-500">ID: #<t t-out="package.id"/></div>
+                            <div class="text-sm text-gray-500">PACKAGES: <t t-out="', '.join(package.get_packages().mapped('name'))"/></div>
                         </div>
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.shipping_weight"/>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <t t-foreach="package.get_packages().mapped('package_type_id')" t-as="package_type">
+                        <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package_type.name"/>
+                    </t>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.scheduled_date"/>
@@ -691,43 +782,83 @@
                     </div>
                 </div>
 
-                <!-- Items Table -->
+                <!-- Items Table Grouped by Package -->
                 <div class="p-8 border-b border-gray-200 dark:border-gray-700">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-medium text-gray-900 dark:text-white flex items-center">
                             <i class="fas fa-box mr-2 text-blue-600 dark:text-blue-400"></i>
-                            Products
+                            Products by Package
                         </h3>
                     </div>
-                    <div class="overflow-x-auto rounded-lg shadow dark:shadow-gray-900/70">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="bg-gray-100 dark:bg-gray-700">
-                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Product</th>
-                                    <th class="px-6 py-4 text-right font-semibold text-gray-700 dark:text-gray-100">Quantity</th>
-                                    <th class="px-6 py-4 text-right font-semibold text-gray-700 dark:text-gray-100">UoM</th>
-                                    <th class="px-6 py-4 text-right font-semibold text-gray-700 dark:text-gray-100">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-800">
-                                <tr t-foreach="picking.move_ids" t-as="move" class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                                    <td class="px-6 py-4 text-gray-800 dark:text-gray-200">
-                                        <div><span t-out="move.product_id.display_name"/></div>
-                                        <div t-if="move.product_id.default_code" class="text-xs text-gray-500 dark:text-gray-400">
-                                            [<t t-out="move.product_id.default_code"/>]
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200 font-medium"><span t-out="move.product_uom_qty"/></td>
-                                    <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200"><span t-out="move.product_uom.name"/></td>
-                                    <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200">
-                                        <span t-attf-class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-#{move.state == 'done' and 'green' or (move.state == 'cancel' and 'red' or 'blue')}-100 text-#{move.state == 'done' and 'green' or (move.state == 'cancel' and 'red' or 'blue')}-800">
-                                            <t t-out="move.state"/>
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+
+                    <t t-set="products_by_package" t-value="picking.get_products_by_package()"/>
+
+                    <!-- Loop through packages -->
+                    <t t-foreach="products_by_package.keys()" t-as="package">
+                        <div class="mb-6">
+                            <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-t-lg flex items-center">
+                                <t t-if="package != 'no_package'">
+                                    <i class="fas fa-box-open text-blue-600 dark:text-blue-400 mr-2"></i>
+                                    <h4 class="text-md font-medium text-gray-800 dark:text-gray-100">
+                                        Package: <span t-out="package.name"/>
+                                        <t t-if="package.package_type_id">
+                                            <span class="text-sm font-normal text-gray-500 dark:text-gray-400 ml-2">
+                                                (<t t-out="package.package_type_id.name"/>)
+                                            </span>
+                                        </t>
+                                    </h4>
+                                </t>
+                                <t t-else="">
+                                    <i class="fas fa-layer-group text-amber-600 dark:text-amber-400 mr-2"></i>
+                                    <h4 class="text-md font-medium text-gray-800 dark:text-gray-100">Products without package</h4>
+                                </t>
+                            </div>
+
+                            <div class="overflow-x-auto rounded-b-lg shadow dark:shadow-gray-900/70 mb-4">
+                                <table class="w-full text-sm">
+                                    <thead>
+                                        <tr class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                                            <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-100">Product</th>
+                                            <th class="px-6 py-3 text-right font-semibold text-gray-700 dark:text-gray-100">Quantity</th>
+                                            <th class="px-6 py-3 text-right font-semibold text-gray-700 dark:text-gray-100">UoM</th>
+                                            <th class="px-6 py-3 text-right font-semibold text-gray-700 dark:text-gray-100">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-800">
+                                        <t t-set="move_lines" t-value="products_by_package[package]"/>
+                                        <t t-if="move_lines">
+                                            <tr t-foreach="move_lines" t-as="line" class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                                <td class="px-6 py-4 text-gray-800 dark:text-gray-200">
+                                                    <div><span t-out="line.product_id.display_name"/></div>
+                                                    <div t-if="line.product_id.default_code" class="text-xs text-gray-500 dark:text-gray-400">
+                                                        [<t t-out="line.product_id.default_code"/>]
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200 font-medium">
+                                                    <span t-out="line.qty_done"/>
+                                                </td>
+                                                <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200">
+                                                    <span t-out="line.product_uom_id.name"/>
+                                                </td>
+                                                <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200">
+                                                    <span t-attf-class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-#{line.move_id.state == 'done' and 'green' or (line.move_id.state == 'cancel' and 'red' or 'blue')}-100 text-#{line.move_id.state == 'done' and 'green' or (line.move_id.state == 'cancel' and 'red' or 'blue')}-800">
+                                                        <t t-out="line.move_id.state"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                        <t t-else="">
+                                            <tr>
+                                                <td colspan="4" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                                                    <i class="fas fa-info-circle mr-1"></i> No products in this package
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
                 </div>
 
                 <!-- Communication history -->

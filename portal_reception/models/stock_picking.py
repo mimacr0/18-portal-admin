@@ -25,3 +25,39 @@ class StockPicking(models.Model):
         if user and user.partner_id.id in partner_ids:
             user._bus_send( "portal_reception.reception_details_reload_request", { 'action': 'reload' } )
         return res
+
+    def get_packages(self):
+        self.ensure_one()
+        packages = self.move_line_ids.mapped('result_package_id')
+        return packages
+
+    def get_products_by_package(self):
+        """
+        Returns a dictionary with packages as keys and their corresponding moves as values.
+        Also includes a 'no_package' key for products without a package.
+        """
+        self.ensure_one()
+        result = {}
+
+        # Get all packages
+        packages = self.get_packages()
+
+        # Initialize result dictionary with all packages and an entry for products without a package
+        for package in packages:
+            result[package] = []
+
+        # Add a key for products without a package
+        result['no_package'] = []
+
+        # Group moves by package
+        for move_line in self.move_line_ids:
+            if move_line.result_package_id:
+                result[move_line.result_package_id].append(move_line)
+            else:
+                result['no_package'].append(move_line)
+
+
+        if not result['no_package']:
+            del result['no_package']
+
+        return result

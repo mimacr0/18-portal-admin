@@ -56,7 +56,7 @@ const displayAttachmentPreview = (messageInputContainer, file, state) => {
 };
 
 // Clean up attachments after sending a message
-const cleanupAttachments = (messageInputContainer, selectedFile, fileInput) => {
+const cleanupAttachments = (messageInputContainer, state = {}, fileInput) => {
     if (!messageInputContainer) return;
 
     // Remove attachment previews from the message input container
@@ -65,8 +65,8 @@ const cleanupAttachments = (messageInputContainer, selectedFile, fileInput) => {
         attachmentPreviews.forEach(preview => preview.remove());
     }
 
-    // Reset selected file
-    selectedFile = null;
+    // Reset selected file if using state object
+    if (state) state.selectedFile = null;
 
     // Reset file input using the stored reference
     if (fileInput) { fileInput.value = ''; }
@@ -186,16 +186,21 @@ const initMessageSending = () => {
         }
     });
 
+    // Create state object to track file
+    const messageState = {
+        selectedFile: null
+    };
+
     // Send message function
     const sendMessage = async () => {
         const messageText = messageInput.value.trim();
-        if (messageText === '' && !selectedFile) return;
+        if (messageText === '' && !messageState.selectedFile) return;
 
         const formData = new FormData();
         formData.append('reception_id', pickingId);
         formData.append('csrf_token', tokenInput.value);
         formData.append('message', messageText);
-        formData.append('attachment', selectedFile);
+        formData.append('attachment', messageState.selectedFile);
 
         let response = null;
 
@@ -207,6 +212,9 @@ const initMessageSending = () => {
             });
             response = await result.json();
             console.log('Message sent:', response);
+
+            // Reload messages after sending
+            await reloadReceptionDetailsChatter();
         } catch (error) {
             console.error('Error sending message:', error);
         }
@@ -216,7 +224,7 @@ const initMessageSending = () => {
         messageInput.style.height = 'auto';
 
         // Clean up attachments
-        cleanupAttachments(messageInputContainer, selectedFile, fileInput);
+        cleanupAttachments(messageInputContainer, messageState, fileInput);
 
         if (response?.status === 'error') return console.error('Error sending message:', response.message);
     };
@@ -236,8 +244,8 @@ const initMessageSending = () => {
         // Handle file selection
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
-                selectedFile = e.target.files[0];
-                displayAttachmentPreview(messageInputContainer, selectedFile);
+                messageState.selectedFile = e.target.files[0];
+                displayAttachmentPreview(messageInputContainer, messageState.selectedFile, messageState);
             }
         });
 
