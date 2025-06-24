@@ -42,7 +42,9 @@ class PortalStockController(PortalAdminController):
     @http.route('/account/stock', type='http', auth="user", website=True)
     def account_stock_action(self, **post):
         ProductProducts = request.env['product.product'].sudo()
-        stock = ProductProducts.search([('is_storable', '=', True)])
+        partner_id = request.env.user.partner_id
+        account_partner = request.env['account.partner'].sudo().search([('id', '=', partner_id.commercial_partner_id.id)], limit=1)
+        stock = ProductProducts.search([('is_storable', '=', True), ('account_partner_id', '=', account_partner.id)])
 
         attributes = request.env['product.attribute'].sudo().search([])
         attributes_data = []
@@ -98,7 +100,9 @@ class PortalStockController(PortalAdminController):
 
     def _build_product_domain(self, search='', domain=None, match_type='all'):
         """Construye el dominio de búsqueda para productos"""
-        base_domain = [('is_storable', '=', True)]
+        partner_id = request.env.user.partner_id
+        account_partner = request.env['account.partner'].sudo().search([('id', '=', partner_id.commercial_partner_id.id)], limit=1)
+        base_domain = [('is_storable', '=', True), ('account_partner_id', '=', account_partner.id)]
 
         # Aplicar búsqueda de texto
         if search:

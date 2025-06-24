@@ -34,6 +34,12 @@ const selectedProductsRegistry = new Map();
 const updateReceptionsProductsField = () => {
     const productsContainer = document.getElementById('page-reception-list-create-form-products-line-items-container');
     const productsField = document.getElementById('page-reception-list-create-form-products-list');
+
+    if (!productsContainer || !productsField) {
+        console.error('Products container or field not found');
+        return;
+    }
+
     const productLines = productsContainer.querySelectorAll('.line-item');
     const products = [];
 
@@ -42,14 +48,22 @@ const updateReceptionsProductsField = () => {
         const select = line.querySelector('.product-select');
         const qtyInput = line.querySelector('.product-qty');
 
-        products.push({
-            package: packageInput.value,
-            product_id: $(select).select2('data')[0].id,
-            quantity: qtyInput.value
-        });
+        try {
+            const selectData = $(select).select2('data')[0];
+            if (packageInput && selectData && qtyInput) {
+                products.push({
+                    package: packageInput.value,
+                    product_id: selectData.id,
+                    quantity: qtyInput.value
+                });
+            }
+        } catch (e) {
+            console.error('Error getting product data:', e);
+        }
     }
 
     productsField.value = JSON.stringify(products);
+    console.log('Updated products field with:', products.length, 'products');
 }
 
 /**
@@ -75,6 +89,7 @@ export const initReceptionCreateForm = () => {
     const pageMainContainer = document.querySelector('#page-reception-main-container');
     const productCatalogSelectContainer = document.querySelector('#page-reception-product-catalog-select');
     const carrierSelectInput = document.getElementById('page-reception-list-create-form-carrier-id');
+    const packageTypeSelectInput = document.getElementById('page-reception-list-create-form-package-type-id');
 
     if (!scheduledDateInput) return;
 
@@ -82,6 +97,62 @@ export const initReceptionCreateForm = () => {
         minDate: 'today',
         enableTime: true,
         dateFormat: 'd-m-Y H:i'
+    });
+
+    $(packageTypeSelectInput).select2({
+        placeholder: 'Select Package Type',
+        dropdownParent: $(createModal),
+        ajax: {
+            transport: function(params, success, failure) {
+                rpc('/account/reception/package-type-search', {
+                    term: params.data.term
+                })
+                .then(function(result) {
+                    success({ results: result.items });
+                })
+                .catch(function(error) {
+                    console.error('Error fetching package types:', error);
+                    failure('Failed to load package types');
+                });
+            },
+            processResults: function(data) {
+                return data;
+            },
+            delay: 250
+        },
+        templateResult: function(data) {
+            return formatPackageType(data);
+        }
+    });
+
+    // Update measures and weight when package type changes
+    $(packageTypeSelectInput).on('select2:select', function (e) {
+        const data = e.params.data;
+        if (data) {
+            // Update width field
+            const widthField = document.getElementById('page-reception-list-create-form-measures-width');
+            if (widthField && data.width) {
+                widthField.value = data.width;
+            }
+
+            // Update height field
+            const heightField = document.getElementById('page-reception-list-create-form-measures-height');
+            if (heightField && data.height) {
+                heightField.value = data.height;
+            }
+
+            // Update length field
+            const lengthField = document.getElementById('page-reception-list-create-form-measures-length');
+            if (lengthField && data.packaging_length) {
+                lengthField.value = data.packaging_length;
+            }
+
+            // Update weight field
+            const weightField = document.getElementById('page-reception-list-create-form-weight');
+            if (weightField && data.base_weight) {
+                weightField.value = data.base_weight;
+            }
+        }
     });
 
     $(carrierSelectInput).select2({
@@ -381,7 +452,12 @@ function addProductToSelection(id, name, sku, qty = 1, price = '', stockInfo = '
     const qtyInput = productItem.querySelector('.product-quantity');
 
     removeBtn.addEventListener('click', () => {
+        // Remove from DOM
         selectedProductsList.removeChild(productItem);
+
+        // Remove from registry
+        selectedProductsRegistry.delete(id);
+
         const selectedCount = document.getElementById("selected-count");
         if (selectedCount) {
             selectedCount.textContent = selectedProductsList.children.length;
@@ -397,13 +473,42 @@ function addProductToSelection(id, name, sku, qty = 1, price = '', stockInfo = '
     decreaseBtn.addEventListener('click', () => {
         let qty = parseInt(qtyInput.value);
         if (qty > 1) {
-            qtyInput.value = qty - 1;
+            qty -= 1;
+            qtyInput.value = qty;
+
+            // Update registry quantity
+            const product = selectedProductsRegistry.get(id);
+            if (product) {
+                product.quantity = qty;
+            }
         }
     });
 
     increaseBtn.addEventListener('click', () => {
         let qty = parseInt(qtyInput.value);
-        qtyInput.value = qty + 1;
+        qty += 1;
+        qtyInput.value = qty;
+
+        // Update registry quantity
+        const product = selectedProductsRegistry.get(id);
+        if (product) {
+            product.quantity = qty;
+        }
+    });
+
+    // Update registry when manually changing the quantity input
+    qtyInput.addEventListener('change', () => {
+        let qty = parseInt(qtyInput.value);
+        if (isNaN(qty) || qty < 1) {
+            qty = 1;
+            qtyInput.value = qty;
+        }
+
+        // Update registry quantity
+        const product = selectedProductsRegistry.get(id);
+        if (product) {
+            product.quantity = qty;
+        }
     });
 }
 
@@ -442,9 +547,15 @@ function closeProductCatalog() {
     const productCatalogSelectContainer = document.querySelector(`#page-${pageName}-product-catalog-select`);
     const pageMainContainer = document.querySelector('#page-reception-main-container');
     const modal = document.getElementById(`page-${pageName}-list-create-modal`);
+    const paginationContainerMain = document.getElementById('page-reception-list-pagination-container-main');
+
+    if (paginationContainerMain) {
+        paginationContainerMain.classList.remove('hidden'); // Show the main pagination again
+    }
 
     // Get selected products from registry
     const selectedProducts = Array.from(selectedProductsRegistry.values());
+    console.log('Transferring products to form:', selectedProducts);
 
     // Hide catalog view
     productCatalogSelectContainer.classList.add('hidden');
@@ -467,14 +578,13 @@ function closeProductCatalog() {
 
                 newRow.innerHTML = `
                     <div class="w-24">
-                        <input type="text" value="${product.package || '1'}"
+                        <input type="number" value="${product.package || '1'}" min="1"
                             class="product-package form-input-sm w-full text-center rounded-md border border-gray-300
                             focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"/>
                     </div>
                     <div class="flex-grow">
                         <select class="product-select form-select-sm w-full rounded-md border border-gray-300
                             focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500">
-                            <option value="${product.id}" selected>${product.name}</option>
                         </select>
                     </div>
                     <div class="w-24">
@@ -491,21 +601,26 @@ function closeProductCatalog() {
 
                 productsContainer.appendChild(newRow);
 
-                // Set up remove button
-                const removeBtn = newRow.querySelector('.product-remove-btn');
-                if (removeBtn) {
-                    removeBtn.addEventListener('click', () => {
-                        productsContainer.removeChild(newRow);
-                        // Also remove from registry
-                        selectedProductsRegistry.delete(product.id);
-                    });
-                }
-
-                // Initialize Select2
+                // Initialize Select2 for this row
+                const packageInput = newRow.querySelector('.product-package');
                 const select = newRow.querySelector('.product-select');
+                const qtyInput = newRow.querySelector('.product-qty');
+
+                // Add the product as a pre-selected option with attributes
+                const option = new Option(product.name, product.id, true, true);
+                $(select).append(option).trigger('change');
+
+                // Configure Select2
                 $(select).select2({
                     placeholder: 'Search product...',
                     dropdownParent: $(modal),
+                    data: [{
+                        id: product.id,
+                        text: product.name,
+                        default_code: product.sku,
+                        // Convert attribute tags to format expected by formatProductSelection
+                        attributes: product.attributeTags ? product.attributeTags.map(tag => ({value: tag})) : []
+                    }],
                     ajax: {
                         transport: function(params, success, failure) {
                             rpc('/account/reception/product-search', {
@@ -527,7 +642,29 @@ function closeProductCatalog() {
                     templateResult: formatProduct,
                     templateSelection: formatProductSelection
                 });
+
+                // Handle product selection change
+                $(select).on('change', updateReceptionsProductsField);
+
+                // Update hidden name field and registry when quantity changes
+                qtyInput.addEventListener('change', updateReceptionsProductsField);
+                packageInput.addEventListener('change', updateReceptionsProductsField);
+
+                // Set up remove button
+                const removeBtn = newRow.querySelector('.product-remove-btn');
+                if (removeBtn) {
+                    removeBtn.addEventListener('click', () => {
+                        productsContainer.removeChild(newRow);
+                        // Also remove from registry
+                        selectedProductsRegistry.delete(product.id);
+                        // Update the hidden products field
+                        updateReceptionsProductsField();
+                    });
+                }
             });
+
+            // Update the hidden products field
+            updateReceptionsProductsField();
         }
     }
 
@@ -553,7 +690,7 @@ function initManualProductAdd() {
 
             newRow.innerHTML = `
                 <div class="w-24">
-                    <input type="text" value="1"
+                    <input type="number" value="1" min="1"
                         class="product-package form-input-sm w-full text-center rounded-md border border-gray-300
                         focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"/>
                 </div>
@@ -723,6 +860,38 @@ function formatCarrier(data) {
 
     if (data.price) {
         html += `<div class="text-xs font-medium text-gray-700">${data.price} ${data.currency || ''}</div>`;
+    }
+
+    html += `</div></div>`;
+
+    return $(html);
+}
+
+function formatPackageType(data) {
+    if (!data.id) return data.text;
+
+    // Create container with flexbox
+    let html = `<div class="flex items-center space-x-3">`;
+
+    // Add package type image if available
+    if (data.image) {
+        html += `<div class="flex-shrink-0">
+            <img src="${data.image}" class="h-10 w-10 object-cover rounded-sm" alt="${data.text}"/>
+        </div>`;
+    } else {
+        html += `<div class="flex-shrink-0">
+            <div class="h-10 w-10 flex items-center justify-center bg-gray-200 rounded-sm">
+                <i class="fas fa-box text-gray-500"></i>
+            </div>
+        </div>`;
+    }
+
+    // Package type details
+    html += `<div class="flex-grow">
+        <div class="font-medium">${data.text}</div>`;
+
+    if (data.dimensions) {
+        html += `<div class="text-xs font-medium text-gray-700">${data.dimensions}</div>`;
     }
 
     html += `</div></div>`;
