@@ -282,6 +282,9 @@ class PortalReceptionController(PortalAdminController):
         weight = post.get('weight')
         products = json.loads(post.get('products') or '[]')
 
+        if len(products) == 0:
+            return { 'status': 'error', 'message': _('No products selected'), 'errors': [['products', [_('No products selected')]]] }
+
         account_partner = AccountPartner.search([('partner_id', '=', partner.commercial_partner_id.id)], limit=1)
         scheduled_date_dt = datetime.strptime(scheduled_date_value, '%d-%m-%Y %H:%M')
 
