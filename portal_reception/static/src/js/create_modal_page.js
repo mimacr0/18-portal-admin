@@ -93,6 +93,52 @@ export const initReceptionCreateForm = () => {
 
     if (!scheduledDateInput) return;
 
+    // Function to reset the form when modal is closed
+    const resetReceptionForm = () => {
+        console.log("Resetting reception form");
+
+        // Reset all form inputs
+        const form = document.getElementById(`page-${pageName}-list-create-form`);
+        if (form) {
+            form.reset();
+        }
+
+        // Clear Select2 fields
+        if ($(packageTypeSelectInput).data('select2')) {
+            $(packageTypeSelectInput).val(null).trigger('change');
+        }
+
+        if ($(carrierSelectInput).data('select2')) {
+            $(carrierSelectInput).val(null).trigger('change');
+        }
+
+        // Reset flatpickr date input
+        if (scheduledDateInput._flatpickr) {
+            scheduledDateInput._flatpickr.clear();
+        }
+
+        // Reset product lines container
+        const productsContainer = document.getElementById(`page-${pageName}-list-create-form-products-line-items-container`);
+        if (productsContainer) {
+            productsContainer.innerHTML = '';
+        }
+
+        // Reset hidden products field
+        const productsField = document.getElementById(`page-${pageName}-list-create-form-products-list`);
+        if (productsField) {
+            productsField.value = '';
+        }
+
+        // Clear selected products registry
+        selectedProductsRegistry.clear();
+    };
+
+    // Add event listener for modal closing
+    document.addEventListener('modalClosed', (e) => {
+        if (e.detail.modalId !== 'page-reception-list-create-modal') return;
+        resetReceptionForm();
+    });
+
     flatpickr(scheduledDateInput, {
         minDate: 'today',
         enableTime: true,
@@ -215,6 +261,10 @@ export const initReceptionCreateForm = () => {
         const { formData } = sysCollectFormData('#page-reception-list-create-form');
 
         const resp = await rpc('/account/reception/create', formData);
+
+        if(resp?.errors) sysShowServerErrors('#page-reception-list-create-form', resp.errors);
+
+        if(resp?.message) systemShowNotification(resp.message, { type: resp?.status || 'error' })
 
         if(resp?.status !== 'success') return;
 
