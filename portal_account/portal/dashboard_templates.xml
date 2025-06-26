@@ -88,8 +88,8 @@
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Activity</h3>
                         </div>
-                        <div class="space-y-4">
-                            <div class="flex items-start">
+                        <div class="space-y-4" id="dashboard-page-recent-activity-container">
+                            <!-- <div class="flex items-start">
                                 <div class="bg-green-100 dark:bg-green-900 p-2 rounded-full mr-3">
                                     <i class="fas fa-dollar-sign text-green-500 dark:text-green-400 text-sm"></i>
                                 </div>
@@ -128,7 +128,7 @@
                                     <p class="text-xs text-gray-500 dark:text-gray-400">Product #39845</p>
                                     <p class="text-xs text-gray-400 dark:text-gray-500">4 hours ago</p>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
 
@@ -141,13 +141,13 @@
                         <div class="grid grid-cols-2 gap-2 text-sm mb-4">
                             <div>
                                 <p class="opacity-80">Account</p>
-                                <p class="text-3xl font-bold">ABS</p>
+                                <p id="dashboard-page-account-label" class="text-3xl font-bold"><span t-out="account_partner.name"/></p>
                             </div>
                             <div>
                                 <p class="text-sm opacity-80">Available Credit</p>
-                                <p class="text-3xl font-bold">$42,567.89</p>
-                                <p class="text-sm opacity-80">Pending Approval</p>
-                                <p class="text-3xl font-bold">$1,200</p>
+                                <p id="dashboard-page-available-credit-value" class="text-3xl font-bold" data-value="0" data-current="0" data-suffix="" data-decimals="2" data-thousand-sep="" data-decimal-sep=""></p>
+                                <p id="dashboard-page-pending-approval-label" class="text-sm opacity-80 hidden">Pending Approval</p>
+                                <p id="dashboard-page-pending-approval-value" class="text-3xl font-bold hidden" data-value="0" data-current="0" data-suffix="" data-decimals="2" data-thousand-sep="" data-decimal-sep=""></p>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-sm mt-8">

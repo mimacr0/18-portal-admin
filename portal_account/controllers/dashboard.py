@@ -25,9 +25,13 @@ class PortalDashboardController(PortalAdminController):
 
     @http.route(['/account'], type='http', auth="user", website=True)
     def account_dashboard_action_main(self, **post):
+        PartnerAccount = request.env['account.partner'].sudo()
+        partner_id = request.env.user.partner_id
+        account = PartnerAccount.search([('partner_id', '=', partner_id.commercial_partner_id.id)], limit=1)
         values = self._get_admin_layout_values()
         values['page_url'] = '/account'
         values['apexcharts'] = True
+        values['account_partner'] = account
         return request.render("portal_account.portal_dashboard_page", values)
 
     @http.route('/account/dashboard/kpis/receptions/count', type='json', auth='user')
@@ -182,4 +186,47 @@ class PortalDashboardController(PortalAdminController):
             'status': 'success',
             'dates': dates,
             'values': expedition_values
+        }
+
+    @http.route('/account/dashboard/kpis/credit', type='json', auth='user')
+    def account_dashboard_kpis_credit(self, **kw):
+        AccountPartner = request.env['account.partner'].sudo()
+        partner_id = request.env.user.partner_id
+        commercial_partner = partner_id.commercial_partner_id
+        account_partner = AccountPartner.search([('partner_id', '=', commercial_partner.id)], limit=1)
+
+        # Get total account credit from commercial partner
+        available_credit = commercial_partner.total_account or 0.0
+
+        # Check for pending approval requests
+        AccountRequest = request.env['credit.account'].sudo()
+        pending_approval = 0.0
+
+        pending_requests = AccountRequest.search([
+            ('account_id', '=', account_partner.id),
+            ('state', '=', 'draft')
+        ])
+        if pending_requests:
+            pending_approval = sum(pending_requests.mapped('amount'))
+
+        # Show/hide pending approval section in UI based on value
+        has_pending = pending_approval > 0
+
+        # Get locale formatting information
+        currency = commercial_partner.currency_id
+
+        # Format settings for numbers
+        decimal_places = currency.decimal_places
+        thousand_separator = request.env['res.lang'].search([('code', '=', request.env.user.lang)], limit=1).thousands_sep or ','
+        decimal_separator = request.env['res.lang'].search([('code', '=', request.env.user.lang)], limit=1).decimal_point or '.'
+
+        return {
+            'status': 'success',
+            'currency_symbol': currency.symbol,
+            'available_credit': available_credit,
+            'pending_approval': pending_approval,
+            'has_pending': has_pending,
+            'decimal_places': decimal_places,
+            'thousand_separator': thousand_separator,
+            'decimal_separator': decimal_separator
         }

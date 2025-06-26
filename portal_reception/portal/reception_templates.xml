@@ -564,7 +564,7 @@
     <template id="portal_product_catalog_items" name="Product Catalog Items">
         <t t-if="products">
             <t t-foreach="products" t-as="product">
-                <div class="bg-white dark:bg-gray-800 rounded-md shadow-sm overflow-hidden product-card hover:shadow transition-all duration-300 text-xs" t-att-data-product-id="product.id">
+                <div class="bg-white dark:bg-gray-800 rounded-md shadow-sm overflow-hidden product-card hover:shadow transition-all duration-300 text-xs relative" t-att-data-product-id="product.id">
                     <div class="p-3">
                         <div class="flex items-center justify-between mb-2">
                             <h3 class="text-sm font-medium text-gray-800 dark:text-white truncate"><t t-out="product.name"/></h3>
@@ -588,6 +588,7 @@
                                         <span class="text-xs text-red-600 dark:text-red-400">Out of Stock</span>
                                     </t>
                                 </div>
+
                             </div>
                             <div class="w-14 h-14 flex items-center justify-center">
                                 <t t-if="product.image_128">
@@ -616,10 +617,19 @@
                                 </button>
                             </div>
 
-                            <!-- Default view (Add button) -->
-                            <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 transition-colors shadow-sm text-xs">
-                                <i class="fas fa-plus mr-1"></i> Add
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <!-- Default view (Add button) -->
+                                <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 transition-colors shadow-sm text-xs">
+                                    <i class="fas fa-plus mr-1"></i> Add
+                                </button>
+
+                                <!-- Added quantity indicator (inline with button) -->
+                                <div class="product-added-qty hidden bg-purple-600 text-white text-xs font-medium py-1 px-2 rounded flex items-center justify-center shadow-sm">
+                                    <span class="product-added-qty-value font-bold"></span>
+                                </div>
+                            </div>
+
+
 
                             <!-- Action buttons (hidden by default, shown when product is added) -->
                             <div class="product-actions hidden flex gap-1">
