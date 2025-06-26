@@ -84,6 +84,7 @@ class PortalStockController(PortalAdminController):
                 {'id': 'name', 'label': _('Name'), 'sortable': True},
                 {'id': 'sku', 'label': _('SKU'), 'sortable': True, 'lg': True},
                 {'id': 'barcode', 'label': _('Barcode'), 'sortable': True, 'lg': True},
+                {'id': 'stocks', 'label': _('Stocks'), 'sortable': True, 'md': True},
                 {'id': 'status', 'label': _('Status'), 'sortable': True, 'md': True},
                 {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True}
             ],
