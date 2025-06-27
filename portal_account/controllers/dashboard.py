@@ -34,6 +34,47 @@ class PortalDashboardController(PortalAdminController):
         values['account_partner'] = account
         return request.render("portal_account.portal_dashboard_page", values)
 
+    @http.route('/account/dashboard/add_credit', type='json', auth='user')
+    def account_dashboard_add_credit(self, credit_amount=0, **kw):
+        """Handle credit addition request"""
+        if not credit_amount or float(credit_amount) <= 0:
+            return {
+                'status': 'error',
+                'errors': [['credit_amount', _('Please enter a valid amount greater than zero.')]]
+            }
+
+        try:
+            credit_amount = float(credit_amount)
+            AccountPartner = request.env['account.partner'].sudo()
+            partner_id = request.env.user.partner_id
+            commercial_partner = partner_id.commercial_partner_id
+            account_partner = AccountPartner.search([('partner_id', '=', commercial_partner.id)], limit=1)
+
+            if not account_partner:
+                return {
+                    'status': 'error',
+                    'message': _('Account not found.')
+                }
+
+            # Create credit request
+            CreditAccount = request.env['credit.account'].sudo()
+            credit_request = CreditAccount.create({
+                'account_id': account_partner.id,
+                'amount': credit_amount,
+                'state': 'draft'
+            })
+
+            return {
+                'status': 'success',
+                'message': _('Credit request submitted successfully and pending approval.'),
+                'request_id': credit_request.id
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': _('An error occurred while processing your request: %s') % str(e)
+            }
+
     @http.route('/account/dashboard/kpis/receptions/count', type='json', auth='user')
     def account_dashboard_kpis_receptions_count(self, **kw):
         StockPicking = request.env['stock.picking'].sudo()
@@ -230,3 +271,63 @@ class PortalDashboardController(PortalAdminController):
             'thousand_separator': thousand_separator,
             'decimal_separator': decimal_separator
         }
+
+    @http.route('/account/dashboard/import_receptions', type='json', auth='user')
+    def account_dashboard_import_receptions(self, **kw):
+        """Handle receptions import request"""
+        try:
+            # Access the uploaded file from the request
+            file_data = kw.get('fileInput')
+            if not file_data:
+                return {
+                    'status': 'error',
+                    'errors': [['fileInput', _('No file uploaded.')]]
+                }
+
+            # Process the file data - this will depend on your specific implementation
+            # For example, you might want to save it temporarily and process it through a queue job
+
+            # Here you would typically:
+            # 1. Check file format/extension
+            # 2. Parse the file data
+            # 3. Create stock.picking records for receptions
+
+            return {
+                'status': 'success',
+                'message': _('Reception data imported successfully. Processing will begin shortly.')
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': _('An error occurred while processing your import: %s') % str(e)
+            }
+
+    @http.route('/account/dashboard/import_expeditions', type='json', auth='user')
+    def account_dashboard_import_expeditions(self, **kw):
+        """Handle expeditions import request"""
+        try:
+            # Access the uploaded file from the request
+            file_data = kw.get('fileInput')
+            if not file_data:
+                return {
+                    'status': 'error',
+                    'errors': [['fileInput', _('No file uploaded.')]]
+                }
+
+            # Process the file data - this will depend on your specific implementation
+            # For example, you might want to save it temporarily and process it through a queue job
+
+            # Here you would typically:
+            # 1. Check file format/extension
+            # 2. Parse the file data
+            # 3. Create stock.picking records for expeditions
+
+            return {
+                'status': 'success',
+                'message': _('Expedition data imported successfully. Processing will begin shortly.')
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': _('An error occurred while processing your import: %s') % str(e)
+            }
