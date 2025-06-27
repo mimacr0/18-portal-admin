@@ -40,3 +40,43 @@ export const reloadAccountCreditKpis = async () => {
         }
     }
 }
+
+export const setupDashboardCreditModal = () => {
+    // Add Credit button click handler
+    const addCreditBtn = document.getElementById('dashboard-page-add-credit-button');
+    const submitCreditBtn = document.getElementById('dashboard-page-add-credit-submit');
+
+    addCreditBtn.addEventListener('click', () => {
+        // Reset form fields
+        const amountInput = document.getElementById('credit-amount');
+        if (amountInput) amountInput.value = '';
+
+        Modal.open('dashboard-page-add-credit-modal');
+    });
+
+    // Submit credit request handler
+    submitCreditBtn.addEventListener('click', async () => {
+        const res = sysFormValidate('#dashboard-add-credit-form');
+
+        if(!res) return;
+
+        const { formData } = sysCollectFormData('#dashboard-add-credit-form');
+
+        const result = await rpc('/account/dashboard/add_credit', formData);
+
+        if(result?.errors) sysShowServerErrors('#dashboard-add-credit-form', result.errors);
+
+        if(result?.message) systemShowNotification(result.message, { type: result?.status || 'error' })
+
+        if(result?.status !== 'success') return;
+
+        Modal.close('dashboard-page-add-credit-modal');
+
+        reloadAccountCreditKpis();
+    });
+}
+
+export const updateAccountCreditKpis = () => {
+    reloadAccountCreditKpis();
+    setupDashboardCreditModal();
+}
