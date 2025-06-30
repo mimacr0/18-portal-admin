@@ -20,53 +20,62 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label for="account-user-name" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Name</label>
-                                        <input type="text" id="account-user-name" name="user-name" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" t-att-value="user.name"/>
+                                        <input type="text" id="account-user-name" name="user-name" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" t-att-value="user.name" required="required"/>
+                                        <div class="form-error invisible mt-1" id="account-user-name-error"></div>
                                     </div>
                                     <div>
                                         <label for="account-user-email" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Email Address</label>
-                                        <input type="email" id="account-user-email" name="user-email" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" t-att-value="user.email"/>
+                                        <input type="email" id="account-user-email" name="user-email" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" t-att-value="user.email" required="required"/>
+                                        <div class="form-error invisible mt-1" id="account-user-email-error"></div>
                                     </div>
                                     <div>
                                         <label for="account-user-phone" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Phone Number</label>
                                         <input type="tel" id="account-user-phone" name="user-phone" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" t-att-value="user.phone"/>
+                                        <div class="form-error invisible mt-1" id="account-user-phone-error"></div>
                                     </div>
                                     <div>
                                         <label for="account-user-mobile" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Mobile Number</label>
                                         <input type="tel" id="account-user-mobile" name="user-mobile" class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring focus:ring-cyan-200 focus:ring-opacity-50" t-att-value="user.mobile"/>
+                                        <div class="form-error invisible mt-1" id="account-user-mobile-error"></div>
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="block text-sm font-medium text-gray-700 mb-3 dark:text-white">Profile Picture</label>
                                         <div class="flex items-center">
-                                            <div class="flex-shrink-0 mr-4">
-                                                <img id="profile-preview" t-if="user.partner_id.image_128" t-attf-src="/web/image/res.partner/#{user.partner_id.id}/image_128/30x30" alt="Profile picture" class="size-20 rounded-full border border-gray-200 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-md dark:border-gray-700"/>
-                                                <img id="profile-preview" t-else="" src="/portal_admin_theme/static/img/placeholder.png" alt="Profile picture" class="size-20 rounded-full border border-gray-200 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-md dark:border-gray-700"/>
+                                            <div class="flex-shrink-0 mr-4 relative group">
+                                                <img id="profile-preview" t-if="user.partner_id.image_128" t-attf-src="/web/image/res.partner/#{user.partner_id.id}/image_128/150x150" alt="Profile picture" class="size-20 rounded-full border border-gray-200 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-md dark:border-gray-700 object-cover"/>
+                                                <img id="profile-preview" t-else="" src="/portal_admin_theme/static/img/placeholder.png" alt="Profile picture" class="size-20 rounded-full border border-gray-200 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-md dark:border-gray-700 object-cover"/>
+                                                <button type="button" id="profile-image-delete" class="absolute top-0 right-0 bg-white text-red-600 p-1 rounded-full shadow-md hover:bg-red-100 opacity-0 group-hover:opacity-100 transition-opacity duration-200 size-6 flex items-center justify-center" title="Remove image" t-if="user.partner_id.image_128">
+                                                    <i class="fa fa-trash text-xs"></i>
+                                                </button>
                                             </div>
                                             <div>
-                                                <label for="profile-upload" class="cursor-pointer inline-block text-sm font-medium px-4 py-2 bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-700">
+                                                <label for="profile-upload" id="profile-upload-label" class="cursor-pointer inline-block text-sm font-medium px-4 py-2 bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-700 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md active:translate-y-0">
                                                     <i class="fas fa-upload mr-2"></i>Upload New Photo
                                                 </label>
                                                 <input id="profile-upload" type="file" class="hidden" accept="image/*"/>
-                                                <p class="mt-1 text-xs text-gray-500">JPG, GIF or PNG. 1MB max.</p>
+                                                <p class="mt-1 text-xs text-gray-500">JPG, GIF or PNG. 5MB max.</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="mt-6 flex items-center justify-end">
-                                    <button type="button" class="text-sm font-medium px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 mr-3 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-600 transition-all duration-300 ease-in-out">
+                                    <button type="button" onclick="window.location.href='/account/dashboard'" class="text-sm font-medium px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 mr-3 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-600 transition-all duration-300 ease-in-out">
                                         Cancel
                                     </button>
-                                    <button type="submit" class="text-sm font-medium px-4 py-2 bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-700 dark:bg-cyan-500 dark:text-white dark:hover:bg-cyan-600 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md active:translate-y-0">
-                                        Save Changes
+                                    <button type="submit" id="account-user-submit" class="text-sm font-medium px-4 py-2 bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-700 dark:bg-cyan-500 dark:text-white dark:hover:bg-cyan-600 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md active:translate-y-0">
+                                        <span class="flex items-center">
+                                            <span id="account-user-submit-text">Save Changes</span>
+                                            <span id="account-user-submit-loader" class="ml-2 hidden">
+                                                <i class="fas fa-circle-notch fa-spin"></i>
+                                            </span>
+                                        </span>
                                     </button>
                                 </div>
                             </form>
                         </div>
-
                     </div>
                 </div>
-
             </div>
-
         </t>
     </template>
 

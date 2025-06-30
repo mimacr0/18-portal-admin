@@ -14,7 +14,7 @@
                         <p class="text-xs text-gray-400 dark:text-gray-500 mt-1 notification-time"><t t-out="notification.time_ago()"/></p>
                     </div>
                     <div class="ml-4 flex-shrink-0">
-                        <button class="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400">
+                        <button class="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 notification-remove-button" t-att-data-notification-id="notification.id">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>

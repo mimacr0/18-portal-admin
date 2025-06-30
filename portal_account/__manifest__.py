@@ -23,7 +23,9 @@
     'assets': {
         'portal_admin_theme.admin_assets_frontend': [
             'portal_account/static/src/js/frontend/kpis/*.js',
-            'portal_account/static/src/js/frontend/dashboard_page.js'
+            'portal_account/static/src/js/frontend/dashboard_page.js',
+            'portal_account/static/src/js/frontend/account_user_profile.js',
+            'portal_account/static/src/js/frontend/account_user_settings.js'
         ]
     }
 }

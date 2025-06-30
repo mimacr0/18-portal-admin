@@ -29,6 +29,18 @@ class PortalReceptionController(PortalAdminController):
     DEFAULT_LIMIT_PARAM = 'portal_reception.page_list_default_limit'
     DEFAULT_LIMIT_VALUE = '100'
 
+    def _get_portal_list_limit(self):
+        """Get portal list limit from user settings"""
+        user = request.env.user
+        SysParams = request.env['ir.config_parameter'].sudo()
+        default_limit = int(SysParams.get_param(self.DEFAULT_LIMIT_PARAM, self.DEFAULT_LIMIT_VALUE))
+        limit = (user.portal_user_configuration or {}).get('list_limit', default_limit)
+
+        if not str(limit).isdigit():
+            limit = default_limit
+
+        return int(limit)
+
     def _get_admin_layout_menus(self):
         menus = super()._get_admin_layout_menus()
         menus.append({
@@ -182,7 +194,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/account/reception/list/reload', type='json', auth='user')
     def account_reception_list_reload(self, page=1, search='', domain=None, match_type='all', sort=None, order='asc', quick_filter=None, **kw):
         SysParams = request.env['ir.config_parameter'].sudo()
-        limit = int(SysParams.get_param(self.DEFAULT_LIMIT_PARAM, self.DEFAULT_LIMIT_VALUE))
+        limit = self._get_portal_list_limit()
         offset = (page - 1) * limit
 
         # Construir dominio de búsqueda

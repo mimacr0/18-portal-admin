@@ -12,9 +12,9 @@
     'maintainer': 'David Fernández',
     'description': """Portal Reception""",
     'summary': """
-        Modulo para para recepciones en el portal del cliente.
+        Modulo para recepciones en el portal del cliente.
     """,
-    'depends': ['portal_admin_theme', 'portal_catalog'],
+    'depends': ['portal_account', 'portal_catalog'],
     'license': 'LGPL-3',
     'website': "https://www.dafe.es",
     'data': [

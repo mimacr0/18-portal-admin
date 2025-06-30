@@ -24,6 +24,7 @@ class StockPicking(models.Model):
         partner_ids.extend(self.user_id.partner_id.ids)
         if user and user.partner_id.id in partner_ids:
             user._bus_send( "portal_reception.reception_details_reload_request", { 'action': 'reload' } )
+            user.send_portal_user_notification( "New message in reception", "New message in reception", "fas fa-bell", "info" )
         return res
 
     def get_packages(self):
