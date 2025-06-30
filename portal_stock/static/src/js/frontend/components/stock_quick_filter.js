@@ -3,11 +3,24 @@ import { reloadStockListPage } from "./stock_list.js";
 export const initStockQuickSortFilters = () => {
     const quickSortFilters = document.querySelectorAll('.page-stock-list-filter');
     const quickFiltersInput = document.getElementById('page-stock-list-quick-filter-active');
+    const activeFilterId = quickFiltersInput.value;
 
     for(const filter of quickSortFilters) {
         filter.addEventListener('click', async (e) => {
             const button = e.currentTarget;
             const filterId = button.dataset.filterId;
+
+            if (filterId === activeFilterId) {
+                // Activar este filtro
+                filter.classList.add('active', 'border-cyan-500', 'text-cyan-600');
+                filter.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700',
+                                      'hover:border-gray-300', 'dark:hover:text-gray-300');
+            } else {
+                // Desactivar los demás
+                filter.classList.remove('active', 'border-cyan-500', 'text-cyan-600');
+                filter.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700',
+                                    'hover:border-gray-300', 'dark:hover:text-gray-300');
+            }
 
             for(const f of quickSortFilters) {
                 // Remove active classes

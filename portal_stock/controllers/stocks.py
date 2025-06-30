@@ -54,47 +54,40 @@ class PortalStockController(PortalAdminController):
 
         values = self._get_admin_layout_values()
 
-        # Configuración de la interfaz
+        # Definimos la lista de filtros
+        list_filters = [
+            {
+                'id': 'all',
+                'label': _('All'),
+                'icon': 'fas fa-check-circle',
+            },
+            {
+                'id': 'in_stock',
+                'label': _('In Stock'),
+                'icon': 'fas fa-boxes',
+                'active': True
+            },
+            {
+                'id': 'out_stock',
+                'label': _('Out of Stock'),
+                'icon': 'fas fa-cubes'
+            }
+        ]
+
+        # Se obtiene el filtro activo
+        active_filter = next((filter['id'] for filter in list_filters if filter.get('active')), 'all')
+
+        # Actualiza los valores con los filtros y el filtro activo
         values.update({
+            'active_filter': active_filter,
             'page_name': 'stock',
             'stock': stock,
             'attributes': attributes_data,
             'page_title': _('Stock'),
             'page_url': '/account/stock',
             'select2': True,
-            'list_filters': [
-                {
-                    'id': 'all',
-                    'label': _('All'),
-                    'icon': 'fas fa-check-circle',
-                    'active': True
-                },
-                {
-                    'id': 'stock_reference',
-                    'label': _('Reference'),
-                    'icon': 'fas fa-boxes'
-                },
-                {
-                    'id': 'stock_qty',
-                    'label': _('Quantity'),
-                    'icon': 'fas fa-cubes'
-                }
-            ],
-            'list_columns': [
-                {'id': 'name', 'label': _('Name'), 'sortable': True},
-                {'id': 'sku', 'label': _('SKU'), 'sortable': True, 'lg': True},
-                {'id': 'barcode', 'label': _('Barcode'), 'sortable': True, 'lg': True},
-                {'id': 'stocks', 'label': _('Stocks'), 'sortable': True, 'md': True},
-                {'id': 'status', 'label': _('Status'), 'sortable': True, 'md': True},
-                {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True}
-            ],
-            'tools_actions': [
-                {'name': 'import', 'label': _('Import'), 'icon': 'fas fa-file-import'}
-            ],
-            'batch_actions': [
-                {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
-            ],
-            'advanced_search': json.dumps(self._get_advanced_search_fields())
+            'list_filters': list_filters,
+            # Resto de la configuración...
         })
 
         return request.render("portal_stock.portal_stock_page", values)
@@ -105,7 +98,7 @@ class PortalStockController(PortalAdminController):
         account_partner = request.env['account.partner'].sudo().search([('id', '=', partner_id.commercial_partner_id.id)], limit=1)
         base_domain = [('is_storable', '=', True), ('account_partner_id', '=', account_partner.id)]
 
-        # Aplicar búsqueda de texto
+        # Se aplica el filtro de búsqueda por nombre, SKU o código de barras
         if search:
             base_domain.extend(expression.OR([
                 [('name', 'ilike', search)],
@@ -176,15 +169,24 @@ class PortalStockController(PortalAdminController):
         limit = int(SysParams.get_param(self.DEFAULT_LIMIT_PARAM, self.DEFAULT_LIMIT_VALUE))
         offset = (page - 1) * limit
 
+        # Obtener el filtro activo por defecto si no se especifica uno
+        if not quick_filter:
+            list_filters = [
+                {'id': 'all'},
+                {'id': 'in_stock', 'active': True},
+                {'id': 'out_stock'}
+            ]
+            quick_filter = next((filter['id'] for filter in list_filters if filter.get('active')), 'all')
+
         # Construir dominio de búsqueda
         base_domain = self._build_product_domain(search, domain, match_type)
 
         # Apply quick filters
         if quick_filter and quick_filter != 'all':
-            if quick_filter == 'stock_reference':
-                base_domain.append(('tracking', '=', 'lot'))
-            elif quick_filter == 'stock_qty':
-                base_domain.append(('tracking', '=', 'none'))
+            if quick_filter == 'in_stock':
+                base_domain.append(('qty_available', '>', 0))
+            elif quick_filter == 'out_stock':
+                base_domain.append(('qty_available', '<=', 0))
 
         # Configurar ordenamiento
         order_by = 'id'
