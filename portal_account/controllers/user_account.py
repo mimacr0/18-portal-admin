@@ -36,3 +36,103 @@ class PortalDashboardController(PortalAdminController):
             'title': _('Notifications') if len(notifications) > 0 else _('No notifications'),
             'count': len(notifications)
         }
+
+    @http.route('/account/user/notifications/clear', type='json', auth="user")
+    def account_user_notifications_clear_action_main(self, **post):
+        user = request.env.user.sudo()
+        PortalNotifications = request.env['portal.user.notification'].sudo()
+        PortalNotifications.clear_all_notifications(user.id)
+        return {
+            'status': 'success',
+            'message': _('All notifications cleared')
+        }
+
+    @http.route('/account/user/notifications/remove/<int:notification_id>', type='json', auth="user")
+    def account_user_notifications_remove_action_main(self, notification_id, **post):
+        user = request.env.user.sudo()
+        PortalNotifications = request.env['portal.user.notification'].sudo()
+        notification = PortalNotifications.browse(notification_id)
+
+        # Security check - only allow users to remove their own notifications
+        if notification and notification.exists() and notification.user_id.id == user.id:
+            notification.remove_notification()
+            return {
+                'status': 'success',
+                'message': _('Notification removed')
+            }
+        return {
+            'status': 'error',
+            'message': _('Notification not found or access denied')
+        }
+
+    @http.route('/account/user/update/profile', type='json', auth="user")
+    def account_user_update_profile(self, **post):
+        """Update user profile information"""
+        try:
+            user = request.env.user.sudo()
+            partner = user.partner_id.sudo()
+
+            # Update user fields
+            update_values = {}
+
+            if post.get('name'):
+                update_values['name'] = post.get('name')
+
+            if post.get('email'):
+                update_values['email'] = post.get('email')
+
+            if post.get('phone'):
+                update_values['phone'] = post.get('phone')
+
+            if post.get('mobile'):
+                update_values['mobile'] = post.get('mobile')
+
+            # Update fields if there are values to update
+            if update_values:
+                user.write(update_values)
+
+            return {
+                'status': 'success',
+                'message': _('Profile updated successfully')
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': str(e)
+            }
+
+    @http.route('/account/user/upload/image', type='json', auth="user")
+    def account_user_upload_image(self, image_data, **post):
+        """Upload user profile image"""
+        try:
+            partner = request.env.user.partner_id.sudo()
+
+            if image_data:
+                partner.image_1920 = image_data
+
+            return {
+                'status': 'success',
+                'message': _('Profile image updated successfully')
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': str(e)
+            }
+
+    @http.route('/account/user/remove/image', type='json', auth="user")
+    def account_user_remove_image(self, **post):
+        """Remove user profile image"""
+        try:
+            partner = request.env.user.partner_id.sudo()
+            partner.image_1920 = False
+
+            return {
+                'status': 'success',
+                'message': _('Profile image removed successfully')
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': str(e)
+            }
