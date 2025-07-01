@@ -207,7 +207,7 @@ class PortalReceptionController(PortalAdminController):
             base_domain.append(('state', '=', 'done'))
 
         # Configurar ordenamiento
-        order_by = 'id'
+        order_by = 'id desc'
         if sort and sort in self.RECEPTION_FIELDS_MAPPING:
             order_by = f"{self.RECEPTION_FIELDS_MAPPING[sort]} {order}"
 
