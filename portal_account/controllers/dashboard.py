@@ -314,14 +314,6 @@ class PortalDashboardController(PortalAdminController):
                     'errors': [['fileInput', _('No file uploaded.')]]
                 }
 
-            # Process the file data - this will depend on your specific implementation
-            # For example, you might want to save it temporarily and process it through a queue job
-
-            # Here you would typically:
-            # 1. Check file format/extension
-            # 2. Parse the file data
-            # 3. Create stock.picking records for expeditions
-
             return {
                 'status': 'success',
                 'message': _('Expedition data imported successfully. Processing will begin shortly.')
@@ -331,3 +323,25 @@ class PortalDashboardController(PortalAdminController):
                 'status': 'error',
                 'message': _('An error occurred while processing your import: %s') % str(e)
             }
+
+    @http.route('/account/dashboard/kpis/recent_activity', type='json', auth='user')
+    def account_dashboard_kpis_recent_activity(self, **kw):
+        """Fetch recent activities for the current user"""
+        UserActivity = request.env['portal.user.activity'].sudo()
+
+        # Get most recent activities for the current user
+        activities = UserActivity.search([
+            ('user_id', '=', request.env.user.id)
+        ], limit=3, order='create_date desc')
+
+        # Render the recent activity template
+        html_content = request.env['ir.ui.view']._render_template(
+            'portal_account.portal_dashboard_recent_activity_content',
+            { 'recent_activity': activities }
+        )
+
+        return {
+            'status': 'success',
+            'html': html_content,
+            'count': len(activities)
+        }
