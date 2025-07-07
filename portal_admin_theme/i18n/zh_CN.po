@@ -1,0 +1,196 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* portal_admin_theme
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-03 13:56+0000\n"
+"PO-Revision-Date: 2025-07-03 13:56+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid ""
+"<i class=\"fas fa-cog mr-2 text-gray-500 dark:text-gray-400\"/> Account "
+"Settings"
+msgstr ""
+"<i class=\"fas fa-cog mr-2 text-gray-500 dark:text-gray-400\"/> 账户设置"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "<i class=\"fas fa-sign-out-alt mr-2\"/> Logout"
+msgstr "<i class=\"fas fa-sign-out-alt mr-2\"/> 登出"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid ""
+"<i class=\"fas fa-user-circle mr-2 text-gray-500 dark:text-gray-400\"/> My "
+"Profile"
+msgstr ""
+"<i class=\"fas fa-user-circle mr-2 text-gray-500 dark:text-gray-400\"/> 我的个人资料"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "<span>English</span>"
+msgstr "<span>英语</span>"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "<span>Español</span>"
+msgstr "<span>西班牙语</span>"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "<span>中文</span>"
+msgstr "<span>中文</span>"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__active
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__active
+msgid "Active"
+msgstr "活跃"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__activity
+msgid "Activity"
+msgstr "活动"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "Chinese"
+msgstr "中文"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "Clear all notifications"
+msgstr "清除所有通知"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__create_uid
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__create_uid
+msgid "Created by"
+msgstr "创建者"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__create_date
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__create_date
+msgid "Created on"
+msgstr "创建时间"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__display_name
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__display_name
+msgid "Display Name"
+msgstr "显示名称"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "English"
+msgstr "英语"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__id
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__id
+msgid "ID"
+msgstr "ID"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__icon
+msgid "Icon"
+msgstr "图标"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__write_uid
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__write_uid
+msgid "Last Updated by"
+msgstr "最后更新者"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__write_date
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__write_date
+msgid "Last Updated on"
+msgstr "最后更新时间"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "Loading"
+msgstr "加载中"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "Logo"
+msgstr "徽标"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__message
+msgid "Message"
+msgstr "消息"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__notification
+msgid "Notification"
+msgstr "通知"
+
+#. module: portal_admin_theme
+#: model:ir.model,name:portal_admin_theme.model_portal_user_activity
+msgid "Portal User Activity"
+msgstr "门户用户活动"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_res_users__portal_user_configuration
+msgid "Portal User Configuration"
+msgstr "门户用户配置"
+
+#. module: portal_admin_theme
+#: model:ir.model,name:portal_admin_theme.model_portal_user_notification
+msgid "Portal User Notification"
+msgstr "门户用户通知"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "Recent Pages"
+msgstr "最近页面"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "Select Language"
+msgstr "选择语言"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "Spanish"
+msgstr "西班牙语"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__time_ago
+msgid "Time Ago"
+msgstr "时间"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__title
+msgid "Title"
+msgstr "标题"
+
+#. module: portal_admin_theme
+#: model:ir.model,name:portal_admin_theme.model_res_users
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__user_id
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__user_id
+msgid "User"
+msgstr "用户"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "View all history"
+msgstr "查看所有历史记录"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "default-user"
+msgstr "默认用户"

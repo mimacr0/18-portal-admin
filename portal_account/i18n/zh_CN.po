@@ -1,0 +1,555 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* portal_account
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-03 14:55+0000\n"
+"PO-Revision-Date: 2025-07-03 14:55+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.my_dashboard_link
+msgid ""
+"<i class=\"fa fa-fw fa-id-card-o me-1 small text-primary text-primary-"
+"emphasis\"/> My Dashboard"
+msgstr ""
+"<i class=\"fa fa-fw fa-id-card-o me-1 small text-primary text-primary-emphasis\"/> 我的仪表盘"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "<i class=\"fas fa-arrow-up mr-1\"/>0% since last month"
+msgstr "<i class=\"fas fa-arrow-up mr-1\"/>上个月增长0%"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "<i class=\"fas fa-credit-card mr-2\"/> Pay Now"
+msgstr "<i class=\"fas fa-credit-card mr-2\"/> 立即支付"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "<i class=\"fas fa-file-import mr-2\"/> Import expeditions"
+msgstr "<i class=\"fas fa-file-import mr-2\"/> 导入发货单"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "<i class=\"fas fa-file-import mr-2\"/> Import receptions"
+msgstr "<i class=\"fas fa-file-import mr-2\"/> 导入收货单"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "<i class=\"fas fa-file-invoice mr-2\"/> Expeditions Template"
+msgstr "<i class=\"fas fa-file-invoice mr-2\"/> 发货单模板"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "<i class=\"fas fa-file-invoice mr-2\"/> Receptions Template"
+msgstr "<i class=\"fas fa-file-invoice mr-2\"/> 收货单模板"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "<i class=\"fas fa-plus mr-2\"/> Add Credit"
+msgstr "<i class=\"fas fa-plus mr-2\"/> 添加信用"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "<i class=\"fas fa-plus\"/> Add Credit"
+msgstr "<i class=\"fas fa-plus\"/> 添加信用"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "<i class=\"fas fa-save\"/> Upload"
+msgstr "<i class=\"fas fa-save\"/> 上传"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "<i class=\"fas fa-times\"/> Cancel"
+msgstr "<i class=\"fas fa-times\"/> 取消"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
+msgid "<i class=\"fas fa-upload mr-2\"/>Upload New Photo"
+msgstr "<i class=\"fas fa-upload mr-2\"/>上传新照片"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
+msgid ""
+"<span class=\"flex items-center\">\n"
+"                                            <span id=\"account-user-submit-text\">Save Changes</span>\n"
+"                                            <span id=\"account-user-submit-loader\" class=\"ml-2 hidden\">\n"
+"                                                <i class=\"fas fa-circle-notch fa-spin\"/>\n"
+"                                            </span>\n"
+"                                        </span>"
+msgstr ""
+"<span class=\"flex items-center\">\n"
+"                                            <span id=\"account-user-submit-text\">保存更改</span>\n"
+"                                            <span id=\"account-user-submit-loader\" class=\"ml-2 hidden\">\n"
+"                                                <i class=\"fas fa-circle-notch fa-spin\"/>\n"
+"                                            </span>\n"
+"                                        </span>"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_settings_page
+msgid ""
+"<span class=\"flex items-center\">\n"
+"                                    <span id=\"settings-save-text\">Save Changes</span>\n"
+"                                    <span id=\"settings-save-loader\" class=\"ml-2 hidden\">\n"
+"                                        <i class=\"fas fa-circle-notch fa-spin\"/>\n"
+"                                    </span>\n"
+"                                </span>"
+msgstr ""
+"<span class=\"flex items-center\">\n"
+"                                    <span id=\"settings-save-text\">保存更改</span>\n"
+"                                    <span id=\"settings-save-loader\" class=\"ml-2 hidden\">\n"
+"                                        <i class=\"fas fa-circle-notch fa-spin\"/>\n"
+"                                    </span>\n"
+"                                </span>"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid ""
+"<span class=\"ml-2 text-xs text-gray-500 italic\">\n"
+"                                            <i class=\"fas fa-info-circle\"/> Enter the desired credit amount to initiate an approval process.\n"
+"                                        </span>"
+msgstr ""
+"<span class=\"ml-2 text-xs text-gray-500 italic\">\n"
+"                                            <i class=\"fas fa-info-circle\"/> 输入所需的信用额度以启动审批流程。\n"
+"                                        </span>"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid ""
+"<span class=\"text-2xl font-bold text-gray-900 dark:text-white\" id=\"dashboard-total-expeditions-value\" data-value=\"0\">0</span>\n"
+"                            <span class=\"text-sm text-green-500 ml-2\"><i class=\"fas fa-arrow-up mr-1\"/>0% since last month</span>"
+msgstr ""
+"<span class=\"text-2xl font-bold text-gray-900 dark:text-white\" id=\"dashboard-total-expeditions-value\" data-value=\"0\">0</span>\n"
+"                            <span class=\"text-sm text-green-500 ml-2\"><i class=\"fas fa-arrow-up mr-1\"/>上个月增长0%</span>"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid ""
+"<span class=\"text-2xl font-bold text-gray-900 dark:text-white\" id=\"dashboard-total-receptions-value\" data-value=\"0\">0</span>\n"
+"                            <span class=\"text-sm text-green-500 ml-2\"><i class=\"fas fa-arrow-up mr-1\"/>0% since last month</span>"
+msgstr ""
+"<span class=\"text-2xl font-bold text-gray-900 dark:text-white\" id=\"dashboard-total-receptions-value\" data-value=\"0\">0</span>\n"
+"                            <span class=\"text-sm text-green-500 ml-2\"><i class=\"fas fa-arrow-up mr-1\"/>上个月增长0%</span>"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid ""
+"<span class=\"text-sm text-gray-500 dark:text-gray-400\">Last 7 days</span>"
+msgstr ""
+"<span class=\"text-sm text-gray-500 dark:text-gray-400\">最近7天</span>"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "<strong>The contact linked to this user is still active</strong>"
+msgstr "<strong>此用户关联的联系人仍然处于活动状态</strong>"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "Access Rights"
+msgstr "访问权限"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Account"
+msgstr "账户"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Account Balance"
+msgstr "账户余额"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "Account Security"
+msgstr "账户安全"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
+msgid "Account Settings"
+msgstr "账户设置"
+
+#. module: portal_account
+#: model:ir.actions.act_window,name:portal_account.res_users_action
+#: model:ir.ui.menu,name:portal_account.portal_account_virtual_users_menu_main
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_list
+msgid "Account Users"
+msgstr "账户用户"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard.py:0
+msgid "Account not found."
+msgstr "账户未找到。"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Add Credit"
+msgstr "添加信用"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "Add a language"
+msgstr "添加语言"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/user_account.py:0
+msgid "All notifications cleared"
+msgstr "已清除所有通知"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard.py:0
+msgid "An error occurred while processing your import: %s"
+msgstr "处理您的导入时发生错误：%s"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard.py:0
+msgid "An error occurred while processing your request: %s"
+msgstr "处理您的请求时发生错误：%s"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "Archived"
+msgstr "已归档"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Available Credit"
+msgstr "可用信用"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_settings_page
+msgid "Basic configuration for your application"
+msgstr "应用程序的基本配置"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
+msgid "Cancel"
+msgstr "取消"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Close modal"
+msgstr "关闭模态框"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Credit Amount"
+msgstr "信用额度"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard.py:0
+msgid "Credit request submitted successfully and pending approval."
+msgstr "信用请求已成功提交，等待批准。"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid ""
+"Drag and drop a file here, or <span class=\"text-cyan-600 dark:text-cyan-400"
+" browse-link\">browse</span>"
+msgstr ""
+"将文件拖放到此处，或<span class=\"text-cyan-600 dark:text-cyan-400 browse-link\">浏览</span>"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "Email Address"
+msgstr "电子邮件地址"
+
+#. module: portal_account
+#. odoo-javascript
+#: code:addons/portal_account/static/src/js/frontend/account_user_profile.js:0
+msgid "Email is required"
+msgstr "电子邮件是必需的"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard.py:0
+msgid "Expedition data imported successfully. Processing will begin shortly."
+msgstr "发货单数据已成功导入。处理将很快开始。"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Expeditions"
+msgstr "发货单"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_settings_page
+msgid "General Settings"
+msgstr "常规设置"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "Groups"
+msgstr "组"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard.py:0
+msgid "Home"
+msgstr "首页"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Import Expeditions"
+msgstr "导入发货单"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Import Receptions"
+msgstr "导入收货单"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
+msgid "JPG, GIF or PNG. 5MB max."
+msgstr "JPG、GIF或PNG格式，最大5MB。"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_settings_page
+msgid "List Limit"
+msgstr "列表限制"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "Localization"
+msgstr "本地化"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Maximum file size: 5MB"
+msgstr "最大文件大小：5MB"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "Menus Customization"
+msgstr "菜单自定义"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
+msgid "Mobile Number"
+msgstr "手机号码"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
+msgid "Name"
+msgstr "姓名"
+
+#. module: portal_account
+#. odoo-javascript
+#: code:addons/portal_account/static/src/js/frontend/account_user_profile.js:0
+msgid "Name is required"
+msgstr "姓名是必需的"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard.py:0
+msgid "No file uploaded."
+msgstr "未上传文件。"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/user_account.py:0
+msgid "No notifications"
+msgstr "没有通知"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/user_settings.py:0
+msgid "No settings provided"
+msgstr "没有提供设置"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/user_account.py:0
+msgid "Notification not found or access denied"
+msgstr "通知未找到或访问被拒绝"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/user_account.py:0
+msgid "Notification removed"
+msgstr "通知已删除"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/user_account.py:0
+msgid "Notifications"
+msgstr "通知"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Pending Approval"
+msgstr "待批准"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
+msgid "Phone Number"
+msgstr "电话号码"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard.py:0
+msgid "Please enter a valid amount greater than zero."
+msgstr "请输入一个大于零的有效金额。"
+
+#. module: portal_account
+#. odoo-javascript
+#: code:addons/portal_account/static/src/js/frontend/account_user_profile.js:0
+msgid "Please enter a valid email address"
+msgstr "请输入有效的电子邮件地址"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Please select a file to upload."
+msgstr "请选择要上传的文件。"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "Preferences"
+msgstr "偏好设置"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Products"
+msgstr "产品"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
+msgid "Profile Picture"
+msgstr "个人资料图片"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/user_account.py:0
+msgid "Profile image removed successfully"
+msgstr "个人资料图片已成功删除"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/user_account.py:0
+msgid "Profile image updated successfully"
+msgstr "个人资料图片已成功更新"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
+msgid "Profile picture"
+msgstr "个人资料图片"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/user_account.py:0
+msgid "Profile updated successfully"
+msgstr "个人资料已成功更新"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Quick Actions"
+msgstr "快速操作"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Recent Activity"
+msgstr "最近活动"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard.py:0
+msgid "Reception data imported successfully. Processing will begin shortly."
+msgstr "收货单数据已成功导入。处理将很快开始。"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Receptions"
+msgstr "收货单"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "Record Rules"
+msgstr "记录规则"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
+msgid "Remove image"
+msgstr "删除图片"
+
+#. module: portal_account
+#. odoo-javascript
+#: code:addons/portal_account/static/src/js/frontend/account_user_profile.js:0
+msgid "Save Changes"
+msgstr "保存更改"
+
+#. module: portal_account
+#. odoo-javascript
+#: code:addons/portal_account/static/src/js/frontend/account_user_profile.js:0
+msgid "Saving..."
+msgstr "保存中..."
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "Send Password Reset Instructions"
+msgstr "发送密码重置说明"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "Send an Invitation Email"
+msgstr "发送邀请电子邮件"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/user_settings.py:0
+msgid "Settings updated successfully"
+msgstr "设置已成功更新"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Stock"
+msgstr "库存"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_settings_page
+msgid "The number of items to display per page (default: 100)"
+msgstr "每页显示的项目数量（默认：100）"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
+msgid "Update your personal information and preferences"
+msgstr "更新您的个人信息和偏好设置"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Upload File"
+msgstr "上传文件"
+
+#. module: portal_account
+#: model:ir.model,name:portal_account.model_res_users
+msgid "User"
+msgstr "用户"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "You can archive the contact"
+msgstr "您可以归档联系人"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "e.g. John Doe"
+msgstr "例如：约翰·多伊"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
+msgid "e.g. email@yourcompany.com"
+msgstr "例如：email@yourcompany.com"
