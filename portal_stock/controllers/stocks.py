@@ -77,6 +77,16 @@ class PortalStockController(PortalAdminController):
         # Se obtiene el filtro activo
         active_filter = next((filter['id'] for filter in list_filters if filter.get('active')), 'all')
 
+        # Definir las columnas de la lista basadas en PRODUCT_FIELDS_MAPPING
+        list_columns = [
+            {'id': 'name', 'label': _('Name'), 'sortable': True},
+            {'id': 'sku', 'label': _('SKU'), 'sortable': True, 'lg': True},
+            {'id': 'barcode', 'label': _('Barcode'), 'sortable': True, 'lg': True},
+            {'id': 'stock', 'label': _('Stock'), 'sortable': True, 'md': True},
+            {'id': 'status', 'label': _('Status'), 'sortable': True},
+            {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True}
+        ]
+
         # Actualiza los valores con los filtros y el filtro activo
         values.update({
             'active_filter': active_filter,
@@ -87,7 +97,11 @@ class PortalStockController(PortalAdminController):
             'page_url': '/account/stock',
             'select2': True,
             'list_filters': list_filters,
-            # Resto de la configuración...
+            'list_columns': list_columns,  # Añadimos las columnas a renderizar
+            'advanced_search': json.dumps(self._get_advanced_search_fields()),
+            'batch_actions': [
+                {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
+            ]
         })
 
         return request.render("portal_stock.portal_stock_page", values)
