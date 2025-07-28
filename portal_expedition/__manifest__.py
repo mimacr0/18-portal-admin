@@ -28,7 +28,7 @@
         'portal/portal_expedition_file_upload_modal.xml',
         'portal/expedition_templates.xml',
         'portal/expedition_details_page.xml',
-    ],   
+    ],
     # Es importante tener en cuenta el orden en el que deben declararse las carpetas y archivos
     'assets': {
     #     'web.assets_backend': [
