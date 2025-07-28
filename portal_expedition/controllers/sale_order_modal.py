@@ -16,7 +16,7 @@ from datetime import datetime
 ##############################################################################
 
 class PortalExpeditionController(PortalAdminController):
- 
+
     @http.route('/account/expedition/carrier-search', type='json', auth='user')
     def account_expedition_carrier_search(self, term='', **kw):
         """Search carriers based on term for select2"""
@@ -68,8 +68,8 @@ class PortalExpeditionController(PortalAdminController):
         client_order_ref = post.get('client_ref')
         products = json.loads(post.get('products', '[]'))
         account_partner = AccountPartner.search([('partner_id', '=', partner.commercial_partner_id.id)], limit=1)
-        
-        # Create shipping partner 
+
+        # Create shipping partner
         partner_shipping = ResPartner.create({
             'name': partner_name,
             'street': street,
@@ -124,13 +124,13 @@ class PortalExpeditionController(PortalAdminController):
             'carrier_id': carrier_id,
             'client_order_ref': client_order_ref,
         })
-        
+
         return { 'status': 'success', 'message': _('Reception created successfully') }
 
     @http.route('/account/expedition/product-search', type='json', auth='user')
     def account_expedition_product_search(self, term='', **kw):
 
-        # si al final lo metemos en una raíz o algo esto se debvería cambiar por el método en la raíz, 
+        # si al final lo metemos en una raíz o algo esto se debvería cambiar por el método en la raíz,
         # si no se va a hacer, a lo mejor deberíamos dejar el código
         return self.account_reception_product_search(term, **kw)
 
@@ -201,13 +201,13 @@ class PortalExpeditionController(PortalAdminController):
             zip_val = zip_rec.name if zip_rec else ''
             city_obj = city or (zip_rec.city_id if zip_rec else None)
             city_val = city_obj.name if city_obj else ''
-            
+
             state_obj = state or (
                 zip_rec.city_id.state_id if zip_rec and zip_rec.city_id else
                 city_obj.state_id if city_obj else None
             )
             state_val = state_obj.name if state_obj else ''
-            
+
             country_obj = country or (
                 zip_rec.city_id.country_id if zip_rec and zip_rec.city_id else
                 city_obj.country_id if city_obj else
@@ -230,7 +230,7 @@ class PortalExpeditionController(PortalAdminController):
                 'country_id': country_obj.id if country_obj else None
             }
 
-            
+
         MAX_RESULTS = 10
         results = []
 
@@ -311,10 +311,10 @@ class PortalExpeditionController(PortalAdminController):
         qweb = request.env['ir.qweb']
         return {
             'status': 'success',
-            'products_html': qweb._render('portal_reception.portal_product_catalog_items', {
+            'products_html': qweb._render('portal_expedition.portal_product_catalog_items', {
                 'products': products
             }),
-            'pagination_html': qweb._render('portal_reception.portal_product_catalog_pagination', {
+            'pagination_html': qweb._render('portal_expedition.portal_product_catalog_pagination', {
                 'page': page,
                 'pages': pages,
                 'total_pages': total_pages,
