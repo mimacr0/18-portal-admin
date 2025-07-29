@@ -1,175 +1,66 @@
 /**
- * Sticky table header implementation for expedition management
+ * Inicializa el encabezado de tabla pegajoso (sticky) para la lista de recepciones.
+ *
+ * Esta función hace que el encabezado de la tabla permanezca visible en la parte superior
+ * de la ventana mientras el usuario desplaza la página hacia abajo, mejorando la usabilidad
+ * especialmente en listas largas.
  */
-export function initStickyTableHeader() {
-    console.log("Initializing sticky table header");
+export const initStickyTableHeader = () => {
+    // Obtener el encabezado de la tabla y la tabla completa
+    const tableHeader = document.querySelector('.min-w-full thead');
+    const table = document.querySelector('.min-w-full');
 
-    // Find the expedition table that contains the expedition-page-list-items tbody
-    const expeditionTable = document.querySelector('#page-expedition-list-table');
-    if (!expeditionTable) {
-        console.error("expedition table not found");
-        return;
-    }
+    if (!tableHeader || !table) return;
 
-    const listTableHeader = expeditionTable.querySelector('thead');
-    if (!listTableHeader) {
-        console.error("List table header not found");
-        return;
-    }
+    // Obtener la posición inicial del encabezado relativa al documento
+    const tableHeaderTop = tableHeader.getBoundingClientRect().top + window.scrollY;
+    const tableHeaderHeight = tableHeader.offsetHeight;
+    const tableWidth = table.offsetWidth;
 
-    // Get the parent table to reference for width
-    const parentTable = listTableHeader.closest('table');
-    if (!parentTable) {
-        console.error("Parent table not found");
-        return;
-    }
+    // Clonar el encabezado para usarlo como elemento pegajoso
+    const stickyHeader = tableHeader.cloneNode(true);
+    stickyHeader.classList.add('sticky-header');
 
-    // Set a flag to track if we're in fixed mode
-    let isFixed = false;
-    let tmpHeaderTable = null;
-
-    // Function to get exact computed styles for each header cell
-    function captureStyles() {
-        const headerCells = listTableHeader.querySelectorAll('th');
-        return Array.from(headerCells).map(cell => {
-            const style = window.getComputedStyle(cell);
-            const rect = cell.getBoundingClientRect();
-            return {
-                width: rect.width,
-                paddingLeft: style.paddingLeft,
-                paddingRight: style.paddingRight,
-                textAlign: style.textAlign,
-                fontWeight: style.fontWeight,
-                fontSize: style.fontSize,
-                color: style.color,
-                backgroundColor: style.backgroundColor
-            };
-        });
-    }
-
-    function createFixedHeader() {
-        if (isFixed) return; // Prevent duplicate creation
-
-        // Capture exact styles before creating clone
-        const cellStyles = captureStyles();
-
-        // Create table for fixed header
-        tmpHeaderTable = document.createElement('table');
-        tmpHeaderTable.classList.remove('min-w-full');
-        tmpHeaderTable.style.position = 'fixed';
-        tmpHeaderTable.style.top = '60px';
-        tmpHeaderTable.style.left = parentTable.getBoundingClientRect().left + 'px';
-        tmpHeaderTable.style.width = parentTable.getBoundingClientRect().width + 'px';
-        tmpHeaderTable.style.zIndex = '100';
-        tmpHeaderTable.style.backgroundColor = window.getComputedStyle(listTableHeader).backgroundColor || 'white';
-        tmpHeaderTable.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
-
-        // Clone header
-        const clonedHeader = listTableHeader.cloneNode(true);
-
-        // Hide all checkboxes in the cloned header
-        const checkboxes = clonedHeader.querySelectorAll('input[type="checkbox"]');
-        checkboxes.forEach(checkbox => {
-            checkbox.style.display = 'none';
-        });
-
-        // Hide all icons in the cloned header
-        const icons = clonedHeader.querySelectorAll('i');
-        icons.forEach(icon => {
-            icon.style.display = 'none';
-        });
-
-        // Apply styles to each cell in clone
-        const clonedCells = clonedHeader.querySelectorAll('th');
-        clonedCells.forEach((cell, index) => {
-            if (cellStyles[index]) {
-                const style = cellStyles[index];
-                cell.style.width = style.width + 'px';
-                cell.style.minWidth = style.width + 'px';
-                cell.style.maxWidth = style.width + 'px';
-                cell.style.paddingLeft = style.paddingLeft;
-                cell.style.paddingRight = style.paddingRight;
-                cell.style.textAlign = style.textAlign;
-                cell.style.fontWeight = style.fontWeight;
-                cell.style.fontSize = style.fontSize;
-                cell.style.color = style.color;
-                cell.style.backgroundColor = style.backgroundColor;
-            }
-        });
-
-        tmpHeaderTable.appendChild(clonedHeader);
-        document.body.appendChild(tmpHeaderTable);
-        isFixed = true;
-        console.log("Fixed header created and displayed");
-    }
-
-    function removeFixedHeader() {
-        if (!isFixed) return;
-
-        if (tmpHeaderTable && document.body.contains(tmpHeaderTable)) {
-            document.body.removeChild(tmpHeaderTable);
-            tmpHeaderTable = null;
-        }
-
-        isFixed = false;
-        console.log("Fixed header removed");
-    }
-
-    // Create IntersectionObserver to monitor header visibility
-    const headerObserver = new IntersectionObserver((entries) => {
-        const entry = entries[0];
-
-        if (!entry.isIntersecting && !isFixed) {
-            createFixedHeader();
-        } else if (entry.isIntersecting && isFixed) {
-            removeFixedHeader();
-        }
-    }, {
-        threshold: 0,
-        rootMargin: "-10px 0px 0px 0px" // Trigger when header is 10px out of viewport
+    // Estilos para el encabezado pegajoso
+    Object.assign(stickyHeader.style, {
+        position: 'fixed',
+        top: '0',
+        zIndex: '50',
+        opacity: '0',
+        visibility: 'hidden',
+        width: `${tableWidth}px`,
+        backgroundColor: 'var(--bg-table-header, #f9fafb)',
+        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+        transition: 'opacity 0.3s'
     });
 
-    // Start observing the header
-    headerObserver.observe(listTableHeader);
+    // Insertar el encabezado pegajoso en el DOM
+    document.body.appendChild(stickyHeader);
 
-    // Handle window resize
+    // Manejar el evento de desplazamiento
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+
+        // Verificar si debemos mostrar el encabezado pegajoso
+        if (scrollY > tableHeaderTop) {
+            stickyHeader.style.opacity = '1';
+            stickyHeader.style.visibility = 'visible';
+        } else {
+            stickyHeader.style.opacity = '0';
+            stickyHeader.style.visibility = 'hidden';
+        }
+    });
+
+    // Manejar el evento de cambio de tamaño de ventana
     window.addEventListener('resize', () => {
-        if (isFixed && tmpHeaderTable) {
-            tmpHeaderTable.style.left = parentTable.getBoundingClientRect().left + 'px';
-            tmpHeaderTable.style.width = parentTable.getBoundingClientRect().width + 'px';
-
-            // Re-apply cell widths
-            const cellStyles = captureStyles();
-            const headerCells = tmpHeaderTable.querySelectorAll('th');
-            headerCells.forEach((cell, index) => {
-                if (cellStyles[index]) {
-                    cell.style.width = cellStyles[index].width + 'px';
-                }
-            });
-        }
+        // Actualizar el ancho del encabezado pegajoso
+        stickyHeader.style.width = `${table.offsetWidth}px`;
     });
 
-    // Handle dark mode changes
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.attributeName === 'class' &&
-                mutation.target === document.documentElement &&
-                isFixed && tmpHeaderTable) {
-
-                // Update styles for dark mode
-                const headerCells = tmpHeaderTable.querySelectorAll('th');
-                const cellStyles = captureStyles();
-                headerCells.forEach((cell, index) => {
-                    if (cellStyles[index]) {
-                        cell.style.backgroundColor = cellStyles[index].backgroundColor;
-                        cell.style.color = cellStyles[index].color;
-                    }
-                });
-            }
-        });
-    });
-
-    observer.observe(document.documentElement, { attributes: true });
-
-    console.log("Sticky header initialized successfully");
-}
+    // Cleanup function
+    return () => {
+        document.body.removeChild(stickyHeader);
+        window.removeEventListener('scroll', () => {});
+        window.removeEventListener('resize', () => {});
+    };
+};
