@@ -76,11 +76,11 @@ const reloadRepairAlertDetailsChatter = async () => {
     const chatter = document.getElementById('repair_alert_details-details-chat-messages');
     if (!chatter) return;
 
-    const alerId = parseInt(chatter.dataset.alerId);
+    const alertId = parseInt(chatter.dataset.alertId);
     const partnerId = parseInt(chatter.dataset.partnerId);
 
-    const response = await rpc('/portal_repair/repair_alert/details/chatter/fetch', {
-        reception_id: alerId
+    const response = await rpc('/portal_repair/repair/details/chatter/fetch', {
+        alert_id: alertId
     })
 
     const messages = response?.data['mail.message'] || [];
@@ -164,7 +164,7 @@ const initMessageSending = () => {
     const chatter = document.getElementById('repair_alert_details-details-chat-messages');
     if (!chatter) return;
 
-    const alerId = parseInt(chatter.dataset.alerId);
+    const alertId = parseInt(chatter.dataset.alertId);
 
     // Get message sending elements
     const messageInput = document.querySelector('.message-input');
@@ -197,7 +197,7 @@ const initMessageSending = () => {
         if (messageText === '' && !messageState.selectedFile) return;
 
         const formData = new FormData();
-        formData.append('reception_id', alerId);
+        formData.append('alert_id', alertId);
         formData.append('csrf_token', tokenInput.value);
         formData.append('message', messageText);
         formData.append('attachment', messageState.selectedFile);
@@ -206,7 +206,7 @@ const initMessageSending = () => {
 
         // Send message to server
         try {
-            const result = await fetch('/portal_repair/repair_alert/details/chatter/post', {
+            const result = await fetch('/portal_repair/repair/details/chatter/post', {
                 method: 'POST',
                 body: formData
             });

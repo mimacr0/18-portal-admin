@@ -34,7 +34,7 @@ class PortalRepairController(PortalAdminController):
         menus.append({
             'name': _('Repair Alert'),
             'url': '/account/repair',
-            'icon': 'fas fa-warehouse'
+            'icon': 'fas fa-screwdriver-wrench'
         })
         return menus
 

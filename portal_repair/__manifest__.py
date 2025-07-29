@@ -19,12 +19,13 @@
         Se recomienda no emplear las reparaciones directamente, pues es una clase que puede contener información 
         sensible.
     """,
-    'depends': ['base', 'portal_admin_theme', 'portal_account', 'portal_catalog'],
+    'depends': ['base', 'portal_admin_theme', 'portal_account', 'portal_catalog', 'repair_module'],
     'license': 'LGPL-3',
     'website': "https://www.dafe.es",
     'data': [
-        'portal/repair_alert_templates.xml',
-        'portal/portal_create_repair_alert_modal.xml',
+        'portal/portal_repair_alert_list_template.xml',
+        'portal/portal_repair_alert_modal_template.xml',
+        'portal/portal_repair_alert_details_template.xml',
     ],
     'assets': {
         'portal_admin_theme.admin_assets_frontend': [

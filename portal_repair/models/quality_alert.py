@@ -10,8 +10,11 @@ from odoo import models, fields, api
 class BaseModel(models.Model):
     _name = 'quality.alert'
     _inherit = ['quality.alert', 'portal.mixin']
-
     
+    def get_details_url(self):
+        portal_url = self.get_portal_url()
+        return portal_url.replace('#', f'/account/repair/details/{self.id}')
+
     @api.returns('mail.message', lambda value: value.id)
     def message_post(self, **kwargs):
         res = super().message_post(**kwargs)

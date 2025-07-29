@@ -210,7 +210,7 @@
             <div class="h-25"></div>
 
             <t t-set="footer_content">
-                <t t-call="portal_repair.portal_create_repair_alert_modal"/>
+                <t t-call="portal_repair.portal_repair_alert_modal_template"/>
 
             </t>
         </t>
@@ -228,6 +228,17 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900 dark:text-gray-100" t-out="alert.stage_id.name"/>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <a t-att-href="alert.get_details_url()" t-attf-data-tooltip-target="tooltip-details-#{alert.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                    <button t-attf-data-tooltip-target="tooltip-edit-#{alert.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button t-attf-data-tooltip-target="tooltip-delete-#{alert.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </td>
             </tr>
         </t>

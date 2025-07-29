@@ -44,15 +44,16 @@ const updateRepairAlertsProductsField = () => {
     const products = [];
 
     for (const line of productLines) {
-        const packageInput = line.querySelector('.product-package');
+        // const packageInput = line.querySelector('.product-package');
         const select = line.querySelector('.product-select');
         const qtyInput = line.querySelector('.product-qty');
 
         try {
             const selectData = $(select).select2('data')[0];
-            if (packageInput && selectData && qtyInput) {
+            // if (packageInput && selectData && qtyInput) {
+            if (selectData && qtyInput) {
                 products.push({
-                    package: packageInput.value,
+                    // package: packageInput.value,
                     product_id: selectData.id,
                     quantity: qtyInput.value
                 });
@@ -84,15 +85,15 @@ export const initRepairAlertCreateForm = () => {
     const createButton = document.getElementById('launch-create-repair-alert-form-button');
     const createModal = document.getElementById('page-repair-alert-list-create-modal');
     const submitButton = document.getElementById('page-repair-alert-list-create-product-form-submit');
-    const catalogButton = document.getElementById('page-repair-alert-list-create-form-products-add-catalog-btn');
-    const scheduledDateInput = document.getElementById('page-repair-alert-list-create-form-scheduled-date');
-    const pageMainContainer = document.querySelector('#page-repair-alert-main-container');
-    const productCatalogSelectContainer = document.querySelector('#page-repair-alert-product-catalog-select');
-    const carrierSelectInput = document.getElementById('page-repair-alert-list-create-form-carrier-id');
-    const packageTypeSelectInput = document.getElementById('page-repair-alert-list-create-form-package-type-id');
-
-    if (!scheduledDateInput) return;
-
+    // const catalogButton = document.getElementById('page-repair-alert-list-create-form-products-add-catalog-btn');
+    // const scheduledDateInput = document.getElementById('page-repair-alert-list-create-form-scheduled-date');
+    // const pageMainContainer = document.querySelector('#page-repair-alert-main-container');
+    // const productCatalogSelectContainer = document.querySelector('#page-repair-alert-product-catalog-select');
+    // const carrierSelectInput = document.getElementById('page-repair-alert-list-create-form-carrier-id');
+    // const packageTypeSelectInput = document.getElementById('page-repair-alert-list-create-form-package-type-id');
+    console.log("1")
+    // if (!scheduledDateInput) return;
+    console.log("2")
     // Function to reset the form when modal is closed
     const resetRepairAlertForm = () => {
         console.log("Resetting repair-alert form");
@@ -104,18 +105,18 @@ export const initRepairAlertCreateForm = () => {
         }
 
         // Clear Select2 fields
-        if ($(packageTypeSelectInput).data('select2')) {
-            $(packageTypeSelectInput).val(null).trigger('change');
-        }
+        // if ($(packageTypeSelectInput).data('select2')) {
+        //     $(packageTypeSelectInput).val(null).trigger('change');
+        // }
 
-        if ($(carrierSelectInput).data('select2')) {
-            $(carrierSelectInput).val(null).trigger('change');
-        }
+        // if ($(carrierSelectInput).data('select2')) {
+        //     $(carrierSelectInput).val(null).trigger('change');
+        // }
 
         // Reset flatpickr date input
-        if (scheduledDateInput._flatpickr) {
-            scheduledDateInput._flatpickr.clear();
-        }
+        // if (scheduledDateInput._flatpickr) {
+        //     scheduledDateInput._flatpickr.clear();
+        // }
 
         // Reset product lines container
         const productsContainer = document.getElementById(`page-${pageName}-list-create-form-products-line-items-container`);
@@ -139,115 +140,115 @@ export const initRepairAlertCreateForm = () => {
         resetRepairAlertForm();
     });
 
-    flatpickr(scheduledDateInput, {
-        minDate: 'today',
-        enableTime: true,
-        dateFormat: 'd-m-Y H:i'
-    });
+    // flatpickr(scheduledDateInput, {
+    //     minDate: 'today',
+    //     enableTime: true,
+    //     dateFormat: 'd-m-Y H:i'
+    // });
 
-    $(packageTypeSelectInput).select2({
-        placeholder: 'Select Package Type',
-        dropdownParent: $(createModal),
-        ajax: {
-            transport: function(params, success, failure) {
-                rpc('/account/repair-alert/package-type-search', {
-                    term: params.data.term
-                })
-                .then(function(result) {
-                    success({ results: result.items });
-                })
-                .catch(function(error) {
-                    console.error('Error fetching package types:', error);
-                    failure('Failed to load package types');
-                });
-            },
-            processResults: function(data) {
-                return data;
-            },
-            delay: 250
-        },
-        templateResult: function(data) {
-            return formatPackageType(data);
-        }
-    });
+    // $(packageTypeSelectInput).select2({
+    //     placeholder: 'Select Package Type',
+    //     dropdownParent: $(createModal),
+    //     ajax: {
+    //         transport: function(params, success, failure) {
+    //             rpc('/account/repair-alert/package-type-search', {
+    //                 term: params.data.term
+    //             })
+    //             .then(function(result) {
+    //                 success({ results: result.items });
+    //             })
+    //             .catch(function(error) {
+    //                 console.error('Error fetching package types:', error);
+    //                 failure('Failed to load package types');
+    //             });
+    //         },
+    //         processResults: function(data) {
+    //             return data;
+    //         },
+    //         delay: 250
+    //     },
+    //     templateResult: function(data) {
+    //         return formatPackageType(data);
+    //     }
+    // });
 
     // Update measures and weight when package type changes
-    $(packageTypeSelectInput).on('select2:select', function (e) {
-        const data = e.params.data;
-        if (data) {
-            // Update width field
-            const widthField = document.getElementById('page-repair-alert-list-create-form-measures-width');
-            if (widthField && data.width) {
-                widthField.value = data.width;
-            }
+    // $(packageTypeSelectInput).on('select2:select', function (e) {
+    //     const data = e.params.data;
+    //     if (data) {
+    //         // Update width field
+    //         const widthField = document.getElementById('page-repair-alert-list-create-form-measures-width');
+    //         if (widthField && data.width) {
+    //             widthField.value = data.width;
+    //         }
 
-            // Update height field
-            const heightField = document.getElementById('page-repair-alert-list-create-form-measures-height');
-            if (heightField && data.height) {
-                heightField.value = data.height;
-            }
+    //         // Update height field
+    //         const heightField = document.getElementById('page-repair-alert-list-create-form-measures-height');
+    //         if (heightField && data.height) {
+    //             heightField.value = data.height;
+    //         }
 
-            // Update length field
-            const lengthField = document.getElementById('page-repair-alert-list-create-form-measures-length');
-            if (lengthField && data.packaging_length) {
-                lengthField.value = data.packaging_length;
-            }
+    //         // Update length field
+    //         const lengthField = document.getElementById('page-repair-alert-list-create-form-measures-length');
+    //         if (lengthField && data.packaging_length) {
+    //             lengthField.value = data.packaging_length;
+    //         }
 
-            // Update weight field
-            const weightField = document.getElementById('page-repair-alert-list-create-form-weight');
-            if (weightField && data.base_weight) {
-                weightField.value = data.base_weight;
-            }
-        }
-    });
+    //         // Update weight field
+    //         const weightField = document.getElementById('page-repair-alert-list-create-form-weight');
+    //         if (weightField && data.base_weight) {
+    //             weightField.value = data.base_weight;
+    //         }
+    //     }
+    // });
 
-    $(carrierSelectInput).select2({
-        placeholder: 'Select Carrier',
-        dropdownParent: $(createModal),
-        ajax: {
-            transport: function(params, success, failure) {
-                rpc('/account/repair-alert/carrier-search', {
-                    term: params.data.term
-                })
-                .then(function(result) {
-                    success({ results: result.items });
-                })
-                .catch(function(error) {
-                    console.error('Error fetching carriers:', error);
-                    failure('Failed to load carriers');
-                });
-            },
-            processResults: function(data) {
-                return data;
-            },
-            delay: 250
-        },
-        templateResult: function(data) {
-            return formatCarrier(data);
-        }
-    });
+    // $(carrierSelectInput).select2({
+    //     placeholder: 'Select Carrier',
+    //     dropdownParent: $(createModal),
+    //     ajax: {
+    //         transport: function(params, success, failure) {
+    //             rpc('/account/repair-alert/carrier-search', {
+    //                 term: params.data.term
+    //             })
+    //             .then(function(result) {
+    //                 success({ results: result.items });
+    //             })
+    //             .catch(function(error) {
+    //                 console.error('Error fetching carriers:', error);
+    //                 failure('Failed to load carriers');
+    //             });
+    //         },
+    //         processResults: function(data) {
+    //             return data;
+    //         },
+    //         delay: 250
+    //     },
+    //     templateResult: function(data) {
+    //         return formatCarrier(data);
+    //     }
+    // });
 
-    catalogButton.addEventListener('click', async () => {
-        const paginationContainerMain = document.getElementById('page-repair-alert-list-pagination-container-main');
-        paginationContainerMain.classList.add('hidden'); // Hide the main pagination
+    // catalogButton.addEventListener('click', async () => {
+    //     const paginationContainerMain = document.getElementById('page-repair-alert-list-pagination-container-main');
+    //     paginationContainerMain.classList.add('hidden'); // Hide the main pagination
 
-        productCatalogSelectContainer.classList.remove('hidden');
-        pageMainContainer.classList.add('hidden');
-        createModal.dataset.open = 'false';
+    //     productCatalogSelectContainer.classList.remove('hidden');
+    //     pageMainContainer.classList.add('hidden');
+    //     createModal.dataset.open = 'false';
 
-        // Reset pagination and load first page
-        currentCatalogPage = 1;
-        catalogSearchQuery = '';
+    //     // Reset pagination and load first page
+    //     currentCatalogPage = 1;
+    //     catalogSearchQuery = '';
 
-        // Reset search input value - Now pageName is defined
-        const searchInput = document.getElementById(`page-${pageName}-product-catalog-select-search`);
-        if (searchInput) searchInput.value = '';
+    //     // Reset search input value - Now pageName is defined
+    //     const searchInput = document.getElementById(`page-${pageName}-product-catalog-select-search`);
+    //     if (searchInput) searchInput.value = '';
 
-        loadProductCatalog();
+    //     loadProductCatalog();
 
-        // Setup search input event listener right after opening the catalog
-        setupSearchListener();
-    });
+    //     // Setup search input event listener right after opening the catalog
+    //     setupSearchListener();
+    // });
 
     createButton.addEventListener('click', () => {
         console.log('Botón "Crear" clickeado. Abriendo modal...');
@@ -753,13 +754,13 @@ function closeProductCatalog() {
                 newRow.className = 'line-item flex items-center gap-2 mb-2';
                 newRow.dataset.lineId = lineId;
                 newRow.dataset.productId = product.id;
-
+                    // <div class="w-24">
+                    //     <input type="number" value="${product.package || '1'}" min="1"
+                    //         class="product-package form-input-sm w-full text-center rounded-md border border-gray-300
+                    //         focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"/>
+                    // </div>
                 newRow.innerHTML = `
-                    <div class="w-24">
-                        <input type="number" value="${product.package || '1'}" min="1"
-                            class="product-package form-input-sm w-full text-center rounded-md border border-gray-300
-                            focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"/>
-                    </div>
+
                     <div class="flex-grow">
                         <select class="product-select form-select-sm w-full rounded-md border border-gray-300
                             focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500">
@@ -780,7 +781,7 @@ function closeProductCatalog() {
                 productsContainer.appendChild(newRow);
 
                 // Initialize Select2 for this row
-                const packageInput = newRow.querySelector('.product-package');
+                // const packageInput = newRow.querySelector('.product-package');
                 const select = newRow.querySelector('.product-select');
                 const qtyInput = newRow.querySelector('.product-qty');
 
@@ -826,7 +827,7 @@ function closeProductCatalog() {
 
                 // Update hidden name field and registry when quantity changes
                 qtyInput.addEventListener('change', updateRepairAlertsProductsField);
-                packageInput.addEventListener('change', updateRepairAlertsProductsField);
+                // packageInput.addEventListener('change', updateRepairAlertsProductsField);
 
                 // Set up remove button
                 const removeBtn = newRow.querySelector('.product-remove-btn');
@@ -865,13 +866,13 @@ function initManualProductAdd() {
             const newRow = document.createElement('div');
             newRow.className = 'line-item flex items-center gap-2 mb-2';
             newRow.dataset.lineId = lineId;
-
+                // <div class="w-24">
+                //     <input type="number" value="1" min="1"
+                //         class="product-package form-input-sm w-full text-center rounded-md border border-gray-300
+                //         focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"/>
+                // </div>
             newRow.innerHTML = `
-                <div class="w-24">
-                    <input type="number" value="1" min="1"
-                        class="product-package form-input-sm w-full text-center rounded-md border border-gray-300
-                        focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"/>
-                </div>
+
                 <div class="flex-grow">
                     <select class="product-select form-select-sm w-full rounded-md border border-gray-300
                         focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500">
@@ -892,7 +893,7 @@ function initManualProductAdd() {
             container.appendChild(newRow);
 
             // Initialize Select2 for this row
-            const packageInput = newRow.querySelector('.product-package');
+            // const packageInput = newRow.querySelector('.product-package');
             const select = newRow.querySelector('.product-select');
             const qtyInput = newRow.querySelector('.product-qty');
 
@@ -926,7 +927,7 @@ function initManualProductAdd() {
 
             // Update registry when quantity changes
             qtyInput.addEventListener('change', updateRepairAlertsProductsField);
-            packageInput.addEventListener('change', updateRepairAlertsProductsField);
+            // packageInput.addEventListener('change', updateRepairAlertsProductsField);
 
             lineCounter++;
 
@@ -999,7 +1000,7 @@ function formatProductSelection(product) {
 document.addEventListener('DOMContentLoaded', () => {
     initRepairAlertCreateForm();
     initManualProductAdd();
-
+    console.log("HOLA ESTRELLA")
     // Set up the close button for product catalog
     const closeBtn = document.getElementById('page-repair-alert-product-catalog-select-close-btn');
     if (closeBtn) {

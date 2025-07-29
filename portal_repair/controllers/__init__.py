@@ -6,3 +6,4 @@
 ##############################################################################
 
 from . import repair_list
+from . import repair_details
