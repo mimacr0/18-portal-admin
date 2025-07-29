@@ -4,8 +4,8 @@
     <template id="portal_dashboard_recent_activity_content" name="Portal Dashboard Recent Activity Content">
 
                 <!-- <div class="flex items-start">
-            <div class="bg-green-100 dark:bg-green-900 p-2 rounded-full mr-3">
-                <i class="fas fa-dollar-sign text-green-500 dark:text-green-400 text-sm"></i>
+            <div class="bg-[#f0f0e0] dark:bg-[#696900] p-2 rounded-full mr-3">
+                <i class="fas fa-dollar-sign text-[#8A8A00] dark:text-[#A0A000] text-sm"></i>
             </div>
             <div class="flex-1">
                 <p class="text-sm font-medium text-gray-900 dark:text-white">New reception completed</p>
@@ -14,8 +14,8 @@
             </div>
         </div>
         <div class="flex items-start">
-            <div class="bg-cyan-100 dark:bg-cyan-900 p-2 rounded-full mr-3">
-                <i class="fas fa-user text-cyan-500 dark:text-cyan-400 text-sm"></i>
+            <div class="bg-[#f0f0e0] dark:bg-[#696900] p-2 rounded-full mr-3">
+                <i class="fas fa-user text-[#8A8A00] dark:text-[#A0A000] text-sm"></i>
             </div>
             <div class="flex-1">
                 <p class="text-sm font-medium text-gray-900 dark:text-white">New expedition completed</p>
@@ -24,8 +24,8 @@
             </div>
         </div>
         <div class="flex items-start">
-            <div class="bg-amber-100 dark:bg-amber-900 p-2 rounded-full mr-3">
-                <i class="fas fa-exclamation-triangle text-amber-500 dark:text-amber-400 text-sm"></i>
+            <div class="bg-[#f0f0e0] dark:bg-[#696900] p-2 rounded-full mr-3">
+                <i class="fas fa-exclamation-triangle text-[#8A8A00] dark:text-[#A0A000] text-sm"></i>
             </div>
             <div class="flex-1">
                 <p class="text-sm font-medium text-gray-900 dark:text-white">Inventory alert</p>
@@ -34,8 +34,8 @@
             </div>
         </div>
         <div class="flex items-start">
-            <div class="bg-purple-100 dark:bg-purple-900 p-2 rounded-full mr-3">
-                <i class="fas fa-tasks text-purple-500 dark:text-purple-400 text-sm"></i>
+            <div class="bg-[#f0f0e0] dark:bg-[#696900] p-2 rounded-full mr-3">
+                <i class="fas fa-tasks text-[#8A8A00] dark:text-[#A0A000] text-sm"></i>
             </div>
             <div class="flex-1">
                 <p class="text-sm font-medium text-gray-900 dark:text-white">New product added</p>
@@ -46,8 +46,8 @@
 
         <t t-foreach="recent_activity" t-as="activity">
             <div class="flex items-start">
-                <div class="bg-green-100 dark:bg-green-900 p-2 rounded-full mr-3">
-                    <i t-attf-class="#{activity.icon} text-green-500 dark:text-green-400 text-sm"></i>
+                <div class="bg-[#f0f0e0] dark:bg-[#696900] p-2 rounded-full mr-3">
+                    <i t-attf-class="#{activity.icon} text-[#8A8A00] dark:text-[#A0A000] text-sm"></i>
                 </div>
                 <div class="flex-1">
                     <p class="text-sm font-medium text-gray-900 dark:text-white"><t t-out="activity.title"/></p>
@@ -73,8 +73,8 @@
                                 <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-receptions-value" data-value="0">0</h3>
                                 <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
                             </div>
-                            <div class="bg-cyan-100 dark:bg-cyan-900 p-3 rounded-full">
-                                <i class="fas fa-box text-cyan-500 dark:text-cyan-400"></i>
+                            <div class="bg-[#f0f0e0] dark:bg-[#696900] p-3 rounded-full">
+                                <i class="fas fa-box text-[#8A8A00] dark:text-[#A0A000]"></i>
                             </div>
                         </div>
                     </div>
@@ -86,8 +86,8 @@
                                 <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-expeditions-value" data-value="0">0</h3>
                                 <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
                             </div>
-                            <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-full">
-                                <i class="fas fa-truck text-purple-500 dark:text-purple-400"></i>
+                            <div class="bg-[#f0f0e0] dark:bg-[#696900] p-3 rounded-full">
+                                <i class="fas fa-truck text-[#8A8A00] dark:text-[#A0A000]"></i>
                             </div>
                         </div>
                     </div>
@@ -99,8 +99,8 @@
                                 <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-products-value" data-value="0">0</h3>
                                 <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
                             </div>
-                            <div class="bg-amber-100 dark:bg-amber-900 p-3 rounded-full">
-                                <i class="fas fa-cubes text-amber-500 dark:text-amber-400"></i>
+                            <div class="bg-[#f0f0e0] dark:bg-[#696900] p-3 rounded-full">
+                                <i class="fas fa-cubes text-[#8A8A00] dark:text-[#A0A000]"></i>
                             </div>
                         </div>
                     </div>
@@ -112,8 +112,8 @@
                                 <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-stock-value" data-value="0">0</h3>
                                 <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
                             </div>
-                            <div class="bg-green-100 dark:bg-green-900 p-3 rounded-full">
-                                <i class="fas fa-boxes-stacked text-green-500 dark:text-green-400"></i>
+                            <div class="bg-[#f0f0e0] dark:bg-[#696900] p-3 rounded-full">
+                                <i class="fas fa-boxes-stacked text-[#8A8A00] dark:text-[#A0A000]"></i>
                             </div>
                         </div>
                     </div>
@@ -125,16 +125,16 @@
                     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h3>
                         <div class="grid grid-cols-2 gap-3">
-                            <a href="/portal_account/static/templates/receptions.xlsx" target="_blank" class="bg-cyan-100 hover:bg-cyan-200 dark:bg-cyan-700 dark:hover:bg-cyan-600 text-cyan-700 dark:text-cyan-100 p-3 rounded-lg transition duration-200 flex items-center justify-center">
+                            <a href="/portal_account/static/templates/receptions.xlsx" target="_blank" class="bg-[#f0f0e0] hover:bg-[#e8e8d0] dark:bg-[#696900] dark:hover:bg-[#8A8A00] text-[#696900] dark:text-[#f0f0e0] p-3 rounded-lg transition duration-200 flex items-center justify-center">
                                 <i class="fas fa-file-invoice mr-2"></i> Receptions Template
                             </a>
-                            <a href="/portal_account/static/templates/expeditions.xlsx" target="_blank" class="bg-purple-100 hover:bg-purple-200 dark:bg-purple-700 dark:hover:bg-purple-600 text-purple-700 dark:text-purple-100 p-3 rounded-lg transition duration-200 flex items-center justify-center">
+                            <a href="/portal_account/static/templates/expeditions.xlsx" target="_blank" class="bg-[#f0f0e0] hover:bg-[#e8e8d0] dark:bg-[#696900] dark:hover:bg-[#8A8A00] text-[#696900] dark:text-[#f0f0e0] p-3 rounded-lg transition duration-200 flex items-center justify-center">
                                 <i class="fas fa-file-invoice mr-2"></i> Expeditions Template
                             </a>
-                            <button id="dashboard-page-import-receptions-button" class="bg-amber-100 hover:bg-amber-200 dark:bg-amber-700 dark:hover:bg-amber-600 text-amber-700 dark:text-amber-100 p-3 rounded-lg transition duration-200 flex items-center justify-center">
+                            <button id="dashboard-page-import-receptions-button" class="bg-[#f0f0e0] hover:bg-[#e8e8d0] dark:bg-[#696900] dark:hover:bg-[#8A8A00] text-[#696900] dark:text-[#f0f0e0] p-3 rounded-lg transition duration-200 flex items-center justify-center">
                                 <i class="fas fa-file-import mr-2"></i> Import receptions
                             </button>
-                            <button id="dashboard-page-import-expeditions-button" class="bg-green-100 hover:bg-green-200 dark:bg-green-700 dark:hover:bg-green-600 text-green-700 dark:text-green-100 p-3 rounded-lg transition duration-200 flex items-center justify-center">
+                            <button id="dashboard-page-import-expeditions-button" class="bg-[#f0f0e0] hover:bg-[#e8e8d0] dark:bg-[#696900] dark:hover:bg-[#8A8A00] text-[#696900] dark:text-[#f0f0e0] p-3 rounded-lg transition duration-200 flex items-center justify-center">
                                 <i class="fas fa-file-import mr-2"></i> Import expeditions
                             </button>
                         </div>
@@ -149,7 +149,7 @@
                     </div>
 
                     <!-- Account Balance Card -->
-                    <div class="bg-gradient-to-r from-blue-500 to-cyan-500 dark:from-blue-800 dark:to-cyan-700 p-4 rounded-lg shadow text-white">
+                    <div class="bg-gradient-to-r from-[#8A8A00] to-[#696900] dark:from-[#8A8A00] dark:to-[#696900] p-4 rounded-lg shadow text-white">
                         <div class="flex justify-between items-start mb-4">
                             <h3 class="text-lg font-semibold">Account Balance</h3>
                             <i class="fas fa-credit-card text-white/80 text-xl"></i>
@@ -226,7 +226,7 @@
                                         <label for="dashboard-page-add-credit-amount" class="form-label-sm font-sm">Credit Amount</label>
                                     </div>
                                     <div>
-                                        <input type="number" name="credit_amount" id="dashboard-page-add-credit-amount" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Credit Amount" required="required" min="0"/>
+                                        <input type="number" name="credit_amount" id="dashboard-page-add-credit-amount" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#A0A000]" placeholder="Credit Amount" required="required" min="0"/>
                                         <div class="form-error invisible" id="dashboard-page-add-credit-amount-error"></div>
                                         <span class="ml-2 text-xs text-gray-500 italic">
                                             <i class="fas fa-info-circle"></i> Enter the desired credit amount to initiate an approval process.
@@ -261,10 +261,10 @@
                                     <label for="fileInput" class="form-label form-label-sm">Upload File</label>
                                     <div class="form-field-container">
                                         <div class="file-drop-area rounded-md border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 text-center cursor-pointer">
-                                            <input type="file" id="fileInput" name="fileInput" class="hidden focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" required="required" multiple="multiple"/>
+                                            <input type="file" id="fileInput" name="fileInput" class="hidden focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#A0A000]" required="required" multiple="multiple"/>
                                             <div class="file-input-content">
                                                 <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 dark:text-gray-500"/>
-                                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop a file here, or <span class="text-cyan-600 dark:text-cyan-400 browse-link">browse</span></p>
+                                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop a file here, or <span class="text-[#696900] dark:text-[#A0A000] browse-link">browse</span></p>
                                                 <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Maximum file size: 5MB</p>
                                             </div>
                                         </div>
@@ -300,10 +300,10 @@
                                     <label for="fileInput" class="form-label form-label-sm">Upload File</label>
                                     <div class="form-field-container">
                                         <div class="file-drop-area rounded-md border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 text-center cursor-pointer">
-                                            <input type="file" id="fileInput" name="fileInput" class="hidden focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" required="required" multiple="multiple"/>
+                                            <input type="file" id="fileInput" name="fileInput" class="hidden focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#A0A000]" required="required" multiple="multiple"/>
                                             <div class="file-input-content">
                                                 <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 dark:text-gray-500"/>
-                                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop a file here, or <span class="text-cyan-600 dark:text-cyan-400 browse-link">browse</span></p>
+                                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop a file here, or <span class="text-[#696900] dark:text-[#A0A000] browse-link">browse</span></p>
                                                 <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Maximum file size: 5MB</p>
                                             </div>
                                         </div>

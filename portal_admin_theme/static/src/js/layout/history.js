@@ -20,9 +20,9 @@ const sysLayoutBuildDesktopHistoryItem = (item) => {
     historyItem.href = item.path;
 
     // Use the active property from the item
-    const activeClass = item.active ? 'bg-cyan-600 text-gray-900 text-white hover:bg-cyan-700 hover:text-gray-100 dark:hover:bg-cyan-700 dark:hover:text-gray-100' : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600';
+    const activeClass = item.active ? 'bg-[#8A8A00] text-white hover:bg-[#696900] hover:text-white dark:hover:bg-[#8A8A00] dark:hover:text-white' : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600';
     historyItem.className = `history-widget-item flex items-center text-sm text-gray-600 dark:text-gray-300
-        hover:text-cyan-600 dark:hover:text-cyan-400 rounded-md transition-all duration-200
+        hover:text-[#8A8A00] dark:hover:text-[#A0A000] rounded-md transition-all duration-200
         shadow-sm md:p-0.5 lg:p-1 text-sm ${activeClass} hidden sm:flex`;
     historyItem.setAttribute('data-history-id', item.path);
     historyItem.setAttribute('data-title', item.title);

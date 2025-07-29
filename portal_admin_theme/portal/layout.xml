@@ -3,10 +3,10 @@
 
     <template id="portal_user_notification_list" name="Portal User Notification List">
         <t t-foreach="notifications" t-as="notification">
-            <div class="px-4 py-3 border-l-4 border-cyan-500 notification-item">
+            <div class="px-4 py-3 border-l-4 border-[#8A8A00] notification-item">
                 <div class="flex items-start">
                     <div class="flex-shrink-0 pt-0.5">
-                        <i t-attf-class="fas fa-#{notification.icon()} text-cyan-500 bg-cyan-100 p-2 rounded-full notification-icon info"></i>
+                        <i t-attf-class="fas fa-#{notification.icon()} text-[#8A8A00] bg-[#f0f0e0] p-2 rounded-full notification-icon info"></i>
                     </div>
                     <div class="ml-3 w-0 flex-1">
                         <p class="text-sm font-sm text-gray-900 dark:text-white notification-title"><t t-out="notification.title()"/></p>
@@ -114,18 +114,18 @@
                                         <a href="/account/user/update/lang/en_US" t-attf-class="language-item flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 #{user.lang == 'en_US' and 'bg-gray-50 dark:bg-gray-800'}">
                                             <img src="/portal_admin_theme/static/img/flags/en.svg" class="rounded-md w-5 mr-3" alt="English"/>
                                             <span>English</span>
-                                            <i t-if="user.lang == 'en_US'" class="fas fa-check ml-auto text-cyan-600 dark:text-cyan-400"></i>
+                                            <i t-if="user.lang == 'en_US'" class="fas fa-check ml-auto text-[#696900] dark:text-[#A0A000]"></i>
                                         </a>
                                         <!-- Other languages -->
                                         <a href="/account/user/update/lang/es_ES" t-attf-class="language-item flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 #{user.lang == 'es_ES' and 'bg-gray-50 dark:bg-gray-800'}">
                                             <img src="/portal_admin_theme/static/img/flags/es.svg" class="rounded-md w-5 mr-3" alt="Spanish"/>
                                             <span>Español</span>
-                                            <i t-if="user.lang == 'es_ES'" class="fas fa-check ml-auto text-cyan-600 dark:text-cyan-400"></i>
+                                            <i t-if="user.lang == 'es_ES'" class="fas fa-check ml-auto text-[#696900] dark:text-[#A0A000]"></i>
                                         </a>
                                         <a href="/account/user/update/lang/zh_CN" t-attf-class="language-item flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 #{user.lang == 'zh_CN' and 'bg-gray-50 dark:bg-gray-800'}">
                                             <img src="/portal_admin_theme/static/img/flags/zh.svg" class="rounded-md w-5 mr-3" alt="Chinese"/>
                                             <span>中文</span>
-                                            <i t-if="user.lang == 'zh_CN'" class="fas fa-check ml-auto text-cyan-600 dark:text-cyan-400"></i>
+                                            <i t-if="user.lang == 'zh_CN'" class="fas fa-check ml-auto text-[#696900] dark:text-[#A0A000]"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -148,7 +148,7 @@
                                     </div>
                                     <div class="max-h-96 overflow-y-auto" id="layout-notifications-list"></div>
                                     <div class="border-t border-gray-100 dark:border-gray-700 p-2 hidden flex justify-center" id="layout-notifications-actions">
-                                        <button type="button" class="text-xs text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 font-sm" id="layout-clear-all-notifications-button">
+                                        <button type="button" class="text-xs text-[#696900] hover:text-[#8A8A00] dark:text-[#A0A000] dark:hover:text-[#C0C000] font-sm" id="layout-clear-all-notifications-button">
                                             Clear all notifications
                                         </button>
                                     </div>
@@ -174,7 +174,7 @@
                                         <!-- History items will be populated here dynamically -->
                                     </div>
                                     <div class="border-t border-gray-100 dark:border-gray-700 p-2">
-                                        <a href="#" class="block text-center text-xs text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 font-medium">
+                                        <a href="#" class="block text-center text-xs text-[#696900] hover:text-[#8A8A00] dark:text-[#A0A000] dark:hover:text-[#C0C000] font-medium">
                                             View all history
                                         </a>
                                     </div>
@@ -212,7 +212,7 @@
 
                 <div class="content-container flex h-full overflow-hidden">
                     <!-- Sidebar -->
-                    <aside id="sidebar" class="fixed h-[calc(100vh-61px)] w-64 overflow-y-auto bg-gradient-to-br from-cyan-600 to-cyan-700 dark:from-gray-800 dark:to-gray-900 text-white transition-all duration-500 shadow-lg z-30 sidebar-collapsed-init">
+                    <aside id="sidebar" class="fixed h-[calc(100vh-61px)] w-64 overflow-y-auto bg-gradient-to-br from-[#8A8A00] to-[#696900] dark:from-gray-800 dark:to-gray-900 text-white transition-all duration-500 shadow-lg z-30 sidebar-collapsed-init">
                         <div class="py-4">
                             <div class="px-4 mb-6 flex items-center bg-gradient-to-r from-black/10 to-transparent backdrop-blur-sm border-b border-white/10 py-4">
                                 <img src="/portal_admin_theme/static/img/logo.svg" alt="Logo" class="size-10 rounded"/>
@@ -225,7 +225,7 @@
                                         <a
                                             t-if="item.get('url') == page_url"
                                             t-att-href="item.get('url')"
-                                            class="menu-item-active relative font-semibold flex items-center px-4 py-3 mx-2 my-1 rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-700"
+                                            class="menu-item-active relative font-semibold flex items-center px-4 py-3 mx-2 my-1 rounded-lg bg-gradient-to-r from-[#8A8A00] to-[#696900]"
                                             t-att-data-history-url="item.get('url')"
                                             t-att-data-history-title="item.get('name')"
                                             t-att-data-history-icon="item.get('icon')"
