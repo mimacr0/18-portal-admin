@@ -264,6 +264,7 @@
 
     <template id="portal_expedition_list" name="Portal Expeditions List">
         <input type="hidden" id="csrf_token" name="csrf_token" t-att-value="request.csrf_token()"/>
+        <input type="hidden" id="skip-list-page-sticky-header" value=""/>
 
         <t t-foreach="orders" t-as="order">
             <!-- Fila de pantallas grandes -->
