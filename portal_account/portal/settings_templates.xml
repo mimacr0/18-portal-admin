@@ -19,13 +19,13 @@
                             <!-- Site Name -->
                             <div class="config-field">
                                 <label for="settings-user-list-limit" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">List Limit</label>
-                                <input type="number" id="settings-user-list-limit" class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500 text-sm dark:bg-gray-700 dark:text-gray-200" value="100"/>
+                                <input type="number" id="settings-user-list-limit" class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00] text-sm dark:bg-gray-700 dark:text-gray-200" value="100"/>
                                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">The number of items to display per page (default: 100)</p>
                             </div>
 
                         </div>
                         <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end">
-                            <button id="settings-save-button" type="button" class="text-sm font-medium px-4 py-2 bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-700 dark:bg-cyan-500 dark:text-white dark:hover:bg-cyan-600 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md active:translate-y-0">
+                            <button id="settings-save-button" type="button" class="text-sm font-medium px-4 py-2 bg-[#696900] text-white rounded-md shadow-sm hover:bg-[#8A8A00] dark:bg-[#696900] dark:text-white dark:hover:bg-[#8A8A00] transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md active:translate-y-0">
                                 <span class="flex items-center">
                                     <span id="settings-save-text">Save Changes</span>
                                     <span id="settings-save-loader" class="ml-2 hidden">

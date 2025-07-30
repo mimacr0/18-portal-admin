@@ -50,6 +50,10 @@ export function initStickyTableHeader() {
     function createFixedHeader() {
         if (isFixed) return; // Prevent duplicate creation
 
+        const skipStickyHeader = document.getElementById('skip-list-page-sticky-header').value;
+
+        if(skipStickyHeader == 'true') return;
+
         // Capture exact styles before creating clone
         const cellStyles = captureStyles();
 

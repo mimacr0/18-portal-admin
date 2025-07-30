@@ -164,6 +164,10 @@ export const initExpeditionCreateForm = () => {
     });
 
     catalogButton.addEventListener('click', async () => {
+
+        const skipStickyHeader = document.getElementById('skip-list-page-sticky-header');
+        if(skipStickyHeader) skipStickyHeader.value = 'true';
+
         const paginationContainerMain = document.getElementById('page-expedition-list-pagination-container-main');
         if (paginationContainerMain) {
             paginationContainerMain.classList.add('hidden'); // Hide the main pagination
@@ -851,6 +855,9 @@ function closeProductCatalog() {
         const productCatalogSelectContainer = document.querySelector(`#page-${pageName}-product-catalog-select`);
         const createModal = document.getElementById('page-expedition-list-create-modal');
         const paginationContainerMain = document.getElementById('page-expedition-list-pagination-container-main');
+        const skipStickyHeader = document.getElementById('skip-list-page-sticky-header');
+
+        if(skipStickyHeader) skipStickyHeader.value = '';
 
         // Switch back to main view
         if (productCatalogSelectContainer) {
