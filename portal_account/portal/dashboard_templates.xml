@@ -32,7 +32,7 @@
                                 <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-receptions-value" data-value="0">0</h3>
                                 <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
                             </div>
-                            <div class="bg-[#f0f0e0] dark:bg-[#696900] p-3 rounded-full">
+                            <div class="bg-cyan-100 dark:bg-cyan-900 p-3 rounded-full">
                                 <i class="fas fa-box text-cyan-500 dark:text-cyan-400"></i>
                             </div>
                         </div>
@@ -45,7 +45,7 @@
                                 <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-expeditions-value" data-value="0">0</h3>
                                 <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
                             </div>
-                            <div class="bg-[#f0f0e0] dark:bg-[#696900] p-3 rounded-full">
+                            <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-full">
                                 <i class="fas fa-truck text-purple-500 dark:text-purple-400"></i>
                             </div>
                         </div>
@@ -58,7 +58,7 @@
                                 <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-products-value" data-value="0">0</h3>
                                 <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
                             </div>
-                            <div class="bg-[#f0f0e0] dark:bg-[#696900] p-3 rounded-full">
+                            <div class="bg-amber-100 dark:bg-amber-900 p-3 rounded-full">
                                 <i class="fas fa-cubes text-amber-500 dark:text-amber-400"></i>
                             </div>
                         </div>
@@ -71,7 +71,7 @@
                                 <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-stock-value" data-value="0">0</h3>
                                 <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
                             </div>
-                            <div class="bg-[#f0f0e0] dark:bg-[#696900] p-3 rounded-full">
+                            <div class="bg-green-100 dark:bg-green-900 p-3 rounded-full">
                                 <i class="fas fa-boxes-stacked text-green-500 dark:text-green-400"></i>
                             </div>
                         </div>
