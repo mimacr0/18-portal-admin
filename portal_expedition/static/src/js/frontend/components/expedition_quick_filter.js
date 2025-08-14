@@ -12,38 +12,56 @@ export const initExpeditionQuickSortFilters = () => {
     const draftButton = document.getElementById('page-expedition-list-filter-draft');
     const billingButton = document.getElementById('page-expedition-list-filter-billing');
     const preparingButton = document.getElementById('page-expedition-list-filter-preparing');
-    const toBeShippedtButton = document.getElementById('page-expedition-list-filter-to-be-shipped');
+    const toBeShippedButton = document.getElementById('page-expedition-list-filter-to-be-shipped');
     const shippedButton = document.getElementById('page-expedition-list-filter-shipped');
     const cancelButton = document.getElementById('page-expedition-list-filter-cancel');
-
-    // Input oculto para almacenar el filtro activo
     const quickFiltersInput = document.getElementById('page-expedition-list-filter-active');
 
     if (!quickFiltersInput) return;
-    if (!allButton && !draftButton && !billingButton && !preparingButton && !toBeShippedtButton && !shippedButton && !cancelButton) return;
+    if (!allButton && !draftButton && !billingButton && !preparingButton && !toBeShippedButton && !shippedButton && !cancelButton) return;
 
-    const buttons = {
-        all: allButton,
-        draft: draftButton,
-        billing: billingButton,
-        preparing: preparingButton,
-        toBeShipped: toBeShippedtButton,
-        shipped: shippedButton,
-        cancel: cancelButton
-    };
-
-    const buttonEntries = Object.entries(buttons).filter(([_, btn]) => btn);
-
-    if (buttonEntries.length === 0) return;
-
-    buttonEntries.forEach(([key, button]) => {
-        button.addEventListener('click', () => {
-            const otherButtons = buttonEntries
-                .filter(([k, _]) => k !== key)
-                .map(([_, b]) => b);
-            setQuickFilter(key, button, otherButtons);
+    if (allButton) {
+    allButton.addEventListener('click', () => {
+            setActiveFilter('all', allButton, [draftButton, billingButton, preparingButton, toBeShippedButton, shippedButton, cancelButton]);
         });
-    });
+    }
+
+    if (draftButton) {
+        draftButton.addEventListener('click', () => {
+            setActiveFilter('draft', draftButton, [allButton, billingButton, preparingButton, toBeShippedButton, shippedButton, cancelButton]);
+        });
+    }
+
+    if (billingButton) {
+        billingButton.addEventListener('click', () => {
+            setActiveFilter('billing', billingButton, [allButton, draftButton, preparingButton, toBeShippedButton, shippedButton, cancelButton]);
+        });
+    }
+
+    if (preparingButton) {
+        preparingButton.addEventListener('click', () => {
+            setActiveFilter('preparing', preparingButton, [allButton, draftButton, billingButton, toBeShippedButton, shippedButton, cancelButton]);
+        });
+    }
+
+    if (toBeShippedButton) {
+        toBeShippedButton.addEventListener('click', () => {
+            setActiveFilter('toBeShipped', toBeShippedButton, [allButton, draftButton, billingButton, preparingButton, shippedButton, cancelButton]);
+        });
+    }
+
+    if (shippedButton) {
+        shippedButton.addEventListener('click', () => {
+            setActiveFilter('shipped', shippedButton, [allButton, draftButton, billingButton, preparingButton, toBeShippedButton, cancelButton]);
+        });
+    }
+
+    if (cancelButton) {
+        cancelButton.addEventListener('click', () => {
+            setActiveFilter('cancel', cancelButton, [allButton, draftButton, billingButton, preparingButton, toBeShippedButton, shippedButton]);
+        });
+    }
+
 
     /**
      * Establece un filtro como activo, actualiza las clases CSS de los botones
@@ -53,9 +71,10 @@ export const initExpeditionQuickSortFilters = () => {
      * @param {Element} activeButton - Botón del filtro que se activa
      * @param {Element[]} inactiveButtons - Botones que deben desactivarse
      */
-    const setQuickFilter = (filterValue, activeButton, inactiveButtons) => {
+    const setActiveFilter = (filterValue, activeButton, inactiveButtons) => {
         // Actualizar el input con el valor del filtro
-        quickFiltersInput.value = filterValue;
+        activeFilterInput.value = filterValue;
+        console.log('Active filter set to:', activeButton);
         // Agregar clases para estilo activo
         activeButton.classList.add('active', 'border-[#8A8A00]', 'text-[#696900]');
         activeButton.classList.remove('border-transparent', 'text-gray-500');
@@ -68,7 +87,7 @@ export const initExpeditionQuickSortFilters = () => {
         });
 
         // Resetear la página actual
-        const currentPageInput = document.getElementById('page-expedition-list-pagination-page');
+        const currentPageInput = document.getElementById('expedition-list-pagination-page');
         if (currentPageInput) currentPageInput.value = 1;
 
         // Recargar la lista con el nuevo filtro

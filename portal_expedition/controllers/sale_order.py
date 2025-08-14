@@ -180,7 +180,6 @@ class PortalExpeditionController(PortalAdminController):
                 ('state', '=', 'done'),
             ],
         }
-
         if quick_filter in simple_states:
             return simple_states[quick_filter]
 
@@ -202,6 +201,7 @@ class PortalExpeditionController(PortalAdminController):
         base_domain = self._build_sale_domain(search, domain, match_type)
 
         # # Apply quick filters
+        print("Quick Filter:", quick_filter)
         if quick_filter and quick_filter != 'all':
             domain_addition = self.get_quick_filter_domain(quick_filter, request.env)
             if domain_addition:

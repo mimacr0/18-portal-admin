@@ -52,13 +52,13 @@ export const initRepairAlertQuickSortFilters = () => {
         activeFilterInput.value = filterValue;
 
         // Agregar clases para estilo activo
-        activeButton.classList.add('active', 'border-cyan-500', 'text-cyan-600');
+        activeButton.classList.add('active', 'border-[#8A8A00]', 'text-[#696900]');
         activeButton.classList.remove('border-transparent', 'text-gray-500');
 
         // Quitar clases de estilo activo a los otros botones
         inactiveButtons.forEach(button => {
             if (!button) return;
-            button.classList.remove('active', 'border-cyan-500', 'text-cyan-600');
+            button.classList.remove('active', 'border-[#8A8A00]', 'text-[#696900]');
             button.classList.add('border-transparent', 'text-gray-500');
         });
 
