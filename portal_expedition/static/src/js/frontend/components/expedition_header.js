@@ -1,5 +1,9 @@
 /**
- * Sticky table header implementation for expedition management
+ * Inicializa el encabezado de tabla pegajoso (sticky) para la lista de recepciones.
+ *
+ * Esta función hace que el encabezado de la tabla permanezca visible en la parte superior
+ * de la ventana mientras el usuario desplaza la página hacia abajo, mejorando la usabilidad
+ * especialmente en listas largas.
  */
 export function initStickyTableHeader() {
     console.log("Initializing sticky table header");
@@ -131,49 +135,36 @@ export function initStickyTableHeader() {
     }, {
         threshold: 0,
         rootMargin: "-10px 0px 0px 0px" // Trigger when header is 10px out of viewport
+
     });
 
-    // Start observing the header
-    headerObserver.observe(listTableHeader);
+    // Insertar el encabezado pegajoso en el DOM
+    document.body.appendChild(stickyHeader);
 
-    // Handle window resize
-    window.addEventListener('resize', () => {
-        if (isFixed && tmpHeaderTable) {
-            tmpHeaderTable.style.left = parentTable.getBoundingClientRect().left + 'px';
-            tmpHeaderTable.style.width = parentTable.getBoundingClientRect().width + 'px';
+    // Manejar el evento de desplazamiento
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
 
-            // Re-apply cell widths
-            const cellStyles = captureStyles();
-            const headerCells = tmpHeaderTable.querySelectorAll('th');
-            headerCells.forEach((cell, index) => {
-                if (cellStyles[index]) {
-                    cell.style.width = cellStyles[index].width + 'px';
-                }
-            });
+        // Verificar si debemos mostrar el encabezado pegajoso
+        if (scrollY > tableHeaderTop) {
+            stickyHeader.style.opacity = '1';
+            stickyHeader.style.visibility = 'visible';
+        } else {
+            stickyHeader.style.opacity = '0';
+            stickyHeader.style.visibility = 'hidden';
         }
     });
 
-    // Handle dark mode changes
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.attributeName === 'class' &&
-                mutation.target === document.documentElement &&
-                isFixed && tmpHeaderTable) {
-
-                // Update styles for dark mode
-                const headerCells = tmpHeaderTable.querySelectorAll('th');
-                const cellStyles = captureStyles();
-                headerCells.forEach((cell, index) => {
-                    if (cellStyles[index]) {
-                        cell.style.backgroundColor = cellStyles[index].backgroundColor;
-                        cell.style.color = cellStyles[index].color;
-                    }
-                });
-            }
-        });
+    // Manejar el evento de cambio de tamaño de ventana
+    window.addEventListener('resize', () => {
+        // Actualizar el ancho del encabezado pegajoso
+        stickyHeader.style.width = `${table.offsetWidth}px`;
     });
 
-    observer.observe(document.documentElement, { attributes: true });
-
-    console.log("Sticky header initialized successfully");
-}
+    // Cleanup function
+    return () => {
+        document.body.removeChild(stickyHeader);
+        window.removeEventListener('scroll', () => {});
+        window.removeEventListener('resize', () => {});
+    };
+};

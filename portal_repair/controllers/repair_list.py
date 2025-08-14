@@ -1,0 +1,227 @@
+##############################################################################
+#
+# Copyright 2025 DaFe Solutions
+#
+##############################################################################
+
+import math
+import json
+import pytz
+from datetime import datetime
+from functools import lru_cache
+
+from odoo import fields, http, _
+from odoo.addons.portal_admin_theme.controllers.admin import PortalAdminController
+from odoo.http import request
+from odoo.osv import expression
+
+
+class PortalRepairController(PortalAdminController):
+    'Keep in mind that what we are really showning are quality.alert instances, no repair.order'
+
+    ALERT_FIELDS_MAPPING = {
+        'stage': 'stage_id',
+        'name': 'name',
+        'picking_id': 'picling_id',
+        'description': 'description',
+    }
+
+    DEFAULT_LIMIT_PARAM = 'portal_repair.page_list_default_limit'
+    DEFAULT_LIMIT_VALUE = '100'
+
+    def _get_admin_layout_menus(self):
+        menus = super()._get_admin_layout_menus()
+        menus.append({
+            'name': _('Repair Alert'),
+            'url': '/account/repair',
+            'icon': 'fas fa-screwdriver-wrench'
+        })
+        return menus
+
+    @lru_cache(maxsize=1)
+    def _get_advanced_search_fields(self):
+        """Devuelve la configuración de campos para búsqueda avanzada"""
+        return [
+            {'id': 'name', 'label': _('Name')},
+            {'id': 'origin', 'label': _('Origin')},
+            {'id': 'partner', 'label': _('Partner')},
+            {'id': 'date', 'label': _('Scheduled Date')},
+            {'id': 'state', 'label': _('Status')}
+        ]
+
+    @http.route('/account/repair', type='http', auth="user", website=True)
+    def account_repair_alert_action(self, **post):
+
+        QualityAlert = request.env['quality.alert'].sudo()
+        partner_id = request.env.user.partner_id
+        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
+        # alerts = QualityAlert.search([('account_partner_id', 'in', partner_ids)])
+        alerts = QualityAlert.search([])
+        values = self._get_admin_layout_values()
+
+        # Configuración de la interfaz
+        values.update({
+            'page_name': 'repair-alert',
+            'alerts': alerts,
+            'page_title': _('Receptions'),
+            'page_url': '/account/repair',
+            'flatpickr': True,
+            'select2': True,
+            'list_filters': [
+                {'id': 'all', 'label': _('All'), 'icon': 'fas fa-check-circle', 'active': True},
+                {'id': 'pending', 'label': _('Pending'), 'icon': 'fas fa-clock'},
+                {'id': 'done', 'label': _('Done'), 'icon': 'fas fa-check'}
+            ],
+            'list_columns': [
+                {'id': 'name', 'label': _('Name'), 'sortable': True},
+                {'id': 'stage', 'label': _('Stage'), 'sortable': True, 'lg': True},
+            ],
+            'batch_actions': [
+                {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
+            ],
+            'advanced_search': json.dumps(self._get_advanced_search_fields())
+        })
+
+        return request.render("portal_repair.portal_repair_alert_page_main", values)
+
+    def _get_portal_list_limit(self):
+        """Get portal list limit from user settings"""
+        user = request.env.user
+        SysParams = request.env['ir.config_parameter'].sudo()
+        default_limit = int(SysParams.get_param(self.DEFAULT_LIMIT_PARAM, self.DEFAULT_LIMIT_VALUE))
+        limit = (user.portal_user_configuration or {}).get('list_limit', default_limit)
+
+        if not str(limit).isdigit():
+            limit = default_limit
+
+        return int(limit)
+
+    def _get_pagination_data(self, page, items_total, limit):
+        """Calcula datos de paginación"""
+        first_page = 1
+        last_page = math.ceil(items_total / limit) if items_total > 0 else 1
+        pages = []
+
+        for i in range(max(1, page - 1), min(last_page + 1, page + 3)):
+            pages.append({
+                'page': i,
+                'active': i == page
+            })
+            if len(pages) >= 5:
+                break
+
+        return {
+            'first_page': first_page,
+            'last_page': last_page,
+            'pages': pages
+        }
+
+
+    @http.route('/account/repair/list/advanced_filters', type='json', auth='user')
+    def account_reception_list_advanced_filters(self, **kw):
+        return {
+            'status': 'success',
+            'filters': json.dumps(self._get_advanced_search_fields())
+        }
+
+    def _build_alert_domain(self, search='', domain=None, match_type='all', quick_filter=None):
+        """Construye el dominio de búsqueda para recepciones"""
+        QualityAlert = request.env['quality.alert'].sudo()
+        partner_id = request.env.user.partner_id
+        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
+
+        base_domain = [
+            # ('partner_id', 'in', partner_ids),
+        ]
+
+        # Apply quick filters
+        # if quick_filter and quick_filter != 'all':
+        #     if quick_filter == 'pending':
+        #         base_domain.append(('state', 'not in', ['done', 'cancel']))
+        #     elif quick_filter == 'done':
+        #         base_domain.append(('state', '=', 'done'))
+
+        # Aplicar búsqueda de texto
+        if search:
+            base_domain.extend(expression.OR([
+                [('name', 'ilike', search)],
+            ]))
+
+        # Aplicar dominio de búsqueda avanzada
+        if domain and isinstance(domain, list) and domain:
+            adv_domain = []
+            for condition in domain:
+                if len(condition) != 3:
+                    continue
+
+                field, operator, value = condition
+                if field not in self.ALERT_FIELDS_MAPPING:
+                    continue
+
+                model_field = self.ALERT_FIELDS_MAPPING[field]
+
+                "Es posible que este manejo especial sea necesario para stage_id"
+                # # Manejo especial para el campo de estado
+                # if field == 'state':
+                #     if value.lower() in ['pending', 'draft', 'waiting']:
+                #         adv_domain.append(('state', 'not in', ['done', 'cancel']))
+                #     elif value.lower() in ['done', 'completed', 'finished']:
+                #         adv_domain.append(('state', '=', 'done'))
+                #     elif value.lower() in ['cancel', 'cancelled']:
+                #         adv_domain.append(('state', '=', 'cancel'))
+                #     else:
+                #         adv_domain.append((model_field, operator, value))
+                # else:
+                #     adv_domain.append((model_field, operator, value))
+
+            # Combinar condiciones de búsqueda avanzada según el tipo de coincidencia
+            if adv_domain:
+                if match_type == 'any':
+                    base_domain.append(expression.OR(adv_domain))
+                else:  # 'all' es el predeterminado
+                    base_domain.extend(adv_domain)
+
+        return base_domain
+
+    @http.route('/account/repair/list/reload', type='json', auth='user')
+    def account_reception_list_reload(self, page=1, search='', domain=None, match_type='all', sort=None, order='asc', quick_filter=None, **kw):
+        SysParams = request.env['ir.config_parameter'].sudo()
+        limit = self._get_portal_list_limit()
+        offset = (page - 1) * limit
+
+        # Construir dominio de búsqueda
+        base_domain = self._build_alert_domain(search, domain, match_type, quick_filter)
+
+        # if quick_filter and quick_filter == 'pending':
+        #     base_domain.append(('state', '=', 'assigned'))
+
+        # if quick_filter and quick_filter == 'done':
+        #     base_domain.append(('state', '=', 'done'))
+
+        # Configurar ordenamiento
+        order_by = 'id desc'
+        if sort and sort in self.ALERT_FIELDS_MAPPING:
+            order_by = f"{self.ALERT_FIELDS_MAPPING[sort]} {order}"
+
+        # Obtener recepciones y contar
+        QualityAlert = request.env['quality.alert'].sudo()
+        alerts = QualityAlert.search(base_domain, limit=limit, offset=offset, order=order_by)
+        items_total = QualityAlert.search_count(base_domain)
+        items_count = len(alerts)
+        # Preparar datos de paginación
+        pagination_data = self._get_pagination_data(page, items_total, limit)
+        pagination_data.update({'items_total': items_total, 'items_count': items_count})
+
+        qweb = request.env['ir.qweb']
+        return {
+            'status': 'success',
+            'list': qweb._render('portal_repair.portal_repair_alert_list', {
+                'alerts': alerts,
+                'batch_actions': True
+            }),
+            'pager': qweb._render('portal_repair.portal_repair_alert_pager', {
+                'items_label': _('alerts'),
+                **pagination_data
+            }),
+            'last_page': pagination_data['last_page']
+        }
