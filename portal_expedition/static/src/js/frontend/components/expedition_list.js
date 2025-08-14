@@ -1,5 +1,4 @@
 import { rpc } from "@web/core/network/rpc";
-import { initDetailsPage } from "./expedition_details.js";
 
 /**
  * Configuración de ordenamiento para la lista de recepciones.
@@ -28,7 +27,6 @@ export let sortConfig = {
  */
 export const reloadExpeditionListPage = async () => {
     // Obtener el contenedor principal de la lista
-    console.log('Reloading expedition list page...');
     const pageListItems = document.getElementById('expedition-page-list-items');
     if(!pageListItems) return;
 
@@ -38,7 +36,7 @@ export const reloadExpeditionListPage = async () => {
     const currentPage = parseInt(currentPageInput.value);
 
     // Obtener y validar el campo de búsqueda
-    const searchInput = document.getElementById('page-expedition-products-list-search');
+    const searchInput = document.getElementById('page-expedition-quick-list-search');
     if(!searchInput) return;
     const search = searchInput.value;
 
@@ -51,9 +49,10 @@ export const reloadExpeditionListPage = async () => {
     const matchType = matchTypeSelect ? matchTypeSelect.value : 'all';
 
     // Obtener el valor del input de filtros rápidos
-    const quickFiltersInput = document.getElementById('page-expedition-list-filter-active');
+    const quickFiltersInput = document.getElementById('page-expedition-list-quick-filter-active');
     const quickFilter = quickFiltersInput ? quickFiltersInput.value : '';
     // Realizar petición RPC al servidor con todos los parámetros recopilados
+
     const res = await rpc('/account/expedition/list/reload', {
         page: currentPage,
         search: search,
@@ -74,6 +73,11 @@ export const reloadExpeditionListPage = async () => {
     // Actualizar el paginador
     const paginationContainer = document.getElementById('expedition-list-pagination-container');
     if(paginationContainer) paginationContainer.innerHTML = res.pager;
+
+    // Actualizar el paginador
+    const paginationContainerMain = document.getElementById('page-expedition-list-pagination-container-main');
+    if(paginationContainerMain && res.last_page == 0) paginationContainerMain.classList.add('hidden');
+    else paginationContainerMain.classList.remove('hidden');
 
     // Configurar eventos para el PAGINADOR
     const paginationPrevious = document.getElementById('expedition-list-pagination-previous');
@@ -101,7 +105,6 @@ export const reloadExpeditionListPage = async () => {
         currentPageInput.value = currentPage + 1;
         reloadExpeditionListPage();
     });
-    initDetailsPage()
 
 }
 
@@ -115,17 +118,12 @@ export const reloadExpeditionListPage = async () => {
  */
 export const initExpeditionsManagementListPage = () => {
     // Configurar botón para crear nuevos elementos
-    console.log('Initializing expeditions management list page...');
-    // const createButton = document.getElementById('launch-create-expedition-form-button');
-    // if(createButton) createButton.addEventListener('click', () => {
-    //     // Open the modal
-    //     const modal = document.getElementById('page-expedition-list-create-modal');
-    //     if (modal) modal.classList.remove('hidden');
-    // });
 
     const createButton = document.getElementById('launch-create-expedition-form-button');
     if(createButton) createButton.addEventListener('click', () => {
-        Modal.open('page-expedition-list-create-modal');
+        // Open the modal
+        const modal = document.getElementById('page-expedition-list-create-modal');
+        if (modal) modal.classList.remove('hidden');
     });
 
 

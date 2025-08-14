@@ -33,7 +33,7 @@
                     <div class="flex overflow-x-auto scrollbar-hide">
                         <input type="hidden" t-attf-id="page-#{page_name}-list-quick-filter-active" value="[]"/>
                         <t t-foreach="list_filters" t-as="list_filter">
-                            <button t-if="list_filter.get('active')" type="button" t-attf-id="page-#{page_name}-list-filter-#{list_filter.get('id')}" class="tab-button active px-6 py-3 text-sm font-medium border-b-2 border-cyan-500 text-cyan-600 focus:outline-none transition-colors duration-200 ease-in-out dark:text-white relative">
+                            <button t-if="list_filter.get('active')" type="button" t-attf-id="page-#{page_name}-list-filter-#{list_filter.get('id')}" class="tab-button active px-6 py-3 text-sm font-medium border-b-2 border-[#8A8A00] text-[#696900] focus:outline-none transition-colors duration-200 ease-in-out dark:text-white relative">
                                 <i t-attf-class="#{list_filter.get('icon')} mr-2"></i>
                                 <t t-out="list_filter.get('label')"/>
                             </button>
@@ -52,7 +52,7 @@
                     <div class="flex flex-col lg:flex-row justify-between gap-4">
                         <div class="flex flex-col sm:flex-row sm:items-center gap-2">
                             <div class="flex items-center">
-                                <button t-attf-id="launch-create-#{page_name}-form-button" class="px-3 py-1.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors flex items-center">
+                                <button t-attf-id="launch-create-#{page_name}-form-button" class="px-3 py-1.5 bg-[#696900] text-white rounded-md hover:bg-[#8A8A00] transition-colors flex items-center">
                                     <i class="fas fa-plus mr-1.5"></i> <span class="hidden sm:inline">Create</span>
                                 </button>
                             </div>
@@ -106,7 +106,7 @@
 
                             <!-- Botón de añadir línea de filtro -->
                             <div class="mt-3">
-                                <button t-attf-id="page-#{page_name}-list-advanced-search-add-line-btn" class="flex items-center text-cyan-600 hover:text-cyan-700 text-sm font-medium">
+                                <button t-attf-id="page-#{page_name}-list-advanced-search-add-line-btn" class="flex items-center text-[#696900] hover:text-[#8A8A00] text-sm font-medium">
                                     <i class="fas fa-plus-circle mr-1.5"></i> Add filter condition
                                 </button>
                             </div>
@@ -117,7 +117,7 @@
                             <button t-attf-id="page-#{page_name}-list-advanced-search-reset-btn" class="px-3 py-1 text-sm border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700">
                                 Reset
                             </button>
-                            <button t-attf-id="page-#{page_name}-list-advanced-search-apply-btn" class="px-3 py-1 text-sm bg-cyan-600 text-white rounded-md shadow-sm hover:bg-cyan-700 dark:bg-cyan-600 dark:text-white dark:hover:bg-cyan-700 dark:hover:text-white">
+                            <button t-attf-id="page-#{page_name}-list-advanced-search-apply-btn" class="px-3 py-1 text-sm bg-[#696900] text-white rounded-md shadow-sm hover:bg-[#8A8A00] dark:bg-[#696900] dark:text-white dark:hover:bg-[#8A8A00] dark:hover:text-white">
                                 Apply Filters
                             </button>
                         </div>
@@ -288,10 +288,10 @@
                     <i class="fas fa-chevron-left"></i>
                 </button>
                 <t t-foreach="pages" t-as="page">
-                    <button t-if="page.get('active')" aria-current="page" t-att-data-page="page.get('page')" class="reception-list-pagination-button z-10 bg-cyan-50 dark:bg-gray-800 border-cyan-500 dark:border-cyan-500 text-cyan-600 dark:text-cyan-600 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
+                    <button t-if="page.get('active')" aria-current="page" t-att-data-page="page.get('page')" class="repair-alert-list-pagination-button z-10 bg-[#f0f0e0] dark:bg-gray-800 border-cyan-500 dark:border-[#8A8A00] text-[#696900] dark:text-[#696900] relative inline-flex items-center px-3 py-2 border text-sm font-medium">
                         <span t-out="page.get('page')"/>
                     </button>
-                    <button t-else="" t-att-data-page="page.get('page')" class="reception-list-pagination-button bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
+                    <button t-else="" t-att-data-page="page.get('page')" class="repair-alert-list-pagination-button bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
                         <span t-out="page.get('page')"/>
                     </button>
                 </t>
