@@ -164,9 +164,19 @@ export const initExpeditionCreateForm = () => {
     });
 
     catalogButton.addEventListener('click', async () => {
+
+        const skipStickyHeader = document.getElementById('skip-list-page-sticky-header');
+        if(skipStickyHeader) skipStickyHeader.value = 'true';
+
         const paginationContainerMain = document.getElementById('page-expedition-list-pagination-container-main');
         if (paginationContainerMain) {
             paginationContainerMain.classList.add('hidden'); // Hide the main pagination
+        }
+
+        // Hide the expedition list table
+        const expeditionListTable = document.getElementById('page-expedition-list-table');
+        if (expeditionListTable) {
+            expeditionListTable.style.display = 'none';
         }
 
         productCatalogSelectContainer.classList.remove('hidden');
@@ -399,40 +409,31 @@ function setupProductCardEvents() {
     const noProductsMessage = document.getElementById(`page-${pageName}-product-catalog-select-no-products-message`);
     const selectedCount = document.getElementById("selected-count");
 
-    if (!selectedProductsList || !noProductsMessage) {
-        console.error("Required elements not found for product card events");
-        return;
-    }
-
     document.querySelectorAll('.product-card').forEach(card => {
         const productId = card.dataset.productId;
+        const initialAddDiv = card.querySelector('.product-initial-add');
         const addBtn = card.querySelector('.product-add-btn');
-        const addedQtyDisplay = card.querySelector('.product-added-qty');
-        const addedQtyValue = card.querySelector('.product-added-qty-value');
-
-        if (!productId || !addBtn) {
-            console.error("Product card is missing required elements", card);
-            return;
-        }
+        const quantityControls = card.querySelector('.product-quantity-controls');
+        const quantityInput = card.querySelector('.product-quantity');
+        const decreaseBtn = card.querySelector('.product-decrease');
+        const increaseBtn = card.querySelector('.product-increase');
+        const removeBtn = card.querySelector('.product-remove');
 
         // Check if product is already in registry and update UI accordingly
         if (selectedProductsRegistry.has(productId)) {
             const product = selectedProductsRegistry.get(productId);
-            if (addBtn) {
-                addBtn.innerHTML = '<i class="fas fa-check mr-1"></i> Added';
-                addBtn.classList.add('bg-green-600', 'hover:bg-green-700');
-                addBtn.classList.remove('bg-gradient-to-r', 'from-purple-600', 'to-purple-700', 'hover:from-purple-700', 'hover:to-purple-800');
-            }
 
-            // Show the added quantity in the product card
-            if (addedQtyDisplay && addedQtyValue) {
-                addedQtyValue.textContent = product.quantity;
-                addedQtyDisplay.classList.remove('hidden');
+            // Hide the initial add button and show quantity controls
+            if (initialAddDiv) initialAddDiv.classList.add('hidden');
+            if (quantityControls) {
+                quantityControls.classList.remove('hidden');
+                if (quantityInput) quantityInput.value = product.quantity;
             }
         }
 
-        addBtn.addEventListener('click', function() {
-            try {
+        // Set up the add button event listener
+        if (addBtn) {
+            addBtn.addEventListener('click', function() {
                 const productName = card.querySelector('h3').textContent;
                 let productSku = '';
                 const skuElement = card.querySelector('.text-gray-500');
@@ -453,47 +454,8 @@ function setupProductCardEvents() {
 
                 // Get attribute tags if available
                 const attributeTags = [];
-                const attributes = [];
-
-                // Try to extract attributes from the product card
-                try {
-                    // First, look for visible attribute tags
-                    card.querySelectorAll('.bg-gray-100.text-gray-800.text-xs').forEach(tag => {
-                        const tagText = tag.textContent.trim();
-                        attributeTags.push(tagText);
-                    });
-
-                    // Check for data attribute with attributes JSON
-                    if (card.dataset.attributes) {
-                        try {
-                            const dataAttributes = JSON.parse(card.dataset.attributes);
-                            if (Array.isArray(dataAttributes)) {
-                                dataAttributes.forEach(attr => attributes.push(attr));
-                            }
-                        } catch (e) {
-                            console.warn('Error parsing product attributes JSON:', e);
-                        }
-                    }
-
-                    // If no attributes were found via JSON, try to extract them from the tags
-                    if (attributes.length === 0 && attributeTags.length > 0) {
-                        attributeTags.forEach(tag => {
-                            if (tag.includes(':')) {
-                                const [name, value] = tag.split(':').map(s => s.trim());
-                                attributes.push({ name, value });
-                            }
-                        });
-                    }
-                } catch (e) {
-                    console.warn('Error extracting product attributes:', e);
-                }
-
-                console.log('Product data:', {
-                    id: productId,
-                    name: productName,
-                    sku: productSku,
-                    attributes: attributes,
-                    attributeTags: attributeTags
+                card.querySelectorAll('.bg-gray-100.text-gray-800.text-xs').forEach(tag => {
+                    attributeTags.push(tag.textContent.trim());
                 });
 
                 // Add to selected products with additional data
@@ -506,11 +468,14 @@ function setupProductCardEvents() {
                     stockInfo,
                     inStock,
                     imgSrc,
-                    attributeTags,
-                    attributes
+                    attributeTags
                 );
 
-                // Update UI
+                // Update UI - hide the add button and show quantity controls
+                if (initialAddDiv) initialAddDiv.classList.add('hidden');
+                if (quantityControls) quantityControls.classList.remove('hidden');
+
+                // Update selected products UI
                 if (selectedProductsList.children.length > 0) {
                     selectedProductsList.classList.remove('hidden');
                     noProductsMessage.classList.add('hidden');
@@ -520,27 +485,75 @@ function setupProductCardEvents() {
                 if (selectedCount) {
                     selectedCount.textContent = selectedProductsList.children.length;
                 }
+            });
+        }
 
-                // Update the button state to show it's been added
-                addBtn.innerHTML = '<i class="fas fa-check mr-1"></i> Added';
-                addBtn.classList.add('bg-green-600', 'hover:bg-green-700');
-                addBtn.classList.remove('bg-gradient-to-r', 'from-purple-600', 'to-purple-700', 'hover:from-purple-700', 'hover:to-purple-800');
+        // Set up decrease button event listener
+        if (decreaseBtn) {
+            decreaseBtn.addEventListener('click', function() {
+                if (selectedProductsRegistry.has(productId)) {
+                    const product = selectedProductsRegistry.get(productId);
+                    if (product.quantity > 1) {
+                        product.quantity--;
+                        if (quantityInput) quantityInput.value = product.quantity;
 
-                // Show the quantity in the product card
-                const addedQtyDisplay = card.querySelector('.product-added-qty');
-                const addedQtyValue = card.querySelector('.product-added-qty-value');
-                if (addedQtyDisplay && addedQtyValue) {
-                    // Get the current quantity from registry if exists, otherwise use 1
-                    const currentQty = selectedProductsRegistry.has(productId)
-                        ? selectedProductsRegistry.get(productId).quantity
-                        : 1;
-                    addedQtyValue.textContent = currentQty;
-                    addedQtyDisplay.classList.remove('hidden');
+                        // Update the selected product in the list if it exists
+                        updateSelectedProductQuantity(productId, product.quantity);
+                    } else {
+                        // If quantity would be 0, remove the product
+                        removeProductFromSelection(productId);
+
+                        // Show add button and hide quantity controls
+                        if (initialAddDiv) initialAddDiv.classList.remove('hidden');
+                        if (quantityControls) quantityControls.classList.add('hidden');
+                    }
                 }
-            } catch (error) {
-                console.error("Error adding product from catalog:", error);
-            }
-        });
+            });
+        }
+
+        // Set up increase button event listener
+        if (increaseBtn) {
+            increaseBtn.addEventListener('click', function() {
+                if (selectedProductsRegistry.has(productId)) {
+                    const product = selectedProductsRegistry.get(productId);
+                    product.quantity++;
+                    if (quantityInput) quantityInput.value = product.quantity;
+
+                    // Update the selected product in the list if it exists
+                    updateSelectedProductQuantity(productId, product.quantity);
+                }
+            });
+        }
+
+        // Set up quantity input event listener
+        if (quantityInput) {
+            quantityInput.addEventListener('change', function() {
+                let qty = parseInt(this.value);
+                if (isNaN(qty) || qty < 1) {
+                    qty = 1;
+                    this.value = qty;
+                }
+
+                if (selectedProductsRegistry.has(productId)) {
+                    const product = selectedProductsRegistry.get(productId);
+                    product.quantity = qty;
+
+                    // Update the selected product in the list if it exists
+                    updateSelectedProductQuantity(productId, qty);
+                }
+            });
+        }
+
+        // Set up remove button event listener
+        if (removeBtn) {
+            removeBtn.addEventListener('click', function() {
+                removeProductFromSelection(productId);
+
+                // Show add button and hide quantity controls
+                if (initialAddDiv) initialAddDiv.classList.remove('hidden');
+                if (quantityControls) quantityControls.classList.add('hidden');
+            });
+        }
     });
 }
 
@@ -842,6 +855,9 @@ function closeProductCatalog() {
         const productCatalogSelectContainer = document.querySelector(`#page-${pageName}-product-catalog-select`);
         const createModal = document.getElementById('page-expedition-list-create-modal');
         const paginationContainerMain = document.getElementById('page-expedition-list-pagination-container-main');
+        const skipStickyHeader = document.getElementById('skip-list-page-sticky-header');
+
+        if(skipStickyHeader) skipStickyHeader.value = '';
 
         // Switch back to main view
         if (productCatalogSelectContainer) {
@@ -855,6 +871,12 @@ function closeProductCatalog() {
         // Show pagination again
         if (paginationContainerMain) {
             paginationContainerMain.classList.remove('hidden');
+        }
+
+        // Show the expedition list table again
+        const expeditionListTable = document.getElementById('page-expedition-list-table');
+        if (expeditionListTable) {
+            expeditionListTable.style.display = '';
         }
 
         // Re-open the create modal
@@ -1152,4 +1174,50 @@ export function initManualProductAdd() {
             console.error("Error adding product line:", error);
         }
     });
+}
+
+// Update quantity of a product in the selected products list
+function updateSelectedProductQuantity(productId, quantity) {
+    const pageName = "expedition";
+    const selectedProductsList = document.getElementById(`page-${pageName}-product-catalog-select-selected-products-list`);
+
+    if (selectedProductsList) {
+        const productItem = selectedProductsList.querySelector(`[data-product-id="${productId}"]`);
+        if (productItem) {
+            const qtyInput = productItem.querySelector('.product-quantity');
+            if (qtyInput) {
+                qtyInput.value = quantity;
+            }
+        }
+    }
+}
+
+// Remove a product from the selection
+function removeProductFromSelection(productId) {
+    const pageName = "expedition";
+    const selectedProductsList = document.getElementById(`page-${pageName}-product-catalog-select-selected-products-list`);
+    const noProductsMessage = document.getElementById(`page-${pageName}-product-catalog-select-no-products-message`);
+    const selectedCount = document.getElementById("selected-count");
+
+    // Remove from registry
+    selectedProductsRegistry.delete(productId);
+
+    // Remove from the selected products list
+    if (selectedProductsList) {
+        const productItem = selectedProductsList.querySelector(`[data-product-id="${productId}"]`);
+        if (productItem) {
+            selectedProductsList.removeChild(productItem);
+
+            // Update UI if no products left
+            if (selectedProductsList.children.length === 0) {
+                selectedProductsList.classList.add('hidden');
+                if (noProductsMessage) noProductsMessage.classList.remove('hidden');
+            }
+
+            // Update count
+            if (selectedCount) {
+                selectedCount.textContent = selectedProductsList.children.length;
+            }
+        }
+    }
 }

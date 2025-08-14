@@ -20,7 +20,7 @@
                         <span class="text-red-500 ml-1">*</span>
                     </div>
                     <div>
-                        <input type="text" name="sku" t-attf-id="page-#{page_name}-list-create-form-sku-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="SKU" required="required"/>
+                        <input type="text" name="sku" t-attf-id="page-#{page_name}-list-create-form-sku-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="SKU" required="required"/>
                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-sku-error-#{product.id}"/>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
                         <span class="text-red-500 ml-1">*</span>
                     </div>
                     <div>
-                        <input type="text" name="barcode" t-attf-id="page-#{page_name}-list-create-form-barcode-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Barcode" required="required"/>
+                        <input type="text" name="barcode" t-attf-id="page-#{page_name}-list-create-form-barcode-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Barcode" required="required"/>
                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-barcode-error-#{product.id}"/>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                         <label t-attf-for="page-#{page_name}-list-create-form-volume-#{product.id}" class="form-label-sm font-sm">Volume (cm³)</label>
                     </div>
                     <div class="flex items-center gap-2">
-                        <input type="text" name="volume" t-attf-id="page-#{page_name}-list-create-form-volume-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Volumen" t-att-value="product.volume"/>
+                        <input type="text" name="volume" t-attf-id="page-#{page_name}-list-create-form-volume-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Volumen" t-att-value="product.volume"/>
                         <span class="mx-1 text-sm">cm³</span>
                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-volume-error-#{product.id}"/>
                     </div>
@@ -52,7 +52,7 @@
                         <label t-attf-for="page-#{page_name}-list-create-form-weight-#{product.id}" class="form-label-sm font-sm">Weight (kg)</label>
                     </div>
                     <div class="flex items-center gap-2">
-                        <input type="text" name="weight" t-attf-id="page-#{page_name}-list-create-form-weight-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Peso" t-att-value="product.weight"/>
+                        <input type="text" name="weight" t-attf-id="page-#{page_name}-list-create-form-weight-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Peso" t-att-value="product.weight"/>
                         <span class="mx-1 text-sm">kg</span>
                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-weight-error-#{product.id}"/>
                     </div>

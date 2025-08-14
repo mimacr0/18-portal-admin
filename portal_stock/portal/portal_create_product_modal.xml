@@ -21,7 +21,7 @@
                                     <span class="text-red-500 text-xl">*</span>
                                     </label>
                                     <input type="text" name="name" t-attf-id="page-#{page_name}-list-create-form-name"
-                                           class="form-input text-xl rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
+                                           class="form-input text-xl rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]"
                                            placeholder="Name"
                                            required="required"
                                     />
@@ -57,7 +57,7 @@
                                 <div class="flex space-x-4 mt-1">
                                     <div class="flex items-center">
                                         <input type="radio" name="tracking" id="tracking_serial" value="serial" required="required"
-                                               class="w-4 h-4 text-cyan-600 border-gray-300 focus:ring-cyan-500"
+                                               class="w-4 h-4 text-[#696900] border-gray-300 focus:ring-[#8A8A00]"
                                         />
                                         <label for="tracking_serial" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                                             Return
@@ -66,7 +66,7 @@
 
                                     <div class="flex items-center">
                                         <input type="radio" name="tracking" id="tracking_none" value="none" required="required"
-                                               class="w-4 h-4 text-cyan-600 border-gray-300 focus:ring-cyan-500"
+                                               class="w-4 h-4 text-[#696900] border-gray-300 focus:ring-[#8A8A00]"
                                         />
                                         <label for="tracking_none" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                                             New
@@ -98,7 +98,7 @@
 
                                 <div class="mt-3 flex items-center gap-2">
                                     <button t-attf-id="page-#{page_name}-list-create-form-attributes-add-line-btn" type="button"
-                                            class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
+                                            class="px-2 py-0.5 bg-[#696900] text-white rounded-md hover:bg-[#8A8A00] transition-colors text-xs flex items-center">
                                         <i class="fas fa-plus mr-1.5"/> Add Attribute
                                     </button>
                                 </div>
@@ -117,7 +117,7 @@
                                 <div class="flex items-center gap-2">
                                     <div class="flex flex-col">
                                         <div class="flex items-center">
-                                            <input type="number" required="required" name="width" t-attf-id="page-#{page_name}-list-create-form-measures-width" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Width" min="0" step="0.01"/>
+                                            <input type="number" required="required" name="width" t-attf-id="page-#{page_name}-list-create-form-measures-width" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Width" min="0" step="0.01"/>
                                             <span class="mx-1">x</span>
                                         </div>
                                         <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-width-error"/>
@@ -125,7 +125,7 @@
 
                                     <div class="flex flex-col">
                                         <div class="flex items-center">
-                                            <input type="number" required="required" name="height" t-attf-id="page-#{page_name}-list-create-form-measures-height" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Height" min="0" step="0.01"/>
+                                            <input type="number" required="required" name="height" t-attf-id="page-#{page_name}-list-create-form-measures-height" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Height" min="0" step="0.01"/>
                                             <span class="mx-1">x</span>
                                         </div>
                                         <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-height-error"/>
@@ -133,7 +133,7 @@
 
                                     <div class="flex flex-col">
                                         <div class="flex items-center">
-                                            <input type="number" required="required" name="length" t-attf-id="page-#{page_name}-list-create-form-measures-length" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Length" min="0" step="0.01"/>
+                                            <input type="number" required="required" name="length" t-attf-id="page-#{page_name}-list-create-form-measures-length" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Length" min="0" step="0.01"/>
                                             <span class="mx-1 text-sm">cm</span>
                                         </div>
                                         <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-measures-length-error"/>
@@ -153,7 +153,7 @@
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <input type="number" step="0.01" min="0" name="weight" required="required" t-attf-id="page-#{page_name}-list-create-form-weight"
-                                                class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"
+                                                class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]"
                                                 placeholder="Weight"/>
                                         <span class="mx-1 text-sm">kg</span>
                                     </div>
@@ -186,18 +186,18 @@
 
                 <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700" t-attf-id="page-#{page_name}-list-create-product-form-footer">
                     <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
-                        <i class="fas fa-times"/> tmpl Cancel
+                        <i class="fas fa-times"/> Cancel
                     </button>
                     <button t-attf-id="page-#{page_name}-list-create-product-form-submit" class="modal-btn modal-btn-primary">
-                        <i class="fas fa-save"/> tmpl Save
+                        <i class="fas fa-save"/> Save
                     </button>
                 </div>
-                <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700 hidden" t-attf-id="page-#{page_name}-list-product-attributes-form-footer">
+                <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700 d-none" t-attf-id="page-#{page_name}-list-product-attributes-form-footer">
                     <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
-                        <i class="fas fa-times"/> var Cancel
+                        <i class="fas fa-times"/> Cancel
                     </button>
                     <button t-attf-id="page-#{page_name}-list-product-attributes-form-submit" class="modal-btn modal-btn-primary">
-                        <i class="fas fa-save"/> var Save
+                        <i class="fas fa-save"/> Save
                     </button>
                 </div>
             </div>

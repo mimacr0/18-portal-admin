@@ -164,22 +164,22 @@ const toggleFormsVisibility = (showAttributes = false) => {
         // Mostrar formulario de atributos
         attributesForm.classList.remove('hidden');
         attributesForm.classList.add('block');
-        attributesFooter.classList.remove('hidden');
+        attributesFooter.classList.remove('d-none');
 
         // Ocultar formulario de producto
         productForm.classList.add('hidden');
         productForm.classList.remove('block');
-        productFooter.classList.add('hidden');
+        productFooter.classList.add('d-none');
     } else {
         // Mostrar formulario de producto
         productForm.classList.remove('hidden');
         productForm.classList.add('block');
-        productFooter.classList.remove('hidden');
+        productFooter.classList.remove('d-none');
 
         // Ocultar formulario de atributos
         attributesForm.classList.add('hidden');
         attributesForm.classList.remove('block');
-        attributesFooter.classList.add('hidden');
+        attributesFooter.classList.add('d-none');
     }
 };
 
@@ -484,15 +484,18 @@ const ProductAttributesUpdate = async () => {
                 variants: JSON.stringify(variantData)
             });
 
+            if (response?.status != 'success') return systemShowNotification(response.message, {
+                type: 'error',
+                duration: 5000
+            });
+
             systemShowNotification(response.message || _t('Producto actualizado correctamente'), {
                 type: response.status === 'success' ? 'success' : 'error',
                 duration: 5000
             });
 
-            if (response.status === 'success') {
-                Modal.close('page-stock-list-create-modal');
-                document.dispatchEvent(new CustomEvent('list:reload'));
-            }
+            Modal.close('page-stock-list-create-modal');
+            document.dispatchEvent(new CustomEvent('list:reload'));
         } else {
             systemShowNotification(_t('No se encontraron variantes para actualizar'), {
                 type: 'error',

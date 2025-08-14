@@ -27,7 +27,7 @@
                                         <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
-                                        <input type="text" name="name" t-attf-id="page-#{page_name}-list-create-form-contact-name" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Contact Name"/>
+                                        <input type="text" name="name" t-attf-id="page-#{page_name}-list-create-form-contact-name" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Contact Name"/>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-contact-name-error"></div>
                                     </div>
                                 </div>
@@ -37,7 +37,7 @@
                                         <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
-                                        <input type="text" name="email" t-attf-id="page-#{page_name}-list-create-form-email" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Email"/>
+                                        <input type="text" name="email" t-attf-id="page-#{page_name}-list-create-form-email" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Email"/>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-email-error"></div>
                                     </div>
                                 </div>
@@ -47,7 +47,7 @@
                                         <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
-                                        <input type="text" name="phone" t-attf-id="page-#{page_name}-list-create-form-phone" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Phone"/>
+                                        <input type="text" name="phone" t-attf-id="page-#{page_name}-list-create-form-phone" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Phone"/>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-phone-error"></div>
                                     </div>
                                 </div>
@@ -56,7 +56,7 @@
                                         <label t-attf-for="page-#{page_name}-list-create-form-mobile" class="form-label-sm font-sm">Mobile</label>
                                     </div>
                                     <div>
-                                        <input type="text" name="mobile" t-attf-id="page-#{page_name}-list-create-form-mobile" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Mobile"/>
+                                        <input type="text" name="mobile" t-attf-id="page-#{page_name}-list-create-form-mobile" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Mobile"/>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-mobile-error"></div>
                                     </div>
                                 </div>
@@ -70,7 +70,7 @@
                                         <label t-attf-for="page-#{page_name}-list-create-form-client-ref" class="form-label-sm font-sm">Client Reference</label>
                                     </div>
                                     <div>
-                                        <input type="text" name="client_ref" t-attf-id="page-#{page_name}-list-create-form-client-ref" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Client Reference"/>
+                                        <input type="text" name="client_ref" t-attf-id="page-#{page_name}-list-create-form-client-ref" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Client Reference"/>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-client-ref-error"></div>
                                     </div>
                                 </div>
@@ -84,7 +84,7 @@
                                         <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
-                                        <input type="text" name="street" t-attf-id="page-#{page_name}-list-create-form-street" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Street"/>
+                                        <input type="text" name="street" t-attf-id="page-#{page_name}-list-create-form-street" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Street"/>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-street-error"></div>
                                     </div>
                                 </div>
@@ -93,7 +93,7 @@
                                         <label t-attf-for="page-#{page_name}-list-create-form-street2" class="form-label-sm font-sm">Street 2</label>
                                     </div>
                                     <div>
-                                        <input type="text" name="street2" t-attf-id="page-#{page_name}-list-create-form-street2" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Street 2"/>
+                                        <input type="text" name="street2" t-attf-id="page-#{page_name}-list-create-form-street2" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Street 2"/>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-street2-error"></div>
                                     </div>
                                 </div>
@@ -103,11 +103,11 @@
                                         <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
-                                        <input type="text" name="address" t-attf-id="page-#{page_name}-list-create-form-address" class="order-select w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Search Address"/>
+                                        <input type="text" name="address" t-attf-id="page-#{page_name}-list-create-form-address" class="order-select w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Search Address"/>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-address-error"></div>
                                     </div>
                                 </div>
-                                
+
 
 
                                 <div class="form-group">
@@ -116,7 +116,7 @@
                                         <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
-                                        <input type="text" name="zip" t-attf-id="page-#{page_name}-list-create-form-zip" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="ZIP"/>
+                                        <input type="text" name="zip" t-attf-id="page-#{page_name}-list-create-form-zip" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="ZIP"/>
                                         <input type="hidden" name="zip_id" t-attf-id="page-#{page_name}-list-create-form-zip-id"/>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-zip-error"></div>
                                     </div>
@@ -127,7 +127,7 @@
                                         <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
-                                        <input type="text" name="city" t-attf-id="page-#{page_name}-list-create-form-city" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="City"/>
+                                        <input type="text" name="city" t-attf-id="page-#{page_name}-list-create-form-city" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="City"/>
                                         <input type="hidden" name="city_id" t-attf-id="page-#{page_name}-list-create-form-city-id"/>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-city-error"></div>
                                     </div>
@@ -138,7 +138,7 @@
                                         <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
-                                        <input type="text" name="state" t-attf-id="page-#{page_name}-list-create-form-state" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="State"/>
+                                        <input type="text" name="state" t-attf-id="page-#{page_name}-list-create-form-state" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="State"/>
                                         <input type="hidden" name="state_id" t-attf-id="page-#{page_name}-list-create-form-state-id"/>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-state-error"></div>
                                     </div>
@@ -149,7 +149,7 @@
                                         <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div>
-                                        <input type="text" name="country" t-attf-id="page-#{page_name}-list-create-form-country" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Country"/>
+                                        <input type="text" name="country" t-attf-id="page-#{page_name}-list-create-form-country" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Country"/>
                                         <input type="hidden" name="country_id" t-attf-id="page-#{page_name}-list-create-form-country-id"/>
                                         <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-country-error"></div>
                                     </div>
@@ -162,7 +162,7 @@
                                     <span class="text-red-500 ml-1">*</span>
                                 </div>
                                 <div>
-                                    <select name="carrier_id" t-attf-id="page-#{page_name}-list-create-form-carrier-id" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"></select>
+                                    <select name="carrier_id" t-attf-id="page-#{page_name}-list-create-form-carrier-id" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]"></select>
                                     <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-carrier-id-error"></div>
                                 </div>
                             </div>
@@ -180,11 +180,11 @@
 
                                     <div class="mt-3 flex items-center gap-2">
                                         <button t-attf-id="page-#{page_name}-list-create-form-products-add-line-btn" type="button"
-                                                class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
+                                                class="px-2 py-0.5 bg-[#696900] text-white rounded-md hover:bg-[#8A8A00] transition-colors text-xs flex items-center">
                                             <i class="fas fa-plus mr-1.5"></i> Add Product
                                         </button>
                                         <button t-attf-id="page-#{page_name}-list-create-form-products-add-catalog-btn" type="button"
-                                                class="px-2 py-0.5 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors text-xs flex items-center">
+                                                class="px-2 py-0.5 bg-[#696900] text-white rounded-md hover:bg-[#8A8A00] transition-colors text-xs flex items-center">
                                             <i class="fas fa-plus mr-1.5"></i> Catalog
                                         </button>
                                         <span class="ml-2 text-xs text-gray-500 italic">

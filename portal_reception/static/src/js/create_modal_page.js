@@ -361,28 +361,29 @@ function setupProductCardEvents() {
     const noProductsMessage = document.getElementById(`page-${pageName}-product-catalog-select-no-products-message`);
     const selectedCount = document.getElementById("selected-count");
 
-    document.querySelectorAll('.product-card').forEach(card => {
+            document.querySelectorAll('.product-card').forEach(card => {
         const productId = card.dataset.productId;
+        const initialAddDiv = card.querySelector('.product-initial-add');
         const addBtn = card.querySelector('.product-add-btn');
-        const addedQtyDisplay = card.querySelector('.product-added-qty');
-        const addedQtyValue = card.querySelector('.product-added-qty-value');
+        const quantityControls = card.querySelector('.product-quantity-controls');
+        const quantityInput = card.querySelector('.product-quantity');
+        const decreaseBtn = card.querySelector('.product-decrease');
+        const increaseBtn = card.querySelector('.product-increase');
+        const removeBtn = card.querySelector('.product-remove');
 
         // Check if product is already in registry and update UI accordingly
         if (selectedProductsRegistry.has(productId)) {
             const product = selectedProductsRegistry.get(productId);
-            if (addBtn) {
-                addBtn.innerHTML = '<i class="fas fa-check mr-1"></i> Added';
-                addBtn.classList.add('bg-green-600', 'hover:bg-green-700');
-                addBtn.classList.remove('bg-gradient-to-r', 'from-purple-600', 'to-purple-700', 'hover:from-purple-700', 'hover:to-purple-800');
-            }
 
-            // Show the added quantity in the product card
-            if (addedQtyDisplay && addedQtyValue) {
-                addedQtyValue.textContent = product.quantity;
-                addedQtyDisplay.classList.remove('hidden');
+            // Hide the initial add button and show quantity controls
+            if (initialAddDiv) initialAddDiv.classList.add('hidden');
+            if (quantityControls) {
+                quantityControls.classList.remove('hidden');
+                if (quantityInput) quantityInput.value = product.quantity;
             }
         }
 
+        // Set up the add button event listener
         if (addBtn) {
             addBtn.addEventListener('click', function() {
                 const productName = card.querySelector('h3').textContent;
@@ -422,7 +423,11 @@ function setupProductCardEvents() {
                     attributeTags
                 );
 
-                // Update UI
+                // Update UI - hide the add button and show quantity controls
+                if (initialAddDiv) initialAddDiv.classList.add('hidden');
+                if (quantityControls) quantityControls.classList.remove('hidden');
+
+                // Update selected products UI
                 if (selectedProductsList.children.length > 0) {
                     selectedProductsList.classList.remove('hidden');
                     noProductsMessage.classList.add('hidden');
@@ -432,23 +437,73 @@ function setupProductCardEvents() {
                 if (selectedCount) {
                     selectedCount.textContent = selectedProductsList.children.length;
                 }
+            });
+        }
 
-                // Update the button state to show it's been added
-                addBtn.innerHTML = '<i class="fas fa-check mr-1"></i> Added';
-                addBtn.classList.add('bg-green-600', 'hover:bg-green-700');
-                addBtn.classList.remove('bg-gradient-to-r', 'from-purple-600', 'to-purple-700', 'hover:from-purple-700', 'hover:to-purple-800');
+        // Set up decrease button event listener
+        if (decreaseBtn) {
+            decreaseBtn.addEventListener('click', function() {
+                if (selectedProductsRegistry.has(productId)) {
+                    const product = selectedProductsRegistry.get(productId);
+                    if (product.quantity > 1) {
+                        product.quantity--;
+                        if (quantityInput) quantityInput.value = product.quantity;
 
-                // Show the quantity in the product card
-                const addedQtyDisplay = card.querySelector('.product-added-qty');
-                const addedQtyValue = card.querySelector('.product-added-qty-value');
-                if (addedQtyDisplay && addedQtyValue) {
-                    // Get the current quantity from registry if exists, otherwise use 1
-                    const currentQty = selectedProductsRegistry.has(productId)
-                        ? selectedProductsRegistry.get(productId).quantity
-                        : 1;
-                    addedQtyValue.textContent = currentQty;
-                    addedQtyDisplay.classList.remove('hidden');
+                        // Update the selected product in the list if it exists
+                        updateSelectedProductQuantity(productId, product.quantity);
+                    } else {
+                        // If quantity would be 0, remove the product
+                        removeProductFromSelection(productId);
+
+                        // Show add button and hide quantity controls
+                        if (initialAddDiv) initialAddDiv.classList.remove('hidden');
+                        if (quantityControls) quantityControls.classList.add('hidden');
+                    }
                 }
+            });
+        }
+
+        // Set up increase button event listener
+        if (increaseBtn) {
+            increaseBtn.addEventListener('click', function() {
+                if (selectedProductsRegistry.has(productId)) {
+                    const product = selectedProductsRegistry.get(productId);
+                    product.quantity++;
+                    if (quantityInput) quantityInput.value = product.quantity;
+
+                    // Update the selected product in the list if it exists
+                    updateSelectedProductQuantity(productId, product.quantity);
+                }
+            });
+        }
+
+        // Set up quantity input event listener
+        if (quantityInput) {
+            quantityInput.addEventListener('change', function() {
+                let qty = parseInt(this.value);
+                if (isNaN(qty) || qty < 1) {
+                    qty = 1;
+                    this.value = qty;
+                }
+
+                if (selectedProductsRegistry.has(productId)) {
+                    const product = selectedProductsRegistry.get(productId);
+                    product.quantity = qty;
+
+                    // Update the selected product in the list if it exists
+                    updateSelectedProductQuantity(productId, qty);
+                }
+            });
+        }
+
+        // Set up remove button event listener
+        if (removeBtn) {
+            removeBtn.addEventListener('click', function() {
+                removeProductFromSelection(productId);
+
+                // Show add button and hide quantity controls
+                if (initialAddDiv) initialAddDiv.classList.remove('hidden');
+                if (quantityControls) quantityControls.classList.add('hidden');
             });
         }
     });
@@ -686,19 +741,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Reset all product card displays
             document.querySelectorAll('.product-card').forEach(card => {
-                                const productId = card.dataset.productId;
-                const addBtn = card.querySelector('.product-add-btn');
-                const addedQtyDisplay = card.querySelector('.product-added-qty');
+                const productId = card.dataset.productId;
+                const initialAddDiv = card.querySelector('.product-initial-add');
+                const quantityControls = card.querySelector('.product-quantity-controls');
 
-                // Reset button display
-                if (addBtn) {
-                    addBtn.innerHTML = '<i class="fas fa-plus mr-1"></i> Add';
-                    addBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
-                    addBtn.classList.add('bg-gradient-to-r', 'from-purple-600', 'to-purple-700', 'hover:from-purple-700', 'hover:to-purple-800');
-                }
-
-                // Hide quantity badge
-                if (addedQtyDisplay) addedQtyDisplay.classList.add('hidden');
+                // Reset UI - show add button and hide quantity controls
+                if (initialAddDiv) initialAddDiv.classList.remove('hidden');
+                if (quantityControls) quantityControls.classList.add('hidden');
             });
 
             // Clear the registry
@@ -728,6 +777,33 @@ function closeProductCatalog() {
     if (paginationContainerMain) {
         paginationContainerMain.classList.remove('hidden'); // Show the main pagination again
     }
+
+    // Reset product cards to initial state - important if we open the catalog again
+    document.querySelectorAll('.product-card').forEach(card => {
+        const productId = card.dataset.productId;
+        // Only update UI for products still in registry
+        if (selectedProductsRegistry.has(productId)) {
+            const initialAddDiv = card.querySelector('.product-initial-add');
+            const quantityControls = card.querySelector('.product-quantity-controls');
+            const quantityInput = card.querySelector('.product-quantity');
+
+            // Show quantity controls with current quantity
+            if (initialAddDiv) initialAddDiv.classList.add('hidden');
+            if (quantityControls) {
+                quantityControls.classList.remove('hidden');
+                if (quantityInput) {
+                    quantityInput.value = selectedProductsRegistry.get(productId).quantity;
+                }
+            }
+        } else {
+            // Reset products not in registry
+            const initialAddDiv = card.querySelector('.product-initial-add');
+            const quantityControls = card.querySelector('.product-quantity-controls');
+
+            if (initialAddDiv) initialAddDiv.classList.remove('hidden');
+            if (quantityControls) quantityControls.classList.add('hidden');
+        }
+    });
 
     // Get selected products from registry
     const selectedProducts = Array.from(selectedProductsRegistry.values());
@@ -1041,6 +1117,52 @@ function formatCarrier(data) {
     html += `</div></div>`;
 
     return $(html);
+}
+
+// Update quantity of a product in the selected products list
+function updateSelectedProductQuantity(productId, quantity) {
+    const pageName = "reception";
+    const selectedProductsList = document.getElementById(`page-${pageName}-product-catalog-select-selected-products-list`);
+
+    if (selectedProductsList) {
+        const productItem = selectedProductsList.querySelector(`[data-product-id="${productId}"]`);
+        if (productItem) {
+            const qtyInput = productItem.querySelector('.product-quantity');
+            if (qtyInput) {
+                qtyInput.value = quantity;
+            }
+        }
+    }
+}
+
+// Remove a product from the selection
+function removeProductFromSelection(productId) {
+    const pageName = "reception";
+    const selectedProductsList = document.getElementById(`page-${pageName}-product-catalog-select-selected-products-list`);
+    const noProductsMessage = document.getElementById(`page-${pageName}-product-catalog-select-no-products-message`);
+    const selectedCount = document.getElementById("selected-count");
+
+    // Remove from registry
+    selectedProductsRegistry.delete(productId);
+
+    // Remove from the selected products list
+    if (selectedProductsList) {
+        const productItem = selectedProductsList.querySelector(`[data-product-id="${productId}"]`);
+        if (productItem) {
+            selectedProductsList.removeChild(productItem);
+
+            // Update UI if no products left
+            if (selectedProductsList.children.length === 0) {
+                selectedProductsList.classList.add('hidden');
+                if (noProductsMessage) noProductsMessage.classList.remove('hidden');
+            }
+
+            // Update count
+            if (selectedCount) {
+                selectedCount.textContent = selectedProductsList.children.length;
+            }
+        }
+    }
 }
 
 function formatPackageType(data) {

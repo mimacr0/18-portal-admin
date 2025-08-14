@@ -7,7 +7,7 @@
             <!-- Products Page Header -->
             <div class="flex justify-center items-center mb-8">
                 <div class="relative max-w-md w-full">
-                    <input type="text" id="product-search" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-full shadow-md focus:ring-cyan-500 focus:border-cyan-500 block w-full p-3.5 pl-12 pr-12" placeholder="Search products..."/>
+                    <input type="text" id="product-search" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-full shadow-md focus:ring-[#8A8A00] focus:border-[#8A8A00] block w-full p-3.5 pl-12 pr-12" placeholder="Search products..."/>
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <i class="fas fa-search text-gray-400"></i>
                     </div>
@@ -16,12 +16,12 @@
 
             <!-- Selected products preview -->
             <div id="selected-products-container" class="mb-4 bg-white dark:bg-gray-800 rounded-md shadow overflow-hidden text-sm">
-                <div class="bg-gradient-to-r from-cyan-500 to-cyan-600 dark:from-cyan-800 dark:to-cyan-900 px-3 py-2">
+                <div class="bg-gradient-to-r from-[#696900] to-[#8A8A00] dark:from-[#8A8A00] dark:to-[#A0A000] px-3 py-2">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
                             <i class="fas fa-shopping-cart text-white text-xs mr-2"></i>
                             <h2 class="text-sm font-semibold text-white">Products Selected</h2>
-                            <span id="selected-count" class="ml-2 bg-white text-cyan-700 dark:bg-gray-700 dark:text-cyan-300 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                            <span id="selected-count" class="ml-2 bg-white text-[#696900] dark:bg-gray-700 dark:text-[#A0A000] text-xs font-bold px-2 py-0.5 rounded-full">0</span>
                         </div>
                         <div>
                             <button id="clear-selection" class="text-white hover:text-gray-200 transition-colors text-xs">
@@ -52,7 +52,7 @@
                     </div>
                     <div class="flex justify-between items-center pt-1 border-t border-gray-200 dark:border-gray-700">
                         <span class="font-semibold text-gray-800 dark:text-white">Total:</span>
-                        <span id="total" class="font-bold text-cyan-600 dark:text-cyan-400">0,00 €</span>
+                        <span id="total" class="font-bold text-[#696900] dark:text-[#A0A000]">0,00 €</span>
                     </div>
                     <div class="mt-2">
                         <button id="checkout-button" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-xs font-medium py-1.5 px-3 rounded transition-colors shadow-sm flex items-center justify-center">
@@ -107,7 +107,7 @@
                                 </div>
 
                                 <!-- Default view (Add button) -->
-                                <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 transition-colors shadow-sm text-xs">
+                                <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-[#696900] to-[#8A8A00] text-white rounded hover:from-[#8A8A00] hover:to-[#A0A000] transition-colors shadow-sm text-xs">
                                     <i class="fas fa-plus mr-1"></i> Añadir
                                 </button>
 
@@ -116,7 +116,7 @@
                                     <button class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 product-delete transition-colors text-xs">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
-                                    <button class="px-2 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 product-add transition-colors shadow-sm text-xs">
+                                    <button class="px-2 py-1 bg-gradient-to-r from-[#696900] to-[#8A8A00] text-white rounded hover:from-[#8A8A00] hover:to-[#A0A000] product-add transition-colors shadow-sm text-xs">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
@@ -165,7 +165,7 @@
                                 </div>
 
                                 <!-- Default view (Add button) -->
-                                <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 transition-colors shadow-sm text-xs">
+                                <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-[#696900] to-[#8A8A00] text-white rounded hover:from-[#8A8A00] hover:to-[#A0A000] transition-colors shadow-sm text-xs">
                                     <i class="fas fa-plus mr-1"></i> Añadir
                                 </button>
 
@@ -174,7 +174,7 @@
                                     <button class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 product-delete transition-colors text-xs">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
-                                    <button class="px-2 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 product-add transition-colors shadow-sm text-xs">
+                                    <button class="px-2 py-1 bg-gradient-to-r from-[#696900] to-[#8A8A00] text-white rounded hover:from-[#8A8A00] hover:to-[#A0A000] product-add transition-colors shadow-sm text-xs">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
@@ -218,7 +218,7 @@
                                 </div>
 
                                 <!-- Default view (Add button) -->
-                                <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 transition-colors shadow-sm text-xs">
+                                <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-[#696900] to-[#8A8A00] text-white rounded hover:from-[#8A8A00] hover:to-[#A0A000] transition-colors shadow-sm text-xs">
                                     <i class="fas fa-plus mr-1"></i> Añadir
                                 </button>
 
@@ -227,7 +227,7 @@
                                     <button class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 product-delete transition-colors text-xs">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
-                                    <button class="px-2 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 product-add transition-colors shadow-sm text-xs">
+                                    <button class="px-2 py-1 bg-gradient-to-r from-[#696900] to-[#8A8A00] text-white rounded hover:from-[#8A8A00] hover:to-[#A0A000] product-add transition-colors shadow-sm text-xs">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
@@ -271,7 +271,7 @@
                                 </div>
 
                                 <!-- Default view (Add button) -->
-                                <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 transition-colors shadow-sm text-xs">
+                                <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-[#696900] to-[#8A8A00] text-white rounded hover:from-[#8A8A00] hover:to-[#A0A000] transition-colors shadow-sm text-xs">
                                     <i class="fas fa-plus mr-1"></i> Añadir
                                 </button>
 
@@ -280,7 +280,7 @@
                                     <button class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 product-delete transition-colors text-xs">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
-                                    <button class="px-2 py-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded hover:from-purple-700 hover:to-purple-800 product-add transition-colors shadow-sm text-xs">
+                                    <button class="px-2 py-1 bg-gradient-to-r from-[#696900] to-[#8A8A00] text-white rounded hover:from-[#8A8A00] hover:to-[#A0A000] product-add transition-colors shadow-sm text-xs">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
@@ -298,7 +298,7 @@
             <!-- Products Page Header -->
             <div class="flex justify-center items-center mb-8">
                 <div class="relative max-w-md w-full">
-                    <input type="text" id="product-search" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-full shadow-md focus:ring-cyan-500 focus:border-cyan-500 block w-full p-3.5 pl-12 pr-12" placeholder="Search products..."/>
+                    <input type="text" id="product-search" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-full shadow-md focus:ring-[#8A8A00] focus:border-[#8A8A00] block w-full p-3.5 pl-12 pr-12" placeholder="Search products..."/>
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <i class="fas fa-search text-gray-400"></i>
                     </div>
@@ -307,12 +307,12 @@
 
             <!-- Selected products preview -->
             <div id="selected-products-container" class="mb-4 bg-white dark:bg-gray-800 rounded-md shadow overflow-hidden text-sm">
-                <div class="bg-gradient-to-r from-cyan-500 to-cyan-600 dark:from-cyan-800 dark:to-cyan-900 px-3 py-2">
+                <div class="bg-gradient-to-r from-[#696900] to-[#8A8A00] dark:from-[#8A8A00] dark:to-[#A0A000] px-3 py-2">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
                             <i class="fas fa-shopping-cart text-white text-xs mr-2"></i>
                             <h2 class="text-sm font-semibold text-white">Products Selected</h2>
-                            <span id="selected-count" class="ml-2 bg-white text-cyan-700 dark:bg-gray-700 dark:text-cyan-300 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                            <span id="selected-count" class="ml-2 bg-white text-[#696900] dark:bg-gray-700 dark:text-[#A0A000] text-xs font-bold px-2 py-0.5 rounded-full">0</span>
                         </div>
                         <div>
                             <button id="clear-selection" class="text-white hover:text-gray-200 transition-colors text-xs">
@@ -343,7 +343,7 @@
                     </div>
                     <div class="flex justify-between items-center pt-1 border-t border-gray-200 dark:border-gray-700">
                         <span class="font-semibold text-gray-800 dark:text-white">Total:</span>
-                        <span id="total" class="font-bold text-cyan-600 dark:text-cyan-400">0,00 €</span>
+                        <span id="total" class="font-bold text-[#696900] dark:text-[#A0A000]">0,00 €</span>
                     </div>
                     <div class="mt-2">
                         <button id="checkout-button" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-xs font-medium py-1.5 px-3 rounded transition-colors shadow-sm flex items-center justify-center">
@@ -372,7 +372,7 @@
                             </div>
 
                             <div class="flex justify-center mb-3">
-                                <div class="text-lg font-medium text-cyan-400" t-field="product.list_price"/>
+                                <div class="text-lg font-medium text-[#A0A000]" t-field="product.list_price"/>
                             </div>
 
                             <div class="flex justify-center mb-2">
@@ -382,7 +382,7 @@
                                 </span>
                             </div>
 
-                            <button t-attf-id="add-product-#{product.id}" class="w-full px-2 py-1.5 bg-purple-700 hover:bg-purple-800 text-white text-xs rounded flex items-center justify-center transition-colors add-product-btn">
+                            <button t-attf-id="add-product-#{product.id}" class="w-full px-2 py-1.5 bg-[#696900] hover:bg-[#8A8A00] text-white text-xs rounded flex items-center justify-center transition-colors add-product-btn">
                                 <i class="fas fa-plus mr-1.5"></i> Add
                             </button>
                         </div>

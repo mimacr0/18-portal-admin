@@ -3,47 +3,6 @@
 
     <template id="portal_dashboard_recent_activity_content" name="Portal Dashboard Recent Activity Content">
 
-                <!-- <div class="flex items-start">
-            <div class="bg-green-100 dark:bg-green-900 p-2 rounded-full mr-3">
-                <i class="fas fa-dollar-sign text-green-500 dark:text-green-400 text-sm"></i>
-            </div>
-            <div class="flex-1">
-                <p class="text-sm font-medium text-gray-900 dark:text-white">New reception completed</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Reception #45890</p>
-                <p class="text-xs text-gray-400 dark:text-gray-500">10 minutes ago</p>
-            </div>
-        </div>
-        <div class="flex items-start">
-            <div class="bg-cyan-100 dark:bg-cyan-900 p-2 rounded-full mr-3">
-                <i class="fas fa-user text-cyan-500 dark:text-cyan-400 text-sm"></i>
-            </div>
-            <div class="flex-1">
-                <p class="text-sm font-medium text-gray-900 dark:text-white">New expedition completed</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Expedition #45890</p>
-                <p class="text-xs text-gray-400 dark:text-gray-500">45 minutes ago</p>
-            </div>
-        </div>
-        <div class="flex items-start">
-            <div class="bg-amber-100 dark:bg-amber-900 p-2 rounded-full mr-3">
-                <i class="fas fa-exclamation-triangle text-amber-500 dark:text-amber-400 text-sm"></i>
-            </div>
-            <div class="flex-1">
-                <p class="text-sm font-medium text-gray-900 dark:text-white">Inventory alert</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Product #39845 is low in stock</p>
-                <p class="text-xs text-gray-400 dark:text-gray-500">2 hours ago</p>
-            </div>
-        </div>
-        <div class="flex items-start">
-            <div class="bg-purple-100 dark:bg-purple-900 p-2 rounded-full mr-3">
-                <i class="fas fa-tasks text-purple-500 dark:text-purple-400 text-sm"></i>
-            </div>
-            <div class="flex-1">
-                <p class="text-sm font-medium text-gray-900 dark:text-white">New product added</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Product #39845</p>
-                <p class="text-xs text-gray-400 dark:text-gray-500">4 hours ago</p>
-            </div>
-        </div> -->
-
         <t t-foreach="recent_activity" t-as="activity">
             <div class="flex items-start">
                 <div class="bg-green-100 dark:bg-green-900 p-2 rounded-full mr-3">
@@ -149,7 +108,7 @@
                     </div>
 
                     <!-- Account Balance Card -->
-                    <div class="bg-gradient-to-r from-blue-500 to-cyan-500 dark:from-blue-800 dark:to-cyan-700 p-4 rounded-lg shadow text-white">
+                    <div class="bg-gradient-to-r from-[#8A8A00] to-[#696900] dark:from-[#8A8A00] dark:to-[#696900] p-4 rounded-lg shadow text-white">
                         <div class="flex justify-between items-start mb-4">
                             <h3 class="text-lg font-semibold">Account Balance</h3>
                             <i class="fas fa-credit-card text-white/80 text-xl"></i>
@@ -226,7 +185,7 @@
                                         <label for="dashboard-page-add-credit-amount" class="form-label-sm font-sm">Credit Amount</label>
                                     </div>
                                     <div>
-                                        <input type="number" name="credit_amount" id="dashboard-page-add-credit-amount" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Credit Amount" required="required" min="0"/>
+                                        <input type="number" name="credit_amount" id="dashboard-page-add-credit-amount" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#A0A000]" placeholder="Credit Amount" required="required" min="0"/>
                                         <div class="form-error invisible" id="dashboard-page-add-credit-amount-error"></div>
                                         <span class="ml-2 text-xs text-gray-500 italic">
                                             <i class="fas fa-info-circle"></i> Enter the desired credit amount to initiate an approval process.
@@ -261,10 +220,10 @@
                                     <label for="fileInput" class="form-label form-label-sm">Upload File</label>
                                     <div class="form-field-container">
                                         <div class="file-drop-area rounded-md border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 text-center cursor-pointer">
-                                            <input type="file" id="fileInput" name="fileInput" class="hidden focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" required="required" multiple="multiple"/>
+                                            <input type="file" id="fileInput" name="fileInput" class="hidden focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#A0A000]" required="required" multiple="multiple"/>
                                             <div class="file-input-content">
                                                 <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 dark:text-gray-500"/>
-                                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop a file here, or <span class="text-cyan-600 dark:text-cyan-400 browse-link">browse</span></p>
+                                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop a file here, or <span class="text-[#696900] dark:text-[#A0A000] browse-link">browse</span></p>
                                                 <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Maximum file size: 5MB</p>
                                             </div>
                                         </div>
@@ -300,10 +259,10 @@
                                     <label for="fileInput" class="form-label form-label-sm">Upload File</label>
                                     <div class="form-field-container">
                                         <div class="file-drop-area rounded-md border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 text-center cursor-pointer">
-                                            <input type="file" id="fileInput" name="fileInput" class="hidden focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" required="required" multiple="multiple"/>
+                                            <input type="file" id="fileInput" name="fileInput" class="hidden focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#A0A000]" required="required" multiple="multiple"/>
                                             <div class="file-input-content">
                                                 <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 dark:text-gray-500"/>
-                                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop a file here, or <span class="text-cyan-600 dark:text-cyan-400 browse-link">browse</span></p>
+                                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop a file here, or <span class="text-[#696900] dark:text-[#A0A000] browse-link">browse</span></p>
                                                 <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Maximum file size: 5MB</p>
                                             </div>
                                         </div>
