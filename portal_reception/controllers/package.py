@@ -25,7 +25,9 @@ class PortalReceptionController(PortalAdminController):
         'date': 'scheduled_date',
         'scheduled_date': 'scheduled_date',
         'state': 'state',
-        'weight': 'weight',
+        # Intentionally omit direct mapping for weight fields because
+        # picking.shipping_weight is computed (non-stored) and not searchable.
+        # We handle advanced filters for weight via stock.move.line package weights.
         'package': 'package_name_virtual',
         'package_type': 'package_type_virtual',
     }
@@ -67,6 +69,7 @@ class PortalReceptionController(PortalAdminController):
             {'id': 'name', 'label': _('Name'), 'type': 'text'},
             {'id': 'package', 'label': _('Package'), 'type': 'text'},
             {'id': 'weight', 'label': _('Weight'), 'type': 'number'},
+            {'id': 'shipping_weight', 'label': _('Shipping Weight'), 'type': 'number'},
             {'id': 'package_type', 'label': _('Package Type'), 'type': 'select', 'options': package_type_options},
             {'id': 'scheduled_date', 'label': _('Scheduled Date'), 'type': 'date'},
             {'id': 'state', 'label': _('Status'), 'type': 'select', 'options': [
@@ -180,7 +183,7 @@ class PortalReceptionController(PortalAdminController):
             # Helpers to coerce values by logical field
             def _coerce_value(field_key, value_str):
                 try:
-                    if field_key == 'weight':
+                    if field_key in ['weight', 'shipping_weight']:
                         return float(value_str)
                     if field_key == 'package_type':
                         return int(value_str)
@@ -206,6 +209,55 @@ class PortalReceptionController(PortalAdminController):
                     continue
 
                 field_key, operator, raw_value = condition
+
+                # Special handling for weight on picking (computed, non-stored)
+                if field_key in ['weight', 'shipping_weight']:
+                    # Normalize operator for numeric comparison
+                    operator = operator or '='
+                    if operator == 'ilike':
+                        operator = '='
+                    try:
+                        target_value = float(raw_value)
+                    except Exception:
+                        # Invalid numeric value, skip condition
+                        continue
+
+                    # Fetch candidate pickings using the current base domain only
+                    candidates = StockPicking.search(base_domain)
+
+                    def _matches_weight(picking):
+                        try:
+                            w = float(picking.shipping_weight or 0.0)
+                        except Exception:
+                            w = 0.0
+                        if operator == '=':
+                            return abs(w - target_value) < 1e-6
+                        if operator == '!=':
+                            return abs(w - target_value) >= 1e-6
+                        if operator == '>=':
+                            return w >= target_value
+                        if operator == '<=':
+                            return w <= target_value
+                        if operator == '>':
+                            return w > target_value
+                        if operator == '<':
+                            return w < target_value
+                        # Fallback treat as equality
+                        return abs(w - target_value) < 1e-6
+
+                    matched_ids = [p.id for p in candidates if _matches_weight(p)]
+
+                    # Build a domain condition based on matched ids
+                    if operator == '!=':
+                        cond = ('id', 'not in', matched_ids or [0])
+                    else:
+                        # For other operators, if no matches, force empty domain
+                        cond = ('id', 'in', matched_ids or [0])
+
+                    adv_conditions.append(cond)
+                    adv_condition_domains.append([cond])
+                    continue
+
                 if field_key not in self.RECEPTION_FIELDS_MAPPING:
                     continue
 
@@ -292,7 +344,7 @@ class PortalReceptionController(PortalAdminController):
                 coerced_value = _coerce_value(field_key, raw_value)
 
                 # Si el campo lógico es numérico pero operador es ilike, degradar a '='
-                if field_key in ['weight', 'package_type'] and operator == 'ilike':
+                if field_key in ['weight', 'shipping_weight', 'package_type'] and operator == 'ilike':
                     operator = '='
 
                 cond = (model_field, operator, coerced_value)
