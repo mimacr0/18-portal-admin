@@ -79,7 +79,6 @@ class PortalExpeditionController(PortalAdminController):
                 {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True}
             ],
             'tools_actions': [
-                {'name': 'import', 'label': _('Import'), 'icon': 'fas fa-file-import'}
             ],
             'batch_actions': [
                 {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
@@ -119,10 +118,13 @@ class PortalExpeditionController(PortalAdminController):
             base_domain.extend(self.get_quick_filter_domain(quick_filter, request.env))
         # Aplicar búsqueda de texto
         if search:
+            
+            print("Search term:", search)
             base_domain.extend(expression.OR([
                 [('name', 'ilike', search)],
                 [('picking_ids.carrier_tracking_ref', 'ilike', search)],
             ]))
+
         # # Aplicar dominio de búsqueda avanzada
         if domain and isinstance(domain, list) and domain:
             adv_domain = []

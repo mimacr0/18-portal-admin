@@ -252,7 +252,6 @@ export const initRepairAlertCreateForm = () => {
 
     createButton.addEventListener('click', () => {
         console.log('Botón "Crear" clickeado. Abriendo modal...');
-
         Modal.open('page-repair-alert-list-create-modal');
     });
 
@@ -262,7 +261,7 @@ export const initRepairAlertCreateForm = () => {
         if(!res) return;
 
         const { formData } = sysCollectFormData('#page-repair-alert-list-create-form');
-
+        console.log("Form data collected:", formData);
         const resp = await rpc('/account/repair-alert/create', formData);
 
         if(resp?.errors) sysShowServerErrors('#page-repair-alert-list-create-form', resp.errors);
@@ -998,7 +997,7 @@ function formatProductSelection(product) {
 
 // Update the document ready function
 document.addEventListener('DOMContentLoaded', () => {
-    // initRepairAlertCreateForm();
+    initRepairAlertCreateForm();
     initManualProductAdd();
     // Set up the close button for product catalog
     const closeBtn = document.getElementById('page-repair-alert-product-catalog-select-close-btn');

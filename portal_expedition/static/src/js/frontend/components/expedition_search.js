@@ -6,7 +6,10 @@ export const initExpeditionListSearch = () => {
     const searchInput = document.getElementById('page-expedition-products-list-search');
 
     // Si no existe, terminar
-    if(!searchInput) return;
+    if(!searchInput) {
+        console.error('No se encontró el input de búsqueda con ID: page-stock-products-list-search');
+        return;
+    }
 
     // Eliminar eventos para evitar duplicados
     const newSearchInput = searchInput.cloneNode(true);
@@ -69,7 +72,7 @@ export const initAdvancedSearch = () => {
         console.error('Error parsing advanced search fields:', e);
         return;
     }
-
+    
     // Agregar línea de filtro
     addLineBtn.addEventListener('click', () => {
         const lineCount = linesContainer.children.length + 1;
