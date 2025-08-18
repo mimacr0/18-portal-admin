@@ -21,7 +21,7 @@ class PortalDashboardController(PortalAdminController):
     def account_user_update_lang_action_main(self, lang, **post):
         user = request.env.user.sudo()
         user.lang = lang
-        return request.redirect("/account/dashboard")
+        return request.redirect("/account")
 
     @http.route('/account/user/notifications/reload', type='json', auth="user")
     def account_user_notifications_reload_action_main(self, **post):

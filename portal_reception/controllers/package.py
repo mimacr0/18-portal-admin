@@ -23,7 +23,11 @@ class PortalReceptionController(PortalAdminController):
         'origin': 'origin',
         'partner': 'partner_id',
         'date': 'scheduled_date',
-        'state': 'state'
+        'scheduled_date': 'scheduled_date',
+        'state': 'state',
+        'weight': 'weight',
+        'package': 'package_name_virtual',
+        'package_type': 'package_type_virtual',
     }
 
     DEFAULT_LIMIT_PARAM = 'portal_reception.page_list_default_limit'
@@ -51,14 +55,25 @@ class PortalReceptionController(PortalAdminController):
         return menus
 
     @lru_cache(maxsize=1)
-    def _get_advanced_search_fields(self):
+    def _get_reception_advanced_search_fields(self):
         """Devuelve la configuración de campos para búsqueda avanzada"""
+        PackageType = request.env['stock.package.type'].sudo()
+        package_type_options = [
+            {'id': pt.id, 'label': pt.name}
+            for pt in PackageType.search([], limit=10)
+        ]
+
         return [
-            {'id': 'name', 'label': _('Name')},
-            {'id': 'origin', 'label': _('Origin')},
-            {'id': 'partner', 'label': _('Partner')},
-            {'id': 'date', 'label': _('Scheduled Date')},
-            {'id': 'state', 'label': _('Status')}
+            {'id': 'name', 'label': _('Name'), 'type': 'text'},
+            {'id': 'package', 'label': _('Package'), 'type': 'text'},
+            {'id': 'weight', 'label': _('Weight'), 'type': 'number'},
+            {'id': 'package_type', 'label': _('Package Type'), 'type': 'select', 'options': package_type_options},
+            {'id': 'scheduled_date', 'label': _('Scheduled Date'), 'type': 'date'},
+            {'id': 'state', 'label': _('Status'), 'type': 'select', 'options': [
+                {'id': 'pending', 'label': _('Pending')},
+                {'id': 'done', 'label': _('Done')},
+                {'id': 'cancel', 'label': _('Cancel')}
+            ]}
         ]
 
     @http.route('/account/reception', type='http', auth="user", website=True)
@@ -94,7 +109,7 @@ class PortalReceptionController(PortalAdminController):
             'batch_actions': [
                 {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
             ],
-            'advanced_search': json.dumps(self._get_advanced_search_fields())
+            'advanced_search': json.dumps(self._get_reception_advanced_search_fields())
         })
 
         return request.render("portal_reception.portal_reception_page_main", values)
@@ -125,12 +140,13 @@ class PortalReceptionController(PortalAdminController):
     def account_reception_list_advanced_filters(self, **kw):
         return {
             'status': 'success',
-            'filters': json.dumps(self._get_advanced_search_fields())
+            'filters': json.dumps(self._get_reception_advanced_search_fields())
         }
 
     def _build_reception_domain(self, search='', domain=None, match_type='all', quick_filter=None):
         """Construye el dominio de búsqueda para recepciones"""
         StockPicking = request.env['stock.picking'].sudo()
+        StockMoveLine = request.env['stock.move.line'].sudo()
         reception_type = request.env.ref('stock.picking_type_in')
         partner_id = request.env.user.partner_id
         partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
@@ -158,36 +174,141 @@ class PortalReceptionController(PortalAdminController):
 
         # Aplicar dominio de búsqueda avanzada
         if domain and isinstance(domain, list) and domain:
-            adv_domain = []
+            adv_conditions = []              # list of tuple conditions for AND
+            adv_condition_domains = []       # list of domains (list[tuple]) for OR
+
+            # Helpers to coerce values by logical field
+            def _coerce_value(field_key, value_str):
+                try:
+                    if field_key == 'weight':
+                        return float(value_str)
+                    if field_key == 'package_type':
+                        return int(value_str)
+                    return value_str
+                except Exception:
+                    return value_str
+
+            def _date_bounds_utc(date_str):
+                # Expecting YYYY-MM-DD
+                try:
+                    user_tz = pytz.timezone(request.env.user.tz or 'UTC')
+                    day_local_start = user_tz.localize(datetime.strptime(date_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
+                    day_local_end = user_tz.localize(datetime.strptime(date_str + ' 23:59:59', '%Y-%m-%d %H:%M:%S'))
+                    return (
+                        day_local_start.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S'),
+                        day_local_end.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S'),
+                    )
+                except Exception:
+                    return (date_str, date_str)
+
             for condition in domain:
-                if len(condition) != 3:
+                if not isinstance(condition, (list, tuple)) or len(condition) != 3:
                     continue
 
-                field, operator, value = condition
-                if field not in self.RECEPTION_FIELDS_MAPPING:
+                field_key, operator, raw_value = condition
+                if field_key not in self.RECEPTION_FIELDS_MAPPING:
                     continue
 
-                model_field = self.RECEPTION_FIELDS_MAPPING[field]
+                model_field = self.RECEPTION_FIELDS_MAPPING[field_key]
+
+                # Manejo especial para filtros por paquete y tipo de paquete
+                # Se usan sub-búsquedas para obtener los pickings que cumplan
+                if field_key in ['package', 'package_type']:
+                    ml_domain = [('picking_id', '!=', False)]
+                    # Construir dominio sobre stock.move.line -> result_package_id
+                    if field_key == 'package':
+                        # Normalizar operador: solo soportamos 'ilike' y '='
+                        if operator not in ('ilike', '='):
+                            operator = 'ilike'
+                        ml_domain.append(('result_package_id.name', operator, str(raw_value)))
+                    else:  # package_type
+                        try:
+                            value_int = int(raw_value)
+                        except Exception:
+                            # Valor inválido, saltar condición
+                            continue
+                        if operator not in ('=', '!='):
+                            operator = '='
+                        if operator == '=':
+                            ml_domain.append(('result_package_id.package_type_id', '=', value_int))
+                        else:  # '!='
+                            ml_domain.append(('result_package_id.package_type_id', '!=', value_int))
+
+                    # Buscar todas las líneas que cumplan (sin límite)
+                    picking_ids = StockMoveLine.search(ml_domain).mapped('picking_id').ids
+                    # Si no hay coincidencias y el operador es positivo, devolver dominio vacío que nunca coincide
+                    if operator in ('ilike', '=') and not picking_ids:
+                        cond = ('id', '=', 0)
+                    else:
+                        # Para '!=' usamos 'not in'
+                        if operator == '!=':
+                            cond = ('id', 'not in', picking_ids or [0])
+                        else:
+                            cond = ('id', 'in', picking_ids)
+
+                    adv_conditions.append(cond)
+                    adv_condition_domains.append([cond])
+                    continue
 
                 # Manejo especial para el campo de estado
-                if field == 'state':
-                    if value.lower() in ['pending', 'draft', 'waiting']:
-                        adv_domain.append(('state', 'not in', ['done', 'cancel']))
-                    elif value.lower() in ['done', 'completed', 'finished']:
-                        adv_domain.append(('state', '=', 'done'))
-                    elif value.lower() in ['cancel', 'cancelled']:
-                        adv_domain.append(('state', '=', 'cancel'))
-                    else:
-                        adv_domain.append((model_field, operator, value))
-                else:
-                    adv_domain.append((model_field, operator, value))
+                if field_key == 'state':
+                    val = (raw_value or '').lower()
+                    if val in ['pending', 'draft', 'waiting']:
+                        cond = ('state', 'not in', ['done', 'cancel'])
+                        adv_conditions.append(cond)
+                        adv_condition_domains.append([cond])
+                        continue
+                    elif val in ['done', 'completed', 'finished']:
+                        cond = ('state', '=', 'done')
+                        adv_conditions.append(cond)
+                        adv_condition_domains.append([cond])
+                        continue
+                    elif val in ['cancel', 'cancelled']:
+                        cond = ('state', '=', 'cancel')
+                        adv_conditions.append(cond)
+                        adv_condition_domains.append([cond])
+                        continue
+                    # fallback to raw comparison
+
+                # Manejo especial para fechas
+                if field_key in ['scheduled_date', 'date']:
+                    if operator == '=':
+                        start_utc, end_utc = _date_bounds_utc(str(raw_value))
+                        conds = [
+                            (model_field, '>=', start_utc),
+                            (model_field, '<=', end_utc),
+                        ]
+                        adv_conditions.extend(conds)
+                        adv_condition_domains.append(conds)
+                        continue
+                    elif operator in ('>=', '<='):
+                        bound_utc = _date_bounds_utc(str(raw_value))[0 if operator == '>=' else 1]
+                        cond = (model_field, operator, bound_utc)
+                        adv_conditions.append(cond)
+                        adv_condition_domains.append([cond])
+                        continue
+
+                # Coerción por tipo para peso y tipo de paquete
+                coerced_value = _coerce_value(field_key, raw_value)
+
+                # Si el campo lógico es numérico pero operador es ilike, degradar a '='
+                if field_key in ['weight', 'package_type'] and operator == 'ilike':
+                    operator = '='
+
+                cond = (model_field, operator, coerced_value)
+                adv_conditions.append(cond)
+                adv_condition_domains.append([cond])
 
             # Combinar condiciones de búsqueda avanzada según el tipo de coincidencia
-            if adv_domain:
+            if adv_conditions:
                 if match_type == 'any':
-                    base_domain.append(expression.OR(adv_domain))
+                    # AND con base_domain de un OR de todas las condiciones avanzadas
+                    base_domain = expression.AND([
+                        base_domain,
+                        expression.OR(adv_condition_domains)
+                    ])
                 else:  # 'all' es el predeterminado
-                    base_domain.extend(adv_domain)
+                    base_domain.extend(adv_conditions)
 
         return base_domain
 
