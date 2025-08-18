@@ -111,10 +111,12 @@ class PortalExpeditionController(PortalAdminController):
             'pages': pages
         }
 
-    def _build_sale_domain(self, search='', domain=None, match_type='all'):
+    def _build_sale_domain(self, search='', domain=None, match_type='all', quick_filter=None):
         """Construye el dominio de búsqueda para productos"""
         base_domain = []
 
+        if quick_filter and quick_filter != 'all':
+            base_domain.extend(self.get_quick_filter_domain(quick_filter, request.env))
         # Aplicar búsqueda de texto
         if search:
             base_domain.extend(expression.OR([
@@ -171,7 +173,7 @@ class PortalExpeditionController(PortalAdminController):
                 ('state', 'in', ['confirmed', 'assigned']),
                 ('picking_type_code', '!=', 'outgoing'),
             ],
-            'toBeShipped': [
+            'to_be_shipped': [
                 ('state', 'in', ['confirmed', 'assigned']),
                 ('picking_type_code', '=', 'outgoing'),
             ],
@@ -186,9 +188,11 @@ class PortalExpeditionController(PortalAdminController):
         elif quick_filter in picking_filters:
             picking_model = env['stock.picking'].sudo()
             picking_ids = picking_model.search(picking_filters[quick_filter]).ids
-            return [('picking_ids', 'in', picking_ids)]
-
-        return None
+            if picking_ids:
+                return [('picking_ids', 'in', picking_ids)]
+            else:
+                # Retornar un dominio que nunca coincida si no hay pickings
+                return [('id', '=', 0)]
 
 
     @http.route('/account/expedition/list/reload', type='json', auth='user')
@@ -198,14 +202,13 @@ class PortalExpeditionController(PortalAdminController):
         offset = (page - 1) * limit
 
         # Construir dominio de búsqueda
-        base_domain = self._build_sale_domain(search, domain, match_type)
+        base_domain = self._build_sale_domain(search, domain, match_type, quick_filter)
 
         # # Apply quick filters
-        print("Quick Filter:", quick_filter)
-        if quick_filter and quick_filter != 'all':
-            domain_addition = self.get_quick_filter_domain(quick_filter, request.env)
-            if domain_addition:
-                base_domain.extend(domain_addition)
+        # if quick_filter and quick_filter != 'all':
+        #     domain_addition = self.get_quick_filter_domain(quick_filter, request.env)
+        #     if domain_addition:
+        #         base_domain.extend(domain_addition)
 
         # Configurar ordenamiento
         order_by = 'id desc'

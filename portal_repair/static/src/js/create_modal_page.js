@@ -998,9 +998,8 @@ function formatProductSelection(product) {
 
 // Update the document ready function
 document.addEventListener('DOMContentLoaded', () => {
-    initRepairAlertCreateForm();
+    // initRepairAlertCreateForm();
     initManualProductAdd();
-    console.log("HOLA ESTRELLA")
     // Set up the close button for product catalog
     const closeBtn = document.getElementById('page-repair-alert-product-catalog-select-close-btn');
     if (closeBtn) {

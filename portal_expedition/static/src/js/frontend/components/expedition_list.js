@@ -36,7 +36,7 @@ export const reloadExpeditionListPage = async () => {
     const currentPage = parseInt(currentPageInput.value);
 
     // Obtener y validar el campo de búsqueda
-    const searchInput = document.getElementById('page-expedition-quick-list-search');
+    const searchInput = document.getElementById('page-expedition-list-quick-search');
     if(!searchInput) return;
     const search = searchInput.value;
 

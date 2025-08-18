@@ -156,6 +156,7 @@ class PortalRepairController(PortalAdminController):
             stage = request.env.ref(stage_xml_id)
             base_domain.append(('stage_id', '=', stage.id))
             # Aplicar búsqueda de texto
+            
         if search:
             base_domain.extend(expression.OR([
                 [('name', 'ilike', search)],
