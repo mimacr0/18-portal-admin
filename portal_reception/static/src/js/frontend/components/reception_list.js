@@ -79,9 +79,10 @@ export const reloadReceptionListPage = async () => {
     else paginationContainerMain.classList.remove('hidden');
 
     // Configurar eventos para el PAGINADOR
-    const paginationPrevious = document.getElementById('reception-list-pagination-previous');
+    // IDs in template use 'stock-list-' prefix
+    const paginationPrevious = document.getElementById('stock-list-pagination-previous');
     const paginationButton = document.querySelectorAll('.reception-list-pagination-button');
-    const paginationNext = document.getElementById('reception-list-pagination-next');
+    const paginationNext = document.getElementById('stock-list-pagination-next');
 
     // Evento para el botón "Anterior"
     if(paginationPrevious) paginationPrevious.addEventListener('click', () => {

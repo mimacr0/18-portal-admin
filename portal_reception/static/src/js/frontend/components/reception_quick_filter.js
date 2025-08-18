@@ -63,7 +63,7 @@ export const initReceptionQuickSortFilters = () => {
         });
 
         // Resetear la página actual
-        const currentPageInput = document.getElementById('reception-list-pagination-page');
+        const currentPageInput = document.getElementById('page-reception-list-pagination-page');
         if (currentPageInput) currentPageInput.value = 1;
 
         // Recargar la lista con el nuevo filtro
