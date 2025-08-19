@@ -20,31 +20,17 @@
                             </svg>
                             Go back
                         </a>
-                        <!-- Section to add actions -->
-                    <!-- <div class="flex items-center space-x-4">
-                        <div class="document-actions flex space-x-4">
-                            <div class="flex space-x-2 text-gray-900 dark:text-white ">
-                                <span>Print</span>
+                        <div class="flex items-center space-x-4">
+                            <div class="reception-status-selector relative">
+                                <span t-attf-class="px-3 py-1.5 bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or '[#f0f0e0]')}-100 text-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or '[#696900]')}-800 dark:bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or '[#696900]')}-900 dark:text-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or '[#A0A000]')}-200 text-xs font-medium rounded-full flex items-center">
+                                    <span t-attf-class="w-2 h-2 bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or '[#8A8A00]')}-500 dark:bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or '[#A0A000]')}-400 rounded-full mr-1.5"></span>
+                                    <t t-if="order.state == 'done'">Completed</t>
+                                    <t t-elif="order.state == 'cancel'">Cancelled</t>
+                                    <t t-else="">Draft</t>
+                                </span>
                             </div>
-                            <div class="flex space-x-2 text-gray-900 dark:text-white ">
-                                <span>Print Barcode</span>
-                            </div>
-                            <div class="flex space-x-2 text-gray-900 dark:text-white ">
-                                <span>Edit</span>
-                            </div>
-                        </div>
-                    </div> -->
-                    <div class="flex items-center space-x-4">
-                        <div class="reception-status-selector relative">
-                            <span t-attf-class="px-3 py-1.5 bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or '[#f0f0e0]')}-100 text-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or '[#696900]')}-800 dark:bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or '[#696900]')}-900 dark:text-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or '[#A0A000]')}-200 text-xs font-medium rounded-full flex items-center">
-                                <span t-attf-class="w-2 h-2 bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or '[#8A8A00]')}-500 dark:bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or '[#A0A000]')}-400 rounded-full mr-1.5"></span>
-                                <t t-if="order.state == 'done'">Completed</t>
-                                <t t-elif="order.state == 'cancel'">Cancelled</t>
-                                <t t-else="">Draft</t>
-                            </span>
                         </div>
                     </div>
-                </div>
 
                 <div class="p-8 border-b border-gray-200 dark:border-gray-700 relative">
                     <div class="flex flex-col md:flex-row justify-between items-start relative z-10">
