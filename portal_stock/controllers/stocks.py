@@ -14,7 +14,8 @@ class PortalStockController(PortalAdminController):
         'name': 'name',
         'sku': 'default_code',
         'barcode': 'barcode',
-        'status': 'qty_available'
+        'stock': 'qty_available',
+        'status': 'qty_available',
     }
 
     DEFAULT_LIMIT_PARAM = 'portal_stock.page_list_default_limit'
@@ -33,10 +34,19 @@ class PortalStockController(PortalAdminController):
     def _get_advanced_search_fields(self):
         """Devuelve la configuración de campos para búsqueda avanzada"""
         return [
-            {'id': 'name', 'label': _('Name')},
-            {'id': 'sku', 'label': _('SKU')},
-            {'id': 'barcode', 'label': _('Barcode')},
-            {'id': 'status', 'label': _('Status')}
+            {'id': 'name', 'label': _('Name'), 'type': 'text'},
+            {'id': 'sku', 'label': _('SKU'), 'type': 'text'},
+            {'id': 'barcode', 'label': _('Barcode'), 'type': 'text'},
+            {'id': 'stock', 'label': _('Stock'), 'type': 'number'},
+            {
+                'id': 'status',
+                'label': _('Status'),
+                'type': 'select',
+                'options': [
+                    {'id': 'in_stock', 'label': _('In Stock')},
+                    {'id': 'out_stock', 'label': _('Out of Stock')}
+                ]
+            }
         ]
 
     @http.route('/account/stock', type='http', auth="user", website=True)
@@ -60,12 +70,12 @@ class PortalStockController(PortalAdminController):
                 'id': 'all',
                 'label': _('All'),
                 'icon': 'fas fa-check-circle',
+                'active': True,
             },
             {
                 'id': 'in_stock',
                 'label': _('In Stock'),
                 'icon': 'fas fa-boxes',
-                'active': True
             },
             {
                 'id': 'out_stock',
@@ -114,46 +124,81 @@ class PortalStockController(PortalAdminController):
 
         # Se aplica el filtro de búsqueda por nombre, SKU o código de barras
         if search:
+            term = f"%{search}%"
             base_domain.extend(expression.OR([
-                [('name', 'ilike', search)],
-                [('default_code', 'ilike', search)],
-                [('barcode', 'ilike', search)]
+                [('name', 'ilike', term)],
+                [('default_code', 'ilike', term)],
+                [('barcode', 'ilike', term)]
             ]))
 
         # Aplicar dominio de búsqueda avanzada
         if domain and isinstance(domain, list) and domain:
-            adv_domain = []
+            adv_conditions = []        # lista de tuplas (AND)
+            adv_condition_domains = [] # lista de dominios para OR
+
             for condition in domain:
-                if len(condition) != 3:
+                if not isinstance(condition, (list, tuple)) or len(condition) != 3:
                     continue
 
-                field, operator, value = condition
-                if field not in self.PRODUCT_FIELDS_MAPPING:
+                field_key, operator, raw_value = condition
+                if field_key not in self.PRODUCT_FIELDS_MAPPING:
                     continue
 
-                model_field = self.PRODUCT_FIELDS_MAPPING[field]
+                model_field = self.PRODUCT_FIELDS_MAPPING[field_key]
 
-                # Manejo especial para el campo de estado
-                if field == 'status':
-                    if value.lower() in ['in stock', 'instock']:
-                        adv_domain.append(('qty_available', '>', 0))
-                    elif value.lower() in ['out of stock', 'outofstock']:
-                        adv_domain.append(('qty_available', '<=', 0))
+                # Campo STATUS como select
+                if field_key == 'status':
+                    val = str(raw_value or '').strip().lower()
+                    # Permitimos '=' y '!='
+                    operator = operator or '='
+                    if val in ['in stock', 'instock', 'in_stock', 'in']:
+                        cond = ('qty_available', '>', 0)
+                        if operator == '!=':
+                            cond = ('qty_available', '<=', 0)
+                    elif val in ['out of stock', 'outofstock', 'out_stock', 'out']:
+                        cond = ('qty_available', '<=', 0)
+                        if operator == '!=':
+                            cond = ('qty_available', '>', 0)
                     else:
-                        try:
-                            numeric_value = float(value)
-                            adv_domain.append((model_field, operator, numeric_value))
-                        except (ValueError, TypeError):
-                            pass
-                else:
-                    adv_domain.append((model_field, operator, value))
+                        # fallback sin condición válida
+                        continue
+                    adv_conditions.append(cond)
+                    adv_condition_domains.append([cond])
+                    continue
+
+                # Campo STOCK numérico (qty_available)
+                if field_key == 'stock':
+                    # Normalizar operador: '=' por defecto si 'ilike'
+                    if operator == 'ilike':
+                        operator = '='
+                    try:
+                        numeric_value = float(raw_value)
+                    except (ValueError, TypeError):
+                        continue
+                    cond = (model_field, operator or '=', numeric_value)
+                    adv_conditions.append(cond)
+                    adv_condition_domains.append([cond])
+                    continue
+
+                # Campos de texto: name, sku, barcode
+                op = (operator or 'ilike').lower()
+                val = str(raw_value or '').strip()
+                if op in ('ilike', 'not ilike'):
+                    # Asegurar búsqueda por coincidencia parcial
+                    val = f"%{val}%"
+                cond = (model_field, op, val)
+                adv_conditions.append(cond)
+                adv_condition_domains.append([cond])
 
             # Combinar condiciones de búsqueda avanzada según el tipo de coincidencia
-            if adv_domain:
+            if adv_conditions:
                 if match_type == 'any':
-                    base_domain.append(expression.OR(adv_domain))
+                    base_domain = expression.AND([
+                        base_domain,
+                        expression.OR(adv_condition_domains)
+                    ])
                 else:  # 'all' es el predeterminado
-                    base_domain.extend(adv_domain)
+                    base_domain.extend(adv_conditions)
 
         return base_domain
 
@@ -185,12 +230,8 @@ class PortalStockController(PortalAdminController):
 
         # Obtener el filtro activo por defecto si no se especifica uno
         if not quick_filter:
-            list_filters = [
-                {'id': 'all'},
-                {'id': 'in_stock', 'active': True},
-                {'id': 'out_stock'}
-            ]
-            quick_filter = next((filter['id'] for filter in list_filters if filter.get('active')), 'all')
+            # Default to 'all' when not specified
+            quick_filter = 'all'
 
         # Construir dominio de búsqueda
         base_domain = self._build_product_domain(search, domain, match_type)
@@ -273,3 +314,76 @@ class PortalStockController(PortalAdminController):
             send_file_kwargs['max_age'] = None
 
         return stream.get_response(**send_file_kwargs)
+
+    @http.route('/account/stock/delete/product', type='json', auth='user')
+    def account_stock_delete_product(self, product_id=None, **kw):
+        """Delete a single product variant owned by the current account partner.
+
+        Uses sudo but enforces ownership by checking `account_partner_id`.
+        """
+        try:
+            if not product_id:
+                return {'status': 'error', 'message': _('Missing product identifier')}
+
+            Product = request.env['product.product'].sudo()
+            product = Product.browse(int(product_id))
+
+            if not product.exists():
+                return {'status': 'error', 'message': _('Product not found')}
+
+            # Ensure product belongs to current account partner
+            partner = request.env.user.partner_id
+            account_partner = request.env['account.partner'].sudo().search([
+                ('id', '=', partner.commercial_partner_id.id)
+            ], limit=1)
+            if account_partner and product.account_partner_id.id != account_partner.id:
+                return {'status': 'error', 'message': _('You do not have access to this product')}
+
+            # Attempt unlink
+            product.unlink()
+            return {'status': 'success', 'message': _('Product deleted successfully')}
+        except Exception as e:
+            return {'status': 'error', 'message': str(e)}
+
+    @http.route('/account/stock/delete/products', type='json', auth='user')
+    def account_stock_delete_products(self, product_ids=None, **kw):
+        """Batch delete multiple product variants owned by the current account partner."""
+        try:
+            ids_param = product_ids or kw.get('ids') or kw.get('products')
+            if not ids_param:
+                return {'status': 'error', 'message': _('No products selected')}
+
+            # Allow both list and comma-separated string
+            if isinstance(ids_param, str):
+                ids = [int(x) for x in ids_param.split(',') if x.strip().isdigit()]
+            elif isinstance(ids_param, (list, tuple)):
+                ids = [int(x) for x in ids_param]
+            else:
+                return {'status': 'error', 'message': _('Invalid products payload')}
+
+            if not ids:
+                return {'status': 'error', 'message': _('No valid products to delete')}
+
+            partner = request.env.user.partner_id
+            account_partner = request.env['account.partner'].sudo().search([
+                ('id', '=', partner.commercial_partner_id.id)
+            ], limit=1)
+
+            Product = request.env['product.product'].sudo()
+            products = Product.search([
+                ('id', 'in', ids),
+                ('account_partner_id', '=', account_partner.id)
+            ])
+
+            if not products:
+                return {'status': 'error', 'message': _('No permitted products found for deletion')}
+
+            count = len(products)
+            products.unlink()
+            return {
+                'status': 'success',
+                'message': _(f'{count} product(s) deleted successfully'),
+                'deleted_count': count,
+            }
+        except Exception as e:
+            return {'status': 'error', 'message': str(e)}

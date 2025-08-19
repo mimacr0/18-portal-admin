@@ -22,21 +22,21 @@ export const initProductsListSearch = () => {
 
 export const portalAccountProductsInitAdvancedFilters = async () => {
     const res = await rpc('/account/stock/list/advanced_filters');
-    if(res?.status != 'success') return;
+    if (res?.status != 'success') return;
 
-    const advancedFiltersContainer = document.getElementById('page-products-list-advanced-search-fields');
-    if(!advancedFiltersContainer) return;
+    const fieldsInput = document.getElementById('page-products-list-advanced-search-fields');
+    if (!fieldsInput) return;
 
-    advancedFiltersContainer.innerHTML = res.filters;
+    fieldsInput.value = res.filters;
 }
 
 export function initAdvancedSearch() {
-    const advancedSearchToggle = document.getElementById('page-products-list-advanced-search-toggle');
-    const advancedSearchPanel = document.getElementById('page-products-list-advanced-search-panel');
+    const advancedSearchToggle = document.getElementById('page-stock-list-advanced-search-toggle') || document.getElementById('page-products-list-advanced-search-toggle');
+    const advancedSearchPanel = document.getElementById('page-stock-list-advanced-search-panel') || document.getElementById('page-products-list-advanced-search-panel') || document.querySelector('[id^="page-"][id$="-list-advanced-search-panel"]');
     const applyAdvancedSearchButton = document.getElementById('page-products-list-advanced-search-apply-btn');
     const resetAdvancedSearchButton = document.getElementById('page-products-list-advanced-search-reset-btn');
     const addFilterLineBtn = document.getElementById('page-products-list-advanced-search-add-line-btn');
-    const matchTypeSelector = document.getElementById('page-products-list-advanced-search-match-type');
+    const matchTypeSelector = document.getElementById('page-stock-list-advanced-search-match-type');
     const linesContainer = document.getElementById('page-products-list-advanced-search-lines-container');
 
     if (!advancedSearchToggle || !advancedSearchPanel) return;
@@ -66,6 +66,8 @@ export function initAdvancedSearch() {
     if (resetAdvancedSearchButton) {
         resetAdvancedSearchButton.addEventListener('click', function() {
             resetFilters();
+            // Reload with cleared filters
+            applyFiltersAndSort();
         });
     }
 
@@ -73,8 +75,8 @@ export function initAdvancedSearch() {
     if (applyAdvancedSearchButton) {
         applyAdvancedSearchButton.addEventListener('click', function() {
             applyFiltersAndSort();
-            advancedSearchPanel.classList.add('hidden');
-            advancedSearchToggle.classList.remove('bg-gray-100', 'text-cyan-600');
+            if (advancedSearchPanel) advancedSearchPanel.classList.add('hidden');
+            if (advancedSearchToggle) advancedSearchToggle.classList.remove('bg-gray-100', 'text-cyan-600');
         });
     }
 
@@ -82,10 +84,19 @@ export function initAdvancedSearch() {
     if (linesContainer && linesContainer.children.length === 0) {
         addFilterLine();
     }
+
+    // Match type change auto-apply if filters exist
+    if (matchTypeSelector) {
+        matchTypeSelector.addEventListener('change', () => {
+            if (linesContainer && linesContainer.children.length > 0) {
+                applyAdvancedSearchButton && applyAdvancedSearchButton.click();
+            }
+        });
+    }
 }
 
 function addFilterLine() {
-    const fieldsData = JSON.parse(document.getElementById('page-products-list-advanced-search-fields').value);
+    const fieldsData = JSON.parse(document.getElementById('page-products-list-advanced-search-fields').value || '[]');
     const linesContainer = document.getElementById('page-products-list-advanced-search-lines-container');
 
     const lineId = Date.now();
@@ -105,31 +116,82 @@ function addFilterLine() {
         fieldSelect.appendChild(option);
     });
 
-    // Operator select
+    // Operator select (dynamic by field type)
     const operatorSelect = document.createElement('select');
     operatorSelect.className = 'px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700';
     operatorSelect.dataset.type = 'operator';
 
-    const operators = [
-        { value: 'ilike', label: 'Contains' },
-        { value: 'not ilike', label: 'Does not contain' },
-        { value: '=', label: 'Equals' },
-        { value: '!=', label: 'Does not equal' }
-    ];
+    const buildOperatorOptions = (fieldType) => {
+        switch (fieldType) {
+            case 'number':
+                return [
+                    { value: '=', label: 'Equals' },
+                    { value: '!=', label: 'Does not equal' },
+                    { value: '>', label: 'Greater than' },
+                    { value: '>=', label: 'Greater or equal' },
+                    { value: '<', label: 'Less than' },
+                    { value: '<=', label: 'Less or equal' },
+                ];
+            case 'select':
+                return [
+                    { value: '=', label: 'Is' },
+                    { value: '!=', label: 'Is not' },
+                ];
+            case 'text':
+            default:
+                return [
+                    { value: 'ilike', label: 'Contains' },
+                    { value: '=', label: 'Equals' },
+                    { value: '!=', label: 'Does not equal' },
+                ];
+        }
+    };
 
-    operators.forEach(op => {
-        const option = document.createElement('option');
-        option.value = op.value;
-        option.textContent = op.label;
-        operatorSelect.appendChild(option);
-    });
+    const getFieldSpec = (id) => {
+        const fieldsData = JSON.parse(document.getElementById('page-products-list-advanced-search-fields').value || '[]');
+        return fieldsData.find(f => f.id === id) || { id, type: 'text' };
+    };
 
-    // Value input
-    const valueInput = document.createElement('input');
-    valueInput.type = 'text';
-    valueInput.className = 'px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700';
-    valueInput.dataset.type = 'value';
-    valueInput.placeholder = 'Value';
+    const populateOperatorOptions = (fieldType) => {
+        operatorSelect.innerHTML = '';
+        buildOperatorOptions(fieldType).forEach(op => {
+            const option = document.createElement('option');
+            option.value = op.value;
+            option.textContent = op.label;
+            operatorSelect.appendChild(option);
+        });
+    };
+
+    // Value input (dynamic by field type)
+    const buildValueInput = (fieldSpec) => {
+        if (fieldSpec.type === 'number') {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.step = 'any';
+            input.className = 'px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700';
+            input.dataset.type = 'value';
+            input.placeholder = 'Value';
+            return input;
+        }
+        if (fieldSpec.type === 'select') {
+            const select = document.createElement('select');
+            select.className = 'px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700';
+            select.dataset.type = 'value';
+            (fieldSpec.options || []).forEach(opt => {
+                const o = document.createElement('option');
+                o.value = String(opt.id);
+                o.textContent = opt.label;
+                select.appendChild(o);
+            });
+            return select;
+        }
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700';
+        input.dataset.type = 'value';
+        input.placeholder = 'Value';
+        return input;
+    };
 
     // Remove button
     const removeBtn = document.createElement('button');
@@ -137,6 +199,23 @@ function addFilterLine() {
     removeBtn.innerHTML = '<i class="fas fa-times"></i>';
     removeBtn.addEventListener('click', function() {
         line.remove();
+        // Auto-apply after removal
+        const applyBtn = document.getElementById('page-products-list-advanced-search-apply-btn');
+        applyBtn && applyBtn.click();
+    });
+
+    // Initialize operator/value by initial field
+    const initialSpec = getFieldSpec(fieldSelect.value);
+    populateOperatorOptions(initialSpec.type);
+    let valueInput = buildValueInput(initialSpec);
+
+    // React to field changes
+    fieldSelect.addEventListener('change', () => {
+        const spec = getFieldSpec(fieldSelect.value);
+        populateOperatorOptions(spec.type);
+        const oldValue = valueInput;
+        valueInput = buildValueInput(spec);
+        line.replaceChild(valueInput, oldValue);
     });
 
     line.appendChild(fieldSelect);
@@ -151,12 +230,12 @@ function resetFilters() {
     const linesContainer = document.getElementById('page-products-list-advanced-search-lines-container');
     linesContainer.innerHTML = '';
     addFilterLine();
-    document.getElementById('page-products-list-advanced-search-match-type').value = 'all';
-    document.getElementById('page-products-list-advanced-search-domain').value = '[]';
+    document.getElementById('page-stock-list-advanced-search-match-type').value = 'all';
+    document.getElementById('page-stock-list-advanced-search-domain').value = '[]';
 }
 
 function buildSearchDomain() {
-    const matchType = document.getElementById('page-products-list-advanced-search-match-type').value;
+    const matchType = document.getElementById('page-stock-list-advanced-search-match-type').value;
     const lines = document.querySelectorAll('#page-products-list-advanced-search-lines-container > div');
     const conditions = [];
 
@@ -172,7 +251,7 @@ function buildSearchDomain() {
 
     if (conditions.length === 0) return [];
 
-    document.getElementById('page-products-list-advanced-search-domain').value = JSON.stringify(conditions);
+    document.getElementById('page-stock-list-advanced-search-domain').value = JSON.stringify(conditions);
     return conditions;
 }
 
@@ -191,13 +270,16 @@ export async function applyFiltersAndSort() {
     const pageListItems = document.getElementById('stock-page-list-items');
 
     try {
+        const quickFiltersInput = document.getElementById('page-stock-list-quick-filter-active');
+        const quickFilter = quickFiltersInput ? quickFiltersInput.value : 'all';
         const res = await rpc('/account/stock/list/reload', {
             page: 1,
             search: search,
             domain: searchDomain,
             match_type: matchType,
             sort: sortConfig.column,
-            order: sortConfig.direction
+            order: sortConfig.direction,
+            quick_filter: quickFilter
         });
 
         if (res?.status !== 'success') return;

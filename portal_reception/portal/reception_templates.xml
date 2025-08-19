@@ -219,14 +219,16 @@
                 <!-- Reception Create Modal -->
                 <div t-attf-id="page-#{page_name}-list-create-modal" class="modal" data-outside-close="false">
                     <div class="modal-content max-w-2xl w-full mx-auto">
-                        <div class="modal-header">
-                            <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">Reception Create</h3>
+                                <div class="modal-header">
+                                <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">Reception Create</h3>
                             <button data-modal-close="true" class="close-modal" aria-label="Close modal">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
                         <div class="modal-body">
                             <form t-attf-id="page-#{page_name}-list-create-form">
+                                <!-- Hidden field to switch create modal into edit mode when needed -->
+                                <input type="hidden" id="page-reception-list-create-form-reception-id"/>
                                 <!-- Package type field -->
                                 <div class="form-group">
                                     <div class="flex items-center">
@@ -446,10 +448,10 @@
                     <a t-att-href="package.get_details_url()" t-attf-data-tooltip-target="tooltip-details-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-info-circle"></i>
                     </a>
-                    <button t-attf-data-tooltip-target="tooltip-edit-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <button t-attf-data-tooltip-target="tooltip-edit-#{package.id}" t-att-data-reception-id="package.id" class="reception-edit-btn text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button t-attf-data-tooltip-target="tooltip-delete-#{package.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <button t-attf-data-tooltip-target="tooltip-delete-#{package.id}" t-att-data-reception-id="package.id" class="reception-delete-btn text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
@@ -471,10 +473,10 @@
                     <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.scheduled_date"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button t-attf-data-tooltip-target="tooltip-edit-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <button t-attf-data-tooltip-target="tooltip-edit-#{package.id}" t-att-data-reception-id="package.id" class="reception-edit-btn text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button t-attf-data-tooltip-target="tooltip-delete-#{package.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <button t-attf-data-tooltip-target="tooltip-delete-#{package.id}" t-att-data-reception-id="package.id" class="reception-delete-btn text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
@@ -490,10 +492,10 @@
                     <div class="text-sm text-gray-500" t-out="package.picking_type_id.display_name"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button t-attf-data-tooltip-target="tooltip-edit-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <button t-attf-data-tooltip-target="tooltip-edit-#{package.id}" t-att-data-reception-id="package.id" class="reception-edit-btn text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button t-attf-data-tooltip-target="tooltip-delete-#{package.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <button t-attf-data-tooltip-target="tooltip-delete-#{package.id}" t-att-data-reception-id="package.id" class="reception-delete-btn text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>

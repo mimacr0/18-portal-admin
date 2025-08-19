@@ -1,7 +1,8 @@
 
 export const portalAccountProductsInitCheckboxSelect = () => {
 
-    const selectAllCheckbox = document.getElementById('page-products-list-select-all-checkbox');
+    const selectAllCheckbox = document.getElementById('page-stock-list-select-all-checkbox')
+        || document.getElementById('page-products-list-select-all-checkbox');
     const bulkActionsToolbar = document.getElementById('bulk-actions-toolbar');
     const selectedCountSpan = document.getElementById('selected-count');
     const clearSelectionButton = document.getElementById('clear-selection');
@@ -29,18 +30,21 @@ export const portalAccountProductsInitCheckboxSelect = () => {
         updateBulkActionsToolbar();
     });
 
-    // Handle individual user checkboxes - using event delegation for dynamically created checkboxes
-    document.querySelector('table tbody').addEventListener('change', function(e) {
-        if (e.target && e.target.classList.contains('list-product-checkbox')) {
-            updateSelectAllCheckbox();
-            updateBulkActionsToolbar();
-        }
-    });
+    // Handle individual product checkboxes - using event delegation for dynamically created checkboxes
+    const listContainer = document.getElementById('stock-page-list-items') || document.querySelector('table tbody');
+    if (listContainer) {
+        listContainer.addEventListener('change', function(e) {
+            if (e.target && e.target.classList.contains('products-list-checkbox')) {
+                updateSelectAllCheckbox();
+                updateBulkActionsToolbar();
+            }
+        });
+    }
 
     // Handle clear selection button
     if (clearSelectionButton) {
         clearSelectionButton.addEventListener('click', function() {
-            document.querySelectorAll('.list-product-checkbox').forEach(checkbox => {
+            document.querySelectorAll('.products-list-checkbox').forEach(checkbox => {
                 checkbox.checked = false;
             });
             newSelectAllCheckbox.checked = false;
@@ -165,7 +169,7 @@ export const portalAccountProductsInitCheckboxSelect = () => {
 
     // Update the "Select All" checkbox based on individual checkboxes
     function updateSelectAllCheckbox() {
-        const visibleCheckboxes = Array.from(document.querySelectorAll('.list-product-checkbox')).filter(checkbox =>
+        const visibleCheckboxes = Array.from(document.querySelectorAll('.products-list-checkbox')).filter(checkbox =>
             checkbox.closest('tr').style.display !== 'none'
         );
 
