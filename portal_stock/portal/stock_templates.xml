@@ -169,6 +169,109 @@
                 <!-- File Upload Modal -->
                 <t t-call="portal_stock.portal_file_upload_modal"/>
 
+                <!-- Product Edit Modal -->
+                <div id="page-stock-edit-modal" class="modal" data-outside-close="false">
+                    <div class="modal-content max-w-2xl w-full mx-auto">
+                        <div class="modal-header">
+                            <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">Product Edit</h3>
+                            <button data-modal-close="true" class="close-modal" aria-label="Close modal">
+                                <i class="fas fa-times"/>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="page-stock-edit-form">
+                                <input type="hidden" name="product_id" id="page-stock-edit-form-product-id"/>
+                                <input type="hidden" name="image_base64" id="page-stock-edit-form-image-base64"/>
+                                <div class="form-group">
+                                    <div class="grid grid-cols-2 items-start">
+                                        <div class="col-span-1 w-full p-2">
+                                            <label for="page-stock-edit-form-name" class="form-label-sm font-sm mb-1">Name <span class="text-red-500 text-xl">*</span></label>
+                                            <input type="text" name="name" id="page-stock-edit-form-name" class="form-input text-xl rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Name" required="required"/>
+                                            <div class="form-error invisible mt-1" id="page-stock-edit-form-name-error"/>
+                                        </div>
+                                        <div class="col-start-2 flex justify-end items-start">
+                                            <div class="relative group w-24 h-24">
+                                                <input type="file" name="image" class="hidden" id="page-stock-edit-form-image" accept="image/*"/>
+                                                <label for="page-stock-edit-form-image" class="cursor-pointer block w-full h-full">
+                                                    <img id="page-stock-edit-form-image-preview" src="/portal_stock/static/img/placeholder.png" alt="Upload image" class="w-full h-full border-2 border-gray-400 object-cover rounded transition-opacity duration-200 group-hover:opacity-80"/>
+                                                </label>
+                                                <button type="button" id="page-stock-edit-form-image-delete" class="absolute top-1 right-1 bg-white text-red-600 p-1 rounded-full shadow-md hover:bg-red-100 opacity-0 group-hover:opacity-100 transition-opacity duration-200" title="Remove image">
+                                                    <i class="fa fa-trash"/>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 sm:grid-cols-1 gap-4">
+                                    <div class="form-group">
+                                        <div class="flex items-center">
+                                            <label for="page-stock-edit-form-sku" class="form-label-sm font-sm">SKU</label>
+                                            <span class="text-red-500 ml-1">*</span>
+                                        </div>
+                                        <div>
+                                            <input type="text" name="sku" id="page-stock-edit-form-sku" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="SKU" required="required"/>
+                                            <div class="form-error invisible" id="page-stock-edit-form-sku-error"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="flex items-center">
+                                            <label for="page-stock-edit-form-barcode" class="form-label-sm font-sm">Barcode</label>
+                                            <span class="text-red-500 ml-1">*</span>
+                                        </div>
+                                        <div>
+                                            <input type="text" name="barcode" id="page-stock-edit-form-barcode" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Barcode" required="required"/>
+                                            <div class="form-error invisible" id="page-stock-edit-form-barcode-error"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="flex items-center">
+                                            <label for="page-stock-edit-form-volume" class="form-label-sm font-sm">Volume (cm³)</label>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <input type="number" name="volume" id="page-stock-edit-form-volume" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Volume" step="0.01" min="0"/>
+                                            <span class="mx-1 text-sm">cm³</span>
+                                            <div class="form-error invisible" id="page-stock-edit-form-volume-error"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="flex items-center">
+                                            <label for="page-stock-edit-form-weight" class="form-label-sm font-sm">Weight (kg)</label>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <input type="number" name="weight" id="page-stock-edit-form-weight" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Weight" step="0.01" min="0"/>
+                                            <span class="mx-1 text-sm">kg</span>
+                                            <div class="form-error invisible" id="page-stock-edit-form-weight-error"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div>
+                                        <div class="flex space-x-4 mt-1">
+                                            <div class="flex items-center">
+                                                <input type="radio" name="tracking" id="page-stock-edit-tracking-serial" value="serial" class="w-4 h-4 text-[#696900] border-gray-300 focus:ring-[#8A8A00]"/>
+                                                <label for="page-stock-edit-tracking-serial" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">Return</label>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <input type="radio" name="tracking" id="page-stock-edit-tracking-none" value="none" class="w-4 h-4 text-[#696900] border-gray-300 focus:ring-[#8A8A00]"/>
+                                                <label for="page-stock-edit-tracking-none" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">New</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-error invisible mt-1" id="page-stock-edit-form-tracking-error"/>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700">
+                            <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
+                                <i class="fas fa-times"/> Cancel
+                            </button>
+                            <button id="page-stock-edit-form-submit" class="modal-btn modal-btn-primary">
+                                <i class="fas fa-save"/> Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </t>
 
         </t>
@@ -179,7 +282,7 @@
             <!-- Large screens row -->
             <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 hidden lg:table-row">
                 <td class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-product-id="product.id"/>
+                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-product-id="product.id" t-att-data-product-name="product.name"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
@@ -248,10 +351,10 @@
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button t-attf-data-tooltip-target="tooltip-edit-#{product.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <button t-attf-data-tooltip-target="tooltip-edit-#{product.id}" t-att-data-product-id="product.id" class="product-edit-button text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-edit"/>
                     </button>
-                    <button t-attf-data-tooltip-target="tooltip-delete-#{product.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <button t-attf-data-tooltip-target="tooltip-delete-#{product.id}" t-att-data-product-id="product.id" class="product-delete-button text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-trash"/>
                     </button>
                 </td>
@@ -260,7 +363,7 @@
             <!-- Medium screens row -->
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 hidden md:table-row lg:hidden">
                 <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="product-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-product-id="product.id"/>
+                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-product-id="product.id" t-att-data-product-name="product.name"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="product.name"/>
@@ -272,10 +375,10 @@
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button t-attf-data-tooltip-target="tooltip-edit-#{product.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <button t-attf-data-tooltip-target="tooltip-edit-#{product.id}" t-att-data-product-id="product.id" class="product-edit-button text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-edit"/>
                     </button>
-                    <button t-attf-data-tooltip-target="tooltip-delete-#{product.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <button t-attf-data-tooltip-target="tooltip-delete-#{product.id}" t-att-data-product-id="product.id" class="product-delete-button text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-trash"/>
                     </button>
                 </td>
@@ -284,16 +387,16 @@
             <!-- Small screens row -->
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 table-row md:hidden">
                 <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="product-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-product-id="product.id"/>
+                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-product-id="product.id" t-att-data-product-name="product.name"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="product.name"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button t-attf-data-tooltip-target="tooltip-edit-#{product.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <button t-attf-data-tooltip-target="tooltip-edit-#{product.id}" t-att-data-product-id="product.id" class="product-edit-button text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-edit"/>
                     </button>
-                    <button t-attf-data-tooltip-target="tooltip-delete-#{product.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <button t-attf-data-tooltip-target="tooltip-delete-#{product.id}" t-att-data-product-id="product.id" class="product-delete-button text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-trash"/>
                     </button>
                 </td>

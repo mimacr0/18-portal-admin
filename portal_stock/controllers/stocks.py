@@ -314,3 +314,76 @@ class PortalStockController(PortalAdminController):
             send_file_kwargs['max_age'] = None
 
         return stream.get_response(**send_file_kwargs)
+
+    @http.route('/account/stock/delete/product', type='json', auth='user')
+    def account_stock_delete_product(self, product_id=None, **kw):
+        """Delete a single product variant owned by the current account partner.
+
+        Uses sudo but enforces ownership by checking `account_partner_id`.
+        """
+        try:
+            if not product_id:
+                return {'status': 'error', 'message': _('Missing product identifier')}
+
+            Product = request.env['product.product'].sudo()
+            product = Product.browse(int(product_id))
+
+            if not product.exists():
+                return {'status': 'error', 'message': _('Product not found')}
+
+            # Ensure product belongs to current account partner
+            partner = request.env.user.partner_id
+            account_partner = request.env['account.partner'].sudo().search([
+                ('id', '=', partner.commercial_partner_id.id)
+            ], limit=1)
+            if account_partner and product.account_partner_id.id != account_partner.id:
+                return {'status': 'error', 'message': _('You do not have access to this product')}
+
+            # Attempt unlink
+            product.unlink()
+            return {'status': 'success', 'message': _('Product deleted successfully')}
+        except Exception as e:
+            return {'status': 'error', 'message': str(e)}
+
+    @http.route('/account/stock/delete/products', type='json', auth='user')
+    def account_stock_delete_products(self, product_ids=None, **kw):
+        """Batch delete multiple product variants owned by the current account partner."""
+        try:
+            ids_param = product_ids or kw.get('ids') or kw.get('products')
+            if not ids_param:
+                return {'status': 'error', 'message': _('No products selected')}
+
+            # Allow both list and comma-separated string
+            if isinstance(ids_param, str):
+                ids = [int(x) for x in ids_param.split(',') if x.strip().isdigit()]
+            elif isinstance(ids_param, (list, tuple)):
+                ids = [int(x) for x in ids_param]
+            else:
+                return {'status': 'error', 'message': _('Invalid products payload')}
+
+            if not ids:
+                return {'status': 'error', 'message': _('No valid products to delete')}
+
+            partner = request.env.user.partner_id
+            account_partner = request.env['account.partner'].sudo().search([
+                ('id', '=', partner.commercial_partner_id.id)
+            ], limit=1)
+
+            Product = request.env['product.product'].sudo()
+            products = Product.search([
+                ('id', 'in', ids),
+                ('account_partner_id', '=', account_partner.id)
+            ])
+
+            if not products:
+                return {'status': 'error', 'message': _('No permitted products found for deletion')}
+
+            count = len(products)
+            products.unlink()
+            return {
+                'status': 'success',
+                'message': _(f'{count} product(s) deleted successfully'),
+                'deleted_count': count,
+            }
+        except Exception as e:
+            return {'status': 'error', 'message': str(e)}

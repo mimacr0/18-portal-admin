@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(!document.getElementById('stock-page-list-items')) return;
     reloadStockListPage();
     initProductsManagementListPage();
+    document.addEventListener('list:reload', reloadStockListPage);
     initFileUploadModal();
     initProductsListSearch();
     portalAccountProductsInitCheckboxSelect();
