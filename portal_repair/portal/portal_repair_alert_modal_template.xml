@@ -29,7 +29,7 @@
                                 </div>
                             </div>
                             <!-- Contact Information -->
-                            <label class="form-label-md font-md">Request Type</label>
+                            <!-- <label class="form-label-md font-md">Request Type</label> -->
                             <div class="form-group">
                                 <div class="flex items-center">
                                     <label t-attf-for="page-#{page_name}-list-create-form-reception-ref" class="form-label-sm font-sm">Request Type</label>
@@ -50,7 +50,7 @@
                                 </div>
                             </div>
                             <!--Client Additional Information-->
-                            <label class="form-label-md font-md">Reception Info / Tracking Information</label>
+                            <!-- <label class="form-label-md font-md">Reception Info / Tracking Information</label> -->
                             <div class="form-group">
                                 <div class="flex items-center">
                                     <label t-attf-for="page-#{page_name}-list-create-form-reception-ref" class="form-label-sm font-sm">Reception Ref</label>
@@ -61,7 +61,7 @@
                                     <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-reception-ref-error"></div>
                                 </div>
                             </div>
-                            <label class="form-label-md font-md">Problem Description</label>
+                            <!-- <label class="form-label-md font-md">Problem Description</label> -->
                             <div class="form-group">
                                 <div class="flex items-center">
                                     <label t-attf-for="page-#{page_name}-list-create-form-problem" class="form-label-sm font-sm">Problem</label>
@@ -79,7 +79,7 @@
                                     <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-problem-error"></div>
                                 </div>
                             </div>
-                            <label class="form-label-md font-md">Product Data</label>
+                            <!-- <label class="form-label-md font-md">Product Data</label> -->
                             <div class="form-group">
                                 <input name="products" type="hidden" t-attf-id="page-#{page_name}-list-create-form-products-list" required="required"/>
                                 <div class="mb-4">
@@ -101,6 +101,17 @@
                                 </div>
                                 <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-products-list-error"></div>
                             </div>
+
+                            <!-- Lot name field -->
+                            <!-- <div class="form-group">
+                                <div class="flex items-center">
+                                    <label t-attf-for="page-#{page_name}-list-create-form-lot-name" class="form-label-sm font-sm">Lot Name</label>
+                                </div>
+                                <div>
+                                    <input type="text" name="lot_name" t-attf-id="page-#{page_name}-list-create-form-lot-name" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#A0A000]" placeholder="Lot Name"/>
+                                    <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-lot-name-error"></div>
+                                </div>
+                            </div> -->
                         </form>
                     </div>
                     <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700">

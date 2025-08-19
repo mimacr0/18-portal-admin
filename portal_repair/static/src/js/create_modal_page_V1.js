@@ -44,18 +44,19 @@ const updateRepairAlertsProductsField = () => {
     const products = [];
 
     for (const line of productLines) {
-        // const packageInput = line.querySelector('.product-package');
         const select = line.querySelector('.product-select');
         const qtyInput = line.querySelector('.product-qty');
+        const lotSelect = line.querySelector('.lot-select');
 
-        try {
+        try {   
             const selectData = $(select).select2('data')[0];
-            // if (packageInput && selectData && qtyInput) {
+            const lotData = lotSelect ? $(lotSelect).select2('data')[0] : null;
+
             if (selectData && qtyInput) {
                 products.push({
-                    // package: packageInput.value,
                     product_id: selectData.id,
-                    quantity: qtyInput.value
+                    quantity: qtyInput.value,
+                    lot_id: lotData ? lotData.id : null
                 });
             }
         } catch (e) {
@@ -85,38 +86,18 @@ export const initRepairAlertCreateForm = () => {
     const createButton = document.getElementById('launch-create-repair-alert-form-button');
     const createModal = document.getElementById('page-repair-alert-list-create-modal');
     const submitButton = document.getElementById('page-repair-alert-list-create-product-form-submit');
-    // const catalogButton = document.getElementById('page-repair-alert-list-create-form-products-add-catalog-btn');
-    // const scheduledDateInput = document.getElementById('page-repair-alert-list-create-form-scheduled-date');
-    // const pageMainContainer = document.querySelector('#page-repair-alert-main-container');
-    // const productCatalogSelectContainer = document.querySelector('#page-repair-alert-product-catalog-select');
-    // const carrierSelectInput = document.getElementById('page-repair-alert-list-create-form-carrier-id');
-    // const packageTypeSelectInput = document.getElementById('page-repair-alert-list-create-form-package-type-id');
-    console.log("1")
-    // if (!scheduledDateInput) return;
-    console.log("2")
-    // Function to reset the form when modal is closed
+    const lotSelectInput = document.getElementById('page-repair-alert-list-create-form-lot-name');
     const resetRepairAlertForm = () => {
         console.log("Resetting repair-alert form");
 
-        // Reset all form inputs
         const form = document.getElementById(`page-${pageName}-list-create-form`);
         if (form) {
             form.reset();
         }
 
-        // Clear Select2 fields
-        // if ($(packageTypeSelectInput).data('select2')) {
-        //     $(packageTypeSelectInput).val(null).trigger('change');
-        // }
-
-        // if ($(carrierSelectInput).data('select2')) {
-        //     $(carrierSelectInput).val(null).trigger('change');
-        // }
-
-        // Reset flatpickr date input
-        // if (scheduledDateInput._flatpickr) {
-        //     scheduledDateInput._flatpickr.clear();
-        // }
+        if ($(lotSelectInput).data('select2')) {
+            $(lotSelectInput).val(null).trigger('change');
+        }
 
         // Reset product lines container
         const productsContainer = document.getElementById(`page-${pageName}-list-create-form-products-line-items-container`);
@@ -134,121 +115,37 @@ export const initRepairAlertCreateForm = () => {
         selectedProductsRegistry.clear();
     };
 
+    $(lotSelectInput).select2({
+        placeholder: 'Select Lot',
+        dropdownParent: $(createModal),
+        ajax: {
+            transport: function(params, success, failure) {
+                rpc('/account/reception/lot-search', {
+                    term: params.data.term
+                })
+                .then(function(result) {
+                    success({ results: result.items });
+                })
+                .catch(function(error) {
+                    console.error('Error fetching lots:', error);
+                    failure('Failed to load lots');
+                });
+            },
+            processResults: function(data) {
+                return data;
+            },
+            delay: 250
+        },
+        templateResult: function(data) {
+            return formatLot(data);
+        }
+    });
+
     // Add event listener for modal closing
     document.addEventListener('modalClosed', (e) => {
         if (e.detail.modalId !== 'page-repair-alert-list-create-modal') return;
         resetRepairAlertForm();
     });
-
-    // flatpickr(scheduledDateInput, {
-    //     minDate: 'today',
-    //     enableTime: true,
-    //     dateFormat: 'd-m-Y H:i'
-    // });
-
-    // $(packageTypeSelectInput).select2({
-    //     placeholder: 'Select Package Type',
-    //     dropdownParent: $(createModal),
-    //     ajax: {
-    //         transport: function(params, success, failure) {
-    //             rpc('/account/repair-alert/package-type-search', {
-    //                 term: params.data.term
-    //             })
-    //             .then(function(result) {
-    //                 success({ results: result.items });
-    //             })
-    //             .catch(function(error) {
-    //                 console.error('Error fetching package types:', error);
-    //                 failure('Failed to load package types');
-    //             });
-    //         },
-    //         processResults: function(data) {
-    //             return data;
-    //         },
-    //         delay: 250
-    //     },
-    //     templateResult: function(data) {
-    //         return formatPackageType(data);
-    //     }
-    // });
-
-    // Update measures and weight when package type changes
-    // $(packageTypeSelectInput).on('select2:select', function (e) {
-    //     const data = e.params.data;
-    //     if (data) {
-    //         // Update width field
-    //         const widthField = document.getElementById('page-repair-alert-list-create-form-measures-width');
-    //         if (widthField && data.width) {
-    //             widthField.value = data.width;
-    //         }
-
-    //         // Update height field
-    //         const heightField = document.getElementById('page-repair-alert-list-create-form-measures-height');
-    //         if (heightField && data.height) {
-    //             heightField.value = data.height;
-    //         }
-
-    //         // Update length field
-    //         const lengthField = document.getElementById('page-repair-alert-list-create-form-measures-length');
-    //         if (lengthField && data.packaging_length) {
-    //             lengthField.value = data.packaging_length;
-    //         }
-
-    //         // Update weight field
-    //         const weightField = document.getElementById('page-repair-alert-list-create-form-weight');
-    //         if (weightField && data.base_weight) {
-    //             weightField.value = data.base_weight;
-    //         }
-    //     }
-    // });
-
-    // $(carrierSelectInput).select2({
-    //     placeholder: 'Select Carrier',
-    //     dropdownParent: $(createModal),
-    //     ajax: {
-    //         transport: function(params, success, failure) {
-    //             rpc('/account/repair-alert/carrier-search', {
-    //                 term: params.data.term
-    //             })
-    //             .then(function(result) {
-    //                 success({ results: result.items });
-    //             })
-    //             .catch(function(error) {
-    //                 console.error('Error fetching carriers:', error);
-    //                 failure('Failed to load carriers');
-    //             });
-    //         },
-    //         processResults: function(data) {
-    //             return data;
-    //         },
-    //         delay: 250
-    //     },
-    //     templateResult: function(data) {
-    //         return formatCarrier(data);
-    //     }
-    // });
-
-    // catalogButton.addEventListener('click', async () => {
-    //     const paginationContainerMain = document.getElementById('page-repair-alert-list-pagination-container-main');
-    //     paginationContainerMain.classList.add('hidden'); // Hide the main pagination
-
-    //     productCatalogSelectContainer.classList.remove('hidden');
-    //     pageMainContainer.classList.add('hidden');
-    //     createModal.dataset.open = 'false';
-
-    //     // Reset pagination and load first page
-    //     currentCatalogPage = 1;
-    //     catalogSearchQuery = '';
-
-    //     // Reset search input value - Now pageName is defined
-    //     const searchInput = document.getElementById(`page-${pageName}-product-catalog-select-search`);
-    //     if (searchInput) searchInput.value = '';
-
-    //     loadProductCatalog();
-
-    //     // Setup search input event listener right after opening the catalog
-    //     setupSearchListener();
-    // });
 
     createButton.addEventListener('click', () => {
         console.log('Botón "Crear" clickeado. Abriendo modal...');
@@ -859,99 +756,65 @@ function initManualProductAdd() {
 
     let lineCounter = 0;
 
-    if (!addBtn || !container) return;
+    if (addBtn && container) {
+        addBtn.addEventListener('click', () => {
+            const lineId = `manual-product-line-${lineCounter}`;
+            const newRow = document.createElement('div');
+            newRow.className = 'line-item flex items-center gap-2 mb-2';
+            newRow.dataset.lineId = lineId;
+                // <div class="w-24">
+                //     <input type="number" value="1" min="1"
+                //         class="product-package form-input-sm w-full text-center rounded-md border border-gray-300
+                //         focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"/>
+                // </div>
+            newRow.innerHTML = `
 
-    addBtn.addEventListener('click', () => {
-        const lineId = `manual-product-line-${lineCounter}`;
-        const newRow = document.createElement('div');
-        newRow.className = 'line-item flex items-center gap-2 mb-2';
-        newRow.dataset.lineId = lineId;
+                <div class="flex-grow">
+                    <select class="product-select form-select-sm w-full rounded-md border border-gray-300
+                        focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500">
+                    </select>
+                </div>
+                <div class="flex-grow">
+                    <select class="lot-select form-select-sm w-full rounded-md border border-gray-300
+                        focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" disabled>
+                        <option value="">Select lot...</option>
+                    </select>
+                </div>
+                <div class="w-24">
+                    <input type="number" value="1" min="1"
+                        class="product-qty form-input-sm w-full text-center rounded-md border border-gray-300
+                        focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"/>
+                </div>
+                
+                <div>
+                    <button type="button" class="product-remove-btn p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700" data-line-id="${lineId}">
+                        <i class="fas fa-trash-alt text-red-500"></i>
+                    </button>
+                </div>
+            `;
 
-        newRow.innerHTML = `
-            <div class="flex-grow">
-                <select class="product-select form-select-sm w-full rounded-md border border-gray-300
-                    focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500">
-                </select>
-            </div>
-            <div class="flex-grow">
-                <select class="lot-select form-select-sm w-full rounded-md border border-gray-300
-                    focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500 select2-single page-${pageName}-list-create-form-lot-value-select" multiple>
-                </select>
-            </div>
-            <div class="w-24">
-                <input type="number" value="1" min="1"
-                    class="product-qty form-input-sm w-full text-center rounded-md border border-gray-300
-                    focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"/>
-            </div>
-            <div>
-                <button type="button" class="product-remove-btn p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700" data-line-id="${lineId}">
-                    <i class="fas fa-trash-alt text-red-500"></i>
-                </button>
-            </div>
-        `;
+            container.appendChild(newRow);
 
-        container.appendChild(newRow);
+            // Initialize Select2 for this row
+            // const packageInput = newRow.querySelector('.product-package');
+            const select = newRow.querySelector('.product-select');
+            const lotSelect = newRow.querySelector('.lot-select');
+            const qtyInput = newRow.querySelector('.product-qty');
 
-        const select = $(newRow).find('.product-select');
-        const lotSelect = $(newRow).find('.lot-select');
-        const qtyInput = newRow.querySelector('.product-qty');
-
-        // Inicializar Select2 para productos
-        select.select2({
-            placeholder: 'Search product...',
-            dropdownParent: $(modal),
-            ajax: {
-                transport: function(params, success, failure) {
-                    rpc('/account/repair-alert/product-search', { term: params.data.term })
-                        .then(result => success({ results: result.items }))
-                        .catch(error => { console.error(error); failure('Failed to load products'); });
-                },
-                processResults: data => data,
-                delay: 250
-            },
-            templateResult: formatProduct,
-            templateSelection: formatProductSelection
-        });
-
-        // Inicializar Select2 para lotes (vacío al inicio)
-        lotSelect.select2({
-            placeholder: 'Select a lot',
-            dropdownParent: $(modal)
-        });
-
-        // Evento cuando cambia el producto
-        select.on('change', function() {
-            const productId = $(this).val();
-            const lotSelect = $(this).closest('.line-item').find('.lot-select');
-
-            // Limpiar selección de lotes
-            $(lotSelect).val(null).trigger('change');
-
-            if (!productId) return;
-
-            console.log('Fetching lots for product ID:', productId);
-
-            // Destruir Select2 anterior si existe
-            if ($(lotSelect).hasClass("select2-hidden-accessible")) {
-                $(lotSelect).select2('destroy');
-            }
-
-            // Inicializar Select2 para lotes
-            $(lotSelect).select2({
-                placeholder: 'Search lot...',
+            $(select).select2({
+                placeholder: 'Search product...',
                 dropdownParent: $(modal),
                 ajax: {
                     transport: function(params, success, failure) {
-                        rpc('/account/repair-alert/product-lots', {
-                            product_id: parseInt(productId),
+                        rpc('/account/repair-alert/product-search', {
                             term: params.data.term
                         })
                         .then(function(result) {
                             success({ results: result.items });
                         })
                         .catch(function(error) {
-                            console.error('Error fetching lots:', error);
-                            failure('Failed to load lots');
+                            console.error('Error fetching products:', error);
+                            failure('Failed to load products');
                         });
                     },
                     processResults: function(data) {
@@ -959,26 +822,75 @@ function initManualProductAdd() {
                     },
                     delay: 250
                 },
-                templateResult: formatLot,
-                templateSelection: formatLotSelection
+                templateResult: formatProduct,
+                templateSelection: formatProductSelection
             });
 
-            updateRepairAlertsProductsField();
+            // Cuando cambie el producto
+            $(select).on('change', function() {
+                const productId = $(this).val();
+
+                // Resetear lote si no hay producto seleccionado
+                if (!productId) {
+                    $(lotSelect).val(null).trigger('change');
+                    lotSelect.setAttribute('disabled', true);
+                    return;
+                }
+
+                lotSelect.removeAttribute('disabled');
+
+                // Inicializar Select2 para lotes
+                $(lotSelect).select2({
+                    placeholder: 'Search lot...',
+                    dropdownParent: $(modal),
+                    ajax: {
+                        transport: function(params, success, failure) {
+                            rpc('/account/repair-alert/product-lots', {
+                                product_id: productId,
+                                term: params.data.term
+                            })
+                            .then(function(result) {
+                                success({ results: result.items });  // result.items = [{id, text}]
+                            })
+                            .catch(function(error) {
+                                console.error('Error fetching lots:', error);
+                                failure('Failed to load lots');
+                            });
+                        },
+                        processResults: function(data) {
+                            return data;  // espera {results: [{id,text}, ...]}
+                        },
+                        delay: 250
+                    },
+                    templateResult: formatLot,         // Función para mostrar lotes en el dropdown
+                    templateSelection: formatLotSelection  // Función para mostrar lote seleccionado
+                });
+
+                // Actualizar campo oculto al cambiar lote
+                $(lotSelect).on('change', updateRepairAlertsProductsField);
+            });
+
+
+            // Update hidden name field and transfer attributes data when selection changes
+            $(select).on('change', updateRepairAlertsProductsField);
+            lotSelect.addEventListener('change', updateRepairAlertsProductsField);
+
+            // Update registry when quantity changes
+            qtyInput.addEventListener('change', updateRepairAlertsProductsField);
+            // packageInput.addEventListener('change', updateRepairAlertsProductsField);
+
+            lineCounter++;
+
+            // Set up remove button
+            const removeBtn = newRow.querySelector('.product-remove-btn');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', () => {
+                    container.removeChild(newRow);
+                    updateRepairAlertsProductsField();
+                });
+            }
         });
-
-
-        // Actualizar registro al cambiar cantidad
-        qtyInput.addEventListener('change', updateRepairAlertsProductsField);
-
-        // Botón para eliminar fila
-        const removeBtn = newRow.querySelector('.product-remove-btn');
-        removeBtn?.addEventListener('click', () => {
-            container.removeChild(newRow);
-            updateRepairAlertsProductsField();
-        });
-
-        lineCounter++;
-    });
+    }
 }
 
 // Format function for product dropdown items - with attributes support
@@ -1033,7 +945,6 @@ function formatProductSelection(product) {
 
     return text;
 }
-
 // Format function for lot dropdown items - only show name
 function formatLot(lot) {
     if (!lot.id) return lot.text;
@@ -1053,7 +964,6 @@ function formatLotSelection(lot) {
     return lot.text;
 }
 
-
 // Update the document ready function
 document.addEventListener('DOMContentLoaded', () => {
     initRepairAlertCreateForm();
@@ -1067,7 +977,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Add near the top with other formatting functions
 
-function formatCarrier(data) {
+
+function formatLot(data) {
     if (!data.id) return data.text;
 
     // Create container with flexbox
@@ -1096,38 +1007,6 @@ function formatCarrier(data) {
 
     if (data.price) {
         html += `<div class="text-xs font-medium text-gray-700">${data.price} ${data.currency || ''}</div>`;
-    }
-
-    html += `</div></div>`;
-
-    return $(html);
-}
-
-function formatPackageType(data) {
-    if (!data.id) return data.text;
-
-    // Create container with flexbox
-    let html = `<div class="flex items-center space-x-3">`;
-
-    // Add package type image if available
-    if (data.image) {
-        html += `<div class="flex-shrink-0">
-            <img src="${data.image}" class="h-10 w-10 object-cover rounded-sm" alt="${data.text}"/>
-        </div>`;
-    } else {
-        html += `<div class="flex-shrink-0">
-            <div class="h-10 w-10 flex items-center justify-center bg-gray-200 rounded-sm">
-                <i class="fas fa-box text-gray-500"></i>
-            </div>
-        </div>`;
-    }
-
-    // Package type details
-    html += `<div class="flex-grow">
-        <div class="font-medium">${data.text}</div>`;
-
-    if (data.dimensions) {
-        html += `<div class="text-xs font-medium text-gray-700">${data.dimensions}</div>`;
     }
 
     html += `</div></div>`;

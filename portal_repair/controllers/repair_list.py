@@ -63,7 +63,7 @@ class PortalRepairController(PortalAdminController):
         values.update({
             'page_name': 'repair-alert',
             'alerts': alerts,
-            'page_title': _('Receptions'),
+            'page_title': _('Repair Alerts'),
             'page_url': '/account/repair',
             'flatpickr': True,
             'select2': True,

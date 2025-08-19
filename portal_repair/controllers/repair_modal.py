@@ -56,15 +56,6 @@ class PortalRepairController(PortalAdminController):
                     'display_name': f"{attr_value.attribute_id.name}: {attr_value.name}"
                 })
 
-            # 🔹 Obtener lotes disponibles del producto
-            lots = []
-            lots_records = StockLot.search([('product_id', '=', product.id)], limit=20)
-            for lot in lots_records:
-                lots.append({
-                    'id': lot.id,
-                    'name': lot.name,
-                })
-
             result_items.append({
                 'id': product.id,
                 'text': product.name,
@@ -73,15 +64,61 @@ class PortalRepairController(PortalAdminController):
                 'price': product.list_price,
                 'currency': product.currency_id.symbol,
                 'attributes': attributes,
-                'lots': lots,  # 🔹 Añadimos los lotes aquí
                 'image': product.image_128 and f"data:image/png;base64,{product.image_128.decode('utf-8')}" or False
             })
         return {
             'status': 'success',
             'items': result_items
         }
+    # @http.route('/account/repair-alert/product-lots', type='json', auth='user')
+    # def account_repair_alert_product_lots(self, product_id, **kw):
+    #     StockLot = request.env['stock.lot'].sudo()
+    #     ProductProduct = request.env['product.product'].sudo()
 
-        
+    #     # Get the product record
+    #     product = ProductProduct.browse(int(product_id))
+    #     if not product.exists():
+    #         return {
+    #             'status': 'error',
+    #             'message': _('Product not found.')
+    #         }
+
+    #     # Search for lots related to this product
+    #     domain = [('product_id', '=', product.id)]
+    #     lots = StockLot.search(domain)
+
+    #     # Prepare the result
+    #     result_items = []
+    #     for lot in lots:
+    #         result_items.append({
+    #             'id': lot.id,
+    #             'text': lot.name,
+    #         })
+
+    #     return {
+    #         'status': 'success',
+    #         'items': result_items
+    #     }
+    @http.route('/account/repair-alert/product-lots', type='json', auth='user')
+    def account_repair_alert_product_lots(self, **kw):
+        product_id = kw.get('product_id')
+        print("Received product_id:", kw.get('product_id'))
+        if not product_id:
+            return {'status': 'error', 'message': 'product_id is required.'}
+
+        StockLot = request.env['stock.lot'].sudo()
+        ProductProduct = request.env['product.product'].sudo()
+
+        product = ProductProduct.browse(int(product_id))
+        if not product.exists():
+            return {'status': 'error', 'message': _('Product not found.')}
+
+        lots = StockLot.search([('product_id', '=', product.id)])
+        items = [{'id': lot.id, 'text': lot.name} for lot in lots]
+        print("Found lots:", items)
+        return {'status': 'success', 'items': items}
+
+
     @http.route('/account/repair-alert/create', type='json', auth='user')
     def account_repair_alert_create(self, **post):
 
