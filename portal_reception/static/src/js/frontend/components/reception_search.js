@@ -181,6 +181,18 @@ export const initAdvancedSearch = () => {
         const removeBtn = lineElement.querySelector('.remove-line-btn');
         removeBtn.addEventListener('click', () => {
             lineElement.remove();
+            // Aplicar filtros automáticamente al eliminar una línea
+            if (applyBtn) applyBtn.click();
+        });
+    });
+
+    // Asegurar que las líneas ya existentes también apliquen filtros al eliminar
+    const existingRemoveButtons = linesContainer.querySelectorAll('.filter-line .remove-line-btn');
+    existingRemoveButtons.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            const lineEl = e.currentTarget.closest('.filter-line');
+            if (lineEl) lineEl.remove();
+            if (applyBtn) applyBtn.click();
         });
     });
 
