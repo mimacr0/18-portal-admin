@@ -41,11 +41,11 @@ export const reloadStockListPage = async () => {
     const search = searchInput.value;
 
     // Obtener dominio de búsqueda avanzada si existe
-    const domainInput = document.getElementById('page-products-list-advanced-search-domain');
+    const domainInput = document.getElementById('page-stock-list-advanced-search-domain');
     const domain = domainInput ? JSON.parse(domainInput.value || '[]') : [];
 
     // Obtener tipo de coincidencia para los filtros
-    const matchTypeSelect = document.getElementById('page-products-list-advanced-search-match-type');
+    const matchTypeSelect = document.getElementById('page-stock-list-advanced-search-match-type');
     const matchType = matchTypeSelect ? matchTypeSelect.value : 'all';
 
     // Obtener el valor del input de filtros rápidos
