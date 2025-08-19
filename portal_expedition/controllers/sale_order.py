@@ -125,37 +125,62 @@ class PortalExpeditionController(PortalAdminController):
                 [('picking_ids.carrier_tracking_ref', 'ilike', search)],
             ]))
 
-        # # Aplicar dominio de búsqueda avanzada
-        if domain and isinstance(domain, list) and domain:
-            adv_domain = []
-            for condition in domain:
-                # Comprueba que cada condición tenga exactamente 3 elementos
-                if len(condition) != 3:
-                    continue
-
-                field, operator, value = condition
-                if field not in self.EXPEDITION_FIELDS_MAPPING:
-                    continue
-
-                model_field = self.EXPEDITION_FIELDS_MAPPING[field]
-                # if field == 'date_order':
-                #     try:
-                #         # Ajusta el formato según lo que recibes: "YYYY-MM-DD"
-                #         value = datetime.strptime(value, "%d-%m-%Y").date()
-                #     except ValueError:
-                #         continue  # o lanza error si prefieres
-
-                adv_domain.append((model_field, operator, value))
-            # Si no hay condiciones avanzadas, no se modifica el dominio base
-            # Combinar condiciones de búsqueda avanzada según el tipo de coincidencia
-            if adv_domain:
-                if match_type == 'any':
-                    base_domain.append(expression.OR(adv_domain))
-                else:  # 'all' es el predeterminado
-                    base_domain.extend(adv_domain)
-
-        return base_domain
+        # Aplicar dominio de búsqueda avanzada
+        if domain:
+            base_domain = self._apply_advanced_domain(base_domain, domain, match_type)
     
+        return base_domain
+
+    def _apply_advanced_domain(self, base_domain, domain, match_type='all'):
+        """
+        Construye y combina condiciones avanzadas para el dominio.
+        """
+        adv_conditions = []
+        adv_condition_domains = []
+
+        def _date_bounds_utc(date_str):
+            try:
+                user_tz = pytz.timezone(request.env.user.tz or 'UTC')
+                day_local_start = user_tz.localize(datetime.strptime(date_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
+                day_local_end = user_tz.localize(datetime.strptime(date_str + ' 23:59:59', '%Y-%m-%d %H:%M:%S'))
+                return (
+                    day_local_start.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S'),
+                    day_local_end.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S'),
+                )
+            except Exception:
+                return (date_str, date_str)
+
+        for condition in domain:
+            if not isinstance(condition, (list, tuple)) or len(condition) != 3:
+                continue
+            field_key, operator, raw_value = condition
+            model_field = self.EXPEDITION_FIELDS_MAPPING[field_key]
+
+            if field_key in ['scheduled_date', 'date']:
+                if operator == '=':
+                    start_utc, end_utc = _date_bounds_utc(str(raw_value))
+                    conds = [(model_field, '>=', start_utc), (model_field, '<=', end_utc)]
+                    adv_conditions.extend(conds)
+                    adv_condition_domains.append(conds)
+                    continue
+                elif operator in ('>=', '<='):
+                    bound_utc = _date_bounds_utc(str(raw_value))[0 if operator == '>=' else 1]
+                    cond = (model_field, operator, bound_utc)
+                    adv_conditions.append(cond)
+                    adv_condition_domains.append([cond])
+                    continue
+
+            cond = (model_field, operator, raw_value)
+            adv_conditions.append(cond)
+            adv_condition_domains.append([cond])
+
+        if adv_conditions:
+            if match_type == 'any':
+                return expression.AND([base_domain, expression.OR(adv_condition_domains)])
+            else:
+                base_domain.extend(adv_conditions)
+        return base_domain
+
     def get_quick_filter_domain(self, quick_filter, env):
         """
         Retorna el dominio adicional según el filtro rápido (quick_filter).

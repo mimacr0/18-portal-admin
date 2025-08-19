@@ -87,7 +87,7 @@ export const initRepairAlertCreateForm = () => {
 
     // Obtener elementos del DOM usando el nombre de la página
     const createButton = document.getElementById('launch-create-repair-alert-form-button');
-    const createModal = document.getElementById('page-repair-alert-list-create-modal');
+    // const createModal = document.getElementById('page-repair-alert-list-create-modal');
     const submitButton = document.getElementById('page-repair-alert-list-create-product-form-submit');
 
     const resetRepairAlertForm = () => {
@@ -933,6 +933,8 @@ function formatLotSelection(lot) {
 
 // Update the document ready function
 document.addEventListener('DOMContentLoaded', () => {
+    if (!document.getElementById('repair-alert-page-list-items')) return;
+
     initRepairAlertCreateForm();
     initManualProductAddRepair();
     // Set up the close button for product catalog

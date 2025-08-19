@@ -51,7 +51,7 @@ export const reloadRepairAlertListPage = async () => {
     // Obtener el valor del input de filtros rápidos
     const quickFiltersInput = document.getElementById('page-repair-alert-list-quick-filter-active');
     const quickFilter = quickFiltersInput ? quickFiltersInput.value : '';
-
+    console.log(`Reloading repair alert list with search: ${search}, domain: ${JSON.stringify(domain)}, matchType: ${matchType}, quickFilter: ${quickFilter}`);
     // Realizar petición RPC al servidor con todos los parámetros recopilados
     const res = await rpc('/account/repair/list/reload', {
         page: currentPage,

@@ -22,7 +22,8 @@ class PortalRepairController(PortalAdminController):
     ALERT_FIELDS_MAPPING = {
         'stage': 'stage_id',
         'name': 'name',
-        'picking_id': 'picling_id',
+        'schedule_date': 'schedule_date',
+        'picking_id': 'picking_id',
         'description': 'description',
     }
 
@@ -39,14 +40,14 @@ class PortalRepairController(PortalAdminController):
         return menus
 
     @lru_cache(maxsize=1)
-    def _get_advanced_search_fields(self):
+    def _get_repair_advanced_search_fields(self):
         """Devuelve la configuración de campos para búsqueda avanzada"""
         return [
             {'id': 'name', 'label': _('Name')},
-            {'id': 'origin', 'label': _('Origin')},
-            {'id': 'partner', 'label': _('Partner')},
-            {'id': 'date', 'label': _('Scheduled Date')},
-            {'id': 'state', 'label': _('Status')}
+            # {'id': 'origin', 'label': _('Origin')},
+            # {'id': 'partner', 'label': _('Partner')},
+            {'id': 'schedule_date', 'label': _('Schedule Date')},
+            {'id': 'stage', 'label': _('Stage')}
         ]
 
     @http.route('/account/repair', type='http', auth="user", website=True)
@@ -86,7 +87,7 @@ class PortalRepairController(PortalAdminController):
             'batch_actions': [
                 {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
             ],
-            'advanced_search': json.dumps(self._get_advanced_search_fields())
+            'advanced_search': json.dumps(self._get_repair_advanced_search_fields())
         })
 
         return request.render("portal_repair.portal_repair_alert_page_main", values)
@@ -128,7 +129,7 @@ class PortalRepairController(PortalAdminController):
     def account_reception_list_advanced_filters(self, **kw):
         return {
             'status': 'success',
-            'filters': json.dumps(self._get_advanced_search_fields())
+            'filters': json.dumps(self._get_repair_advanced_search_fields())
         }
 
     def _build_alert_domain(self, search='', domain=None, match_type='all', quick_filter=None):
@@ -163,44 +164,66 @@ class PortalRepairController(PortalAdminController):
                 ('stage_id', '!=', request.env.ref('repair_module.quality_alert_stage_sent_to_recycle').id),
                 ('stage_id', '!=', request.env.ref('repair_module.quality_alert_stage_repair_cancelled').id),
             ])
+
         if search:
             base_domain.extend(expression.OR([
                 [('name', 'ilike', search)],
             ]))
 
         # Aplicar dominio de búsqueda avanzada
-        if domain and isinstance(domain, list) and domain:
-            adv_domain = []
-            for condition in domain:
-                if len(condition) != 3:
+        if domain:
+            base_domain = self._apply_advanced_domain(base_domain, domain, match_type)
+
+        return base_domain
+
+    def _apply_advanced_domain(self, base_domain, domain, match_type='all'):
+        """
+        Construye y combina condiciones avanzadas para el dominio.
+        """
+        adv_conditions = []
+        adv_condition_domains = []
+
+        def _date_bounds_utc(date_str):
+            try:
+                user_tz = pytz.timezone(request.env.user.tz or 'UTC')
+                day_local_start = user_tz.localize(datetime.strptime(date_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
+                day_local_end = user_tz.localize(datetime.strptime(date_str + ' 23:59:59', '%Y-%m-%d %H:%M:%S'))
+                return (
+                    day_local_start.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S'),
+                    day_local_end.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S'),
+                )
+            except Exception:
+                return (date_str, date_str)
+
+        for condition in domain:
+            if not isinstance(condition, (list, tuple)) or len(condition) != 3:
+                continue
+            field_key, operator, raw_value = condition
+            model_field = self.ALERT_FIELDS_MAPPING[field_key]
+
+            if field_key in ['scheduled_date', 'date']:
+                if operator == '=':
+                    start_utc, end_utc = _date_bounds_utc(str(raw_value))
+                    conds = [(model_field, '>=', start_utc), (model_field, '<=', end_utc)]
+                    adv_conditions.extend(conds)
+                    adv_condition_domains.append(conds)
+                    continue
+                elif operator in ('>=', '<='):
+                    bound_utc = _date_bounds_utc(str(raw_value))[0 if operator == '>=' else 1]
+                    cond = (model_field, operator, bound_utc)
+                    adv_conditions.append(cond)
+                    adv_condition_domains.append([cond])
                     continue
 
-                field, operator, value = condition
-                if field not in self.ALERT_FIELDS_MAPPING:
-                    continue
+            cond = (model_field, operator, raw_value)
+            adv_conditions.append(cond)
+            adv_condition_domains.append([cond])
 
-                model_field = self.ALERT_FIELDS_MAPPING[field]
-
-                "Es posible que este manejo especial sea necesario para stage_id"
-                # # Manejo especial para el campo de estado
-                # if field == 'state':
-                #     if value.lower() in ['pending', 'draft', 'waiting']:
-                #         adv_domain.append(('state', 'not in', ['done', 'cancel']))
-                #     elif value.lower() in ['done', 'completed', 'finished']:
-                #         adv_domain.append(('state', '=', 'done'))
-                #     elif value.lower() in ['cancel', 'cancelled']:
-                #         adv_domain.append(('state', '=', 'cancel'))
-                #     else:
-                #         adv_domain.append((model_field, operator, value))
-                # else:
-                #     adv_domain.append((model_field, operator, value))
-
-            # Combinar condiciones de búsqueda avanzada según el tipo de coincidencia
-            if adv_domain:
-                if match_type == 'any':
-                    base_domain.append(expression.OR(adv_domain))
-                else:  # 'all' es el predeterminado
-                    base_domain.extend(adv_domain)
+        if adv_conditions:
+            if match_type == 'any':
+                return expression.AND([base_domain, expression.OR(adv_condition_domains)])
+            else:
+                base_domain.extend(adv_conditions)
         return base_domain
 
     @http.route('/account/repair/list/reload', type='json', auth='user')
@@ -209,6 +232,7 @@ class PortalRepairController(PortalAdminController):
         limit = self._get_portal_list_limit()
         offset = (page - 1) * limit
         # Construir dominio de búsqueda
+        print(f"Reloading repair alert list with search: {search}, domain: {domain}, match_type: {match_type}, quick_filter: {quick_filter}")
         base_domain = self._build_alert_domain(search, domain, match_type, quick_filter)
 
         # if quick_filter and quick_filter == 'pending':
