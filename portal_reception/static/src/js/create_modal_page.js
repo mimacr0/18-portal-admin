@@ -135,6 +135,15 @@ export const initReceptionCreateForm = () => {
 
         // Ensure edit mode is cleared
         if (editHiddenIdInput) editHiddenIdInput.value = '';
+
+        // Reset modal title and submit button text to default (Create)
+        const modal = document.getElementById('page-reception-list-create-modal');
+        if (modal) {
+            const headerTitle = modal.querySelector('.modal-header h3');
+            if (headerTitle) headerTitle.textContent = 'Reception Create';
+        }
+        const submitBtn = document.getElementById('page-reception-list-create-product-form-submit');
+        if (submitBtn) submitBtn.innerHTML = '<i class="fas fa-save"></i> Save';
     };
 
     // Add event listener for modal closing
