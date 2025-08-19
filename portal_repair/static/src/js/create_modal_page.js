@@ -42,20 +42,24 @@ const updateRepairAlertsProductsField = () => {
 
     const productLines = productsContainer.querySelectorAll('.line-item');
     const products = [];
-
     for (const line of productLines) {
-        // const packageInput = line.querySelector('.product-package');
         const select = line.querySelector('.product-select');
         const qtyInput = line.querySelector('.product-qty');
+        const lotSelect = line.querySelector('.lot-select');
 
         try {
+            // Obtener el producto seleccionado
             const selectData = $(select).select2('data')[0];
-            // if (packageInput && selectData && qtyInput) {
+
+            // Obtener los lotes seleccionados (si existen)
+            const lotData = lotSelect ? $(lotSelect).select2('data') : [];
+            const lotIds = lotData.map(l => l.id);
+
             if (selectData && qtyInput) {
                 products.push({
-                    // package: packageInput.value,
                     product_id: selectData.id,
-                    quantity: qtyInput.value
+                    quantity: qtyInput.value,
+                    lots: lotIds  // solo los IDs de los lotes
                 });
             }
         } catch (e) {
@@ -64,8 +68,8 @@ const updateRepairAlertsProductsField = () => {
     }
 
     productsField.value = JSON.stringify(products);
-    console.log('Updated products field with:', products.length, 'products');
 }
+
 
 /**
  * Inicializa el formulario de creación de recepciones
@@ -85,38 +89,13 @@ export const initRepairAlertCreateForm = () => {
     const createButton = document.getElementById('launch-create-repair-alert-form-button');
     const createModal = document.getElementById('page-repair-alert-list-create-modal');
     const submitButton = document.getElementById('page-repair-alert-list-create-product-form-submit');
-    // const catalogButton = document.getElementById('page-repair-alert-list-create-form-products-add-catalog-btn');
-    // const scheduledDateInput = document.getElementById('page-repair-alert-list-create-form-scheduled-date');
-    // const pageMainContainer = document.querySelector('#page-repair-alert-main-container');
-    // const productCatalogSelectContainer = document.querySelector('#page-repair-alert-product-catalog-select');
-    // const carrierSelectInput = document.getElementById('page-repair-alert-list-create-form-carrier-id');
-    // const packageTypeSelectInput = document.getElementById('page-repair-alert-list-create-form-package-type-id');
-    console.log("1")
-    // if (!scheduledDateInput) return;
-    console.log("2")
-    // Function to reset the form when modal is closed
-    const resetRepairAlertForm = () => {
-        console.log("Resetting repair-alert form");
 
+    const resetRepairAlertForm = () => {
         // Reset all form inputs
         const form = document.getElementById(`page-${pageName}-list-create-form`);
         if (form) {
             form.reset();
         }
-
-        // Clear Select2 fields
-        // if ($(packageTypeSelectInput).data('select2')) {
-        //     $(packageTypeSelectInput).val(null).trigger('change');
-        // }
-
-        // if ($(carrierSelectInput).data('select2')) {
-        //     $(carrierSelectInput).val(null).trigger('change');
-        // }
-
-        // Reset flatpickr date input
-        // if (scheduledDateInput._flatpickr) {
-        //     scheduledDateInput._flatpickr.clear();
-        // }
 
         // Reset product lines container
         const productsContainer = document.getElementById(`page-${pageName}-list-create-form-products-line-items-container`);
@@ -140,118 +119,7 @@ export const initRepairAlertCreateForm = () => {
         resetRepairAlertForm();
     });
 
-    // flatpickr(scheduledDateInput, {
-    //     minDate: 'today',
-    //     enableTime: true,
-    //     dateFormat: 'd-m-Y H:i'
-    // });
-
-    // $(packageTypeSelectInput).select2({
-    //     placeholder: 'Select Package Type',
-    //     dropdownParent: $(createModal),
-    //     ajax: {
-    //         transport: function(params, success, failure) {
-    //             rpc('/account/repair-alert/package-type-search', {
-    //                 term: params.data.term
-    //             })
-    //             .then(function(result) {
-    //                 success({ results: result.items });
-    //             })
-    //             .catch(function(error) {
-    //                 console.error('Error fetching package types:', error);
-    //                 failure('Failed to load package types');
-    //             });
-    //         },
-    //         processResults: function(data) {
-    //             return data;
-    //         },
-    //         delay: 250
-    //     },
-    //     templateResult: function(data) {
-    //         return formatPackageType(data);
-    //     }
-    // });
-
-    // Update measures and weight when package type changes
-    // $(packageTypeSelectInput).on('select2:select', function (e) {
-    //     const data = e.params.data;
-    //     if (data) {
-    //         // Update width field
-    //         const widthField = document.getElementById('page-repair-alert-list-create-form-measures-width');
-    //         if (widthField && data.width) {
-    //             widthField.value = data.width;
-    //         }
-
-    //         // Update height field
-    //         const heightField = document.getElementById('page-repair-alert-list-create-form-measures-height');
-    //         if (heightField && data.height) {
-    //             heightField.value = data.height;
-    //         }
-
-    //         // Update length field
-    //         const lengthField = document.getElementById('page-repair-alert-list-create-form-measures-length');
-    //         if (lengthField && data.packaging_length) {
-    //             lengthField.value = data.packaging_length;
-    //         }
-
-    //         // Update weight field
-    //         const weightField = document.getElementById('page-repair-alert-list-create-form-weight');
-    //         if (weightField && data.base_weight) {
-    //             weightField.value = data.base_weight;
-    //         }
-    //     }
-    // });
-
-    // $(carrierSelectInput).select2({
-    //     placeholder: 'Select Carrier',
-    //     dropdownParent: $(createModal),
-    //     ajax: {
-    //         transport: function(params, success, failure) {
-    //             rpc('/account/repair-alert/carrier-search', {
-    //                 term: params.data.term
-    //             })
-    //             .then(function(result) {
-    //                 success({ results: result.items });
-    //             })
-    //             .catch(function(error) {
-    //                 console.error('Error fetching carriers:', error);
-    //                 failure('Failed to load carriers');
-    //             });
-    //         },
-    //         processResults: function(data) {
-    //             return data;
-    //         },
-    //         delay: 250
-    //     },
-    //     templateResult: function(data) {
-    //         return formatCarrier(data);
-    //     }
-    // });
-
-    // catalogButton.addEventListener('click', async () => {
-    //     const paginationContainerMain = document.getElementById('page-repair-alert-list-pagination-container-main');
-    //     paginationContainerMain.classList.add('hidden'); // Hide the main pagination
-
-    //     productCatalogSelectContainer.classList.remove('hidden');
-    //     pageMainContainer.classList.add('hidden');
-    //     createModal.dataset.open = 'false';
-
-    //     // Reset pagination and load first page
-    //     currentCatalogPage = 1;
-    //     catalogSearchQuery = '';
-
-    //     // Reset search input value - Now pageName is defined
-    //     const searchInput = document.getElementById(`page-${pageName}-product-catalog-select-search`);
-    //     if (searchInput) searchInput.value = '';
-
-    //     loadProductCatalog();
-
-    //     // Setup search input event listener right after opening the catalog
-    //     setupSearchListener();
-    // });
-
     createButton.addEventListener('click', () => {
-        console.log('Botón "Crear" clickeado. Abriendo modal...');
         Modal.open('page-repair-alert-list-create-modal');
     });
 
@@ -261,7 +129,6 @@ export const initRepairAlertCreateForm = () => {
         if(!res) return;
 
         const { formData } = sysCollectFormData('#page-repair-alert-list-create-form');
-        console.log("Form data collected:", formData);
         const resp = await rpc('/account/repair-alert/create', formData);
 
         if(resp?.errors) sysShowServerErrors('#page-repair-alert-list-create-form', resp.errors);
@@ -670,188 +537,188 @@ function addProductToSelection(id, name, sku, qty = 1, price = '', stockInfo = '
 }
 
 // Update the search input event listener
-document.addEventListener('DOMContentLoaded', () => {
-    const pageName = "repair-alert";
-    const productSearchInput = document.getElementById('product-search');
-    const clearSelectionBtn = document.getElementById(`page-${pageName}-product-catalog-select-clear-selection-btn`);
-    const closeBtn = document.getElementById(`page-${pageName}-product-catalog-select-close-btn`);
+// document.addEventListener('DOMContentLoaded', () => {
+//     const pageName = "repair-alert";
+//     const productSearchInput = document.getElementById('product-search');
+//     const clearSelectionBtn = document.getElementById(`page-${pageName}-product-catalog-select-clear-selection-btn`);
+//     const closeBtn = document.getElementById(`page-${pageName}-product-catalog-select-close-btn`);
 
-    if (productSearchInput) {
-        productSearchInput.addEventListener('input', debouncedSearch);
-    }
+//     if (productSearchInput) {
+//         productSearchInput.addEventListener('input', debouncedSearch);
+//     }
 
-    if (clearSelectionBtn) {
-        clearSelectionBtn.addEventListener('click', () => {
-            const selectedProductsList = document.getElementById(`page-${pageName}-product-catalog-select-selected-products-list`);
-            const noProductsMessage = document.getElementById(`page-${pageName}-product-catalog-select-no-products-message`);
-            const selectedCount = document.getElementById("selected-count");
+//     if (clearSelectionBtn) {
+//         clearSelectionBtn.addEventListener('click', () => {
+//             const selectedProductsList = document.getElementById(`page-${pageName}-product-catalog-select-selected-products-list`);
+//             const noProductsMessage = document.getElementById(`page-${pageName}-product-catalog-select-no-products-message`);
+//             const selectedCount = document.getElementById("selected-count");
 
-            // Reset all product card displays
-            document.querySelectorAll('.product-card').forEach(card => {
-                                const productId = card.dataset.productId;
-                const addBtn = card.querySelector('.product-add-btn');
-                const addedQtyDisplay = card.querySelector('.product-added-qty');
+//             // Reset all product card displays
+//             document.querySelectorAll('.product-card').forEach(card => {
+//                                 const productId = card.dataset.productId;
+//                 const addBtn = card.querySelector('.product-add-btn');
+//                 const addedQtyDisplay = card.querySelector('.product-added-qty');
 
-                // Reset button display
-                if (addBtn) {
-                    addBtn.innerHTML = '<i class="fas fa-plus mr-1"></i> Add';
-                    addBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
-                    addBtn.classList.add('bg-gradient-to-r', 'from-purple-600', 'to-purple-700', 'hover:from-purple-700', 'hover:to-purple-800');
-                }
+//                 // Reset button display
+//                 if (addBtn) {
+//                     addBtn.innerHTML = '<i class="fas fa-plus mr-1"></i> Add';
+//                     addBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+//                     addBtn.classList.add('bg-gradient-to-r', 'from-purple-600', 'to-purple-700', 'hover:from-purple-700', 'hover:to-purple-800');
+//                 }
 
-                // Hide quantity badge
-                if (addedQtyDisplay) addedQtyDisplay.classList.add('hidden');
-            });
+//                 // Hide quantity badge
+//                 if (addedQtyDisplay) addedQtyDisplay.classList.add('hidden');
+//             });
 
-            // Clear the registry
-            selectedProductsRegistry.clear();
+//             // Clear the registry
+//             selectedProductsRegistry.clear();
 
-            // Clear the selected products list
-            selectedProductsList.innerHTML = '';
-            selectedProductsList.classList.add('hidden');
-            noProductsMessage.classList.remove('hidden');
-            if (selectedCount) selectedCount.textContent = "0";
-        });
-    }
+//             // Clear the selected products list
+//             selectedProductsList.innerHTML = '';
+//             selectedProductsList.classList.add('hidden');
+//             noProductsMessage.classList.remove('hidden');
+//             if (selectedCount) selectedCount.textContent = "0";
+//         });
+//     }
 
-    if (closeBtn) {
-        closeBtn.addEventListener('click', closeProductCatalog);
-    }
-});
+//     if (closeBtn) {
+//         closeBtn.addEventListener('click', closeProductCatalog);
+//     }
+// });
 
 // Modify closeProductCatalog to use Select2 for added products
-function closeProductCatalog() {
-    const pageName = "repair-alert";
-    const productCatalogSelectContainer = document.querySelector(`#page-${pageName}-product-catalog-select`);
-    const pageMainContainer = document.querySelector('#page-repair-alert-main-container');
-    const modal = document.getElementById(`page-${pageName}-list-create-modal`);
-    const paginationContainerMain = document.getElementById('page-repair-alert-list-pagination-container-main');
+// function closeProductCatalog() {
+//     const pageName = "repair-alert";
+//     const productCatalogSelectContainer = document.querySelector(`#page-${pageName}-product-catalog-select`);
+//     const pageMainContainer = document.querySelector('#page-repair-alert-main-container');
+//     const modal = document.getElementById(`page-${pageName}-list-create-modal`);
+//     const paginationContainerMain = document.getElementById('page-repair-alert-list-pagination-container-main');
 
-    if (paginationContainerMain) {
-        paginationContainerMain.classList.remove('hidden'); // Show the main pagination again
-    }
+//     if (paginationContainerMain) {
+//         paginationContainerMain.classList.remove('hidden'); // Show the main pagination again
+//     }
 
-    // Get selected products from registry
-    const selectedProducts = Array.from(selectedProductsRegistry.values());
-    console.log('Transferring products to form:', selectedProducts);
+//     // Get selected products from registry
+//     const selectedProducts = Array.from(selectedProductsRegistry.values());
+//     console.log('Transferring products to form:', selectedProducts);
 
-    // Hide catalog view
-    productCatalogSelectContainer.classList.add('hidden');
-    pageMainContainer.classList.remove('hidden');
+//     // Hide catalog view
+//     productCatalogSelectContainer.classList.add('hidden');
+//     pageMainContainer.classList.remove('hidden');
 
-    // Transfer selected products to form
-    if (selectedProducts.length > 0) {
-        const productsContainer = document.getElementById(`page-${pageName}-list-create-form-products-line-items-container`);
-        if (productsContainer) {
-            // Clear existing products
-            productsContainer.innerHTML = '';
+//     // Transfer selected products to form
+//     if (selectedProducts.length > 0) {
+//         const productsContainer = document.getElementById(`page-${pageName}-list-create-form-products-line-items-container`);
+//         if (productsContainer) {
+//             // Clear existing products
+//             productsContainer.innerHTML = '';
 
-            // Add selected products
-            selectedProducts.forEach(product => {
-                const lineId = `product-line-${product.id}`;
-                const newRow = document.createElement('div');
-                newRow.className = 'line-item flex items-center gap-2 mb-2';
-                newRow.dataset.lineId = lineId;
-                newRow.dataset.productId = product.id;
-                    // <div class="w-24">
-                    //     <input type="number" value="${product.package || '1'}" min="1"
-                    //         class="product-package form-input-sm w-full text-center rounded-md border border-gray-300
-                    //         focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"/>
-                    // </div>
-                newRow.innerHTML = `
+//             // Add selected products
+//             selectedProducts.forEach(product => {
+//                 const lineId = `product-line-${product.id}`;
+//                 const newRow = document.createElement('div');
+//                 newRow.className = 'line-item flex items-center gap-2 mb-2';
+//                 newRow.dataset.lineId = lineId;
+//                 newRow.dataset.productId = product.id;
+//                     // <div class="w-24">
+//                     //     <input type="number" value="${product.package || '1'}" min="1"
+//                     //         class="product-package form-input-sm w-full text-center rounded-md border border-gray-300
+//                     //         focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"/>
+//                     // </div>
+//                 newRow.innerHTML = `
 
-                    <div class="flex-grow">
-                        <select class="product-select form-select-sm w-full rounded-md border border-gray-300
-                            focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500">
-                        </select>
-                    </div>
-                    <div class="w-24">
-                        <input type="number" value="${product.quantity}" min="1"
-                            class="product-qty form-input-sm w-full text-center rounded-md border border-gray-300
-                            focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"/>
-                    </div>
-                    <div>
-                        <button type="button" class="product-remove-btn p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700" data-line-id="${lineId}">
-                            <i class="fas fa-trash-alt text-red-500"></i>
-                        </button>
-                    </div>
-                `;
+//                     <div class="flex-grow">
+//                         <select class="product-select form-select-sm w-full rounded-md border border-gray-300
+//                             focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500">
+//                         </select>
+//                     </div>
+//                     <div class="w-24">
+//                         <input type="number" value="${product.quantity}" min="1"
+//                             class="product-qty form-input-sm w-full text-center rounded-md border border-gray-300
+//                             focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"/>
+//                     </div>
+//                     <div>
+//                         <button type="button" class="product-remove-btn p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700" data-line-id="${lineId}">
+//                             <i class="fas fa-trash-alt text-red-500"></i>
+//                         </button>
+//                     </div>
+//                 `;
 
-                productsContainer.appendChild(newRow);
+//                 productsContainer.appendChild(newRow);
 
-                // Initialize Select2 for this row
-                // const packageInput = newRow.querySelector('.product-package');
-                const select = newRow.querySelector('.product-select');
-                const qtyInput = newRow.querySelector('.product-qty');
+//                 // Initialize Select2 for this row
+//                 // const packageInput = newRow.querySelector('.product-package');
+//                 const select = newRow.querySelector('.product-select');
+//                 const qtyInput = newRow.querySelector('.product-qty');
 
-                // Add the product as a pre-selected option with attributes
-                const option = new Option(product.name, product.id, true, true);
-                $(select).append(option).trigger('change');
+//                 // Add the product as a pre-selected option with attributes
+//                 const option = new Option(product.name, product.id, true, true);
+//                 $(select).append(option).trigger('change');
 
-                // Configure Select2
-                $(select).select2({
-                    placeholder: 'Search product...',
-                    dropdownParent: $(modal),
-                    data: [{
-                        id: product.id,
-                        text: product.name,
-                        default_code: product.sku,
-                        // Convert attribute tags to format expected by formatProductSelection
-                        attributes: product.attributeTags ? product.attributeTags.map(tag => ({value: tag})) : []
-                    }],
-                    ajax: {
-                        transport: function(params, success, failure) {
-                            rpc('/account/repair-alert/product-search', {
-                                term: params.data.term
-                            })
-                            .then(function(result) {
-                                success({ results: result.items });
-                            })
-                            .catch(function(error) {
-                                console.error('Error fetching products:', error);
-                                failure('Failed to load products');
-                            });
-                        },
-                        processResults: function(data) {
-                            return data;
-                        },
-                        delay: 250
-                    },
-                    templateResult: formatProduct,
-                    templateSelection: formatProductSelection
-                });
+//                 // Configure Select2
+//                 $(select).select2({
+//                     placeholder: 'Search product...',
+//                     dropdownParent: $(modal),
+//                     data: [{
+//                         id: product.id,
+//                         text: product.name,
+//                         default_code: product.sku,
+//                         // Convert attribute tags to format expected by formatProductSelection
+//                         attributes: product.attributeTags ? product.attributeTags.map(tag => ({value: tag})) : []
+//                     }],
+//                     ajax: {
+//                         transport: function(params, success, failure) {
+//                             rpc('/account/repair-alert/product-search', {
+//                                 term: params.data.term
+//                             })
+//                             .then(function(result) {
+//                                 success({ results: result.items });
+//                             })
+//                             .catch(function(error) {
+//                                 console.error('Error fetching products:', error);
+//                                 failure('Failed to load products');
+//                             });
+//                         },
+//                         processResults: function(data) {
+//                             return data;
+//                         },
+//                         delay: 250
+//                     },
+//                     templateResult: formatProduct,
+//                     templateSelection: formatProductSelection
+//                 });
 
-                // Handle product selection change
-                $(select).on('change', updateRepairAlertsProductsField);
+//                 // Handle product selection change
+//                 $(select).on('change', updateRepairAlertsProductsField);
 
-                // Update hidden name field and registry when quantity changes
-                qtyInput.addEventListener('change', updateRepairAlertsProductsField);
-                // packageInput.addEventListener('change', updateRepairAlertsProductsField);
+//                 // Update hidden name field and registry when quantity changes
+//                 qtyInput.addEventListener('change', updateRepairAlertsProductsField);
+//                 // packageInput.addEventListener('change', updateRepairAlertsProductsField);
 
-                // Set up remove button
-                const removeBtn = newRow.querySelector('.product-remove-btn');
-                if (removeBtn) {
-                    removeBtn.addEventListener('click', () => {
-                        productsContainer.removeChild(newRow);
-                        // Also remove from registry
-                        selectedProductsRegistry.delete(product.id);
-                        // Update the hidden products field
-                        updateRepairAlertsProductsField();
-                    });
-                }
-            });
+//                 // Set up remove button
+//                 const removeBtn = newRow.querySelector('.product-remove-btn');
+//                 if (removeBtn) {
+//                     removeBtn.addEventListener('click', () => {
+//                         productsContainer.removeChild(newRow);
+//                         // Also remove from registry
+//                         selectedProductsRegistry.delete(product.id);
+//                         // Update the hidden products field
+//                         updateRepairAlertsProductsField();
+//                     });
+//                 }
+//             });
 
-            // Update the hidden products field
-            updateRepairAlertsProductsField();
-        }
-    }
+//             // Update the hidden products field
+//             updateRepairAlertsProductsField();
+//         }
+//     }
 
-    // Reopen the create modal
-    Modal.open('page-repair-alert-list-create-modal');
-}
+//     // Reopen the create modal
+//     Modal.open('page-repair-alert-list-create-modal');
+// }
 
-// Update the initManualProductAdd function to sync with registry
-function initManualProductAdd() {
+// Update the initManualProductAddRepair function to sync with registry
+function initManualProductAddRepair() {
     const pageName = "repair-alert";
     const addBtn = document.getElementById(`page-${pageName}-list-create-form-products-add-line-btn`);
     const container = document.getElementById(`page-${pageName}-list-create-form-products-line-items-container`);
@@ -893,7 +760,7 @@ function initManualProductAdd() {
         container.appendChild(newRow);
 
         const select = $(newRow).find('.product-select');
-        const lotSelect = $(newRow).find('.lot-select');
+        // const lotSelect = $(newRow).find('.lot-select');
         const qtyInput = newRow.querySelector('.product-qty');
 
         // Inicializar Select2 para productos
@@ -914,37 +781,47 @@ function initManualProductAdd() {
         });
 
         // Inicializar Select2 para lotes (vacío al inicio)
-        lotSelect.select2({
-            placeholder: 'Select a lot',
-            dropdownParent: $(modal)
-        });
-
-        // Evento cuando cambia el producto
-        select.on('change', function() {
+        select.each(function() {
             const productId = $(this).val();
             const lotSelect = $(this).closest('.line-item').find('.lot-select');
 
-            // Limpiar selección de lotes
-            $(lotSelect).val(null).trigger('change');
+            // Inicializar Select2 vacío para lotes
+            $(lotSelect).select2({
+                placeholder: 'Select a lot',
+                dropdownParent: $(modal)
+            });
 
-            if (!productId) return;
+            // Si el producto ya está seleccionado al cargar
+            if (productId) {
+                loadLotsForProduct(productId, lotSelect);
+            }
 
-            console.log('Fetching lots for product ID:', productId);
+            // Evento cuando cambia el producto
+            $(this).on('change', function() {
+                const newProductId = $(this).val();
+                $(lotSelect).val(null).trigger('change');
+                if (!newProductId) return;
+                loadLotsForProduct(newProductId, lotSelect);
+            });
+            $(lotSelect).on('change', updateRepairAlertsProductsField);
 
-            // Destruir Select2 anterior si existe
+        });
+        
+
+        function loadLotsForProduct(productId, lotSelect, qtyInput) {
             if ($(lotSelect).hasClass("select2-hidden-accessible")) {
                 $(lotSelect).select2('destroy');
             }
 
-            // Inicializar Select2 para lotes
             $(lotSelect).select2({
                 placeholder: 'Search lot...',
                 dropdownParent: $(modal),
+                multiple: true, // Permitir seleccionar varios lotes
                 ajax: {
                     transport: function(params, success, failure) {
                         rpc('/account/repair-alert/product-lots', {
                             product_id: parseInt(productId),
-                            term: params.data.term
+                            term: params.data.term // Esto permite la búsqueda mientras escribes
                         })
                         .then(function(result) {
                             success({ results: result.items });
@@ -962,9 +839,9 @@ function initManualProductAdd() {
                 templateResult: formatLot,
                 templateSelection: formatLotSelection
             });
+        }
 
-            updateRepairAlertsProductsField();
-        });
+        $(select).on('change', updateRepairAlertsProductsField);
 
 
         // Actualizar registro al cambiar cantidad
@@ -1057,12 +934,12 @@ function formatLotSelection(lot) {
 // Update the document ready function
 document.addEventListener('DOMContentLoaded', () => {
     initRepairAlertCreateForm();
-    initManualProductAdd();
+    initManualProductAddRepair();
     // Set up the close button for product catalog
-    const closeBtn = document.getElementById('page-repair-alert-product-catalog-select-close-btn');
-    if (closeBtn) {
-        closeBtn.addEventListener('click', closeProductCatalog);
-    }
+    // const closeBtn = document.getElementById('page-repair-alert-product-catalog-select-close-btn');
+    // if (closeBtn) {
+    //     closeBtn.addEventListener('click', closeProductCatalog);
+    // }
 });
 
 // Add near the top with other formatting functions

@@ -68,7 +68,8 @@ class PortalRepairController(PortalAdminController):
             'flatpickr': True,
             'select2': True,
             'list_filters': [
-                {'id': 'all', 'label': _('All'), 'icon': 'fas fa-check-circle', 'active': True},
+                {'id': 'all', 'label': _('All'), 'icon': 'fas fa-check-circle'},
+                {'id': 'active', 'label': _('Active'), 'icon': 'fas fa-check-circle', 'active': True},
                 {'id': 'in_transit', 'label': _('In transit'), 'icon': 'fas fa-clock'},
                 {'id': 'in_warehouse', 'label': _('In warehouse'), 'icon': 'fas fa-clock'},
                 {'id': 'sent_to_repair', 'label': _('Sent to repair'), 'icon': 'fas fa-clock'},
@@ -147,16 +148,21 @@ class PortalRepairController(PortalAdminController):
             "return_after_sales": "repair_module.quality_alert_stage_sent_to_postsale",
             "sent_to_client": "repair_module.quality_alert_stage_sent_to_client",
             "sent_to_recycling": "repair_module.quality_alert_stage_sent_to_recycle",
-            "repair_cancelled": "repair_module.quality_alert_stage_repair_cancelled",
+            "cancelled": "repair_module.quality_alert_stage_repair_cancelled",
         }
-
+        
         # Apply quick filters
-        if quick_filter and quick_filter != 'all':
+        if quick_filter and quick_filter != 'all' and quick_filter != 'active'  :
             stage_xml_id = stage_mapping.get(quick_filter, 'quality.quality_alert_stage_0')
             stage = request.env.ref(stage_xml_id)
             base_domain.append(('stage_id', '=', stage.id))
             # Aplicar búsqueda de texto
-            
+        elif quick_filter and quick_filter == 'active':
+            base_domain.extend([
+                ('stage_id', '!=', request.env.ref('repair_module.quality_alert_stage_sent_to_client').id),
+                ('stage_id', '!=', request.env.ref('repair_module.quality_alert_stage_sent_to_recycle').id),
+                ('stage_id', '!=', request.env.ref('repair_module.quality_alert_stage_repair_cancelled').id),
+            ])
         if search:
             base_domain.extend(expression.OR([
                 [('name', 'ilike', search)],

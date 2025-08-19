@@ -22,26 +22,88 @@
                     </div>
                 </div>
                    
-                <!-- Reception Information -->
-                <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-                    <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
-                        <i class="fas fa-map-marker mr-2 text-[#696900] dark:text-[#A0A000]"></i>
-                        Reception Information
-                    </h3>
+                <!-- Alert Information -->
+                <div class="p-8 grid grid-cols-1 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+              
+
+                    <div class="flex flex-col md:flex-row justify-between items-start relative z-10">
+                        <div>
+                            <div class="flex items-center p-8">
+                                <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Alert</h1>
+                                <span class="ml-4 text-xl font-medium text-blue-600 dark:text-blue-400"><t t-out="alert.name"/></span>
+                            </div>
+                            <div class="mt-4 space-y-1">
+                                <span class="text-gray-500 dark:text-gray-400">Current Alarm Stage:<strong> <t t-esc="alert.stage_id.name"></t></strong></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!-- Product Information -->
-                <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                <div class="p-8 grid grid-cols-1 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                     <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
                         <i class="fas fa-box mr-2 text-[#696900] dark:text-[#A0A000]"></i>
                         Product Information
                     </h3>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <div class="text-sm space-y-2 dark:text-gray-300">
+                            <t t-set="lot" t-value="alert.lot_id"/>
+                            <p class="font-medium text-base text-gray-800 dark:text-white">Lot name: <t t-out="lot.name"/></p>
+                            <p class="text-gray-700 dark:text-gray-200">Product Name: <t t-esc="lot.product_id.display_name"/></p>
+                            <p class="text-gray-700 dark:text-gray-200">Lot Quantity: <t t-esc="lot.product_qty"/></p>
+                            <p class="text-gray-700 dark:text-gray-200">REF: <t t-esc="lot.ref"/></p>
+                            <p class="text-gray-700 dark:text-gray-200">Lifecycle State: <t t-esc="lot.lifecycle_state"/></p>
+
+                        </div>
+                    </div>
                 </div>
                 <!-- Movement history -->
-                <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                <div class="p-8 grid grid-cols-1 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                     <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
                         <i class="fas fa-exchange mr-2 text-[#696900] dark:text-[#A0A000]"></i>
                         Movement History
                     </h3>
+                    <div class="overflow-x-auto rounded-lg shadow">
+                        <table class="w-full text-sm" id="page-repair-alert-movement-list-table">
+                            <thead>
+                                <tr class="bg-gray-100 dark:bg-gray-600">
+                                    <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Reference</th>
+                                    <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Origin Location</th>
+                                    <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Destination Location</th>
+                                    <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Scheduled Date</th>
+                                    <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Done Date</th>
+                                    <!-- <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Previous Movement</th> -->
+                                </tr>
+                            </thead>
+
+                            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="expedition-page-list-items">
+                                <t t-foreach="alert.picking_ids" t-as="picking">
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200" >
+                                            <t t-esc="picking.name"/>
+                                        </td>
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                            <t t-esc="picking.location_id.name"/>
+                                        </td>
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                            <t t-esc="picking.location_dest_id.name"/>
+                                        </td>
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                            <t t-esc="picking.scheduled_date.strftime('%d-%m-%Y %H:%M:%S')"/>
+                                        </td>
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                            <t t-if="picking.date_done">
+                                                <t t-esc="picking.date_done.strftime('%d-%m-%Y %H:%M:%S')"/>
+                                            </t>
+                                            <t t-else="">-</t>
+                                        </td>
+                                        <!-- <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200"> -->
+                                            <!-- Previous movement can be added here if needed -->
+                                        <!-- </td> -->
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- Repair / Review Information -->
                 <t t-if="alert.repair_order_ids">
@@ -51,20 +113,34 @@
                             <i class="fas fa-screwdriver-wrench mr-2 text-[#696900] dark:text-[#A0A000]"></i>
                             Repair Information
                         </h3>
-                        <div class="text-sm space-y-2 dark:text-gray-300">
-                            <p class="text-gray-700 dark:text-gray-200"><t t-esc="alert.repair_order_ids.name"/></p>
-                            <p class="text-gray-700 dark:text-gray-200"><t t-esc="alert.repair_order_ids.product_id.name"/></p>
-                            <p class="text-gray-700 dark:text-gray-200"><t t-esc="alert.repair_order_ids.product_qty"/></p>
-                            <t t-if="alert.repair_order_ids.move_ids">
-                                <p class="text-gray-700 dark:text-gray-200 font-medium">Movimientos:</p>
-                                <ul class="list-disc ml-6 text-gray-700 dark:text-gray-300">
-                                    <t t-foreach="alert.repair_order_ids.move_ids" t-as="move">
-                                        <li><t t-esc="move.name"/></li>
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 overflow-x-auto">
+                            <table class="min-w-full border border-gray-200 dark:border-gray-700 rounded-lg">
+                                <thead class="bg-gray-100 dark:bg-gray-700">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Repair ID</th>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Description</th>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">State</th>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Scheduled Date</th>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Lifecycle State</th>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Diagnosis</th>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Results</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                    <t t-foreach="alert.repair_order_ids" t-as="repair">
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                                            <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-200"><t t-esc="repair.name"/></td>
+                                            <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-200"><t t-esc="repair.description"/></td>
+                                            <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-200"><t t-esc="repair.state"/></td>
+                                            <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-200"><t t-esc="repair.schedule_date"/></td>
+                                            <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-200"><t t-esc="repair.lifecycle_state"/></td>
+                                            <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-200"><t t-esc="', '.join(repair.diagnosis_ids.mapped('name'))"/></td>
+                                            <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-200"><t t-esc="', '.join(repair.result_ids.mapped('name'))"/></td>
+                                        </tr>
                                     </t>
-                                </ul>
-                            </t>                            
+                                </tbody>
+                            </table>
                         </div>
-                        
                     </div>
                 </t>
                 <!-- Communication history -->

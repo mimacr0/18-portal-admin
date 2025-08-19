@@ -10,6 +10,7 @@ export const initRepairAlertQuickSortFilters = () => {
     // // Botones de filtro
     const filterButtons = {
         all: document.getElementById('page-repair-alert-list-filter-all'),
+        active: document.getElementById('page-repair-alert-list-filter-active'),
         in_transit: document.getElementById('page-repair-alert-list-filter-in_transit'),
         in_warehouse: document.getElementById('page-repair-alert-list-filter-in_warehouse'),
         sent_to_repair: document.getElementById('page-repair-alert-list-filter-sent_to_repair'),
