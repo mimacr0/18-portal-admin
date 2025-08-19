@@ -1,4 +1,3 @@
-import { rpc } from "@web/core/network/rpc";
 import { reloadExpeditionListPage } from "./expedition_list.js";
 
 export const initExpeditionListSearch = () => {
