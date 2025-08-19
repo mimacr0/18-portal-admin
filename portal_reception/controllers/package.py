@@ -941,3 +941,37 @@ class PortalReceptionController(PortalAdminController):
         return {
             'items': result_items
         }
+
+    # =============================
+    # Update/Delete API Endpoints
+    # =============================
+
+    def _get_portal_user_partner_ids(self):
+        partner_id = request.env.user.partner_id
+        return list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
+
+    def _get_portal_reception_record(self, picking_id):
+        StockPicking = request.env['stock.picking'].sudo()
+        reception_type = request.env.ref('stock.picking_type_in')
+        partner_ids = self._get_portal_user_partner_ids()
+
+        domain = [
+            ('id', '=', int(picking_id)),
+            ('picking_type_id', '=', reception_type.id),
+            ('partner_id', 'in', partner_ids),
+        ]
+
+        return StockPicking.search(domain, limit=1)
+
+    @http.route('/account/reception/delete', type='json', auth='user')
+    def account_reception_delete(self, reception_id=None, **kw):
+        """Delete (cancel) a single reception."""
+        if not reception_id or not str(reception_id).isdigit():
+            return {'status': 'error', 'message': _('Invalid reception ID')}
+
+        picking = self._get_portal_reception_record(int(reception_id))
+        if not picking:
+            return {'status': 'error', 'message': _('Reception not found or cannot be deleted')}
+
+        picking.action_cancel()
+        return {'status': 'success'}

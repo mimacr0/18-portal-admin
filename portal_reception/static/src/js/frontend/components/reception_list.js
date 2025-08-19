@@ -105,6 +105,30 @@ export const reloadReceptionListPage = async () => {
         currentPageInput.value = currentPage + 1;
         reloadReceptionListPage();
     });
+
+    const deleteButtons = document.querySelectorAll('.reception-delete-btn');
+    const editButtons = document.querySelectorAll('.reception-edit-btn');
+
+    for(const deleteButton of deleteButtons) {
+        deleteButton.addEventListener('click', async () => {
+            const id = deleteButton.dataset.receptionId;
+            if(!id) return;
+            if(!confirm('Are you sure you want to delete this reception?')) return;
+            const res = await rpc('/account/reception/delete', { reception_id: id });
+            if(res?.status === 'success') {
+                reloadReceptionListPage();
+            } else if(res?.message) {
+                alert(res.message);
+            }
+        });
+    }
+
+    for(const editButton of editButtons) {
+        editButton.addEventListener('click', async () => {
+            const id = editButton.dataset.receptionId;
+            if(!id) return;
+        });
+    }
 }
 
 /**
@@ -153,4 +177,5 @@ export const initReceptionsManagementListPage = () => {
             }
         }
     });
+
 }

@@ -84,6 +84,7 @@ export const initReceptionCreateForm = () => {
     const createButton = document.getElementById('launch-create-reception-form-button');
     const createModal = document.getElementById('page-reception-list-create-modal');
     const submitButton = document.getElementById('page-reception-list-create-product-form-submit');
+    const editHiddenIdInput = document.getElementById('page-reception-list-create-form-reception-id');
     const catalogButton = document.getElementById('page-reception-list-create-form-products-add-catalog-btn');
     const scheduledDateInput = document.getElementById('page-reception-list-create-form-scheduled-date');
     const pageMainContainer = document.querySelector('#page-reception-main-container');
@@ -131,6 +132,9 @@ export const initReceptionCreateForm = () => {
 
         // Clear selected products registry
         selectedProductsRegistry.clear();
+
+        // Ensure edit mode is cleared
+        if (editHiddenIdInput) editHiddenIdInput.value = '';
     };
 
     // Add event listener for modal closing
@@ -254,13 +258,29 @@ export const initReceptionCreateForm = () => {
     });
 
     // Manejar envío del formulario
-    submitButton.addEventListener('click', async () => {
-        const res = sysFormValidate('#page-reception-list-create-form');
-        if(!res) return;
-
+    submitButton.addEventListener('click', async (e) => {
+        e.preventDefault();
         const { formData } = sysCollectFormData('#page-reception-list-create-form');
 
-        const resp = await rpc('/account/reception/create', formData);
+        // Detect edit mode by presence of reception_id
+        const isEdit = !!(editHiddenIdInput && editHiddenIdInput.value);
+        let resp;
+        if (isEdit) {
+            // Only send editable header fields to update endpoint; skip full-form validation
+            const payload = {
+                reception_id: editHiddenIdInput.value,
+                scheduled_date: formData.get('scheduled_date') || '',
+                carrier_id: formData.get('carrier_id') || null,
+                carrier_name: formData.get('carrier_name') || '',
+                tracking_number: formData.get('tracking_number') || '',
+                tracking_number_optional: formData.get('tracking_number_optional') || '',
+            };
+            resp = await rpc('/account/reception/update', payload);
+        } else {
+            const res = sysFormValidate('#page-reception-list-create-form');
+            if(!res) return;
+            resp = await rpc('/account/reception/create', formData);
+        }
 
         if(resp?.errors) sysShowServerErrors('#page-reception-list-create-form', resp.errors);
 
