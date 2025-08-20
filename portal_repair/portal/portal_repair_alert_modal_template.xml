@@ -68,7 +68,6 @@
                                     <span class="text-red-500 ml-1">*</span>
                                 </div>
                                 <div>
-                                    <!-- <input type="text" name="problem" t-attf-id="page-#{page_name}-list-create-form-problem" required="required" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#A0A000]" placeholder="Problem Description"/> -->
                                     <textarea 
                                         name="problem" 
                                         t-attf-id="page-#{page_name}-list-create-form-problem" 

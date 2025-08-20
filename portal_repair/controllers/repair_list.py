@@ -22,9 +22,12 @@ class PortalRepairController(PortalAdminController):
     ALERT_FIELDS_MAPPING = {
         'stage': 'stage_id',
         'name': 'name',
-        'schedule_date': 'schedule_date',
+        'schedule_date': 'repair_order_ids.schedule_date',
+        'done_date': 'repair_order_ids.done_date',
         'picking_id': 'picking_id',
         'description': 'description',
+        'type': 'maintenance_type',
+        'product_name': 'product_id.name',
     }
 
     DEFAULT_LIMIT_PARAM = 'portal_repair.page_list_default_limit'
@@ -42,14 +45,27 @@ class PortalRepairController(PortalAdminController):
     @lru_cache(maxsize=1)
     def _get_repair_advanced_search_fields(self):
         """Devuelve la configuración de campos para búsqueda avanzada"""
-        return [
-            {'id': 'name', 'label': _('Name')},
-            # {'id': 'origin', 'label': _('Origin')},
-            # {'id': 'partner', 'label': _('Partner')},
-            {'id': 'schedule_date', 'label': _('Schedule Date')},
-            {'id': 'stage', 'label': _('Stage')}
+
+        Stage = request.env['quality.alert.stage'].sudo()
+        stages = Stage.search([], order="sequence asc")
+        stage_options = [
+            {'id': st.id, 'label': st.name}
+            for st in stages
         ]
 
+        return [
+            {'id': 'name', 'label': _('Name'), 'type': 'text'},
+            {'id': 'product_name', 'label': _('Product'), 'type': 'text'},
+            {'id': 'schedule_date', 'label': _('Repair Schedule Date'), 'type': 'date'},
+            {'id': 'done_date', 'label': _('Repair Done Date'), 'type': 'date'},
+            {'id': 'stage', 'label': _('Stage'), 'type': 'select', 'options': stage_options},
+            {'id': 'type', 'label': _('Type'), 'type': 'select', 'options': [
+                {'id': 'repair', 'label': _('Repair')},
+                {'id': 'review', 'label': _('Review')},
+                {'id': 'renew', 'label': _('Renew')},
+                {'id': 'warranty', 'label': _('Warranty')},
+            ]},
+        ]
     @http.route('/account/repair', type='http', auth="user", website=True)
     def account_repair_alert_action(self, **post):
 
@@ -140,6 +156,7 @@ class PortalRepairController(PortalAdminController):
 
         base_domain = [
             # ('partner_id', 'in', partner_ids),
+            ('is_repair', '=', True),
         ]
         stage_mapping = {
             "in_transit": "repair_module.quality_alert_stage_in_transit_reception",
@@ -182,18 +199,33 @@ class PortalRepairController(PortalAdminController):
         """
         adv_conditions = []
         adv_condition_domains = []
+        RepairAlert = request.env['quality.alert'].sudo()
 
         def _date_bounds_utc(date_str):
+            """
+            Convierte un valor de fecha/fecha-hora a UTC.
+            - Si solo trae YYYY-MM-DD, devuelve inicio y fin del día.
+            - Si ya trae YYYY-MM-DD HH:MM:SS, devuelve ese datetime exacto.
+            """
+            user_tz = pytz.timezone(request.env.user.tz or 'UTC')
+
+            # Intentar parsear como fecha-hora completa
             try:
-                user_tz = pytz.timezone(request.env.user.tz or 'UTC')
+                dt = datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+                dt_local = user_tz.localize(dt)
+                return dt_local.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S'), \
+                    dt_local.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S')
+            except ValueError:
+                pass
+
+            # Si no es fecha-hora, parsear solo fecha
+            try:
                 day_local_start = user_tz.localize(datetime.strptime(date_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
                 day_local_end = user_tz.localize(datetime.strptime(date_str + ' 23:59:59', '%Y-%m-%d %H:%M:%S'))
-                return (
-                    day_local_start.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S'),
-                    day_local_end.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S'),
-                )
+                return day_local_start.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S'), \
+                    day_local_end.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S')
             except Exception:
-                return (date_str, date_str)
+                return date_str, date_str
 
         for condition in domain:
             if not isinstance(condition, (list, tuple)) or len(condition) != 3:
@@ -201,23 +233,52 @@ class PortalRepairController(PortalAdminController):
             field_key, operator, raw_value = condition
             model_field = self.ALERT_FIELDS_MAPPING[field_key]
 
-            if field_key in ['scheduled_date', 'date']:
-                if operator == '=':
-                    start_utc, end_utc = _date_bounds_utc(str(raw_value))
-                    conds = [(model_field, '>=', start_utc), (model_field, '<=', end_utc)]
-                    adv_conditions.extend(conds)
-                    adv_condition_domains.append(conds)
-                    continue
-                elif operator in ('>=', '<='):
-                    bound_utc = _date_bounds_utc(str(raw_value))[0 if operator == '>=' else 1]
-                    cond = (model_field, operator, bound_utc)
-                    adv_conditions.append(cond)
-                    adv_condition_domains.append([cond])
+            if 'date' in field_key.lower():
+                try:
+                    if operator == '=':
+                        start_utc, end_utc = _date_bounds_utc(str(raw_value))
+                        conds = [
+                            (model_field, '>=', start_utc),
+                            (model_field, '<=', end_utc)
+                        ]
+                        adv_conditions.extend(conds)
+                        adv_condition_domains.append(conds)
+                        continue
+                    elif operator in ('>=', '<='):
+                        bound_utc = _date_bounds_utc(str(raw_value))[0 if operator == '>=' else 1]
+                        cond = (model_field, operator, bound_utc)
+                        adv_conditions.append(cond)
+                        adv_condition_domains.append([cond])
+                        continue
+                except Exception:
                     continue
 
-            cond = (model_field, operator, raw_value)
-            adv_conditions.append(cond)
-            adv_condition_domains.append([cond])
+            if field_key == 'stage':
+                try:
+                    value_int = int(raw_value)
+                except Exception:
+                    continue  # valor inválido, saltar
+                
+                if operator not in ('=', '!='):
+                    operator = '='
+                
+                cond = ('stage_id', operator, value_int)
+                adv_conditions.append(cond)
+                adv_condition_domains.append([cond])
+                continue
+        
+            if field_key == 'type':
+                cond = (model_field, operator, raw_value)
+                adv_conditions.append(cond)
+                adv_condition_domains.append([cond])
+                continue
+
+            if field_key == 'product_name':
+                cond = (model_field, operator, raw_value)
+                adv_conditions.append(cond)
+                adv_condition_domains.append([cond])
+                continue
+
 
         if adv_conditions:
             if match_type == 'any':
@@ -232,14 +293,7 @@ class PortalRepairController(PortalAdminController):
         limit = self._get_portal_list_limit()
         offset = (page - 1) * limit
         # Construir dominio de búsqueda
-        print(f"Reloading repair alert list with search: {search}, domain: {domain}, match_type: {match_type}, quick_filter: {quick_filter}")
         base_domain = self._build_alert_domain(search, domain, match_type, quick_filter)
-
-        # if quick_filter and quick_filter == 'pending':
-        #     base_domain.append(('state', '=', 'assigned'))
-
-        # if quick_filter and quick_filter == 'done':
-        #     base_domain.append(('state', '=', 'done'))
 
         # Configurar ordenamiento
         order_by = 'id desc'
