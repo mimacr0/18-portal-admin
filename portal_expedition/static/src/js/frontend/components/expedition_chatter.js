@@ -72,8 +72,15 @@ const cleanupAttachments = (messageInputContainer, state = {}, fileInput) => {
     if (fileInput) { fileInput.value = ''; }
 };
 
+const getChatterElement = () => {
+    return (
+        document.getElementById('expedition_details-details-chat-messages') ||
+        document.querySelector('[id$="-details-chat-messages"]')
+    );
+};
+
 const reloadExpeditionDetailsChatter = async () => {
-    const chatter = document.getElementById('expedition_details-details-chat-messages');
+    const chatter = getChatterElement();
     if (!chatter) return;
 
     const orderId = parseInt(chatter.dataset.orderId);
@@ -162,7 +169,7 @@ const reloadExpeditionDetailsChatter = async () => {
 }
 
 const initMessageSending = () => {
-    const chatter = document.getElementById('expedition_details-details-chat-messages');
+    const chatter = getChatterElement();
     if (!chatter) return;
 
     const orderId = parseInt(chatter.dataset.orderId);
@@ -174,7 +181,6 @@ const initMessageSending = () => {
     const attachButton = document.querySelector('.message-attach-button');
     const fileInput = document.getElementById('page-details-expedition-message-attachment-input');
     const tokenInput = document.getElementById('page-details-expedition-message-attachment-token');
-    let selectedFile = null;
 
     if (!messageInput || !sendButton || !messageInputContainer) return;
 
@@ -202,7 +208,9 @@ const initMessageSending = () => {
         formData.append('expedition_id', parseInt(orderId));
         formData.append('csrf_token', tokenInput?.value || '');
         formData.append('message', messageText);
-        formData.append('attachment', selectedFile);
+        if (messageState.selectedFile) {
+            formData.append('attachment', messageState.selectedFile);
+        }
 
         let response = null;
 
@@ -216,7 +224,7 @@ const initMessageSending = () => {
             console.log('Message sent:', response);
 
             // Reload messages after sending
-            await reloadReceptionDetailsChatter();
+            await reloadExpeditionDetailsChatter();
         } catch (error) {
             console.error('Error sending message:', error);
         }
@@ -243,7 +251,7 @@ const initMessageSending = () => {
     });
 
     // Initialize file attachment functionality
-    if (attachButton) {
+        if (attachButton && fileInput) {
         // Handle file selection
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
