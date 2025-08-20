@@ -87,8 +87,8 @@ export const initAdvancedSearch = () => {
             case 'date':
                 return `
                     <option value="=">is on</option>
-                    <option value=">=">is on or after</option>
                     <option value="<=">is on or before</option>
+                    <option value=">=">is on or after</option>
                 `;
             case 'select':
                 return `

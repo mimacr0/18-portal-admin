@@ -189,11 +189,11 @@ class PortalRepairController(PortalAdminController):
 
         # Aplicar dominio de búsqueda avanzada
         if domain:
-            base_domain = self._apply_advanced_domain(base_domain, domain, match_type)
+            base_domain = self._apply_repair_advanced_domain(base_domain, domain, match_type)
 
         return base_domain
 
-    def _apply_advanced_domain(self, base_domain, domain, match_type='all'):
+    def _apply_repair_advanced_domain(self, base_domain, domain, match_type='all'):
         """
         Construye y combina condiciones avanzadas para el dominio.
         """
@@ -267,18 +267,10 @@ class PortalRepairController(PortalAdminController):
                 adv_condition_domains.append([cond])
                 continue
         
-            if field_key == 'type':
-                cond = (model_field, operator, raw_value)
-                adv_conditions.append(cond)
-                adv_condition_domains.append([cond])
-                continue
-
-            if field_key == 'product_name':
-                cond = (model_field, operator, raw_value)
-                adv_conditions.append(cond)
-                adv_condition_domains.append([cond])
-                continue
-
+            # Funciona como un default, si es nada de lo anterior, se usa este
+            cond = (model_field, operator, raw_value)
+            adv_conditions.append(cond)
+            adv_condition_domains.append([cond])
 
         if adv_conditions:
             if match_type == 'any':

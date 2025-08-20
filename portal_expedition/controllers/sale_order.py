@@ -21,6 +21,7 @@ class PortalExpeditionController(PortalAdminController):
         'tracking_ref': 'picking_ids.carrier_tracking_ref',
         'date_order': 'date_order',
         'date_done': 'picking_ids.date_done',
+        'sale_state': 'state',
     }
 
     DEFAULT_LIMIT_PARAM = 'portal_expedition.page_list_default_limit'
@@ -38,14 +39,24 @@ class PortalExpeditionController(PortalAdminController):
     @lru_cache(maxsize=1)
     def _get_expedition_advanced_search_fields(self):
         """Devuelve la configuración de campos para búsqueda avanzada"""
-        return [
-            {'id': 'name', 'label': _('Name')},
-            {'id': 'order', 'label': _('Order')},
-            {'id': 'tracking_ref', 'label': _('Tracking Reference')},
-            {'id': 'sent_date', 'label': _('Sent Date')},
-            {'id': 'date_order', 'label': _('Date Order')},
+        PackageType = request.env['stock.package.type'].sudo()
+        package_type_options = [
+            {'id': pt.id, 'label': pt.name}
+            for pt in PackageType.search([], limit=10)
         ]
 
+        return [
+            {'id': 'name', 'label': _('Name'), 'type': 'text'},
+            {'id': 'tracking_ref', 'label': _('Tracking Ref'), 'type': 'text'},
+            {'id': 'date_order', 'label': _('Order Date'), 'type': 'date'},
+            {'id': 'date_done', 'label': _('Done Date'), 'type': 'date'},
+            {'id': 'sale_state', 'label': _('Sale State'), 'type': 'select', 'options': [
+                {'id': 'draft', 'label': _('Quotation')},
+                {'id': 'sent', 'label': _('Quotation Sent')},
+                {'id': 'sale', 'label': _('Sales Order')},
+                {'id': 'cancel', 'label': _('Cancelled')},
+            ]}
+        ]
     @http.route('/account/expedition', type='http', auth="user", website=True)
     def account_expedition_action(self, **post):
         SaleOrder = request.env['sale.order'].sudo()
@@ -118,8 +129,6 @@ class PortalExpeditionController(PortalAdminController):
             base_domain.extend(self.get_quick_filter_domain(quick_filter, request.env))
         # Aplicar búsqueda de texto
         if search:
-            
-            print("Search term:", search)
             base_domain.extend(expression.OR([
                 [('name', 'ilike', search)],
                 [('picking_ids.carrier_tracking_ref', 'ilike', search)],
@@ -127,11 +136,11 @@ class PortalExpeditionController(PortalAdminController):
 
         # Aplicar dominio de búsqueda avanzada
         if domain:
-            base_domain = self._apply_advanced_domain(base_domain, domain, match_type)
+            base_domain = self._apply_order_advanced_domain(base_domain, domain, match_type)
     
         return base_domain
 
-    def _apply_advanced_domain(self, base_domain, domain, match_type='all'):
+    def _apply_order_advanced_domain(self, base_domain, domain, match_type='all'):
         """
         Construye y combina condiciones avanzadas para el dominio.
         """
@@ -156,7 +165,7 @@ class PortalExpeditionController(PortalAdminController):
             field_key, operator, raw_value = condition
             model_field = self.EXPEDITION_FIELDS_MAPPING[field_key]
 
-            if field_key in ['scheduled_date', 'date']:
+            if field_key in ['date_order', 'date_done']:
                 if operator == '=':
                     start_utc, end_utc = _date_bounds_utc(str(raw_value))
                     conds = [(model_field, '>=', start_utc), (model_field, '<=', end_utc)]
@@ -169,7 +178,9 @@ class PortalExpeditionController(PortalAdminController):
                     adv_conditions.append(cond)
                     adv_condition_domains.append([cond])
                     continue
+            
 
+            # Funciona como un default, si es nada de lo anterior, se usa este
             cond = (model_field, operator, raw_value)
             adv_conditions.append(cond)
             adv_condition_domains.append([cond])
