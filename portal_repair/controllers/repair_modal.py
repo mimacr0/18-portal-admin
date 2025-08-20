@@ -141,6 +141,7 @@ class PortalRepairController(PortalAdminController):
                     'product_tmpl_id': product_record.product_tmpl_id.id,
                     'product_id': product_id,
                     'lot_id': int(lot_id),
+                    'maintenance_type': post.get('maintenance_op'),
                     'quantity': 1,
                     'is_repair': True,
                 })

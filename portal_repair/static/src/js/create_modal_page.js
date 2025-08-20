@@ -129,6 +129,7 @@ export const initRepairAlertCreateForm = () => {
         if(!res) return;
 
         const { formData } = sysCollectFormData('#page-repair-alert-list-create-form');
+        console.log(formData)
         const resp = await rpc('/account/repair-alert/create', formData);
 
         if(resp?.errors) sysShowServerErrors('#page-repair-alert-list-create-form', resp.errors);

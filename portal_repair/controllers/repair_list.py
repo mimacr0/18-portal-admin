@@ -99,6 +99,8 @@ class PortalRepairController(PortalAdminController):
             'list_columns': [
                 {'id': 'name', 'label': _('Name'), 'sortable': True},
                 {'id': 'stage', 'label': _('Stage'), 'sortable': True, 'lg': True},
+                {'id': 'product', 'label': _('Product Info')},
+                {'id': 'repair', 'label': _('Repair Info')},
             ],
             'batch_actions': [
                 {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
@@ -155,8 +157,7 @@ class PortalRepairController(PortalAdminController):
         partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
 
         base_domain = [
-            # ('partner_id', 'in', partner_ids),
-            ('is_repair', '=', True),
+            ('partner_id', 'in', partner_ids),
         ]
         stage_mapping = {
             "in_transit": "repair_module.quality_alert_stage_in_transit_reception",
