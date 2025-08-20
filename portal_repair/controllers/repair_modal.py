@@ -92,7 +92,27 @@ class PortalRepairController(PortalAdminController):
             domain.append(('name', 'ilike', term))
 
         lots = StockLot.search(domain, limit=20)  # Puedes limitar resultados
-        items = [{'id': lot.id, 'text': lot.name} for lot in lots]
+        items = []
+        for lot in lots:
+            total_available = 0.0
+            # Buscar todos los stock.quant del lote
+            quants = request.env['stock.quant'].search([
+                ('lot_id', '=', lot.id),
+                ('product_id', '=', lot. product_id.id),
+            ])
+
+            # Filtramos los quants que tengan quantity - reserved_quantity > 0
+            positive_quants = quants.filtered(lambda q: (q.quantity - q.reserved_quantity) > 0)
+
+            # Sumamos la cantidad disponible de los quants positivos
+            total_available = sum(q.quantity - q.reserved_quantity for q in positive_quants)
+
+            # Guardamos la info del lote
+            items.append({
+                'id': lot.id,
+                'text': lot.name,
+                'product_qty': total_available,  # usamos el total del lote
+            })       
         return {'status': 'success', 'items': items}
 
     @http.route('/account/repair-alert/create', type='json', auth='user')
@@ -129,6 +149,7 @@ class PortalRepairController(PortalAdminController):
                 continue  # skip si el producto no existe
 
             lot_ids = product.get("lots", [])
+            quantity = product.get('quantity')
             if not lot_ids:
                 continue  # skip si no hay lotes
 
@@ -142,7 +163,7 @@ class PortalRepairController(PortalAdminController):
                     'product_id': product_id,
                     'lot_id': int(lot_id),
                     'maintenance_type': post.get('maintenance_op'),
-                    'quantity': 1,
+                    'quantity': quantity,
                     'is_repair': True,
                 })
 

@@ -36,12 +36,22 @@
                     </div>
                 </div>
                 <!-- Product Information -->
-                <div class="p-8 grid grid-cols-1 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-                    <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
-                        <i class="fas fa-box mr-2 text-[#696900] dark:text-[#A0A000]"></i>
-                        Product Information
-                    </h3>
+                <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-box mr-2 text-[#696900] dark:text-[#A0A000]"></i>
+                            Repair Information
+                        </h3>
+                        <div class="text-sm space-y-2 dark:text-gray-300">
+                            <p class="font-medium text-base text-gray-800 dark:text-white">Description: <t t-out="alert.description"/></p>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-box mr-2 text-[#696900] dark:text-[#A0A000]"></i>
+                            Product Information
+                        </h3>
                         <div class="text-sm space-y-2 dark:text-gray-300">
                             <t t-set="lot" t-value="alert.lot_id"/>
                             <p class="font-medium text-base text-gray-800 dark:text-white">Lot name: <t t-out="lot.name"/></p>
