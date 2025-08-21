@@ -120,7 +120,6 @@ export const initRepairAlertCreateForm = () => {
 };
 
 // Update the initManualProductAddRepair function to sync with registry
-// Update the initManualProductAddRepair function to sync with registry
 function initManualProductAddRepair() {
     const pageName = "repair-alert";
     const addBtn = document.getElementById(`page-${pageName}-list-create-form-products-add-line-btn`);
@@ -138,7 +137,7 @@ function initManualProductAddRepair() {
         newRow.dataset.lineId = lineId;
 
         newRow.innerHTML = `
-            <div class="flex-grow">
+            <div class="flex-grow"style=" max-width: 400px;">
                 <select class="product-select form-select-sm w-full rounded-md border border-gray-300
                     focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" style="width: auto; max-width: 100px;">
                 </select>
