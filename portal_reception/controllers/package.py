@@ -986,31 +986,49 @@ class PortalReceptionController(PortalAdminController):
         if not picking:
             return {'status': 'error', 'message': _('Reception not found')}
 
-        # Convert scheduled_date to user's timezone and to the same UI format
-        user_tz = request.env.user.tz or 'UTC'
-        tz = pytz.timezone(user_tz)
-        dt = picking.scheduled_date
-        scheduled_date_str = ''
-        if dt:
-            # dt is in UTC in database; localize
-            if dt.tzinfo is None:
-                dt = pytz.UTC.localize(dt)
-            scheduled_date_str = dt.astimezone(tz).strftime('%d-%m-%Y %H:%M')
+        packages = picking.get_packages()
+        package_type = packages.mapped('package_type_id')[:1]
+        package_type = package_type and package_type[0] or request.env['stock.package.type']
+        carrier_tracking_ref = (packages.mapped('global_tracking_ref')[:1] or [''])[0]
+        optional_tracking_ref = (packages.mapped('optional_tracking_ref')[:1] or [''])[0]
+
+        # Format scheduled date in user's timezone and expected format 'd-m-Y H:i'
+        formatted_scheduled_date = ''
+        try:
+            if picking.scheduled_date:
+                user_tz = pytz.timezone(request.env.user.tz or 'UTC')
+                # picking.scheduled_date is in UTC in DB
+                scheduled_dt = pytz.UTC.localize(datetime.strptime(picking.scheduled_date.strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')) if isinstance(picking.scheduled_date, datetime) else None
+                if not scheduled_dt and isinstance(picking.scheduled_date, str):
+                    scheduled_dt = pytz.UTC.localize(datetime.strptime(picking.scheduled_date, '%Y-%m-%d %H:%M:%S'))
+                if scheduled_dt:
+                    local_dt = scheduled_dt.astimezone(user_tz)
+                    formatted_scheduled_date = local_dt.strftime('%d-%m-%Y %H:%M')
+        except Exception:
+            formatted_scheduled_date = ''
 
         # Return current editable header data
         return {
             'status': 'success',
             'data': {
                 'id': picking.id,
-                'scheduled_date': scheduled_date_str,
-                'tracking_number': picking.carrier_tracking_ref or '',
-                'tracking_number_optional': (picking.move_line_ids.mapped('result_package_id.optional_tracking_ref')[:1] or [''])[0],
+                'package_type_id': package_type and {'id': package_type.id, 'name': package_type.name} or None,
+                'width': package_type and package_type.width or 0,
+                'height': package_type and package_type.height or 0,
+                'length': package_type and package_type.packaging_length or 0,
+                'weight': picking.shipping_weight,
+                'scheduled_date': formatted_scheduled_date,
+                'tracking_number': carrier_tracking_ref,
+                'tracking_number_optional': optional_tracking_ref,
                 'carrier': picking.carrier_id and {
                     'id': picking.carrier_id.id,
                     'name': picking.carrier_id.name,
-                    'delivery_type': picking.carrier_id.delivery_type,
                 } or None,
-                'carrier_name': (picking.move_line_ids.mapped('result_package_id.carrier_name')[:1] or [''])[0],
+                'carrier_name': picking.carrier_id.name if picking.carrier_id else '',
+                'products': picking.mapped('move_line_ids').mapped(lambda l: {
+                    'product_id': l.product_id.id,
+                    'product_quantity': getattr(l, 'quantity_product_uom', l.qty_done)
+                })
             }
         }
 

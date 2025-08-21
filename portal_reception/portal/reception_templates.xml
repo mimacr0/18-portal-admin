@@ -219,8 +219,8 @@
                 <!-- Reception Create Modal -->
                 <div t-attf-id="page-#{page_name}-list-create-modal" class="modal" data-outside-close="false">
                     <div class="modal-content max-w-2xl w-full mx-auto">
-                                <div class="modal-header">
-                                <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">Reception Create</h3>
+                            <div class="modal-header">
+                            <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100" t-attf-id="page-#{page_name}-list-create-modal-title">Reception Create</h3>
                             <button data-modal-close="true" class="close-modal" aria-label="Close modal">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -228,7 +228,7 @@
                         <div class="modal-body">
                             <form t-attf-id="page-#{page_name}-list-create-form">
                                 <!-- Hidden field to switch create modal into edit mode when needed -->
-                                <input type="hidden" id="page-reception-list-create-form-reception-id"/>
+                                <input type="hidden" t-attf-id="page-#{page_name}-list-create-form-reception-id"/>
                                 <!-- Package type field -->
                                 <div class="form-group">
                                     <div class="flex items-center">

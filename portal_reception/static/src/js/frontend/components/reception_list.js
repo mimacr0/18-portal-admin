@@ -152,10 +152,11 @@ export const reloadReceptionListPage = async () => {
                 // Prefill fields
                 const scheduledDateInput = document.getElementById('page-reception-list-create-form-scheduled-date');
                 if (scheduledDateInput) {
+                    const dateValue = res.data.scheduled_date || '';
                     if (scheduledDateInput._flatpickr) {
-                        try { scheduledDateInput._flatpickr.setDate(res.data.scheduled_date || '', true); } catch(e) {}
+                        try { scheduledDateInput._flatpickr.setDate(dateValue, true); } catch(e) { scheduledDateInput.value = dateValue; }
                     } else {
-                        scheduledDateInput.value = res.data.scheduled_date || '';
+                        scheduledDateInput.value = dateValue;
                     }
                 }
 
@@ -167,11 +168,9 @@ export const reloadReceptionListPage = async () => {
 
                 const carrierSelect = document.getElementById('page-reception-list-create-form-carrier-id');
                 if (carrierSelect) {
-                    // Clear existing selection
                     if ($(carrierSelect).data('select2')) {
                         $(carrierSelect).val(null).trigger('change');
                     }
-                    // Preselect current carrier if available
                     const carrier = res.data.carrier;
                     if (carrier && carrier.id) {
                         const option = new Option(carrier.name, carrier.id, true, true);
@@ -181,6 +180,28 @@ export const reloadReceptionListPage = async () => {
 
                 const carrierNameInput = document.getElementById('page-reception-list-create-form-carrier-name');
                 if (carrierNameInput) carrierNameInput.value = res.data.carrier_name || '';
+
+                // Prefill Package Type and measures/weight
+                const packageTypeSelect = document.getElementById('page-reception-list-create-form-package-type-id');
+                if (packageTypeSelect) {
+                    if ($(packageTypeSelect).data('select2')) {
+                        $(packageTypeSelect).val(null).trigger('change');
+                    }
+                    const pt = res.data.package_type_id;
+                    if (pt && pt.id) {
+                        const option = new Option(pt.name, pt.id, true, true);
+                        $(packageTypeSelect).append(option).trigger('change');
+                    }
+                }
+
+                const widthField = document.getElementById('page-reception-list-create-form-measures-width');
+                if (widthField) widthField.value = res.data.width || '';
+                const heightField = document.getElementById('page-reception-list-create-form-measures-height');
+                if (heightField) heightField.value = res.data.height || '';
+                const lengthField = document.getElementById('page-reception-list-create-form-measures-length');
+                if (lengthField) lengthField.value = res.data.length || '';
+                const weightField = document.getElementById('page-reception-list-create-form-weight');
+                if (weightField) weightField.value = res.data.weight || '';
 
                 // Show modal
                 if (typeof Modal !== 'undefined' && Modal.open) {
