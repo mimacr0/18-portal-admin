@@ -121,7 +121,6 @@ class PortalRepairController(PortalAdminController):
         QualityAlert = request.env['quality.alert'].sudo()
         ProductProduct = request.env['product.product'].sudo()
         AccountPartner = request.env['account.partner'].sudo()
-
         # Convertir productos
         products_raw = post.get("products", "[]")
         if isinstance(products_raw, str):
