@@ -23,7 +23,7 @@ class PortalDashboardController(PortalAdminController):
         ])
         return menus
 
-    @http.route(['/account'], type='http', auth="user", website=True)
+    @http.route(['/my', '/my/home'], type='http', auth="user", website=True)
     def account_dashboard_action_main(self, **post):
         PartnerAccount = request.env['account.partner'].sudo()
         partner_id = request.env.user.partner_id

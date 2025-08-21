@@ -941,3 +941,141 @@ class PortalReceptionController(PortalAdminController):
         return {
             'items': result_items
         }
+
+    # =============================
+    # Update/Delete API Endpoints
+    # =============================
+
+    def _get_portal_user_partner_ids(self):
+        partner_id = request.env.user.partner_id
+        return list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
+
+    def _get_portal_reception_record(self, picking_id):
+        StockPicking = request.env['stock.picking'].sudo()
+        reception_type = request.env.ref('stock.picking_type_in')
+        partner_ids = self._get_portal_user_partner_ids()
+
+        domain = [
+            ('id', '=', int(picking_id)),
+            ('picking_type_id', '=', reception_type.id),
+            ('partner_id', 'in', partner_ids),
+        ]
+
+        return StockPicking.search(domain, limit=1)
+
+    @http.route('/account/reception/delete', type='json', auth='user')
+    def account_reception_delete(self, reception_id=None, **kw):
+        """Delete (cancel) a single reception."""
+        if not reception_id or not str(reception_id).isdigit():
+            return {'status': 'error', 'message': _('Invalid reception ID')}
+
+        picking = self._get_portal_reception_record(int(reception_id))
+        if not picking:
+            return {'status': 'error', 'message': _('Reception not found or cannot be deleted')}
+
+        picking.action_cancel()
+        return {'status': 'success'}
+
+    @http.route('/account/reception/get', type='json', auth='user')
+    def account_reception_get(self, reception_id=None, **kw):
+        """Fetch minimal editable data for a reception to prefill the edit modal."""
+        if not reception_id or not str(reception_id).isdigit():
+            return {'status': 'error', 'message': _('Invalid reception ID')}
+
+        picking = self._get_portal_reception_record(int(reception_id))
+        if not picking:
+            return {'status': 'error', 'message': _('Reception not found')}
+
+        # Convert scheduled_date to user's timezone and to the same UI format
+        user_tz = request.env.user.tz or 'UTC'
+        tz = pytz.timezone(user_tz)
+        dt = picking.scheduled_date
+        scheduled_date_str = ''
+        if dt:
+            # dt is in UTC in database; localize
+            if dt.tzinfo is None:
+                dt = pytz.UTC.localize(dt)
+            scheduled_date_str = dt.astimezone(tz).strftime('%d-%m-%Y %H:%M')
+
+        # Return current editable header data
+        return {
+            'status': 'success',
+            'data': {
+                'id': picking.id,
+                'scheduled_date': scheduled_date_str,
+                'tracking_number': picking.carrier_tracking_ref or '',
+                'tracking_number_optional': (picking.move_line_ids.mapped('result_package_id.optional_tracking_ref')[:1] or [''])[0],
+                'carrier': picking.carrier_id and {
+                    'id': picking.carrier_id.id,
+                    'name': picking.carrier_id.name,
+                    'delivery_type': picking.carrier_id.delivery_type,
+                } or None,
+                'carrier_name': (picking.move_line_ids.mapped('result_package_id.carrier_name')[:1] or [''])[0],
+            }
+        }
+
+    @http.route('/account/reception/update', type='json', auth='user')
+    def account_reception_update(self, reception_id=None, scheduled_date=None, carrier_id=None, carrier_name=None, tracking_number=None, tracking_number_optional=None, **kw):
+        """Update editable header fields of a reception.
+
+        - scheduled_date: 'd-m-Y H:i' in user's timezone
+        - carrier_id: optional int
+        - carrier_name: optional free text, propagated to related packages
+        - tracking_number: updates picking.carrier_tracking_ref and packages' global_tracking_ref
+        - tracking_number_optional: propagated to packages.optional_tracking_ref
+        """
+        if not reception_id or not str(reception_id).isdigit():
+            return {'status': 'error', 'message': _('Invalid reception ID')}
+
+        picking = self._get_portal_reception_record(int(reception_id))
+        if not picking:
+            return {'status': 'error', 'message': _('Reception not found or access denied')}
+
+        # Do not allow updates on done/cancelled
+        if picking.state in ('done', 'cancel'):
+            return {'status': 'error', 'message': _('Cannot update a completed or cancelled reception')}
+
+        vals = {}
+
+        # Parse and set scheduled_date
+        if scheduled_date:
+            try:
+                user_tz = request.env.user.tz or 'UTC'
+                tz = pytz.timezone(user_tz)
+                local_dt = tz.localize(datetime.strptime(scheduled_date, '%d-%m-%Y %H:%M'))
+                utc_dt = local_dt.astimezone(pytz.UTC)
+                vals['scheduled_date'] = utc_dt.strftime('%Y-%m-%d %H:%M:%S')
+            except Exception:
+                return {'status': 'error', 'message': _('Invalid scheduled date')}
+
+        # Carrier
+        if carrier_id:
+            try:
+                vals['carrier_id'] = int(carrier_id)
+            except Exception:
+                return {'status': 'error', 'message': _('Invalid carrier')}
+
+        # Tracking number
+        if tracking_number is not None:
+            vals['carrier_tracking_ref'] = tracking_number
+
+        try:
+            if vals:
+                picking.sudo().write(vals)
+
+            # Propagate to related result packages on move lines
+            packages = picking.move_line_ids.mapped('result_package_id')
+            if packages:
+                package_vals = {}
+                if carrier_name is not None:
+                    package_vals['carrier_name'] = carrier_name
+                if tracking_number is not None:
+                    package_vals['global_tracking_ref'] = tracking_number
+                if tracking_number_optional is not None:
+                    package_vals['optional_tracking_ref'] = tracking_number_optional
+                if package_vals:
+                    packages.sudo().write(package_vals)
+
+            return {'status': 'success', 'message': _('Reception updated successfully')}
+        except Exception as e:
+            return {'status': 'error', 'message': str(e)}

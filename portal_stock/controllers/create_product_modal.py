@@ -5,6 +5,44 @@ from odoo.addons.portal_admin_theme.controllers.admin import PortalAdminControll
 
 
 class ProductModalController(PortalAdminController):
+    @http.route('/account/stock/get/product', type='json', auth='user')
+    def account_stock_get_product(self, product_id=None, **kw):
+        """Return full product data for edit modal"""
+        try:
+            if not product_id:
+                return {'status': 'error', 'message': _('Missing product identifier')}
+
+            product = request.env['product.product'].sudo().browse(int(product_id))
+            if not product.exists():
+                return {'status': 'error', 'message': _('Product not found')}
+
+            # Optional: ensure product belongs to current account partner
+            partner = request.env.user.partner_id
+            account_partner = request.env['account.partner'].sudo().search([
+                ('id', '=', partner.commercial_partner_id.id)
+            ], limit=1)
+            if account_partner and product.account_partner_id.id != account_partner.id:
+                return {'status': 'error', 'message': _('You do not have access to this product')}
+
+            template = product.product_tmpl_id.sudo()
+            image_url = f"/account/stock/image/{product.id}/256x256"
+
+            return {
+                'status': 'success',
+                'product': {
+                    'id': product.id,
+                    'template_id': template.id,
+                    'name': template.name,
+                    'sku': product.default_code or template.default_code,
+                    'barcode': product.barcode or template.barcode,
+                    'weight': product.weight or template.weight or 0.0,
+                    'volume': product.volume or template.volume or 0.0,
+                    'tracking': template.tracking or 'none',
+                    'image_url': image_url,
+                }
+            }
+        except Exception as e:
+            return {'status': 'error', 'message': str(e)}
     @http.route('/account/stock/get/attributes', type='json', auth='user')
     def account_stock_get_attributes(self, **kw):
         """Return all product attributes for the product creation form"""
@@ -140,6 +178,68 @@ class ProductModalController(PortalAdminController):
             return {
                 'status': 'success',
                 'message': _('Product variants updated successfully')
+            }
+        except Exception as e:
+            return {'status': 'error', 'message': str(e)}
+
+    @http.route('/account/stock/update/product', type='json', auth='user')
+    def account_stock_update_product(self, **post):
+        """Update a single product with provided fields"""
+        try:
+            product_id = int(post.get('product_id'))
+            name = post.get('name')
+            weight = float(post.get('weight', 0) or 0)
+            volume = float(post.get('volume', 0) or 0)
+            barcode = post.get('barcode')
+            sku = post.get('sku')
+            tracking = post.get('tracking', 'none')
+            image_base64 = post.get('image_base64')
+
+            Product = request.env['product.product'].sudo()
+            product = Product.browse(product_id)
+            if not product.exists():
+                return {'status': 'error', 'message': _('Product not found')}
+
+            # Optional: ensure product belongs to current account partner
+            partner = request.env.user.partner_id
+            account_partner = request.env['account.partner'].sudo().search([
+                ('id', '=', partner.commercial_partner_id.id)
+            ], limit=1)
+            if account_partner and product.account_partner_id.id != account_partner.id:
+                return {'status': 'error', 'message': _('You do not have access to this product')}
+
+            template = product.product_tmpl_id.sudo()
+
+            # Update template-level fields
+            tmpl_vals = {}
+            if name is not None:
+                tmpl_vals['name'] = name
+            tmpl_vals.update({
+                'weight': weight,
+                'volume': volume,
+                'tracking': tracking or 'none',
+            })
+            if barcode is not None:
+                tmpl_vals['barcode'] = barcode
+            if sku is not None:
+                tmpl_vals['default_code'] = sku
+            if image_base64:
+                tmpl_vals['image_1920'] = image_base64
+            if tmpl_vals:
+                template.write(tmpl_vals)
+
+            # Update variant-level fields for the selected product only
+            prod_vals = {
+                'default_code': sku,
+                'barcode': barcode,
+                'weight': weight,
+                'volume': volume,
+            }
+            product.write(prod_vals)
+
+            return {
+                'status': 'success',
+                'message': _('Product updated successfully')
             }
         except Exception as e:
             return {'status': 'error', 'message': str(e)}

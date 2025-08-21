@@ -24,4 +24,20 @@ class SaleOrder(models.Model):
         partner_ids.extend(self.user_id.partner_id.ids)
         if user and user.partner_id.id in partner_ids:
             user._bus_send( "portal_expedition.portal_expedition_details_page", { 'action': 'reload' } )
+            # Mirror reception behavior: recent activity + notification hooks
+            user.send_portal_user_recent_activity(
+                "New message in expedition",
+                "New message in expedition",
+                "fas fa-bell",
+                "info",
+            )
+
+        # Notify the main partner explicitly as in reception module
+        if user and user.partner_id.id == self.partner_id.id:
+            user.send_portal_user_notification(
+                "New message in expedition",
+                "New message in expedition",
+                "fas fa-bell",
+                "info",
+            )
         return res
