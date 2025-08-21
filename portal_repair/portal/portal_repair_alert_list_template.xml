@@ -8,7 +8,6 @@
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Repair Alerts</h1>
                 </div>
             </div>
-
             <!-- Barra de herramientas de acciones masivas: oculta por defecto, visible cuando se seleccionan elementos. -->
             <div id="bulk-actions-toolbar" class="bg-white rounded-lg shadow mb-4 p-3 hidden dark:bg-gray-800">
                 <div class="flex flex-wrap items-center justify-between gap-3">
@@ -26,12 +25,11 @@
                     </button>
                 </div>
             </div>
-
             <!-- Acciones rápidas de filtrado -->
             <t t-if="list_filters">
                 <div class="border-b border-gray-200 dark:border-gray-700 mb-2">
                     <div class="flex overflow-x-auto scrollbar-hide">
-                        <input type="hidden" t-attf-id="page-#{page_name}-list-quick-filter-active" value="[]"/>
+                        <input type="hidden" t-attf-id="page-#{page_name}-list-quick-filter-active" value=""/>
                         <t t-foreach="list_filters" t-as="list_filter">
                             <button t-if="list_filter.get('active')" type="button" t-attf-id="page-#{page_name}-list-filter-#{list_filter.get('id')}" class="tab-button active px-6 py-3 text-sm font-medium border-b-2 border-[#8A8A00] text-[#696900] focus:outline-none transition-colors duration-200 ease-in-out dark:text-white relative">
                                 <i t-attf-class="#{list_filter.get('icon')} mr-2"></i>
@@ -45,7 +43,6 @@
                     </div>
                 </div>
             </t>
-
             <!-- Tabla de recepciones -->
             <div class="bg-white rounded-lg shadow overflow-hidden mb-20 dark:bg-gray-800">
                 <div class="p-4 border-b border-gray-200 dark:border-gray-700">
@@ -57,7 +54,6 @@
                                 </button>
                             </div>
                         </div>
-
                         <div class="flex items-center justify-between gap-2">
                             <!-- Buscar entrada -->
                             <div class="relative flex-grow max-w-xs">
@@ -66,12 +62,10 @@
                                 </div>
                                 <input type="text" t-attf-id="page-#{page_name}-list-quick-search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-cyan-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" placeholder="Search ..."/>
                             </div>
-
                             <!-- Botón de búsqueda avanzada -->
                             <button t-if="advanced_search" t-attf-id="page-#{page_name}-list-advanced-search-toggle" data-tooltip-target="tooltip-advanced-search" class="p-2 border border-gray-300 rounded-md hover:bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
                                 <i class="fas fa-sliders-h"></i>
                             </button>
-
                             <!-- Botones de acción-->
                             <div class="flex items-center">
                                 <button t-foreach="tools_actions" t-as="tools_action" t-attf-data-tooltip-target="page-list-#{page_name}-tools-action-#{tools_action.get('name')}" t-attf-id="page-list-#{page_name}-tools-action-#{tools_action.get('name')}" class="p-2 rounded-md hover:bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
@@ -80,16 +74,13 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Panel de búsqueda avanzada - oculto por defecto -->
                     <div t-attf-id="page-#{page_name}-list-advanced-search-panel" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 hidden">
                         <input type="hidden" t-attf-id="page-#{page_name}-list-advanced-search-domain" value="[]"/>
                         <input type="hidden" t-attf-id="page-#{page_name}-list-advanced-search-fields" t-att-value="advanced_search"/>
                         <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Advanced Search</h3>
-
                         <!-- Filtro dinámico avanzado -->
                         <div class="w-full">
-
                             <!-- Match Type Selector -->
                             <div class="mb-4">
                                 <p class="text-sm text-gray-700 dark:text-gray-300">
@@ -100,10 +91,8 @@
                                     of the following conditions:
                                 </p>
                             </div>
-
                             <!-- Contenedor de líneas de filtrado -->
                             <div t-attf-id="page-#{page_name}-list-advanced-search-lines-container" class="space-y-3"></div>
-
                             <!-- Botón de añadir línea de filtro -->
                             <div class="mt-3">
                                 <button t-attf-id="page-#{page_name}-list-advanced-search-add-line-btn" class="flex items-center text-[#696900] hover:text-[#8A8A00] text-sm font-medium">
@@ -111,7 +100,6 @@
                                 </button>
                             </div>
                         </div>
-
                         <!-- Botones de acción para la búsqueda avanzada -->
                         <div class="mt-4 flex justify-end space-x-3">
                             <button t-attf-id="page-#{page_name}-list-advanced-search-reset-btn" class="px-3 py-1 text-sm border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700">
@@ -123,7 +111,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Estructura de tabla para la lista de recepciones -->
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -166,7 +153,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Selected products preview -->
                 <div t-attf-id="page-#{page_name}-product-catalog-select-selected-products-container" class="mb-4 bg-white dark:bg-gray-800 rounded-md shadow overflow-hidden text-sm">
                     <div class="bg-gradient-to-r from-cyan-500 to-cyan-600 dark:from-cyan-800 dark:to-cyan-900 px-3 py-2">
@@ -183,22 +169,17 @@
                             </div>
                         </div>
                     </div>
-
                     <div t-attf-id="page-#{page_name}-product-catalog-select-no-products-message" class="p-3 text-center text-xs">
                         <i class="fas fa-box-open text-gray-400 dark:text-gray-500 text-lg mb-1"></i>
                         <p class="text-gray-500 dark:text-gray-400">No products selected</p>
                         <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Add products using the "Add" button</p>
                     </div>
-
                     <div t-attf-id="page-#{page_name}-product-catalog-select-selected-products-list" class="hidden max-h-80 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 p-3"></div>
-
                 </div>
-
                 <!-- Products Content -->
                 <div class="flex flex-col md:flex-row mb-4">
                     <div t-attf-id="page-#{page_name}-product-catalog-select-products-grid" class="product-catalog-list w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3"></div>
                 </div>
-
                 <!-- Pagination -->
                 <div t-attf-id="page-#{page_name}-product-catalog-select-pagination" class="fixed bottom-0 right-0 z-10 mr-6 mb-6"></div>
             </div>
@@ -206,12 +187,9 @@
                 <input type="hidden" t-attf-id="page-#{page_name}-list-pagination-page" value="1"/>
                 <div class="pagination-container px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg flex items-center justify-between" t-attf-id="page-#{page_name}-list-pagination-container"></div>
             </div>
-
             <div class="h-25"></div>
-
             <t t-set="footer_content">
                 <t t-call="portal_repair.portal_repair_alert_modal_template"/>
-
             </t>
         </t>
     </template>
@@ -224,21 +202,45 @@
                     <input type="checkbox" class="repair-alerts-list-checkbox h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500" t-att-data-alert-id="alert.id"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="alert.name"/>
+                    <div class="text-sm text-gray-900 dark:text-gray-100">Title: <t t-out="alert.title"/></div>
+                    <div class="text-sm text-gray-900 dark:text-gray-100">Name: <t t-out="alert.name"/></div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="alert.stage_id.name"/>
+                    <div class="text-sm text-gray-900 dark:text-gray-100">Current stage: <t t-out="alert.stage_id.name"/></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-100">Product: <t t-out="alert.product_id.display_name"/></div>
+                    <div class="text-sm text-gray-900 dark:text-gray-100">Lot: <t t-out="alert.lot_id.display_name"/></div>
+                    <div class="text-sm text-gray-900 dark:text-gray-100">State: <t t-out="alert.lot_id.lifecycle_state"/></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <table class="w-full border-collapse border-0">
+                        <tr t-foreach="alert.repair_order_ids" t-as="order">
+                            <t t-if="order.state == 'done'">
+                                <div class="text-sm text-gray-900 dark:text-gray-100">Type: <t t-out="order.maintenance_type"/></div>
+
+                                <td class="px-4 py-2">
+                                    <div class="text-sm text-gray-900 dark:text-gray-100">
+                                        Result: <t t-esc="', '.join([r.name for r in order.result_ids])"/>
+                                    </div>
+                                    <div class="text-sm text-gray-900 dark:text-gray-100">
+                                        Diagnostic: <t t-esc="', '.join([d.name for d in order.diagnosis_ids])"/>
+                                    </div>
+                                </td>
+                            </t>
+                        </tr>
+                    </table>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <a t-att-href="alert.get_details_url()" t-attf-data-tooltip-target="tooltip-details-#{alert.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-info-circle"></i>
                     </a>
-                    <button t-attf-data-tooltip-target="tooltip-edit-#{alert.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <!-- <button t-attf-data-tooltip-target="tooltip-edit-#{alert.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-edit"></i>
-                    </button>
-                    <button t-attf-data-tooltip-target="tooltip-delete-#{alert.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    </button> -->
+                    <!-- <button t-attf-data-tooltip-target="tooltip-delete-#{alert.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-trash"></i>
-                    </button>
+                    </button> -->
                 </td>
             </tr>
         </t>
@@ -251,7 +253,6 @@
                 <span class="font-medium">No results found</span>
             </p>
         </div>
-
         <!-- Controles de paginación móviles -->
         <div class="sm:hidden" t-if="items_count > 0">
             <p class="text-xs text-gray-700 dark:text-gray-300 mb-2">
@@ -276,7 +277,6 @@
                 </button>
             </nav>
         </div>
-
         <!-- Paginación de escritorio -->
         <div class="hidden sm:flex sm:items-center" t-if="items_count > 0">
             <p class="text-sm text-gray-700 dark:text-gray-300 mr-4">

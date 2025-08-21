@@ -8,59 +8,35 @@ import { reloadExpeditionListPage } from './expedition_list.js';
  */
 export const initExpeditionQuickSortFilters = () => {
     // Botones de filtro
-    const allButton = document.getElementById('page-expedition-list-filter-all');
-    const draftButton = document.getElementById('page-expedition-list-filter-draft');
-    const billingButton = document.getElementById('page-expedition-list-filter-billing');
-    const preparingButton = document.getElementById('page-expedition-list-filter-preparing');
-    const toBeShippedButton = document.getElementById('page-expedition-list-filter-to-be-shipped');
-    const shippedButton = document.getElementById('page-expedition-list-filter-shipped');
-    const cancelButton = document.getElementById('page-expedition-list-filter-cancel');
-    const quickFiltersInput = document.getElementById('page-expedition-list-filter-active');
+   // --- 1. Crear diccionario filterValue → botón ---
+    const filterButtons = {
+        all: document.getElementById('page-expedition-list-filter-all'),
+        draft: document.getElementById('page-expedition-list-filter-draft'),
+        billing: document.getElementById('page-expedition-list-filter-billing'),
+        preparing: document.getElementById('page-expedition-list-filter-preparing'),
+        to_be_shipped: document.getElementById('page-expedition-list-filter-to-be-shipped'),
+        shipped: document.getElementById('page-expedition-list-filter-shipped'),
+        cancel: document.getElementById('page-expedition-list-filter-cancel')
+    };
+    // Input oculto para almacenar el filtro activo
+    const activeFilterInput = document.getElementById('page-expedition-list-quick-filter-active');
+    if (!activeFilterInput) return;
 
-    if (!quickFiltersInput) return;
-    if (!allButton && !draftButton && !billingButton && !preparingButton && !toBeShippedButton && !shippedButton && !cancelButton) return;
+    // --- 2. Si ninguno de los botones existe, salir ---
+    if (!Object.values(filterButtons).some(btn => btn)) return;
 
-    if (allButton) {
-    allButton.addEventListener('click', () => {
-            setActiveFilter('all', allButton, [draftButton, billingButton, preparingButton, toBeShippedButton, shippedButton, cancelButton]);
+    // --- 3. Configurar listeners de forma genérica ---
+    Object.entries(filterButtons).forEach(([filterValue, button]) => {
+        if (!button) return; // ignorar si no existe
+
+        button.addEventListener('click', () => {
+            // Todos los demás botones inactivos
+            const inactiveButtons = Object.values(filterButtons).filter(btn => btn && btn !== button);
+
+            // Llamada a tu función genérica
+            setActiveFilter(filterValue, button, inactiveButtons);
         });
-    }
-
-    if (draftButton) {
-        draftButton.addEventListener('click', () => {
-            setActiveFilter('draft', draftButton, [allButton, billingButton, preparingButton, toBeShippedButton, shippedButton, cancelButton]);
-        });
-    }
-
-    if (billingButton) {
-        billingButton.addEventListener('click', () => {
-            setActiveFilter('billing', billingButton, [allButton, draftButton, preparingButton, toBeShippedButton, shippedButton, cancelButton]);
-        });
-    }
-
-    if (preparingButton) {
-        preparingButton.addEventListener('click', () => {
-            setActiveFilter('preparing', preparingButton, [allButton, draftButton, billingButton, toBeShippedButton, shippedButton, cancelButton]);
-        });
-    }
-
-    if (toBeShippedButton) {
-        toBeShippedButton.addEventListener('click', () => {
-            setActiveFilter('toBeShipped', toBeShippedButton, [allButton, draftButton, billingButton, preparingButton, shippedButton, cancelButton]);
-        });
-    }
-
-    if (shippedButton) {
-        shippedButton.addEventListener('click', () => {
-            setActiveFilter('shipped', shippedButton, [allButton, draftButton, billingButton, preparingButton, toBeShippedButton, cancelButton]);
-        });
-    }
-
-    if (cancelButton) {
-        cancelButton.addEventListener('click', () => {
-            setActiveFilter('cancel', cancelButton, [allButton, draftButton, billingButton, preparingButton, toBeShippedButton, shippedButton]);
-        });
-    }
+    });
 
 
     /**
@@ -74,7 +50,6 @@ export const initExpeditionQuickSortFilters = () => {
     const setActiveFilter = (filterValue, activeButton, inactiveButtons) => {
         // Actualizar el input con el valor del filtro
         activeFilterInput.value = filterValue;
-        console.log('Active filter set to:', activeButton);
         // Agregar clases para estilo activo
         activeButton.classList.add('active', 'border-[#8A8A00]', 'text-[#696900]');
         activeButton.classList.remove('border-transparent', 'text-gray-500');

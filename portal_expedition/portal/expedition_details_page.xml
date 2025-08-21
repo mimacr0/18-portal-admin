@@ -14,6 +14,7 @@
                 <div class="w-4/5 mx-auto lg:max-w-7xl bg-white dark:bg-gray-800 rounded-xl shadow-lg print:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
                     <!-- Document Action Bar -->
                     <div class="p-5 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+
                     <a href="/account/expedition" class="inline-flex items-center text-[#696900] hover:text-[#8A8A00] dark:text-[#A0A000] dark:hover:text-[#f0f0e0] transition-colors">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -30,7 +31,6 @@
                             </span>
                         </div>
                     </div>
-                </div>
 
                 <div class="p-8 border-b border-gray-200 dark:border-gray-700 relative">
                     <div class="flex flex-col md:flex-row justify-between items-start relative z-10">

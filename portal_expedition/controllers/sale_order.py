@@ -21,6 +21,7 @@ class PortalExpeditionController(PortalAdminController):
         'tracking_ref': 'picking_ids.carrier_tracking_ref',
         'date_order': 'date_order',
         'date_done': 'picking_ids.date_done',
+        'sale_state': 'state',
     }
 
     DEFAULT_LIMIT_PARAM = 'portal_expedition.page_list_default_limit'
@@ -38,14 +39,24 @@ class PortalExpeditionController(PortalAdminController):
     @lru_cache(maxsize=1)
     def _get_expedition_advanced_search_fields(self):
         """Devuelve la configuración de campos para búsqueda avanzada"""
-        return [
-            {'id': 'name', 'label': _('Name')},
-            {'id': 'order', 'label': _('Order')},
-            {'id': 'tracking_ref', 'label': _('Tracking Reference')},
-            {'id': 'sent_date', 'label': _('Sent Date')},
-            {'id': 'date_order', 'label': _('Date Order')},
+        PackageType = request.env['stock.package.type'].sudo()
+        package_type_options = [
+            {'id': pt.id, 'label': pt.name}
+            for pt in PackageType.search([], limit=10)
         ]
 
+        return [
+            {'id': 'name', 'label': _('Name'), 'type': 'text'},
+            {'id': 'tracking_ref', 'label': _('Tracking Ref'), 'type': 'text'},
+            {'id': 'date_order', 'label': _('Order Date'), 'type': 'date'},
+            {'id': 'date_done', 'label': _('Done Date'), 'type': 'date'},
+            {'id': 'sale_state', 'label': _('Sale State'), 'type': 'select', 'options': [
+                {'id': 'draft', 'label': _('Quotation')},
+                {'id': 'sent', 'label': _('Quotation Sent')},
+                {'id': 'sale', 'label': _('Sales Order')},
+                {'id': 'cancel', 'label': _('Cancelled')},
+            ]}
+        ]
     @http.route('/account/expedition', type='http', auth="user", website=True)
     def account_expedition_action(self, **post):
         SaleOrder = request.env['sale.order'].sudo()
@@ -79,7 +90,6 @@ class PortalExpeditionController(PortalAdminController):
                 {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True}
             ],
             'tools_actions': [
-                {'name': 'import', 'label': _('Import'), 'icon': 'fas fa-file-import'}
             ],
             'batch_actions': [
                 {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
@@ -111,47 +121,77 @@ class PortalExpeditionController(PortalAdminController):
             'pages': pages
         }
 
-    def _build_sale_domain(self, search='', domain=None, match_type='all'):
+    def _build_sale_domain(self, search='', domain=None, match_type='all', quick_filter=None):
         """Construye el dominio de búsqueda para productos"""
         base_domain = []
 
+        if quick_filter and quick_filter != 'all':
+            base_domain.extend(self.get_quick_filter_domain(quick_filter, request.env))
         # Aplicar búsqueda de texto
         if search:
             base_domain.extend(expression.OR([
                 [('name', 'ilike', search)],
                 [('picking_ids.carrier_tracking_ref', 'ilike', search)],
             ]))
-        # # Aplicar dominio de búsqueda avanzada
-        if domain and isinstance(domain, list) and domain:
-            adv_domain = []
-            for condition in domain:
-                # Comprueba que cada condición tenga exactamente 3 elementos
-                if len(condition) != 3:
-                    continue
 
-                field, operator, value = condition
-                if field not in self.EXPEDITION_FIELDS_MAPPING:
-                    continue
-
-                model_field = self.EXPEDITION_FIELDS_MAPPING[field]
-                # if field == 'date_order':
-                #     try:
-                #         # Ajusta el formato según lo que recibes: "YYYY-MM-DD"
-                #         value = datetime.strptime(value, "%d-%m-%Y").date()
-                #     except ValueError:
-                #         continue  # o lanza error si prefieres
-
-                adv_domain.append((model_field, operator, value))
-            # Si no hay condiciones avanzadas, no se modifica el dominio base
-            # Combinar condiciones de búsqueda avanzada según el tipo de coincidencia
-            if adv_domain:
-                if match_type == 'any':
-                    base_domain.append(expression.OR(adv_domain))
-                else:  # 'all' es el predeterminado
-                    base_domain.extend(adv_domain)
-
-        return base_domain
+        # Aplicar dominio de búsqueda avanzada
+        if domain:
+            base_domain = self._apply_order_advanced_domain(base_domain, domain, match_type)
     
+        return base_domain
+
+    def _apply_order_advanced_domain(self, base_domain, domain, match_type='all'):
+        """
+        Construye y combina condiciones avanzadas para el dominio.
+        """
+        adv_conditions = []
+        adv_condition_domains = []
+
+        def _date_bounds_utc(date_str):
+            try:
+                user_tz = pytz.timezone(request.env.user.tz or 'UTC')
+                day_local_start = user_tz.localize(datetime.strptime(date_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
+                day_local_end = user_tz.localize(datetime.strptime(date_str + ' 23:59:59', '%Y-%m-%d %H:%M:%S'))
+                return (
+                    day_local_start.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S'),
+                    day_local_end.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S'),
+                )
+            except Exception:
+                return (date_str, date_str)
+
+        for condition in domain:
+            if not isinstance(condition, (list, tuple)) or len(condition) != 3:
+                continue
+            field_key, operator, raw_value = condition
+            model_field = self.EXPEDITION_FIELDS_MAPPING[field_key]
+
+            if field_key in ['date_order', 'date_done']:
+                if operator == '=':
+                    start_utc, end_utc = _date_bounds_utc(str(raw_value))
+                    conds = [(model_field, '>=', start_utc), (model_field, '<=', end_utc)]
+                    adv_conditions.extend(conds)
+                    adv_condition_domains.append(conds)
+                    continue
+                elif operator in ('>=', '<='):
+                    bound_utc = _date_bounds_utc(str(raw_value))[0 if operator == '>=' else 1]
+                    cond = (model_field, operator, bound_utc)
+                    adv_conditions.append(cond)
+                    adv_condition_domains.append([cond])
+                    continue
+            
+
+            # Funciona como un default, si es nada de lo anterior, se usa este
+            cond = (model_field, operator, raw_value)
+            adv_conditions.append(cond)
+            adv_condition_domains.append([cond])
+
+        if adv_conditions:
+            if match_type == 'any':
+                return expression.AND([base_domain, expression.OR(adv_condition_domains)])
+            else:
+                base_domain.extend(adv_conditions)
+        return base_domain
+
     def get_quick_filter_domain(self, quick_filter, env):
         """
         Retorna el dominio adicional según el filtro rápido (quick_filter).
@@ -171,7 +211,7 @@ class PortalExpeditionController(PortalAdminController):
                 ('state', 'in', ['confirmed', 'assigned']),
                 ('picking_type_code', '!=', 'outgoing'),
             ],
-            'toBeShipped': [
+            'to_be_shipped': [
                 ('state', 'in', ['confirmed', 'assigned']),
                 ('picking_type_code', '=', 'outgoing'),
             ],
@@ -186,9 +226,11 @@ class PortalExpeditionController(PortalAdminController):
         elif quick_filter in picking_filters:
             picking_model = env['stock.picking'].sudo()
             picking_ids = picking_model.search(picking_filters[quick_filter]).ids
-            return [('picking_ids', 'in', picking_ids)]
-
-        return None
+            if picking_ids:
+                return [('picking_ids', 'in', picking_ids)]
+            else:
+                # Retornar un dominio que nunca coincida si no hay pickings
+                return [('id', '=', 0)]
 
 
     @http.route('/account/expedition/list/reload', type='json', auth='user')
@@ -198,14 +240,13 @@ class PortalExpeditionController(PortalAdminController):
         offset = (page - 1) * limit
 
         # Construir dominio de búsqueda
-        base_domain = self._build_sale_domain(search, domain, match_type)
+        base_domain = self._build_sale_domain(search, domain, match_type, quick_filter)
 
         # # Apply quick filters
-        print("Quick Filter:", quick_filter)
-        if quick_filter and quick_filter != 'all':
-            domain_addition = self.get_quick_filter_domain(quick_filter, request.env)
-            if domain_addition:
-                base_domain.extend(domain_addition)
+        # if quick_filter and quick_filter != 'all':
+        #     domain_addition = self.get_quick_filter_domain(quick_filter, request.env)
+        #     if domain_addition:
+        #         base_domain.extend(domain_addition)
 
         # Configurar ordenamiento
         order_by = 'id desc'

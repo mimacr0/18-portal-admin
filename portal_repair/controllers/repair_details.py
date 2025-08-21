@@ -26,7 +26,7 @@ class PortalRepairController(PortalAdminController):
         # Get the repair
         alert = QualityAlert.search([
             ('id', '=', alert_id),
-            # ('partner_id', 'in', partner_ids)
+            ('partner_id', 'in', partner_ids)
         ], limit=1)
 
         if not alert:
@@ -76,7 +76,7 @@ class PortalRepairController(PortalAdminController):
         # Verify user has access to this repair
         alert = QualityAlert.search([
             ('id', '=', int(alert_id)),
-            # ('partner_id', 'in', partner_ids)
+            ('partner_id', 'in', partner_ids)
         ], limit=1)
 
         if not alert:
@@ -113,7 +113,7 @@ class PortalRepairController(PortalAdminController):
         # Get the repair
         alert = QualityAlert.search([
             ('id', '=', int(alert_id)),
-            # ('partner_id', 'in', partner_ids)
+            ('partner_id', 'in', partner_ids)
         ], limit=1)
 
         if not alert:
