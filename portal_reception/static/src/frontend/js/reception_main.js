@@ -164,7 +164,7 @@ odoo.define('portal_reception.reception_main', function (require) {
                 return;
             }
 
-            if (confirm(_t('Are you sure you want to delete these items?'))) {
+            if (confirm(_t('Are you sure you want to cancel these receptions?'))) {
                 this._rpc({
                     route: '/account/reception/batch/delete',
                     params: {

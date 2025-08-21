@@ -107,13 +107,12 @@ export const reloadReceptionListPage = async () => {
     });
 
     const deleteButtons = document.querySelectorAll('.reception-delete-btn');
-    const editButtons = document.querySelectorAll('.reception-edit-btn');
 
     for(const deleteButton of deleteButtons) {
         deleteButton.addEventListener('click', async () => {
             const id = deleteButton.dataset.receptionId;
             if(!id) return;
-            if(!confirm('Are you sure you want to delete this reception?')) return;
+            if(!confirm('Are you sure you want to cancel this reception?')) return;
             const res = await rpc('/account/reception/delete', { reception_id: id });
             if(res?.status === 'success') {
                 reloadReceptionListPage();
@@ -123,98 +122,6 @@ export const reloadReceptionListPage = async () => {
         });
     }
 
-    for(const editButton of editButtons) {
-        editButton.addEventListener('click', async () => {
-            const id = editButton.dataset.receptionId;
-            if(!id) return;
-            try {
-                const res = await rpc('/account/reception/get', { reception_id: id });
-                if(res?.status !== 'success') {
-                    if(res?.message) alert(res.message);
-                    return;
-                }
-
-                // Open modal in edit mode
-                const modalId = 'page-reception-list-create-modal';
-                const modal = document.getElementById(modalId);
-                if (!modal) return;
-
-                // Set hidden edit id
-                const editHiddenIdInput = document.getElementById('page-reception-list-create-form-reception-id');
-                if (editHiddenIdInput) editHiddenIdInput.value = id;
-
-                // Update modal title and button
-                const headerTitle = modal.querySelector('.modal-header h3');
-                if (headerTitle) headerTitle.textContent = 'Reception Update';
-                const submitBtn = document.getElementById('page-reception-list-create-product-form-submit');
-                if (submitBtn) submitBtn.innerHTML = '<i class="fas fa-save"></i> Update';
-
-                // Prefill fields
-                const scheduledDateInput = document.getElementById('page-reception-list-create-form-scheduled-date');
-                if (scheduledDateInput) {
-                    const dateValue = res.data.scheduled_date || '';
-                    if (scheduledDateInput._flatpickr) {
-                        try { scheduledDateInput._flatpickr.setDate(dateValue, true); } catch(e) { scheduledDateInput.value = dateValue; }
-                    } else {
-                        scheduledDateInput.value = dateValue;
-                    }
-                }
-
-                const trackingInput = document.getElementById('page-reception-list-create-form-tracking-number');
-                if (trackingInput) trackingInput.value = res.data.tracking_number || '';
-
-                const trackingOptionalInput = document.getElementById('page-reception-list-create-form-tracking-number-optional');
-                if (trackingOptionalInput) trackingOptionalInput.value = res.data.tracking_number_optional || '';
-
-                const carrierSelect = document.getElementById('page-reception-list-create-form-carrier-id');
-                if (carrierSelect) {
-                    if ($(carrierSelect).data('select2')) {
-                        $(carrierSelect).val(null).trigger('change');
-                    }
-                    const carrier = res.data.carrier;
-                    if (carrier && carrier.id) {
-                        const option = new Option(carrier.name, carrier.id, true, true);
-                        $(carrierSelect).append(option).trigger('change');
-                    }
-                }
-
-                const carrierNameInput = document.getElementById('page-reception-list-create-form-carrier-name');
-                if (carrierNameInput) carrierNameInput.value = res.data.carrier_name || '';
-
-                // Prefill Package Type and measures/weight
-                const packageTypeSelect = document.getElementById('page-reception-list-create-form-package-type-id');
-                if (packageTypeSelect) {
-                    if ($(packageTypeSelect).data('select2')) {
-                        $(packageTypeSelect).val(null).trigger('change');
-                    }
-                    const pt = res.data.package_type_id;
-                    if (pt && pt.id) {
-                        const option = new Option(pt.name, pt.id, true, true);
-                        $(packageTypeSelect).append(option).trigger('change');
-                    }
-                }
-
-                const widthField = document.getElementById('page-reception-list-create-form-measures-width');
-                if (widthField) widthField.value = res.data.width || '';
-                const heightField = document.getElementById('page-reception-list-create-form-measures-height');
-                if (heightField) heightField.value = res.data.height || '';
-                const lengthField = document.getElementById('page-reception-list-create-form-measures-length');
-                if (lengthField) lengthField.value = res.data.length || '';
-                const weightField = document.getElementById('page-reception-list-create-form-weight');
-                if (weightField) weightField.value = res.data.weight || '';
-
-                // Show modal
-                if (typeof Modal !== 'undefined' && Modal.open) {
-                    Modal.open(modalId);
-                } else {
-                    modal.classList.remove('hidden');
-                }
-            } catch (e) {
-                console.error(e);
-                alert('Failed to load reception data');
-            }
-        });
-    }
 }
 
 /**
@@ -253,7 +160,7 @@ export const initReceptionsManagementListPage = () => {
 
         if(selectedIds.length === 0) return;
 
-        if(confirm('Are you sure you want to delete these items?')) {
+        if(confirm('Are you sure you want to cancel these receptions?')) {
             const res = await rpc('/account/reception/batch/delete', {
                 ids: selectedIds,
             });

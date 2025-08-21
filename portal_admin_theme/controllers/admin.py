@@ -16,6 +16,7 @@ class PortalAdminController(CustomerPortal):
         menus = self._get_admin_layout_menus()
         menus.sort(key=lambda x: x.get('order', 0))
         return {
+            'lang': user.lang,
             'menus': menus,
             'batch_actions': [],
             'list_actions': [],

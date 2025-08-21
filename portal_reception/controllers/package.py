@@ -110,7 +110,7 @@ class PortalReceptionController(PortalAdminController):
                 {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True}
             ],
             'batch_actions': [
-                {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
+                {'name': 'delete', 'label': _('Cancel'), 'icon': 'fas fa-ban'}
             ],
             'advanced_search': json.dumps(self._get_reception_advanced_search_fields())
         })
@@ -410,7 +410,7 @@ class PortalReceptionController(PortalAdminController):
 
     @http.route('/account/reception/batch/delete', type='json', auth='user')
     def account_reception_batch_delete(self, ids, **kw):
-        """Delete selected packages"""
+        """Cancel selected receptions"""
         if not ids:
             return {'status': 'error', 'message': _('No packages selected')}
 
@@ -429,7 +429,7 @@ class PortalReceptionController(PortalAdminController):
             ])
 
             if not pickings:
-                return {'status': 'error', 'message': _('No valid packages to delete')}
+                return {'status': 'error', 'message': _('No valid receptions to cancel')}
 
             # Cancel the pickings - can't actually delete them in Odoo
             pickings.action_cancel()
@@ -965,13 +965,13 @@ class PortalReceptionController(PortalAdminController):
 
     @http.route('/account/reception/delete', type='json', auth='user')
     def account_reception_delete(self, reception_id=None, **kw):
-        """Delete (cancel) a single reception."""
+        """Cancel a single reception."""
         if not reception_id or not str(reception_id).isdigit():
             return {'status': 'error', 'message': _('Invalid reception ID')}
 
         picking = self._get_portal_reception_record(int(reception_id))
         if not picking:
-            return {'status': 'error', 'message': _('Reception not found or cannot be deleted')}
+            return {'status': 'error', 'message': _('Reception not found or cannot be cancelled')}
 
         picking.action_cancel()
         return {'status': 'success'}
