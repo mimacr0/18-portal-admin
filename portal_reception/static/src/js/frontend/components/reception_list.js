@@ -107,13 +107,12 @@ export const reloadReceptionListPage = async () => {
     });
 
     const deleteButtons = document.querySelectorAll('.reception-delete-btn');
-    const editButtons = document.querySelectorAll('.reception-edit-btn');
 
     for(const deleteButton of deleteButtons) {
         deleteButton.addEventListener('click', async () => {
             const id = deleteButton.dataset.receptionId;
             if(!id) return;
-            if(!confirm('Are you sure you want to delete this reception?')) return;
+            if(!confirm('Are you sure you want to cancel this reception?')) return;
             const res = await rpc('/account/reception/delete', { reception_id: id });
             if(res?.status === 'success') {
                 reloadReceptionListPage();
@@ -123,77 +122,6 @@ export const reloadReceptionListPage = async () => {
         });
     }
 
-    for(const editButton of editButtons) {
-        editButton.addEventListener('click', async () => {
-            const id = editButton.dataset.receptionId;
-            if(!id) return;
-            try {
-                const res = await rpc('/account/reception/get', { reception_id: id });
-                if(res?.status !== 'success') {
-                    if(res?.message) alert(res.message);
-                    return;
-                }
-
-                // Open modal in edit mode
-                const modalId = 'page-reception-list-create-modal';
-                const modal = document.getElementById(modalId);
-                if (!modal) return;
-
-                // Set hidden edit id
-                const editHiddenIdInput = document.getElementById('page-reception-list-create-form-reception-id');
-                if (editHiddenIdInput) editHiddenIdInput.value = id;
-
-                // Update modal title and button
-                const headerTitle = modal.querySelector('.modal-header h3');
-                if (headerTitle) headerTitle.textContent = 'Reception Update';
-                const submitBtn = document.getElementById('page-reception-list-create-product-form-submit');
-                if (submitBtn) submitBtn.innerHTML = '<i class="fas fa-save"></i> Update';
-
-                // Prefill fields
-                const scheduledDateInput = document.getElementById('page-reception-list-create-form-scheduled-date');
-                if (scheduledDateInput) {
-                    if (scheduledDateInput._flatpickr) {
-                        try { scheduledDateInput._flatpickr.setDate(res.data.scheduled_date || '', true); } catch(e) {}
-                    } else {
-                        scheduledDateInput.value = res.data.scheduled_date || '';
-                    }
-                }
-
-                const trackingInput = document.getElementById('page-reception-list-create-form-tracking-number');
-                if (trackingInput) trackingInput.value = res.data.tracking_number || '';
-
-                const trackingOptionalInput = document.getElementById('page-reception-list-create-form-tracking-number-optional');
-                if (trackingOptionalInput) trackingOptionalInput.value = res.data.tracking_number_optional || '';
-
-                const carrierSelect = document.getElementById('page-reception-list-create-form-carrier-id');
-                if (carrierSelect) {
-                    // Clear existing selection
-                    if ($(carrierSelect).data('select2')) {
-                        $(carrierSelect).val(null).trigger('change');
-                    }
-                    // Preselect current carrier if available
-                    const carrier = res.data.carrier;
-                    if (carrier && carrier.id) {
-                        const option = new Option(carrier.name, carrier.id, true, true);
-                        $(carrierSelect).append(option).trigger('change');
-                    }
-                }
-
-                const carrierNameInput = document.getElementById('page-reception-list-create-form-carrier-name');
-                if (carrierNameInput) carrierNameInput.value = res.data.carrier_name || '';
-
-                // Show modal
-                if (typeof Modal !== 'undefined' && Modal.open) {
-                    Modal.open(modalId);
-                } else {
-                    modal.classList.remove('hidden');
-                }
-            } catch (e) {
-                console.error(e);
-                alert('Failed to load reception data');
-            }
-        });
-    }
 }
 
 /**
@@ -232,7 +160,7 @@ export const initReceptionsManagementListPage = () => {
 
         if(selectedIds.length === 0) return;
 
-        if(confirm('Are you sure you want to delete these items?')) {
+        if(confirm('Are you sure you want to cancel these receptions?')) {
             const res = await rpc('/account/reception/batch/delete', {
                 ids: selectedIds,
             });

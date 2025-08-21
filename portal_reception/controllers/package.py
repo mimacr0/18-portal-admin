@@ -81,6 +81,8 @@ class PortalReceptionController(PortalAdminController):
 
     @http.route('/account/reception', type='http', auth="user", website=True)
     def account_reception_action(self, **post):
+        # Ensure translations render with user's language
+        self._ensure_user_lang_context()
         StockPicking = request.env['stock.picking'].sudo()
         reception_type = request.env.ref('stock.picking_type_in')
         partner_id = request.env.user.partner_id
@@ -110,7 +112,7 @@ class PortalReceptionController(PortalAdminController):
                 {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True}
             ],
             'batch_actions': [
-                {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
+                {'name': 'delete', 'label': _('Cancel'), 'icon': 'fas fa-ban'}
             ],
             'advanced_search': json.dumps(self._get_reception_advanced_search_fields())
         })
@@ -141,6 +143,7 @@ class PortalReceptionController(PortalAdminController):
 
     @http.route('/account/reception/list/advanced_filters', type='json', auth='user')
     def account_reception_list_advanced_filters(self, **kw):
+        self._ensure_user_lang_context()
         return {
             'status': 'success',
             'filters': json.dumps(self._get_reception_advanced_search_fields())
@@ -366,6 +369,7 @@ class PortalReceptionController(PortalAdminController):
 
     @http.route('/account/reception/list/reload', type='json', auth='user')
     def account_reception_list_reload(self, page=1, search='', domain=None, match_type='all', sort=None, order='asc', quick_filter=None, **kw):
+        self._ensure_user_lang_context()
         SysParams = request.env['ir.config_parameter'].sudo()
         limit = self._get_portal_list_limit()
         offset = (page - 1) * limit
@@ -410,7 +414,8 @@ class PortalReceptionController(PortalAdminController):
 
     @http.route('/account/reception/batch/delete', type='json', auth='user')
     def account_reception_batch_delete(self, ids, **kw):
-        """Delete selected packages"""
+        """Cancel selected receptions"""
+        self._ensure_user_lang_context()
         if not ids:
             return {'status': 'error', 'message': _('No packages selected')}
 
@@ -429,7 +434,7 @@ class PortalReceptionController(PortalAdminController):
             ])
 
             if not pickings:
-                return {'status': 'error', 'message': _('No valid packages to delete')}
+                return {'status': 'error', 'message': _('No valid receptions to cancel')}
 
             # Cancel the pickings - can't actually delete them in Odoo
             pickings.action_cancel()
@@ -442,6 +447,7 @@ class PortalReceptionController(PortalAdminController):
     def account_reception_create(self, **post):
         """Create a new reception package"""
 
+        self._ensure_user_lang_context()
         # Get current user's partner
         partner = request.env.user.partner_id
 
@@ -618,6 +624,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/account/reception/product-catalog', type='json', auth='user')
     def account_reception_product_catalog(self, page=1, search='', **post):
         """Get the product catalog with pagination"""
+        self._ensure_user_lang_context()
         ProductProduct = request.env['product.product'].sudo()
 
         # Set limit to 20 items per page
@@ -670,6 +677,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/account/reception/product-search', type='json', auth='user')
     def account_reception_product_search(self, term='', **kw):
         """Search products based on term for select2 with product attributes"""
+        self._ensure_user_lang_context()
         ProductProduct = request.env['product.product'].sudo()
         domain = [('is_storable', '=', True)]  # Only storable products
 
@@ -722,6 +730,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/account/reception/carrier-search', type='json', auth='user')
     def account_reception_carrier_search(self, term='', **kw):
         """Search carriers based on term for select2"""
+        self._ensure_user_lang_context()
         DeliveryCarrier = request.env['delivery.carrier'].sudo()
         domain = []
 
@@ -748,6 +757,7 @@ class PortalReceptionController(PortalAdminController):
 
     @http.route('/account/reception/details/<int:reception_id>', type='http', auth="user", website=True)
     def account_reception_details_action(self, reception_id, access_token=None, **post):
+        self._ensure_user_lang_context()
         StockPicking = request.env['stock.picking'].sudo()
         reception_type = request.env.ref('stock.picking_type_in')
         partner_id = request.env.user.partner_id
@@ -779,6 +789,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/portal_reception/reception/details/chatter/fetch', type='json', auth='public', website=True)
     def portal_reception_details_chatter_fetch(self, reception_id=None, limit=10, after=None, before=None, **kw):
         """Add compatible route matching the JS client call pattern"""
+        self._ensure_user_lang_context()
         if not reception_id:
             return {
                 'data': {'mail.message': []},
@@ -836,6 +847,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/portal_reception/reception/details/chatter/post', type='http', auth="user", methods=['POST'])
     def portal_reception_details_chatter_post(self, reception_id, access_token=None, **post):
         """Add compatible route for posting messages from JS client"""
+        self._ensure_user_lang_context()
         if not str(reception_id).isdigit():
             return json.dumps({'status': 'error', 'message': 'Invalid reception ID'})
 
@@ -904,6 +916,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/account/reception/package-type-search', type='json', auth='user')
     def account_reception_package_type_search(self, term='', **kw):
         """Search package types based on term for select2"""
+        self._ensure_user_lang_context()
         PackageType = request.env['stock.package.type'].sudo()
         domain = []
 
@@ -965,13 +978,14 @@ class PortalReceptionController(PortalAdminController):
 
     @http.route('/account/reception/delete', type='json', auth='user')
     def account_reception_delete(self, reception_id=None, **kw):
-        """Delete (cancel) a single reception."""
+        """Cancel a single reception."""
+        self._ensure_user_lang_context()
         if not reception_id or not str(reception_id).isdigit():
             return {'status': 'error', 'message': _('Invalid reception ID')}
 
         picking = self._get_portal_reception_record(int(reception_id))
         if not picking:
-            return {'status': 'error', 'message': _('Reception not found or cannot be deleted')}
+            return {'status': 'error', 'message': _('Reception not found or cannot be cancelled')}
 
         picking.action_cancel()
         return {'status': 'success'}
@@ -979,6 +993,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/account/reception/get', type='json', auth='user')
     def account_reception_get(self, reception_id=None, **kw):
         """Fetch minimal editable data for a reception to prefill the edit modal."""
+        self._ensure_user_lang_context()
         if not reception_id or not str(reception_id).isdigit():
             return {'status': 'error', 'message': _('Invalid reception ID')}
 
@@ -986,31 +1001,49 @@ class PortalReceptionController(PortalAdminController):
         if not picking:
             return {'status': 'error', 'message': _('Reception not found')}
 
-        # Convert scheduled_date to user's timezone and to the same UI format
-        user_tz = request.env.user.tz or 'UTC'
-        tz = pytz.timezone(user_tz)
-        dt = picking.scheduled_date
-        scheduled_date_str = ''
-        if dt:
-            # dt is in UTC in database; localize
-            if dt.tzinfo is None:
-                dt = pytz.UTC.localize(dt)
-            scheduled_date_str = dt.astimezone(tz).strftime('%d-%m-%Y %H:%M')
+        packages = picking.get_packages()
+        package_type = packages.mapped('package_type_id')[:1]
+        package_type = package_type and package_type[0] or request.env['stock.package.type']
+        carrier_tracking_ref = (packages.mapped('global_tracking_ref')[:1] or [''])[0]
+        optional_tracking_ref = (packages.mapped('optional_tracking_ref')[:1] or [''])[0]
+
+        # Format scheduled date in user's timezone and expected format 'd-m-Y H:i'
+        formatted_scheduled_date = ''
+        try:
+            if picking.scheduled_date:
+                user_tz = pytz.timezone(request.env.user.tz or 'UTC')
+                # picking.scheduled_date is in UTC in DB
+                scheduled_dt = pytz.UTC.localize(datetime.strptime(picking.scheduled_date.strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')) if isinstance(picking.scheduled_date, datetime) else None
+                if not scheduled_dt and isinstance(picking.scheduled_date, str):
+                    scheduled_dt = pytz.UTC.localize(datetime.strptime(picking.scheduled_date, '%Y-%m-%d %H:%M:%S'))
+                if scheduled_dt:
+                    local_dt = scheduled_dt.astimezone(user_tz)
+                    formatted_scheduled_date = local_dt.strftime('%d-%m-%Y %H:%M')
+        except Exception:
+            formatted_scheduled_date = ''
 
         # Return current editable header data
         return {
             'status': 'success',
             'data': {
                 'id': picking.id,
-                'scheduled_date': scheduled_date_str,
-                'tracking_number': picking.carrier_tracking_ref or '',
-                'tracking_number_optional': (picking.move_line_ids.mapped('result_package_id.optional_tracking_ref')[:1] or [''])[0],
+                'package_type_id': package_type and {'id': package_type.id, 'name': package_type.name} or None,
+                'width': package_type and package_type.width or 0,
+                'height': package_type and package_type.height or 0,
+                'length': package_type and package_type.packaging_length or 0,
+                'weight': picking.shipping_weight,
+                'scheduled_date': formatted_scheduled_date,
+                'tracking_number': carrier_tracking_ref,
+                'tracking_number_optional': optional_tracking_ref,
                 'carrier': picking.carrier_id and {
                     'id': picking.carrier_id.id,
                     'name': picking.carrier_id.name,
-                    'delivery_type': picking.carrier_id.delivery_type,
                 } or None,
-                'carrier_name': (picking.move_line_ids.mapped('result_package_id.carrier_name')[:1] or [''])[0],
+                'carrier_name': picking.carrier_id.name if picking.carrier_id else '',
+                'products': picking.mapped('move_line_ids').mapped(lambda l: {
+                    'product_id': l.product_id.id,
+                    'product_quantity': getattr(l, 'quantity_product_uom', l.qty_done)
+                })
             }
         }
 
@@ -1024,6 +1057,7 @@ class PortalReceptionController(PortalAdminController):
         - tracking_number: updates picking.carrier_tracking_ref and packages' global_tracking_ref
         - tracking_number_optional: propagated to packages.optional_tracking_ref
         """
+        self._ensure_user_lang_context()
         if not reception_id or not str(reception_id).isdigit():
             return {'status': 'error', 'message': _('Invalid reception ID')}
 
