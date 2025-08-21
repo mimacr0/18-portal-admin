@@ -13,6 +13,8 @@ class PortalDashboardController(PortalAdminController):
 
     @http.route('/account/user/profile', type='http', auth="user")
     def account_user_profile_action_main(self, **post):
+        # Ensure translations use user's language
+        self._ensure_user_lang_context()
         values = self._get_admin_layout_values()
         values['page_url'] = '/account/user/profile'
         return request.render("portal_account.portal_user_profile_page", values)
@@ -21,10 +23,18 @@ class PortalDashboardController(PortalAdminController):
     def account_user_update_lang_action_main(self, lang, **post):
         user = request.env.user.sudo()
         user.lang = lang
-        return request.redirect("/my")
+        # Persist language for website/frontend rendering as well
+        resp = request.redirect("/my")
+        try:
+            resp.set_cookie('frontend_lang', lang, path='/')
+        except Exception:
+            pass
+        return resp
 
     @http.route('/account/user/notifications/reload', type='json', auth="user")
     def account_user_notifications_reload_action_main(self, **post):
+        # Ensure translations use user's language in rendered snippets
+        self._ensure_user_lang_context()
         user = request.env.user.sudo()
         PortalNotifications = request.env['portal.user.notification'].sudo()
         notifications = PortalNotifications.search([('user_id', '=', user.id)])
@@ -39,6 +49,7 @@ class PortalDashboardController(PortalAdminController):
 
     @http.route('/account/user/notifications/clear', type='json', auth="user")
     def account_user_notifications_clear_action_main(self, **post):
+        self._ensure_user_lang_context()
         user = request.env.user.sudo()
         PortalNotifications = request.env['portal.user.notification'].sudo()
         PortalNotifications.clear_all_notifications(user.id)
@@ -49,6 +60,7 @@ class PortalDashboardController(PortalAdminController):
 
     @http.route('/account/user/notifications/remove/<int:notification_id>', type='json', auth="user")
     def account_user_notifications_remove_action_main(self, notification_id, **post):
+        self._ensure_user_lang_context()
         user = request.env.user.sudo()
         PortalNotifications = request.env['portal.user.notification'].sudo()
         notification = PortalNotifications.browse(notification_id)
@@ -69,6 +81,7 @@ class PortalDashboardController(PortalAdminController):
     def account_user_update_profile(self, **post):
         """Update user profile information"""
         try:
+            self._ensure_user_lang_context()
             user = request.env.user.sudo()
             partner = user.partner_id.sudo()
 
@@ -105,6 +118,7 @@ class PortalDashboardController(PortalAdminController):
     def account_user_upload_image(self, image_data, **post):
         """Upload user profile image"""
         try:
+            self._ensure_user_lang_context()
             partner = request.env.user.partner_id.sudo()
 
             if image_data:
@@ -124,6 +138,7 @@ class PortalDashboardController(PortalAdminController):
     def account_user_remove_image(self, **post):
         """Remove user profile image"""
         try:
+            self._ensure_user_lang_context()
             partner = request.env.user.partner_id.sudo()
             partner.image_1920 = False
 

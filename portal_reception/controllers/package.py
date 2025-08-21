@@ -81,6 +81,8 @@ class PortalReceptionController(PortalAdminController):
 
     @http.route('/account/reception', type='http', auth="user", website=True)
     def account_reception_action(self, **post):
+        # Ensure translations render with user's language
+        self._ensure_user_lang_context()
         StockPicking = request.env['stock.picking'].sudo()
         reception_type = request.env.ref('stock.picking_type_in')
         partner_id = request.env.user.partner_id
@@ -141,6 +143,7 @@ class PortalReceptionController(PortalAdminController):
 
     @http.route('/account/reception/list/advanced_filters', type='json', auth='user')
     def account_reception_list_advanced_filters(self, **kw):
+        self._ensure_user_lang_context()
         return {
             'status': 'success',
             'filters': json.dumps(self._get_reception_advanced_search_fields())
@@ -366,6 +369,7 @@ class PortalReceptionController(PortalAdminController):
 
     @http.route('/account/reception/list/reload', type='json', auth='user')
     def account_reception_list_reload(self, page=1, search='', domain=None, match_type='all', sort=None, order='asc', quick_filter=None, **kw):
+        self._ensure_user_lang_context()
         SysParams = request.env['ir.config_parameter'].sudo()
         limit = self._get_portal_list_limit()
         offset = (page - 1) * limit
@@ -411,6 +415,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/account/reception/batch/delete', type='json', auth='user')
     def account_reception_batch_delete(self, ids, **kw):
         """Cancel selected receptions"""
+        self._ensure_user_lang_context()
         if not ids:
             return {'status': 'error', 'message': _('No packages selected')}
 
@@ -442,6 +447,7 @@ class PortalReceptionController(PortalAdminController):
     def account_reception_create(self, **post):
         """Create a new reception package"""
 
+        self._ensure_user_lang_context()
         # Get current user's partner
         partner = request.env.user.partner_id
 
@@ -618,6 +624,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/account/reception/product-catalog', type='json', auth='user')
     def account_reception_product_catalog(self, page=1, search='', **post):
         """Get the product catalog with pagination"""
+        self._ensure_user_lang_context()
         ProductProduct = request.env['product.product'].sudo()
 
         # Set limit to 20 items per page
@@ -670,6 +677,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/account/reception/product-search', type='json', auth='user')
     def account_reception_product_search(self, term='', **kw):
         """Search products based on term for select2 with product attributes"""
+        self._ensure_user_lang_context()
         ProductProduct = request.env['product.product'].sudo()
         domain = [('is_storable', '=', True)]  # Only storable products
 
@@ -722,6 +730,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/account/reception/carrier-search', type='json', auth='user')
     def account_reception_carrier_search(self, term='', **kw):
         """Search carriers based on term for select2"""
+        self._ensure_user_lang_context()
         DeliveryCarrier = request.env['delivery.carrier'].sudo()
         domain = []
 
@@ -748,6 +757,7 @@ class PortalReceptionController(PortalAdminController):
 
     @http.route('/account/reception/details/<int:reception_id>', type='http', auth="user", website=True)
     def account_reception_details_action(self, reception_id, access_token=None, **post):
+        self._ensure_user_lang_context()
         StockPicking = request.env['stock.picking'].sudo()
         reception_type = request.env.ref('stock.picking_type_in')
         partner_id = request.env.user.partner_id
@@ -779,6 +789,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/portal_reception/reception/details/chatter/fetch', type='json', auth='public', website=True)
     def portal_reception_details_chatter_fetch(self, reception_id=None, limit=10, after=None, before=None, **kw):
         """Add compatible route matching the JS client call pattern"""
+        self._ensure_user_lang_context()
         if not reception_id:
             return {
                 'data': {'mail.message': []},
@@ -836,6 +847,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/portal_reception/reception/details/chatter/post', type='http', auth="user", methods=['POST'])
     def portal_reception_details_chatter_post(self, reception_id, access_token=None, **post):
         """Add compatible route for posting messages from JS client"""
+        self._ensure_user_lang_context()
         if not str(reception_id).isdigit():
             return json.dumps({'status': 'error', 'message': 'Invalid reception ID'})
 
@@ -904,6 +916,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/account/reception/package-type-search', type='json', auth='user')
     def account_reception_package_type_search(self, term='', **kw):
         """Search package types based on term for select2"""
+        self._ensure_user_lang_context()
         PackageType = request.env['stock.package.type'].sudo()
         domain = []
 
@@ -966,6 +979,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/account/reception/delete', type='json', auth='user')
     def account_reception_delete(self, reception_id=None, **kw):
         """Cancel a single reception."""
+        self._ensure_user_lang_context()
         if not reception_id or not str(reception_id).isdigit():
             return {'status': 'error', 'message': _('Invalid reception ID')}
 
@@ -979,6 +993,7 @@ class PortalReceptionController(PortalAdminController):
     @http.route('/account/reception/get', type='json', auth='user')
     def account_reception_get(self, reception_id=None, **kw):
         """Fetch minimal editable data for a reception to prefill the edit modal."""
+        self._ensure_user_lang_context()
         if not reception_id or not str(reception_id).isdigit():
             return {'status': 'error', 'message': _('Invalid reception ID')}
 
@@ -1042,6 +1057,7 @@ class PortalReceptionController(PortalAdminController):
         - tracking_number: updates picking.carrier_tracking_ref and packages' global_tracking_ref
         - tracking_number_optional: propagated to packages.optional_tracking_ref
         """
+        self._ensure_user_lang_context()
         if not reception_id or not str(reception_id).isdigit():
             return {'status': 'error', 'message': _('Invalid reception ID')}
 

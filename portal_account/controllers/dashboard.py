@@ -25,6 +25,8 @@ class PortalDashboardController(PortalAdminController):
 
     @http.route(['/my', '/my/home'], type='http', auth="user", website=True)
     def account_dashboard_action_main(self, **post):
+        # Ensure translations use user's language before rendering
+        self._ensure_user_lang_context()
         PartnerAccount = request.env['account.partner'].sudo()
         partner_id = request.env.user.partner_id
         account = PartnerAccount.search([('partner_id', '=', partner_id.commercial_partner_id.id)], limit=1)
@@ -37,6 +39,7 @@ class PortalDashboardController(PortalAdminController):
     @http.route('/account/dashboard/add_credit', type='json', auth='user')
     def account_dashboard_add_credit(self, credit_amount=0, **kw):
         """Handle credit addition request"""
+        self._ensure_user_lang_context()
         if not credit_amount or float(credit_amount) <= 0:
             return {
                 'status': 'error',
@@ -77,6 +80,7 @@ class PortalDashboardController(PortalAdminController):
 
     @http.route('/account/dashboard/kpis/receptions/count', type='json', auth='user')
     def account_dashboard_kpis_receptions_count(self, **kw):
+        self._ensure_user_lang_context()
         StockPicking = request.env['stock.picking'].sudo()
         reception_type = request.env.ref('stock.picking_type_in')
         partner_id = request.env.user.partner_id
@@ -97,6 +101,7 @@ class PortalDashboardController(PortalAdminController):
 
     @http.route('/account/dashboard/kpis/expeditions/count', type='json', auth='user')
     def account_dashboard_kpis_expeditions_count(self, **kw):
+        self._ensure_user_lang_context()
         StockPicking = request.env['stock.picking'].sudo()
         expedition_type = request.env.ref('stock.picking_type_out')
         partner_id = request.env.user.partner_id
@@ -117,6 +122,7 @@ class PortalDashboardController(PortalAdminController):
 
     @http.route('/account/dashboard/kpis/receptions/chart', type='json', auth='user')
     def account_dashboard_kpis_receptions_chart(self, **kw):
+        self._ensure_user_lang_context()
         StockPicking = request.env['stock.picking'].sudo()
         partner_id = request.env.user.partner_id
         partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
@@ -174,6 +180,7 @@ class PortalDashboardController(PortalAdminController):
 
     @http.route('/account/dashboard/kpis/expeditions/chart', type='json', auth='user')
     def account_dashboard_kpis_expeditions_chart(self, **kw):
+        self._ensure_user_lang_context()
         StockPicking = request.env['stock.picking'].sudo()
         partner_id = request.env.user.partner_id
         partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
@@ -231,6 +238,7 @@ class PortalDashboardController(PortalAdminController):
 
     @http.route('/account/dashboard/kpis/credit', type='json', auth='user')
     def account_dashboard_kpis_credit(self, **kw):
+        self._ensure_user_lang_context()
         AccountPartner = request.env['account.partner'].sudo()
         partner_id = request.env.user.partner_id
         commercial_partner = partner_id.commercial_partner_id
@@ -275,6 +283,7 @@ class PortalDashboardController(PortalAdminController):
     @http.route('/account/dashboard/import_receptions', type='json', auth='user')
     def account_dashboard_import_receptions(self, **kw):
         """Handle receptions import request"""
+        self._ensure_user_lang_context()
         try:
             # Access the uploaded file from the request
             file_data = kw.get('fileInput')
@@ -305,6 +314,7 @@ class PortalDashboardController(PortalAdminController):
     @http.route('/account/dashboard/import_expeditions', type='json', auth='user')
     def account_dashboard_import_expeditions(self, **kw):
         """Handle expeditions import request"""
+        self._ensure_user_lang_context()
         try:
             # Access the uploaded file from the request
             file_data = kw.get('fileInput')
@@ -327,6 +337,7 @@ class PortalDashboardController(PortalAdminController):
     @http.route('/account/dashboard/kpis/recent_activity', type='json', auth='user')
     def account_dashboard_kpis_recent_activity(self, **kw):
         """Fetch recent activities for the current user"""
+        self._ensure_user_lang_context()
         UserActivity = request.env['portal.user.activity'].sudo()
 
         # Get most recent activities for the current user
