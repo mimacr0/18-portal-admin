@@ -17,7 +17,7 @@ class PortalDashboardController(PortalAdminController):
         menus.extend([
             {
                 'name': _('Home'),
-                'url': '/account',
+                'url': '/my',
                 'icon': 'fas fa-home'
             }
         ])
