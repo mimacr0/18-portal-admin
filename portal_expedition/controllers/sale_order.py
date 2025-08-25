@@ -61,8 +61,11 @@ class PortalExpeditionController(PortalAdminController):
     def account_expedition_action(self, **post):
         SaleOrder = request.env['sale.order'].sudo()
 
-        partner_id = request.env.user.partner_id.id
-        orders = SaleOrder.search([])
+        # Usamos el método auxiliar para obtener el dominio según account.partner
+        domain = self._get_account_partner_domain()
+
+        orders = SaleOrder.search(domain)
+
         values = self._get_admin_layout_values()
         # Configuración de la interfaz
         values.update({
@@ -121,9 +124,27 @@ class PortalExpeditionController(PortalAdminController):
             'pages': pages
         }
 
+    def _get_account_partner_domain(self, domain=None):
+        """Construye el dominio base según el account.partner del usuario actual o su partner padre.
+        Devuelve un dominio vacío si no hay account.partner.
+        Se puede combinar con un dominio adicional opcional.
+        """
+        AccountPartner = request.env['account.partner'].sudo()
+        partner_ids = list({request.env.user.partner_id.id, request.env.user.partner_id.commercial_partner_id.id})
+        account_partner = AccountPartner.search([('partner_id', 'in', partner_ids)], limit=1)
+        base_domain = [('account_partner_id', '=', account_partner.id)] if account_partner else [('id', '=', 0)]
+        if domain:
+            base_domain = expression.AND([base_domain, domain])
+        return base_domain
+
     def _build_sale_domain(self, search='', domain=None, match_type='all', quick_filter=None):
         """Construye el dominio de búsqueda para productos"""
-        base_domain = []
+        
+        base_domain = self._get_account_partner_domain(domain)
+
+        # Integrar el dominio pasado como argumento
+        if domain:
+            base_domain = expression.AND([base_domain, domain])
 
         if quick_filter and quick_filter != 'all':
             base_domain.extend(self.get_quick_filter_domain(quick_filter, request.env))
