@@ -68,12 +68,14 @@ class PortalRepairController(PortalAdminController):
         ]
     @http.route('/account/repair', type='http', auth="user", website=True)
     def account_repair_alert_action(self, **post):
-
         QualityAlert = request.env['quality.alert'].sudo()
-        partner_id = request.env.user.partner_id
-        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
-        # alerts = QualityAlert.search([('account_partner_id', 'in', partner_ids)])
-        alerts = QualityAlert.search([])
+
+        # Obtener dominio base según account.partner del usuario actual
+        domain = self._get_account_partner_domain()
+
+        # Buscar solo las alertas de este account_partner
+        alerts = QualityAlert.search(domain)
+
         values = self._get_admin_layout_values()
 
         # Configuración de la interfaz
@@ -153,12 +155,8 @@ class PortalRepairController(PortalAdminController):
     def _build_alert_domain(self, search='', domain=None, match_type='all', quick_filter=None):
         """Construye el dominio de búsqueda para recepciones"""
         QualityAlert = request.env['quality.alert'].sudo()
-        partner_id = request.env.user.partner_id
-        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
+        base_domain = self._get_account_partner_domain(domain)
 
-        base_domain = [
-            ('partner_id', 'in', partner_ids),
-        ]
         stage_mapping = {
             "in_transit": "repair_module.quality_alert_stage_in_transit_reception",
             "in_warehouse": "repair_module.quality_alert_stage_received",

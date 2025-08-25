@@ -20,18 +20,19 @@ class PortalRepairController(PortalAdminController):
     @http.route('/account/repair/details/<int:alert_id>', type='http', auth="user", website=True)
     def account_repair_details_action(self, alert_id, access_token=None, **post):
         QualityAlert = request.env['quality.alert'].sudo()
-        partner_id = request.env.user.partner_id
-        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
-        
-        # Get the repair
-        alert = QualityAlert.search([
-            ('id', '=', alert_id),
-            ('partner_id', 'in', partner_ids)
-        ], limit=1)
+
+        # Dominio base según el account.partner del usuario actual
+        base_domain = self._get_account_partner_domain()
+
+        # Añadir condición del alert_id
+        base_domain = expression.AND([base_domain, [('id', '=', alert_id)]])
+
+        # Buscar la alerta
+        alert = QualityAlert.search(base_domain, limit=1)
 
         if not alert:
             return request.redirect('/account/repair')
-
+            
         values = self._get_admin_layout_values()
         values.update({
             'page_name': 'reception_details',

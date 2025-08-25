@@ -16,33 +16,43 @@ const updateRepairAlertsProductsField = () => {
 
     const productLines = productsContainer.querySelectorAll('.line-item');
     const products = [];
+
     for (const line of productLines) {
         const select = line.querySelector('.product-select');
         const qtyInput = line.querySelector('.product-qty');
-        const lotSelect = line.querySelector('.lot-select');
+        const secondSelect = line.querySelector('.second-select');
 
         try {
-            // Obtener el producto seleccionado
             const selectData = $(select).select2('data')[0];
+            if (!selectData || !qtyInput) continue;
 
-            // Obtener los lotes seleccionados (si existen)
-            const lotData = lotSelect ? $(lotSelect).select2('data') : [];
-            const lotIds = lotData.map(l => l.id);
+            const trackingType = selectData?.tracking || 'none';
+            const selectedItems = secondSelect ? $(secondSelect).select2('data') : [];
+            const selectedId = selectedItems.length > 0 ? (selectedItems[0].lot_id || selectedItems[0].id) : null;
 
-            if (selectData && qtyInput && lotIds) {
-                products.push({
-                    product_id: selectData.id,
-                    quantity: qtyInput.value,
-                    lots: lotIds  // solo los IDs de los lotes
-                });
+            const productObj = {
+                product_id: selectData.id,
+                quantity: parseFloat(qtyInput.value) || 0,
+                tracking: trackingType
+
+            };
+
+            // Asignar clave según trackingType
+            if (trackingType === 'none') {
+                productObj.location = selectedId;
+            } else {
+                productObj.lot = selectedId;
             }
+
+            products.push(productObj);
         } catch (e) {
             console.error('Error getting product data:', e);
         }
     }
 
     productsField.value = JSON.stringify(products);
-}
+};
+
 
 
 /**
@@ -103,7 +113,7 @@ export const initRepairAlertCreateForm = () => {
         if(!res) return;
 
         const { formData } = sysCollectFormData('#page-repair-alert-list-create-form');
-        console.log(formData)
+
         const resp = await rpc('/account/repair-alert/create', formData);
 
         if(resp?.errors) sysShowServerErrors('#page-repair-alert-list-create-form', resp.errors);
@@ -143,8 +153,8 @@ function initManualProductAddRepair() {
                 </select>
             </div>
             <div class="flex-grow">
-                <select class="lot-select form-select-sm w-full rounded-md border border-gray-300
-                    focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500 select2-single page-${pageName}-list-create-form-lot-value-select" multiple>
+                <select class="second-select form-select-sm w-full rounded-md border border-gray-300
+                    focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500 select2-single page-${pageName}-list-create-form-lot-value-select">
                 </select>
             </div>
             <div class="w-24">
@@ -171,8 +181,11 @@ function initManualProductAddRepair() {
             ajax: {
                 transport: function(params, success, failure) {
                     rpc('/account/repair-alert/product-search', { term: params.data.term })
-                        .then(result => success({ results: result.items }))
-                        .catch(error => { console.error(error); failure('Failed to load products'); });
+                    .then(result => {
+                        console.log("Resultado recibido:", result);  // <-- aquí
+                        success({ results: result.items });
+                    })                        
+                    .catch(error => { console.error(error); failure('Failed to load products'); });
                 },
                 processResults: data => data,
                 delay: 250
@@ -184,70 +197,77 @@ function initManualProductAddRepair() {
         // Inicializar Select2 para lotes (vacío al inicio)
         select.each(function() {
             const productId = $(this).val();
-            const lotSelect = $(this).closest('.line-item').find('.lot-select');
+            const secondSelect = $(this).closest('.line-item').find('.second-select');
 
             // Inicializar Select2 vacío para lotes
-            $(lotSelect).select2({
+            $(secondSelect).select2({
                 placeholder: 'Select a lot',
                 dropdownParent: $(modal)
             });
 
             // Si el producto ya está seleccionado al cargar
             if (productId) {
-                loadLotsForProduct(productId, lotSelect);
+                loadLotsForProduct(productId, secondSelect);
             }
 
             // Evento cuando cambia el producto
             $(this).on('change', function() {
                 const newProductId = $(this).val();
-                $(lotSelect).val(null).trigger('change');
+                $(secondSelect).val(null).trigger('change');
                 if (!newProductId) return;
-                loadLotsForProduct(newProductId, lotSelect);
+                loadLotsForProduct(newProductId, secondSelect);
             });
-            $(lotSelect).on('change', updateRepairAlertsProductsField);
+            $(secondSelect).on('change', updateRepairAlertsProductsField);
         });
         
 
-        function loadLotsForProduct(productId, lotSelect) {
-            if ($(lotSelect).hasClass("select2-hidden-accessible")) {
-                $(lotSelect).select2('destroy');
+        function loadLotsForProduct(productId, secondSelect) {
+            if ($(secondSelect).hasClass("select2-hidden-accessible")) {
+                $(secondSelect).select2('destroy');
             }
 
-            $(lotSelect).select2({
-                placeholder: 'Search lot...',
+            // Obtener tracking del producto (puede ser vía data attribute o RPC)
+            const trackingType = $(secondSelect).closest('.line-item').find('.product-select').select2('data')[0]?.tracking || 'none';
+
+            $(secondSelect).select2({
+                placeholder: trackingType === 'none' ? 'Select location...' : 'Search lot...',
                 dropdownParent: $(modal),
-                multiple: true, // Permitir seleccionar varios lotes
+                multiple: false,
                 ajax: {
                     transport: function(params, success, failure) {
-                        rpc('/account/repair-alert/product-lots', {
-                            product_id: parseInt(productId),
-                            term: params.data.term // Esto permite la búsqueda mientras escribes
-                        })
-                        .then(function(result) {
-                            success({ results: result.items });
-                        })
-                        .catch(function(error) {
-                            console.error('Error fetching lots:', error);
-                            failure('Failed to load lots');
-                        });
+                        let endpoint = trackingType === 'none'
+                            ? '/account/repair-alert/product-locations'
+                            : '/account/repair-alert/product-lots';
+
+                        rpc(endpoint, { product_id: parseInt(productId), term: params.data.term })
+                            .then(function(result) {
+                                success({ results: result.items });
+                            })
+                            .catch(function(error) {
+                                console.error('Error fetching data:', error);
+                                failure('Failed to load data');
+                            });
                     },
-                    processResults: function(data) {
-                        return data;
-                    },
+                    processResults: data => data,
                     delay: 250
                 },
-                templateResult: formatLot,
-                templateSelection: formatLotSelection
+                templateResult: function(item) {
+                    return trackingType === 'none' ? formatLocation(item) : formatLot(item);
+                },
+                templateSelection: function(item) {
+                    return trackingType === 'none' ? formatLocationSelection(item) : formatsecondSelection(item);
+                }
             });
 
-            // Ajustar el máximo del input según los lotes seleccionados
-            $(lotSelect).on('change', function() {
-                const selectedLots = $(this).select2('data');
+            // Ajustar el máximo del input según los lotes/ubicaciones seleccionados
+            $(secondSelect).on('change', function() {
+                const selectedItems = $(this).select2('data');
                 const $lineItem = $(this).closest('.line-item');
                 const $qtyInput = $lineItem.find('.product-qty');
 
-                if (selectedLots.length > 0) {
-                    const minAvailable = Math.min(...selectedLots.map(l => l.product_qty || Infinity));
+                if (selectedItems.length > 0) {
+                    // Para tracking none puedes usar la cantidad disponible de la ubicación
+                    const minAvailable = Math.min(...selectedItems.map(i => i.product_qty || Infinity));
                     $qtyInput[0].max = minAvailable;
                 } else {
                     $qtyInput[0].removeAttribute("max");
@@ -255,11 +275,11 @@ function initManualProductAddRepair() {
 
                 updateRepairAlertsProductsField();
 
-                // Crear un span para mostrar advertencia si no existe
-                if ($lineItem.find('.qty-warning').length === 0) {
-                    $lineItem.append('<span class="qty-warning" style="color: red; display: none; margin-left: 5px;"></span>');
+                let $warning = $qtyInput.next('.qty-warning');
+                if ($warning.length === 0) {
+                    $warning = $('<span class="qty-warning" style="color: red; display: none; margin-top: 2px; font-size: 0.9em;"></span>');
+                    $qtyInput.after($warning);
                 }
-                const $warning = $lineItem.find('.qty-warning');
 
                 $qtyInput.off('input').on('input', function() {
                     const enteredQty = parseFloat(this.value) || 0;
@@ -356,10 +376,28 @@ function formatLot(lot) {
 }
 
 // Format function for selected lot - only show name
-function formatLotSelection(lot) {
+function formatsecondSelection(lot) {
     if (!lot.id) return lot.text;
 
     return lot.text;
+}
+// Formatear cada opción de ubicación en el dropdown
+function formatLocation(location) {
+    if (!location.id) return location.text;
+
+    // Contenedor simple con el nombre de la ubicación
+    let html = `<div class="flex items-center">
+        <div class="font-medium">${location.text}</div>
+    </div>`;
+
+    return $(html);
+}
+
+// Formatear la ubicación seleccionada en el select (solo el nombre)
+function formatLocationSelection(location) {
+    if (!location.id) return location.text;
+
+    return location.text;
 }
 
 
