@@ -23,6 +23,11 @@ class PortalDashboardController(PortalAdminController):
         ])
         return menus
 
+    @http.route('/account', type='http', auth="user", website=True)
+    def account_redirect(self, **post):
+        """Redirige /account a /my"""
+        return request.redirect('/my')
+
     @http.route(['/my', '/my/home'], type='http', auth="user", website=True)
     def account_dashboard_action_main(self, **post):
         # Ensure translations use user's language before rendering

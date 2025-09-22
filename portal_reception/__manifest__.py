@@ -15,7 +15,7 @@
         Modulo para recepciones en el portal del cliente.
     """,
     'depends': ['portal_account', 'portal_catalog'],
-    'license': 'LGPL-3',
+    'license': 'AGPL-3',
     'website': "https://www.dafe.es",
     'data': [
         'security/ir.model.access.csv',

@@ -21,7 +21,7 @@
           y otra para los estilos 'static/src/scss'.
     """,
     'depends': ['base'],
-    'license': 'LGPL-3',
+    'license': 'AGPL-3',
     'website': "https://www.dafe.es",
     'data': [
         'data/base_data.xml',
