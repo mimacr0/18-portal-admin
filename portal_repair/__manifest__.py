@@ -35,7 +35,7 @@
             'portal_repair/static/src/css/custom.css'
         ]
     },
-    'images': ['static/description/icon.png'],
+    'images': ['static/description/logo.png'],
     'installable': True,
     'auto_install': False,
     'application': False,

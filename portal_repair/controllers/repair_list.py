@@ -279,7 +279,7 @@ class PortalRepairController(PortalAdminController):
         return base_domain
 
     @http.route('/account/repair/list/reload', type='json', auth='user')
-    def account_reception_list_reload(self, page=1, search='', domain=None, match_type='all', sort=None, order='asc', quick_filter=None, **kw):
+    def account_repair_list_reload(self, page=1, search='', domain=None, match_type='all', sort=None, order='asc', quick_filter=None, **kw):
         SysParams = request.env['ir.config_parameter'].sudo()
         limit = self._get_portal_list_limit()
         offset = (page - 1) * limit
