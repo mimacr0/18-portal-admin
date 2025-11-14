@@ -8,7 +8,7 @@
     'version': '18.0.1.0.0',
     'author': 'DaFe Solutions',
     'website': 'https://www.dafe.es',
-    'license': 'LGPL-3',
+    'license': 'AGPL-3',
     'category': 'Portal',
     'summary': 'Customer portal: invoices section',
     'depends': ['portal_account'],

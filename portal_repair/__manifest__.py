@@ -6,7 +6,7 @@
 ##############################################################################
 
 {
-    'name': "Base Module ",
+    'name': "Portal Repair",
     'category': 'All',
     'version': '18.0.1.0.0',
     'author': 'DaFe Solutions',
@@ -20,7 +20,7 @@
         sensible.
     """,
     'depends': ['base', 'portal_admin_theme', 'portal_account', 'portal_catalog', 'repair_module'],
-    'license': 'LGPL-3',
+    'license': 'AGPL-3',
     'website': "https://www.dafe.es",
     'data': [
         'portal/portal_repair_alert_list_template.xml',
@@ -35,7 +35,7 @@
             'portal_repair/static/src/css/custom.css'
         ]
     },
-    'images': ['static/description/icon.png'],
+    'images': ['static/description/logo.png'],
     'installable': True,
     'auto_install': False,
     'application': False,

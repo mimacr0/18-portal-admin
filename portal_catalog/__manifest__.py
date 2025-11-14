@@ -16,7 +16,7 @@
         Modulo para administrar catálogos de selección en el portal
     """,
     'depends': ['portal_admin_theme'],
-    'license': 'LGPL-3',
+    'license': 'AGPL-3',
     'website': "https://www.dafe.es",
     'data': [
         'portal/products_template.xml'
@@ -24,7 +24,7 @@
     # 'assets': {
     #     'portal_admin_theme.admin_assets_frontend': [
     #         'portal_catalog/static/src/frontend/js/products_catalog.js'
-    #     ],
+    #     ], 
     # },
     'images': ['static/description/icon.png'],
     'installable': True,

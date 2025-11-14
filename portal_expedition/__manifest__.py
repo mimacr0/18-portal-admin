@@ -21,7 +21,7 @@
           y otra para los estilos 'static/src/scss'.
     """,
     'depends': ['base', 'portal_admin_theme', 'portal_account', 'stock_reception'],
-    'license': 'LGPL-3',
+    'license': 'AGPL-3',
     'website': "https://www.dafe.es",
     'data': [
         'portal/portal_create_expedition_modal.xml',
