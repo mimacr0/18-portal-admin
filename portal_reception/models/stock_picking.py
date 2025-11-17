@@ -15,6 +15,7 @@ class StockPicking(models.Model):
         portal_url = self.get_portal_url()
         return portal_url.replace('#', f'/account/reception/details/{self.id}')
 
+
     @api.returns('mail.message', lambda value: value.id)
     def message_post(self, **kwargs):
         res = super().message_post(**kwargs)

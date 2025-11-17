@@ -42,7 +42,7 @@
             'portal_expedition/static/src/js/create_expedition_modal.js',
         ],
     },
-    'images': ['static/description/icon.png'],
+    'images': ['static/description/logo.png'],
     'installable': True, #Este campo se debe cambiar a True cuando se quiera que el modulo sea instalable
     'auto_install': False,
     'application': False,
