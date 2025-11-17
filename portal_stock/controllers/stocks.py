@@ -119,7 +119,8 @@ class PortalStockController(PortalAdminController):
     def _build_product_domain(self, search='', domain=None, match_type='all'):
         """Construye el dominio de búsqueda para productos"""
         partner_id = request.env.user.partner_id
-        account_partner = request.env['account.partner'].sudo().search([('id', '=', partner_id.commercial_partner_id.id)], limit=1)
+        print(partner_id.commercial_partner_id.name)
+        account_partner = request.env['account.partner'].sudo().search([('partner_id', '=', partner_id.commercial_partner_id.id)], limit=1)
         base_domain = [('is_storable', '=', True), ('account_partner_id', '=', account_partner.id)]
 
         # Se aplica el filtro de búsqueda por nombre, SKU o código de barras
@@ -235,7 +236,7 @@ class PortalStockController(PortalAdminController):
 
         # Construir dominio de búsqueda
         base_domain = self._build_product_domain(search, domain, match_type)
-
+        print(base_domain)
         # Apply quick filters
         if quick_filter and quick_filter != 'all':
             if quick_filter == 'in_stock':

@@ -488,7 +488,7 @@ msgstr "重置"
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "Return"
-msgstr "返回"
+msgstr "退货"
 
 #. module: portal_stock
 #. odoo-python
