@@ -11,7 +11,7 @@
     'license': 'AGPL-3',
     'category': 'Portal',
     'summary': 'Customer portal: invoices section',
-    'depends': ['portal_account'],
+    'depends': ['portal_account', 'portal_admin_theme'],
     'data': [
         # Views/templates can be added here when implemented
     ],
