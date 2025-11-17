@@ -43,6 +43,7 @@ class ProductModalController(PortalAdminController):
             }
         except Exception as e:
             return {'status': 'error', 'message': str(e)}
+
     @http.route('/account/stock/get/attributes', type='json', auth='user')
     def account_stock_get_attributes(self, **kw):
         """Return all product attributes for the product creation form"""
@@ -83,7 +84,7 @@ class ProductModalController(PortalAdminController):
 
             # Obtener la cuenta del usuario actual
             partner = request.env.user.partner_id
-            account_partner = request.env['account.partner'].sudo().search([('partner_id', '=', partner.id)], limit=1)
+            account_partner = request.env['account.partner'].sudo().search([('partner_id', '=', partner.commercial_partner_id.id)], limit=1)
 
             # Crear plantilla de producto
             ProductTemplate = request.env['product.template'].sudo()
