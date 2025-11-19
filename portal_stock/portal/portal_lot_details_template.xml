@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo> 
+    <template id="portal_lot_details_page" name="Portal Lot Details Page">
+        <t t-call="portal_admin_theme.portal_admin_layout">
+            <!-- Details Page -->
+            <div class="w-4/5 mx-auto lg:max-w-7xl bg-white dark:bg-gray-800 rounded-xl shadow-lg print:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <!-- Document Action Bar -->
+                <div class="p-5 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    <a t-attf-href="/account/stock/lots" class="inline-flex items-center text-[#696900] hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="flex items-center space-x-4">
+                        <div class="lot-status-selector relative">
+                            <span t-attf-class="px-3 py-1.5 text-xs font-medium rounded-full flex items-center">
+                                <t t-if="lot.lifecycle_state" t-esc="lot.lifecycle_state"/>
+                                <t t-else="">-</t>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Lot Information -->
+                <div class="p-8 grid grid-cols-1 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    <div class="flex flex-col md:flex-row justify-between items-start relative z-10">
+                        <div>
+                            <div class="flex items-center p-8">
+                                <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Lote/Serie</h1>
+                                <span class="ml-4 text-xl font-medium text-blue-600 dark:text-blue-400"><t t-out="lot.name"/></span>
+                            </div>
+                            <div class="mt-4 space-y-1">
+                                <span class="text-gray-500 dark:text-gray-400">Producto: <strong><t t-if="lot.product_id" t-esc="lot.product_id.name"/><t t-else="">-</t></strong></span><br/>
+                                <span class="text-gray-500 dark:text-gray-400">Cantidad: <strong><t t-esc="lot.product_qty"/></strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product Information -->
+                <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-box mr-2 text-[#696900] dark:text-[#A0A000]"></i>
+                            Información del Producto
+                        </h3>
+                        <div class="text-sm space-y-2 dark:text-gray-300">
+                            <p t-if="lot.product_id"><span class="font-medium">Nombre:</span> <t t-esc="lot.product_id.name"/></p>
+                            <p t-if="lot.product_id and lot.product_id.default_code"><span class="font-medium">Referencia:</span> <t t-esc="lot.product_id.default_code"/></p>
+                            <p t-if="lot.ref"><span class="font-medium">Referencia Interna:</span> <t t-esc="lot.ref"/></p>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2 text-[#696900] dark:text-[#A0A000]"></i>
+                            Ubicación
+                        </h3>
+                        <div class="text-sm space-y-2 dark:text-gray-300">
+                            <p t-if="lot.location_id">
+                                <span class="font-medium">Ubicación:</span> <t t-esc="lot.location_id.complete_name"/>
+                            </p>
+                            <p t-else="">
+                                <span class="text-gray-400">-</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Lot Details -->
+                <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-info-circle mr-2 text-[#696900] dark:text-[#A0A000]"></i>
+                            Información del Lote
+                        </h3>
+                        <div class="text-sm space-y-2 dark:text-gray-300">
+                            <p><span class="font-medium">Número de Lote/Serie:</span> <t t-esc="lot.name"/></p>
+                            <p t-if="lot.lifecycle_state"><span class="font-medium">Estado:</span> <t t-esc="lot.lifecycle_state"/></p>
+                            <p><span class="font-medium">Cantidad:</span> <t t-esc="lot.product_qty"/></p>
+                        </div>
+                    </div>
+                    <!-- <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-calendar-alt mr-2 text-[#696900] dark:text-[#A0A000]"></i>
+                            Fechas
+                        </h3>
+                        <div class="text-sm space-y-2 dark:text-gray-300">
+                            <p t-if="lot.expiration_date">
+                                <span class="font-medium">Fecha de Expiración:</span> 
+                                <t t-out="lot.expiration_date"/>
+                            </p>
+                            <p t-if="lot.use_date">
+                                <span class="font-medium">Fecha de Uso:</span> 
+                                <t t-out="lot.use_date"/>
+                            </p>
+                            <p t-if="lot.removal_date">
+                                <span class="font-medium">Fecha de Retirada:</span> 
+                                <t t-out="lot.removal_date"/>
+                            </p>
+                            <p t-if="lot.alert_date">
+                                <span class="font-medium">Fecha de Alerta:</span> 
+                                <t t-out="lot.alert_date"/>
+                            </p>
+                            <t t-if="not lot.expiration_date and not lot.use_date and not lot.removal_date and not lot.alert_date">
+                                <p><span class="text-gray-400">-</span></p>
+                            </t>
+                        </div>
+                    </div> -->
+                </div>
+                <!-- Communication history -->
+                <div class="border-t border-gray-200 dark:border-gray-700">
+                    <div class="p-5" id="communication-toggle">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium dark:text-white flex items-center">
+                                <i class="fas fa-comments mr-2 text-[#696900] dark:text-[#A0A000]"></i>
+                                Historial de Comunicación
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="communication-content" class="p-6 pt-0">
+                        <t t-set="partner" t-value="lot.product_id and lot.product_id.account_partner_id and lot.product_id.account_partner_id.partner_id or user.partner_id"/>
+                        <!-- Communication content wrapper -->
+                        <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+                            <!-- Chat header -->
+                            <div class="chat-header bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 p-4 flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-blue-500 dark:bg-blue-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
+                                            <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
+                                        </svg>
+                                    </div>
+                                    <span class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-200">Chat sobre <span t-out="lot.name"/></span>
+                                </div>
+                            </div>
+                            <!-- Messages container with increased height -->
+                            <div class="space-y-4 h-[500px] overflow-y-auto p-4 messages-container bg-white dark:bg-gray-800" id="lot_details-details-chat-messages" t-att-data-lot-id="lot.id" t-att-data-partner-id="user.partner_id.id"></div>
+                            <!-- Message input area in separate container -->
+                            <div class="message-composer bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 p-4">
+                                <div class="message-input-wrapper bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg shadow-sm dark:shadow-gray-900/50" id="message-input-container">
+                                    <div class="flex items-end p-2">
+                                        <div class="flex-shrink-0 mr-2">
+                                            <div class="w-8 h-8 rounded-full bg-gray-500 dark:bg-gray-600 flex items-center justify-center">
+                                                <img t-if="user.partner_id.image_128" class="w-5 h-5 rounded-full" t-attf-src="/web/image/res.partner/#{user.partner_id.id}/image_128/50x50"/>
+                                                <svg t-else="" class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow relative">
+                                            <div class="flex items-center">
+                                                <button class="message-attach-button text-gray-500 dark:text-gray-300 hover:text-[#696900] dark:hover:text-blue-400 p-2">
+                                                    <i class="fas fa-paperclip"></i>
+                                                </button>
+                                                <div class="flex-grow">
+                                                    <input type="hidden" id="page-details-lot_details-message-attachment-token" t-att-value="request.csrf_token()"/>
+                                                    <input type="file" id="page-details-lot_details-message-attachment-input" class="hidden"/>
+                                                    <textarea class="message-input bg-transparent border-0 rounded-md text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 w-full py-2 resize-none focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" rows="1" placeholder="Escribe un mensaje..."></textarea>
+                                                </div>
+                                                <button id="page-details-lot_details-send-message" class="message-send-button text-[#696900] dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/30 p-2 rounded-full flex items-center justify-center ml-2">
+                                                    <i class="fas fa-paper-plane"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

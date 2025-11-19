@@ -14,7 +14,9 @@
     'depends': ['portal_account'],
     'data': [
         'security/ir.model.access.csv',
-        'portal/stock_templates.xml',
+        'portal/portal_stock_list_templates.xml',
+        'portal/portal_lots_list_template.xml',
+        'portal/portal_lot_details_template.xml',
         'portal/portal_create_product_modal.xml',
         'portal/portal_update_product_modal.xml',
         'portal/portal_file_upload_modal.xml',
@@ -23,6 +25,7 @@
         'portal_admin_theme.admin_assets_frontend': [
             'portal_stock/static/src/js/frontend/components/**.js',
             'portal_stock/static/src/js/frontend/stock_main.js',
+            'portal_stock/static/src/js/frontend/lots_main.js',
             'portal_stock/static/src/js/create_modal_page.js',
 
         ]
