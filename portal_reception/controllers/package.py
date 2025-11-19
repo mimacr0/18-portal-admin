@@ -104,18 +104,27 @@ class PortalReceptionController(PortalAdminController):
                 {'id': 'done', 'label': _('Done'), 'icon': 'fas fa-check'}
             ],
             'list_columns': [
-                {'id': 'name', 'label': _('Name'), 'sortable': True},
-                {'id': 'weight', 'label': _('Weight'), 'sortable': True, 'lg': True},
-                {'id': 'type', 'label': _('Package Type'), 'sortable': True, 'lg': True},
-                {'id': 'date', 'label': _('Date'), 'sortable': True, 'md': True},
-                {'id': 'state', 'label': _('Status'), 'sortable': True, 'md': True},
-                {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True}
+                {'id': 'name', 'label': _('Name'), 'sortable': True, 'responsive': ['sm', 'md', 'lg']},
+                {'id': 'weight', 'label': _('Weight'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
+                {'id': 'type', 'label': _('Package Type'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
+                {'id': 'date', 'label': _('Date'), 'sortable': True, 'md': True, 'responsive': ['md', 'lg']},
+                {'id': 'state', 'label': _('Status'), 'sortable': True, 'md': True, 'responsive': ['md', 'lg']},
+                {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True, 'responsive': ['sm', 'md', 'lg']}
             ],
             'batch_actions': [
                 {'name': 'delete', 'label': _('Cancel'), 'icon': 'fas fa-ban'}
             ],
             'advanced_search': json.dumps(self._get_reception_advanced_search_fields())
         })
+        
+        # Procesar columnas para añadir flags de visibilidad según responsive
+        list_columns = values.get('list_columns', [])
+        for column in list_columns:
+            responsive = column.get('responsive', [])
+            column['show_in_sm'] = 'sm' in responsive
+            column['show_in_md'] = 'md' in responsive
+            column['show_in_lg'] = 'lg' in responsive
+        values['list_columns'] = list_columns
 
         return request.render("portal_reception.portal_reception_page_main", values)
 

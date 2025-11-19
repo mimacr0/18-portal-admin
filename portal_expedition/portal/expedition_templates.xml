@@ -129,7 +129,8 @@
                         <!-- <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" t-attf-id="page-#{page_name}-list-table"> -->
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" id="page-expedition-list-table">
                             <thead class="bg-gray-50 dark:bg-gray-800">
-                                <tr>
+                                <!-- Large screens header -->
+                                <tr class="hidden lg:table-row">
                                     <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         <div class="flex items-center">
                                             <input t-attf-id="page-#{page_name}-list-select-all-checkbox" type="checkbox" class="h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00] dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-[#696900] dark:checked:border-[#696900]"/>
@@ -145,6 +146,48 @@
                                         <th t-else="" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                             <span t-out="list_column.get('label')"/>
                                         </th>
+                                    </t>
+                                </tr>
+                                <!-- Medium screens header -->
+                                <tr class="hidden md:table-row lg:hidden">
+                                    <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox-md" type="checkbox" class="h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00] dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-[#696900] dark:checked:border-[#696900]"/>
+                                        </div>
+                                    </th>
+                                    <t t-foreach="list_columns" t-as="list_column">
+                                        <t t-if="list_column.get('show_in_md')">
+                                            <th t-if="list_column.get('sortable')" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                <div class="flex items-center">
+                                                    <span t-out="list_column.get('label')"/>
+                                                    <i t-attf-id="list-column-#{page_name}-#{list_column.get('id')}-sort-icon" t-if="list_column.get('sortable')" class="fas fa-sort ml-1 text-gray-400"></i>
+                                                </div>
+                                            </th>
+                                            <th t-else="" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                <span t-out="list_column.get('label')"/>
+                                            </th>
+                                        </t>
+                                    </t>
+                                </tr>
+                                <!-- Small screens header -->
+                                <tr class="table-row md:hidden">
+                                    <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox-sm" type="checkbox" class="h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00] dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-[#696900] dark:checked:border-[#696900]"/>
+                                        </div>
+                                    </th>
+                                    <t t-foreach="list_columns" t-as="list_column">
+                                        <t t-if="list_column.get('show_in_sm')">
+                                            <th t-if="list_column.get('sortable')" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                <div class="flex items-center">
+                                                    <span t-out="list_column.get('label')"/>
+                                                    <i t-attf-id="list-column-#{page_name}-#{list_column.get('id')}-sort-icon" t-if="list_column.get('sortable')" class="fas fa-sort ml-1 text-gray-400"></i>
+                                                </div>
+                                            </th>
+                                            <th t-else="" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                <span t-out="list_column.get('label')"/>
+                                            </th>
+                                        </t>
                                     </t>
                                 </tr>
                             </thead>
@@ -292,7 +335,7 @@
                         </tbody>
                     </table>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
+                <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="text-sm text-gray-900 dark:text-gray-100">
                         <div class="flex mb-1">
                             <div class="text-right pr-2 w-32"><strong>Subtotal:</strong></div>
@@ -309,7 +352,7 @@
                     </div>
                 </td>
 
-                <td class="px-6 py-4 whitespace-nowrap">
+                <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="flex items-center">
                         <t t-set="last_picking" t-value="order.picking_ids and order.picking_ids.sorted('scheduled_date')[-1]"/>
                         <t t-if="last_picking">
@@ -337,7 +380,7 @@
                 </td>
 
 
-                <td class="px-6 py-4 whitespace-nowrap">
+                <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="flex items-center">
                         <div class="ml-4">
                             <div class="text-sm font-medium text-gray-900 dark:text-gray-100">Date Order: <t t-esc="order.date_order.strftime('%d-%m-%Y %H:%M:%S')"/></div>
@@ -382,28 +425,28 @@
                         </div>
                     </div>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100">
-                        <t t-foreach="order.picking_ids" t-as="picking">
-                            <t t-if="picking.picking_type_id.barcode == 'WHPICK'">
-                                <div class="flex mb-1">
-                                    <div class="text-right pr-2 w-32"><strong>Picking State:</strong></div>
-                                    <div><t t-esc="picking.state"/></div>
-                                </div>
+                <td class="px-6 py-4" style="max-width: 300px;">
+                    <div class="flex items-center">
+
+                        <div class="text-sm text-gray-900 dark:text-gray-100">
+                            <t t-foreach="order.picking_ids" t-as="picking">
+                                <t t-if="picking.picking_type_id.barcode == 'WHPICK'">
+                                    <div class="flex mb-1">
+                                        <div class="text-right pr-2 w-32"><strong>Picking State:</strong> <t t-esc="picking.state"/></div>
+                                    </div>
+                                </t>
+                                <t t-if="picking.picking_type_id.barcode == 'WHPACK'">
+                                    <div class="flex mb-1">
+                                        <div class="text-right pr-2 w-32"><strong>Package State:</strong> <t t-esc="picking.state"/></div>
+                                    </div>
+                                </t>
+                                <t t-if="picking.picking_type_id.barcode == 'WHOUT'">
+                                    <div class="flex mb-1">
+                                        <div class="text-right pr-2 w-32"><strong>Sent State:</strong> <t t-esc="picking.state"/></div>
+                                    </div>
+                                </t>
                             </t>
-                            <t t-if="picking.picking_type_id.barcode == 'WHPACK'">
-                                <div class="flex mb-1">
-                                    <div class="text-right pr-2 w-32"><strong>Package State:</strong></div>
-                                    <div><t t-esc="picking.state"/></div>
-                                </div>
-                            </t>
-                            <t t-if="picking.picking_type_id.barcode == 'WHOUT'">
-                                <div class="flex mb-1">
-                                    <div class="text-right pr-2 w-32"><strong>Sent State:</strong></div>
-                                    <div><t t-esc="picking.state"/></div>
-                                </div>
-                            </t>
-                        </t>
+                        </div>
                     </div>
                 </td>
 
@@ -424,51 +467,119 @@
             <!-- Fila de pantallas medianas -->
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 hidden md:table-row lg:hidden">
                 <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="order-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-order-id="order.id"/>
+                    <input type="checkbox" class="orders-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-order-id="order.id"/>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="order.name"/>
-                        <div class="text-sm text-gray-500">ID: #<t t-esc="order.id"/></div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100">
-                        <t t-foreach="order.order_line" t-as="line">
-                            <div class="flex mb-1">
-                                <div class="w-40 pr-2"><t t-esc="line.product_id.name"/></div>
-                                <div class="text-center w-20 text-gray-500 dark:text-gray-100"><t t-esc="line.product_uom_qty"/></div>
-                            </div>
-                        </t>
+                <td class="px-6 py-4" style="max-width: 300px;">
+                    <div class="min-w-0">
+                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words" t-esc="order.name"/>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 break-words">REF: <t t-esc="order.client_order_ref"/></div>
                     </div>
                 </td>
-
-
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                        <t t-set="last_picking" t-value="order.picking_ids and order.picking_ids.sorted('scheduled_date')[-1]"/>
-                        <t t-if="last_picking">
-                            <div class="text-sm text-gray-900 dark:text-gray-100 space-y-1">
-                                <div>
-                                    <strong>Carrier:</strong>
-                                    <t t-esc="last_picking.carrier_id.name or 'N/A'"/>
+                <td class="px-6 py-4" style="max-width: 300px;">
+                    <div class="min-w-0">
+                        <div class="flex items-center">
+                            <t t-set="last_picking" t-value="order.picking_ids and order.picking_ids.sorted('scheduled_date')[-1]"/>
+                            <t t-if="last_picking">
+                                <div class="text-sm text-gray-900 dark:text-gray-100 space-y-1 break-words">
+                                    <div>
+                                        <strong>Carrier:</strong>
+                                        <t t-esc="last_picking.carrier_id.name or 'N/A'"/>
+                                    </div>
+                                    <div>
+                                        <strong>Tracking Ref:</strong>
+                                        <t t-esc="last_picking.carrier_tracking_ref or 'N/A'"/>
+                                    </div>
+                                    <div>
+                                        <strong>Current Location:</strong>
+                                        <t t-if="last_picking.state != 'done'">
+                                            <t t-esc="last_picking.location_id.name"/>
+                                        </t>
+                                        <t t-if="last_picking.state == 'done'">
+                                            <t t-esc="last_picking.location_dest_id.name"/>
+                                        </t>
+                                    </div>
                                 </div>
-                                <div>
-                                    <strong>Tracking Ref:</strong>
-                                    <t t-esc="last_picking.carrier_tracking_ref or 'N/A'"/>
-                                </div>
-                                <div>
-                                    <strong>Current Location:</strong>
-                                    <t t-if="last_picking.state != 'done'">
-                                        <t t-esc="last_picking.location_id.name"/>
+                            </t>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4" style="max-width: 300px;">
+                    <div class="min-w-0">
+                        <div class="flex items-center">
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words">Date Order: <t t-esc="order.date_order.strftime('%d-%m-%Y %H:%M:%S')"/></div>
+                                <t t-foreach="order.picking_ids" t-as="picking">
+                                    <t t-if="picking.picking_type_id.barcode == 'WHPICK'">
+                                        <t t-if="picking.state == 'done'">
+                                            <div class="text-sm text-green-600 dark:text-green-400 break-words">
+                                                Pick Date Done: <t t-esc="picking.date_done.strftime('%d-%m-%Y %H:%M:%S')"/>
+                                            </div>
+                                        </t>
+                                        <t t-if="picking.state != 'done'">
+                                            <div class="text-sm text-gray-900 dark:text-gray-100 break-words">
+                                                Pick Scheduled Date: <t t-esc="picking.scheduled_date.strftime('%d-%m-%Y %H:%M:%S')"/>
+                                            </div>
+                                        </t>
                                     </t>
-                                    <t t-if="last_picking.state == 'done'">
-                                        <t t-esc="last_picking.location_dest_id.name"/>
+                                    <t t-if="picking.picking_type_id.barcode == 'WHPACK'">
+                                        <t t-if="picking.state == 'done'">
+                                            <div class="text-sm text-green-600 dark:text-green-400 break-words">
+                                                Pack Date Done: <t t-esc="picking.date_done.strftime('%d-%m-%Y %H:%M:%S')"/>
+                                            </div>
+                                        </t>
+                                        <t t-if="picking.state != 'done'">
+                                            <div class="text-sm text-gray-900 dark:text-gray-100 break-words">
+                                                Pack Scheduled Date: <t t-esc="picking.scheduled_date.strftime('%d-%m-%Y %H:%M:%S')"/>
+                                            </div>
+                                        </t>
                                     </t>
-                                </div>
+                                    <t t-if="picking.picking_type_id.barcode == 'WHOUT'">
+                                        <t t-if="picking.state == 'done'">
+                                            <div class="text-sm text-green-600 dark:text-green-400 break-words">
+                                                Sent Date: <t t-esc="picking.date_done.strftime('%d-%m-%Y %H:%M:%S')"/>
+                                            </div>
+                                        </t>
+                                        <t t-if="picking.state != 'done'">
+                                            <div class="text-sm text-gray-900 dark:text-gray-100 break-words">
+                                                Sent Scheduled Date: <t t-esc="picking.scheduled_date.strftime('%d-%m-%Y %H:%M:%S')"/>
+                                            </div>
+                                        </t>
+                                    </t>
+                                </t>
                             </div>
-                        </t>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4" style="max-width: 300px;">
+                    <div class="min-w-0">
+                        <div class="text-sm text-gray-900 dark:text-gray-100 break-words">
+                            <t t-foreach="order.picking_ids" t-as="picking">
+                                <t t-if="picking.picking_type_id.barcode == 'WHPICK'">
+                                    <div class="flex mb-1">
+                                        <div class="text-right pr-2 w-32"><strong>Picking State:</strong></div>
+                                        <div><t t-esc="picking.state"/></div>
+                                    </div>
+                                </t>
+                                <t t-if="picking.picking_type_id.barcode == 'WHPACK'">
+                                    <div class="flex mb-1">
+                                        <div class="text-right pr-2 w-32"><strong>Package State:</strong></div>
+                                        <div><t t-esc="picking.state"/></div>
+                                    </div>
+                                </t>
+                                <t t-if="picking.picking_type_id.barcode == 'WHOUT'">
+                                    <div class="flex mb-1">
+                                        <div class="text-right pr-2 w-32"><strong>Sent State:</strong></div>
+                                        <div><t t-esc="picking.state"/></div>
+                                    </div>
+                                </t>
+                            </t>
+                        </div>
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <a t-att-href="order.get_details_url()" t-attf-data-tooltip-target="tooltip-details-#{order.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
                     <button t-attf-data-tooltip-target="tooltip-edit-#{order.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -481,23 +592,18 @@
             <!-- Fila de pantallas pequeñas -->
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 table-row md:hidden">
                 <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="order-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-order-id="order.id"/>
+                    <input type="checkbox" class="orders-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-order-id="order.id"/>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="order.name"/>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100">
-                        <t t-foreach="order.order_line" t-as="line">
-                            <div class="flex mb-1">
-                                <div class="w-40 pr-2"><t t-esc="line.product_id.name"/></div>
-                                <div class="text-center w-20 text-gray-500 dark:text-gray-100"><t t-esc="line.product_uom_qty"/></div>
-                            </div>
-                        </t>
+                <td class="px-6 py-4" style="max-width: 300px;">
+                    <div class="min-w-0">
+                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words" t-esc="order.name"/>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 break-words">REF: <t t-esc="order.client_order_ref"/></div>
                     </div>
                 </td>
-
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <a t-att-href="order.get_details_url()" t-attf-data-tooltip-target="tooltip-details-#{order.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
                     <button t-attf-data-tooltip-target="tooltip-edit-#{order.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-edit"></i>
                     </button>

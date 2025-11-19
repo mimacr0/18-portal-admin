@@ -115,7 +115,8 @@
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead class="bg-gray-50 dark:bg-gray-800">
-                            <tr>
+                            <!-- Large screens header -->
+                            <tr class="hidden lg:table-row">
                                 <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     <div class="flex items-center">
                                         <input t-attf-id="page-#{page_name}-list-select-all-checkbox" type="checkbox" class="h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-cyan-600 dark:checked:border-cyan-600"/>
@@ -131,6 +132,48 @@
                                     <th t-else="" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         <span t-out="list_column.get('label')"/>
                                     </th>
+                                </t>
+                            </tr>
+                            <!-- Medium screens header -->
+                            <tr class="hidden md:table-row lg:hidden">
+                                <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    <div class="flex items-center">
+                                        <input t-attf-id="page-#{page_name}-list-select-all-checkbox-md" type="checkbox" class="h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-cyan-600 dark:checked:border-cyan-600"/>
+                                    </div>
+                                </th>
+                                <t t-foreach="list_columns" t-as="list_column">
+                                    <t t-if="list_column.get('show_in_md')">
+                                        <th t-if="list_column.get('sortable')" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            <div class="flex items-center">
+                                                <span t-out="list_column.get('label')"/>
+                                                <i t-attf-id="list-column-#{page_name}-#{list_column.get('id')}-sort-icon" t-if="list_column.get('sortable')" class="fas fa-sort ml-1 text-gray-400"></i>
+                                            </div>
+                                        </th>
+                                        <th t-else="" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            <span t-out="list_column.get('label')"/>
+                                        </th>
+                                    </t>
+                                </t>
+                            </tr>
+                            <!-- Small screens header -->
+                            <tr class="table-row md:hidden">
+                                <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    <div class="flex items-center">
+                                        <input t-attf-id="page-#{page_name}-list-select-all-checkbox-sm" type="checkbox" class="h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-cyan-600 dark:checked:border-cyan-600"/>
+                                    </div>
+                                </th>
+                                <t t-foreach="list_columns" t-as="list_column">
+                                    <t t-if="list_column.get('show_in_sm')">
+                                        <th t-if="list_column.get('sortable')" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            <div class="flex items-center">
+                                                <span t-out="list_column.get('label')"/>
+                                                <i t-attf-id="list-column-#{page_name}-#{list_column.get('id')}-sort-icon" t-if="list_column.get('sortable')" class="fas fa-sort ml-1 text-gray-400"></i>
+                                            </div>
+                                        </th>
+                                        <th t-else="" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            <span t-out="list_column.get('label')"/>
+                                        </th>
+                                    </t>
                                 </t>
                             </tr>
                         </thead>
@@ -241,6 +284,57 @@
                     <!-- <button t-attf-data-tooltip-target="tooltip-delete-#{alert.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-trash"></i>
                     </button> -->
+                </td>
+            </tr>
+
+            <!-- Fila de pantallas medianas -->
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 hidden md:table-row lg:hidden">
+                <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
+                    <input type="checkbox" class="repair-alerts-list-checkbox h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500" t-att-data-alert-id="alert.id"/>
+                </td>
+                <td class="px-6 py-4" style="max-width: 300px;">
+                    <div class="min-w-0">
+                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words">Title: <t t-out="alert.title"/></div>
+                        <div class="text-sm text-gray-900 dark:text-gray-100 break-words">Name: <t t-out="alert.name"/></div>
+                    </div>
+                </td>
+                <td class="px-6 py-4" style="max-width: 300px;">
+                    <div class="min-w-0">
+                        <div class="text-sm text-gray-900 dark:text-gray-100 break-words">Product: <t t-out="alert.product_id.display_name"/></div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 break-words">Lot: <t t-out="alert.lot_id.display_name"/></div>
+                    </div>
+                </td>
+                <td class="px-6 py-4" style="max-width: 300px;">
+                    <div class="min-w-0">
+                        <t t-foreach="alert.repair_order_ids" t-as="order">
+                            <t t-if="order.state == 'done'">
+                                <div class="text-sm text-gray-900 dark:text-gray-100 break-words">Type: <t t-out="order.maintenance_type"/></div>
+                            </t>
+                        </t>
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <a t-att-href="alert.get_details_url()" t-attf-data-tooltip-target="tooltip-details-#{alert.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                </td>
+            </tr>
+
+            <!-- Fila de pantallas pequeñas -->
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 table-row md:hidden">
+                <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
+                    <input type="checkbox" class="repair-alerts-list-checkbox h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500" t-att-data-alert-id="alert.id"/>
+                </td>
+                <td class="px-6 py-4" style="max-width: 300px;">
+                    <div class="min-w-0">
+                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words">Title: <t t-out="alert.title"/></div>
+                        <div class="text-sm text-gray-900 dark:text-gray-100 break-words">Name: <t t-out="alert.name"/></div>
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <a t-att-href="alert.get_details_url()" t-attf-data-tooltip-target="tooltip-details-#{alert.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
                 </td>
             </tr>
         </t>

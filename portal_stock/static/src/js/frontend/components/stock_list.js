@@ -9,7 +9,7 @@ import { rpc } from "@web/core/network/rpc";
  */
 export let sortConfig = {
     column: null,
-    direction: 'asc'
+    direction: 'desc'
 };
 
 /**

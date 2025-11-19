@@ -21,6 +21,28 @@ class PortalStockController(PortalAdminController):
     DEFAULT_LIMIT_PARAM = 'portal_stock.page_list_default_limit'
     DEFAULT_LIMIT_VALUE = '100'
 
+    def _get_lots_domain_for_product(self, product_id):
+        """Obtiene el dominio para verificar si un producto tiene lotes accesibles"""
+        partner_id = request.env.user.partner_id
+        account_partner = request.env['account.partner'].sudo().search([
+            ('partner_id', '=', partner_id.commercial_partner_id.id)
+        ], limit=1)
+        
+        if not account_partner:
+            return expression.FALSE_DOMAIN
+        
+        # Verificar que el producto pertenece al account_partner
+        products = request.env['product.product'].sudo().search([
+            ('is_storable', '=', True),
+            ('account_partner_id', '=', account_partner.id),
+            ('id', '=', product_id)
+        ])
+        
+        if not products:
+            return expression.FALSE_DOMAIN
+        
+        return [('product_id', '=', product_id)]
+
     def _get_admin_layout_menus(self):
         menus = super()._get_admin_layout_menus()
         menus.append({
@@ -89,14 +111,58 @@ class PortalStockController(PortalAdminController):
 
         # Definir las columnas de la lista basadas en PRODUCT_FIELDS_MAPPING
         list_columns = [
-            {'id': 'name', 'label': _('Name'), 'sortable': True},
-            {'id': 'sku', 'label': _('SKU'), 'sortable': True, 'lg': True},
-            {'id': 'barcode', 'label': _('Barcode'), 'sortable': True, 'lg': True},
-            {'id': 'stock', 'label': _('Stock'), 'sortable': True, 'md': True},
-            {'id': 'status', 'label': _('Status'), 'sortable': True},
-            {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True}
+            {'id': 'name', 'label': _('Name'), 'sortable': True, 'responsive': ['sm', 'md', 'lg']},
+            {'id': 'sku', 'label': _('SKU'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
+            {'id': 'barcode', 'label': _('Barcode'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
+            {'id': 'stock', 'label': _('Stock'), 'sortable': True, 'md': True, 'responsive': ['lg']},
+            {'id': 'status', 'label': _('Status'), 'sortable': True, 'responsive': ['md', 'lg']},
+            {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True, 'responsive': ['sm', 'md', 'lg']}
         ]
+        
+        # Procesar columnas para añadir flags de visibilidad según responsive
+        for column in list_columns:
+            responsive = column.get('responsive', [])
+            column['show_in_sm'] = 'sm' in responsive
+            column['show_in_md'] = 'md' in responsive
+            column['show_in_lg'] = 'lg' in responsive
 
+        # Cargar productos iniciales para mostrar en la página
+        SysParams = request.env['ir.config_parameter'].sudo()
+        limit = int(SysParams.get_param(self.DEFAULT_LIMIT_PARAM, self.DEFAULT_LIMIT_VALUE))
+        base_domain = self._build_product_domain('', None, 'all')
+        products = ProductProducts.search(base_domain, limit=limit, order='id desc')
+        
+        # Pre-cargar información de lotes para productos con tracking serial
+        StockLot = request.env['stock.lot'].sudo()
+        products_has_lots = {}
+        for product in products:
+            if product.tracking == 'serial':
+                # Verificar si el producto tiene lotes accesibles
+                lot_domain = self._get_lots_domain_for_product(product.id)
+                products_has_lots[product.id] = bool(StockLot.search_count(lot_domain) > 0)
+            else:
+                products_has_lots[product.id] = False
+        
+        # Renderizar la lista de productos
+        qweb = request.env['ir.qweb']
+        products_list_html = qweb._render('portal_stock.portal_products_list', {
+            'products': products,
+            'batch_actions': True,
+            'products_has_lots': products_has_lots
+        })
+        
+        # Preparar datos de paginación inicial
+        items_total = ProductProducts.search_count(base_domain)
+        items_count = len(products)
+        pagination_data = self._get_pagination_data(1, items_total, limit)
+        pagination_data.update({'items_total': items_total, 'items_count': items_count})
+        
+        products_pager_html = qweb._render('portal_stock.portal_stock_pager', {
+            'products': products,
+            'items_label': _('products'),
+            **pagination_data
+        })
+        
         # Actualiza los valores con los filtros y el filtro activo
         values.update({
             'active_filter': active_filter,
@@ -111,7 +177,9 @@ class PortalStockController(PortalAdminController):
             'advanced_search': json.dumps(self._get_advanced_search_fields()),
             'batch_actions': [
                 {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
-            ]
+            ],
+            'products_list_html': products_list_html,
+            'products_pager_html': products_pager_html,
         })
 
         return request.render("portal_stock.portal_stock_page", values)
@@ -223,7 +291,7 @@ class PortalStockController(PortalAdminController):
         }
 
     @http.route('/account/stock/list/reload', type='json', auth='user')
-    def account_stock_list_reload(self, page=1, search='', domain=None, match_type='all', sort=None, order='asc', quick_filter=None, **kw):
+    def account_stock_list_reload(self, page=1, search='', domain=None, match_type='all', sort=None, order='desc', quick_filter=None, **kw):
         SysParams = request.env['ir.config_parameter'].sudo()
         limit = int(SysParams.get_param(self.DEFAULT_LIMIT_PARAM, self.DEFAULT_LIMIT_VALUE))
         offset = (page - 1) * limit
@@ -243,7 +311,7 @@ class PortalStockController(PortalAdminController):
                 base_domain.append(('qty_available', '<=', 0))
 
         # Configurar ordenamiento
-        order_by = 'id'
+        order_by = 'id desc'
         if sort and sort in self.PRODUCT_FIELDS_MAPPING:
             order_by = f"{self.PRODUCT_FIELDS_MAPPING[sort]} {order}"
 
@@ -252,6 +320,17 @@ class PortalStockController(PortalAdminController):
         products = ProductProducts.search(base_domain, limit=limit, offset=offset, order=order_by)
         items_total = ProductProducts.search_count(base_domain)
         items_count = len(products)
+
+        # Pre-cargar información de lotes para productos con tracking serial
+        StockLot = request.env['stock.lot'].sudo()
+        products_has_lots = {}
+        for product in products:
+            if product.tracking == 'serial':
+                # Verificar si el producto tiene lotes accesibles
+                lot_domain = self._get_lots_domain_for_product(product.id)
+                products_has_lots[product.id] = bool(StockLot.search_count(lot_domain) > 0)
+            else:
+                products_has_lots[product.id] = False
 
         # Preparar datos de paginación
         pagination_data = self._get_pagination_data(page, items_total, limit)
@@ -262,7 +341,8 @@ class PortalStockController(PortalAdminController):
             'status': 'success',
             'list': qweb._render('portal_stock.portal_products_list', {
                 'products': products,
-                'batch_actions': True
+                'batch_actions': True,
+                'products_has_lots': products_has_lots
             }),
             'pager': qweb._render('portal_stock.portal_stock_pager', {
                 'products': products,

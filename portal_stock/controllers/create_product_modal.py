@@ -82,7 +82,7 @@ class ProductModalController(PortalAdminController):
             tracking = post.get('tracking', 'none')
             image_base64 = post.get('image_base64')
 
-            # Obtener la cuenta del usuario actual
+            # Obtener la cuenta de la empresa del usuario actual para asociar el producto a la empresa
             partner = request.env.user.partner_id
             account_partner = request.env['account.partner'].sudo().search([('partner_id', '=', partner.commercial_partner_id.id)], limit=1)
 

@@ -99,16 +99,25 @@ class PortalRepairController(PortalAdminController):
                 {'id': 'cancelled', 'label': _('Cancelled'), 'icon': 'fas fa-ban'},
             ],
             'list_columns': [
-                {'id': 'name', 'label': _('Name'), 'sortable': True},
-                {'id': 'stage', 'label': _('Stage'), 'sortable': True, 'lg': True},
-                {'id': 'product', 'label': _('Product Info')},
-                {'id': 'repair', 'label': _('Repair Info')},
+                {'id': 'name', 'label': _('Name'), 'sortable': True, 'responsive': ['sm', 'md', 'lg']},
+                {'id': 'stage', 'label': _('Stage'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
+                {'id': 'product', 'label': _('Product Info'), 'responsive': ['md', 'lg']},
+                {'id': 'repair', 'label': _('Repair Info'), 'responsive': ['md', 'lg']},
             ],
             'batch_actions': [
                 {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
             ],
             'advanced_search': json.dumps(self._get_repair_advanced_search_fields())
         })
+        
+        # Procesar columnas para añadir flags de visibilidad según responsive
+        list_columns = values.get('list_columns', [])
+        for column in list_columns:
+            responsive = column.get('responsive', [])
+            column['show_in_sm'] = 'sm' in responsive
+            column['show_in_md'] = 'md' in responsive
+            column['show_in_lg'] = 'lg' in responsive
+        values['list_columns'] = list_columns
 
         return request.render("portal_repair.portal_repair_alert_page_main", values)
 

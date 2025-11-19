@@ -24,20 +24,20 @@ export const portalAccountProductsInitAdvancedFilters = async () => {
     const res = await rpc('/account/stock/list/advanced_filters');
     if (res?.status != 'success') return;
 
-    const fieldsInput = document.getElementById('page-products-list-advanced-search-fields');
+    const fieldsInput = document.getElementById('page-stock-list-advanced-search-fields');
     if (!fieldsInput) return;
 
     fieldsInput.value = res.filters;
 }
 
 export function initAdvancedSearch() {
-    const advancedSearchToggle = document.getElementById('page-stock-list-advanced-search-toggle') || document.getElementById('page-products-list-advanced-search-toggle');
-    const advancedSearchPanel = document.getElementById('page-stock-list-advanced-search-panel') || document.getElementById('page-products-list-advanced-search-panel') || document.querySelector('[id^="page-"][id$="-list-advanced-search-panel"]');
-    const applyAdvancedSearchButton = document.getElementById('page-products-list-advanced-search-apply-btn');
-    const resetAdvancedSearchButton = document.getElementById('page-products-list-advanced-search-reset-btn');
-    const addFilterLineBtn = document.getElementById('page-products-list-advanced-search-add-line-btn');
+    const advancedSearchToggle = document.getElementById('page-stock-list-advanced-search-toggle') || document.getElementById('page-stock-list-advanced-search-toggle');
+    const advancedSearchPanel = document.getElementById('page-stock-list-advanced-search-panel') || document.getElementById('page-stock-list-advanced-search-panel') || document.querySelector('[id^="page-"][id$="-list-advanced-search-panel"]');
+    const applyAdvancedSearchButton = document.getElementById('page-stock-list-advanced-search-apply-btn');
+    const resetAdvancedSearchButton = document.getElementById('page-stock-list-advanced-search-reset-btn');
+    const addFilterLineBtn = document.getElementById('page-stock-list-advanced-search-add-line-btn');
     const matchTypeSelector = document.getElementById('page-stock-list-advanced-search-match-type');
-    const linesContainer = document.getElementById('page-products-list-advanced-search-lines-container');
+    const linesContainer = document.getElementById('page-stock-list-advanced-search-lines-container');
 
     if (!advancedSearchToggle || !advancedSearchPanel) return;
 
@@ -96,8 +96,8 @@ export function initAdvancedSearch() {
 }
 
 function addFilterLine() {
-    const fieldsData = JSON.parse(document.getElementById('page-products-list-advanced-search-fields').value || '[]');
-    const linesContainer = document.getElementById('page-products-list-advanced-search-lines-container');
+    const fieldsData = JSON.parse(document.getElementById('page-stock-list-advanced-search-fields').value || '[]');
+    const linesContainer = document.getElementById('page-stock-list-advanced-search-lines-container');
 
     const lineId = Date.now();
     const line = document.createElement('div');
@@ -148,7 +148,7 @@ function addFilterLine() {
     };
 
     const getFieldSpec = (id) => {
-        const fieldsData = JSON.parse(document.getElementById('page-products-list-advanced-search-fields').value || '[]');
+        const fieldsData = JSON.parse(document.getElementById('page-stock-list-advanced-search-fields').value || '[]');
         return fieldsData.find(f => f.id === id) || { id, type: 'text' };
     };
 
@@ -200,7 +200,7 @@ function addFilterLine() {
     removeBtn.addEventListener('click', function() {
         line.remove();
         // Auto-apply after removal
-        const applyBtn = document.getElementById('page-products-list-advanced-search-apply-btn');
+        const applyBtn = document.getElementById('page-stock-list-advanced-search-apply-btn');
         applyBtn && applyBtn.click();
     });
 
@@ -227,7 +227,7 @@ function addFilterLine() {
 }
 
 function resetFilters() {
-    const linesContainer = document.getElementById('page-products-list-advanced-search-lines-container');
+    const linesContainer = document.getElementById('page-stock-list-advanced-search-lines-container');
     linesContainer.innerHTML = '';
     addFilterLine();
     document.getElementById('page-stock-list-advanced-search-match-type').value = 'all';
@@ -236,7 +236,7 @@ function resetFilters() {
 
 function buildSearchDomain() {
     const matchType = document.getElementById('page-stock-list-advanced-search-match-type').value;
-    const lines = document.querySelectorAll('#page-products-list-advanced-search-lines-container > div');
+    const lines = document.querySelectorAll('#page-stock-list-advanced-search-lines-container > div');
     const conditions = [];
 
     lines.forEach(line => {

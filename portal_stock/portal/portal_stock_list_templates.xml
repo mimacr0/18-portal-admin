@@ -7,7 +7,7 @@
             <div class="w-full">
 
                 <div class="card-title-container mb-4 flex items-center">
-                    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Stock</h1>
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100" t-esc="page_title"/>
                 </div>
 
                 <!-- Bulk actions toolbar - hidden by default, visible when items are selected -->
@@ -52,8 +52,11 @@
                     <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                         <div class="flex flex-col lg:flex-row justify-between gap-4">
                             <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                <div class="flex items-center">
-                                    <button t-attf-id="launch-create-#{page_name}-form-button" class="px-3 py-1.5 bg-[#696900] text-white rounded-md hover:bg-[#8A8A00] transition-colors flex items-center">
+                                <div class="flex items-center gap-2">
+                                    <a t-if="page_name == 'lots'" href="/account/stock" class="px-3 py-1.5 bg-[#696900] text-white rounded-md hover:bg-[#8A8A00] transition-colors flex items-center">
+                                        <i class="fas fa-arrow-left mr-1.5"/> <span class="hidden sm:inline">Volver</span>
+                                    </a>
+                                    <button t-if="page_name == 'stock'" t-attf-id="launch-create-#{page_name}-form-button" class="px-3 py-1.5 bg-[#696900] text-white rounded-md hover:bg-[#8A8A00] transition-colors flex items-center">
                                         <i class="fas fa-plus mr-1.5"/> <span class="hidden sm:inline">Create Product</span>
                                     </button>
                                 </div>
@@ -65,7 +68,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i class="fas fa-search text-gray-400 dark:text-gray-500"/>
                                     </div>
-                                    <input type="text" id="page-stock-products-list-search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-[#8A8A00] dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Search ..."/>
+                                    <input type="text" t-attf-id="page-#{page_name}-list-search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-[#8A8A00] dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Search ..."/>
                                 </div>
 
                                 <!-- Advanced search toggle button -->
@@ -85,8 +88,8 @@
                         <!-- Advanced search panel - hidden by default -->
                         <div t-attf-id="page-#{page_name}-list-advanced-search-panel" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 hidden">
                             <!-- Keep ids consistent with JS modules -->
-                            <input type="hidden" id="page-stock-list-advanced-search-domain" value="[]"/>
-                            <input type="hidden" id="page-products-list-advanced-search-fields" t-att-value="advanced_search"/>
+                            <input type="hidden" t-attf-id="page-#{page_name}-list-advanced-search-domain" value="[]"/>
+                            <input type="hidden" t-attf-id="page-#{page_name}-list-advanced-search-fields" t-att-value="advanced_search"/>
                             <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Advanced Search</h3>
 
                             <!-- Dynamic Advanced Filter -->
@@ -95,7 +98,7 @@
                                 <!-- Match Type Selector -->
                                 <div class="mb-4">
                                     <p class="text-sm text-gray-700 dark:text-gray-300">
-                                        <select id="page-stock-list-advanced-search-match-type" class="inline-block mx-1 px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-[#8A8A00] focus:border-[#8A8A00] bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                                        <select t-attf-id="page-#{page_name}-list-advanced-search-match-type" class="inline-block mx-1 px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-[#8A8A00] focus:border-[#8A8A00] bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                                             <option value="all" selected="selected">All</option>
                                             <option value="any">Any</option>
                                         </select>
@@ -104,11 +107,11 @@
                                 </div>
 
                                 <!-- Filter Lines Container -->
-                                <div id="page-products-list-advanced-search-lines-container" class="space-y-3"></div>
+                                <div t-attf-id="page-#{page_name}-list-advanced-search-lines-container" class="space-y-3"></div>
 
                                 <!-- Add Filter Line Button -->
                                 <div class="mt-3">
-                                    <button id="page-products-list-advanced-search-add-line-btn" class="flex items-center text-[#696900] hover:text-[#8A8A00] text-sm font-medium">
+                                    <button t-attf-id="page-#{page_name}-list-advanced-search-add-line-btn" class="flex items-center text-[#696900] hover:text-[#8A8A00] text-sm font-medium">
                                         <i class="fas fa-plus-circle mr-1.5"/> Add filter condition
                                     </button>
                                 </div>
@@ -116,10 +119,10 @@
 
                             <!-- Action buttons for advanced search -->
                             <div class="mt-4 flex justify-end space-x-3">
-                                <button id="page-products-list-advanced-search-reset-btn" class="px-3 py-1 text-sm border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700">
+                                <button t-attf-id="page-#{page_name}-list-advanced-search-reset-btn" class="px-3 py-1 text-sm border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700">
                                     Reset
                                 </button>
-                                <button id="page-products-list-advanced-search-apply-btn" class="px-3 py-1 text-sm bg-[#696900] text-white rounded-md shadow-sm hover:bg-[#8A8A00] dark:bg-[#696900] dark:text-white dark:hover:bg-[#8A8A00] dark:hover:text-white">
+                                <button t-attf-id="page-#{page_name}-list-advanced-search-apply-btn" class="px-3 py-1 text-sm bg-[#696900] text-white rounded-md shadow-sm hover:bg-[#8A8A00] dark:bg-[#696900] dark:text-white dark:hover:bg-[#8A8A00] dark:hover:text-white">
                                     Apply Filters
                                 </button>
                             </div>
@@ -129,26 +132,72 @@
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" t-attf-id="page-#{page_name}-list-table">
                             <thead class="bg-gray-50 dark:bg-gray-800">
-                                <tr>
+                                <!-- Large screens header -->
+                                <tr class="hidden lg:table-row">
                                     <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         <div class="flex items-center">
                                             <input t-attf-id="page-#{page_name}-list-select-all-checkbox" type="checkbox" class="h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00] dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-[#696900] dark:checked:border-[#696900]"/>
                                         </div>
                                     </th>
                                     <t t-foreach="list_columns" t-as="list_column">
-                                        <th t-if="list_column.get('sortable')" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider #{list_column.get('md') and 'hidden md:table-cell' or ''} #{list_column.get('lg') and 'hidden lg:table-cell' or ''}">
+                                        <th t-if="list_column.get('sortable')" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider #{list_column.get('md') and 'hidden md:table-cell' or ''} #{list_column.get('lg') and 'hidden lg:table-cell' or ''}" t-attf-style="#{list_column.get('id') == 'name' and 'max-width: 300px;' or ''}">
                                             <div class="flex items-center">
                                                 <span t-out="list_column.get('label')"/>
                                                 <i t-attf-id="list-column-#{page_name}-#{list_column.get('id')}-sort-icon" t-if="list_column.get('sortable')" class="fas fa-sort ml-1 text-gray-400"/>
                                             </div>
                                         </th>
-                                        <th t-else="" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        <th t-else="" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" t-attf-style="#{list_column.get('id') == 'name' and 'max-width: 300px;' or ''}">
                                             <span t-out="list_column.get('label')"/>
                                         </th>
                                     </t>
                                 </tr>
+                                <!-- Medium screens header -->
+                                <tr class="hidden md:table-row lg:hidden">
+                                    <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox-md" type="checkbox" class="h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00] dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-[#696900] dark:checked:border-[#696900]"/>
+                                        </div>
+                                    </th>
+                                    <t t-foreach="list_columns" t-as="list_column">
+                                        <t t-if="list_column.get('show_in_md')">
+                                            <th t-if="list_column.get('sortable')" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" t-attf-style="#{list_column.get('id') == 'name' and 'max-width: 300px;' or ''}">
+                                                <div class="flex items-center">
+                                                    <span t-out="list_column.get('label')"/>
+                                                    <i t-attf-id="list-column-#{page_name}-#{list_column.get('id')}-sort-icon" t-if="list_column.get('sortable')" class="fas fa-sort ml-1 text-gray-400"/>
+                                                </div>
+                                            </th>
+                                            <th t-else="" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" t-attf-style="#{list_column.get('id') == 'name' and 'max-width: 300px;' or ''}">
+                                                <span t-out="list_column.get('label')"/>
+                                            </th>
+                                        </t>
+                                    </t>
+                                </tr>
+                                <!-- Small screens header -->
+                                <tr class="table-row md:hidden">
+                                    <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox-sm" type="checkbox" class="h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00] dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-[#696900] dark:checked:border-[#696900]"/>
+                                        </div>
+                                    </th>
+                                    <t t-foreach="list_columns" t-as="list_column">
+                                        <t t-if="list_column.get('show_in_sm')">
+                                            <th t-if="list_column.get('sortable')" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" t-attf-style="#{list_column.get('id') == 'name' and 'max-width: 300px;' or ''}">
+                                                <div class="flex items-center">
+                                                    <span t-out="list_column.get('label')"/>
+                                                    <i t-attf-id="list-column-#{page_name}-#{list_column.get('id')}-sort-icon" t-if="list_column.get('sortable')" class="fas fa-sort ml-1 text-gray-400"/>
+                                                </div>
+                                            </th>
+                                            <th t-else="" scope="col" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider" t-attf-style="#{list_column.get('id') == 'name' and 'max-width: 300px;' or ''}">
+                                                <span t-out="list_column.get('label')"/>
+                                            </th>
+                                        </t>
+                                    </t>
+                                </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="stock-page-list-items"/>
+                            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" t-attf-id="#{page_name}-page-list-items">
+                                <t t-if="page_name == 'lots' and lots_list_html" t-raw="lots_list_html"/>
+                                <t t-if="page_name == 'stock' and products_list_html" t-raw="products_list_html"/>
+                            </tbody>
                         </table>
                     </div>
 
@@ -156,8 +205,11 @@
             </div>
 
             <div class="fixed bottom-0 right-0 z-10 mr-6 mb-6">
-                <input type="hidden" id="stock-list-pagination-page" value="1"/>
-                <div class="pagination-container px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg flex items-center justify-between" id="stock-list-pagination-container"/>
+                <input type="hidden" t-attf-id="#{page_name}-list-pagination-page" value="1"/>
+                <div class="pagination-container px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg flex items-center justify-between" t-attf-id="#{page_name}-list-pagination-container">
+                    <t t-if="page_name == 'lots' and lots_pager_html" t-raw="lots_pager_html"/>
+                    <t t-if="page_name == 'stock' and products_pager_html" t-raw="products_pager_html"/>
+                </div>
             </div>
 
             <div class="h-25"/>
@@ -284,13 +336,13 @@
                 <td class="px-3 py-4 whitespace-nowrap">
                     <input type="checkbox" class="products-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-product-id="product.id" t-att-data-product-name="product.name"/>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
+                <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <img class="size-10 rounded-full" t-attf-src="/account/stock/image/#{product.id}/80x80" t-att-alt="product.name"/>
                         </div>
-                        <div class="ml-4">
-                            <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="product.name"/>
+                        <div class="ml-4 min-w-0 flex-1">
+                            <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words" t-esc="product.name"/>
                             <t t-foreach="product.product_template_attribute_value_ids" t-as="attribute_value">
                                 <span class="px-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 mt-1">
                                     <t t-esc="attribute_value.attribute_line_id.attribute_id.name"/>: <t t-esc="attribute_value.name"/>
@@ -351,6 +403,11 @@
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <t t-if="product.tracking == 'serial' and products_has_lots.get(product.id, False)">
+                        <a t-attf-href="/account/stock/lots?product_id=#{product.id}" t-attf-data-tooltip-target="tooltip-lots-#{product.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                            <i class="fas fa-list"/>
+                        </a>
+                    </t>
                     <button t-attf-data-tooltip-target="tooltip-edit-#{product.id}" t-att-data-product-id="product.id" class="product-edit-button text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-edit"/>
                     </button>
@@ -365,9 +422,11 @@
                 <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
                     <input type="checkbox" class="products-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-product-id="product.id" t-att-data-product-name="product.name"/>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="product.name"/>
-                    <div class="text-sm text-gray-500" t-esc="product.default_code"/>
+                <td class="px-6 py-4" style="max-width: 300px;">
+                    <div class="min-w-0">
+                        <div class="text-sm text-gray-900 dark:text-gray-100 break-words" t-esc="product.name"/>
+                        <div class="text-sm text-gray-500 break-words" t-esc="product.default_code"/>
+                    </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span t-attf-class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full #{product.qty_available > 0 and 'bg-green-100 text-green-800' or 'bg-red-100 text-red-800'}">
@@ -375,6 +434,11 @@
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <t t-if="product.tracking == 'serial' and products_has_lots.get(product.id, False)">
+                        <a t-attf-href="/account/stock/lots?product_id=#{product.id}" t-attf-data-tooltip-target="tooltip-lots-#{product.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                            <i class="fas fa-list"/>
+                        </a>
+                    </t>
                     <button t-attf-data-tooltip-target="tooltip-edit-#{product.id}" t-att-data-product-id="product.id" class="product-edit-button text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-edit"/>
                     </button>
@@ -389,10 +453,15 @@
                 <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
                     <input type="checkbox" class="products-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-product-id="product.id" t-att-data-product-name="product.name"/>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="product.name"/>
+                <td class="px-6 py-4" style="max-width: 300px;">
+                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words" t-esc="product.name"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <t t-if="product.tracking == 'serial' and products_has_lots.get(product.id, False)">
+                        <a t-attf-href="/account/stock/lots?product_id=#{product.id}" t-attf-data-tooltip-target="tooltip-lots-#{product.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
+                            <i class="fas fa-list"/>
+                        </a>
+                    </t>
                     <button t-attf-data-tooltip-target="tooltip-edit-#{product.id}" t-att-data-product-id="product.id" class="product-edit-button text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-edit"/>
                     </button>

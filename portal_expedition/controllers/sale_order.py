@@ -84,13 +84,13 @@ class PortalExpeditionController(PortalAdminController):
             ],
 
             'list_columns': [
-                {'id': 'name', 'label': _('Name'), 'sortable': True},
-                {'id': 'product_info', 'label': _('Products Information'), 'sortable': False, 'md': True},
-                {'id': 'total_info', 'label': _('Total Information'), 'sortable': False, 'md': True},
-                {'id': 'tracking_info', 'label': _('Tracking Information'), 'sortable': False, 'md': True},
-                {'id': 'traceability_info', 'label': _('Traceability Information'), 'sortable': False, 'md': True},
-                {'id': 'states_info', 'label': _('States'), 'sortable': False, 'md': True},
-                {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True}
+                {'id': 'name', 'label': _('Name'), 'sortable': True, 'responsive': ['sm', 'md', 'lg']},
+                {'id': 'product_info', 'label': _('Products Information'), 'sortable': False, 'md': True, 'responsive': ['lg']},
+                {'id': 'total_info', 'label': _('Total Information'), 'sortable': False, 'md': True, 'responsive': ['lg']},
+                {'id': 'tracking_info', 'label': _('Tracking Information'), 'sortable': False, 'md': True, 'responsive': ['md', 'lg']},
+                {'id': 'traceability_info', 'label': _('Traceability Information'), 'sortable': False, 'md': True, 'responsive': ['md', 'lg']},
+                {'id': 'states_info', 'label': _('States'), 'sortable': False, 'md': True, 'responsive': ['md', 'lg']},
+                {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True, 'responsive': ['sm', 'md', 'lg']}
             ],
             'tools_actions': [
             ],
@@ -99,6 +99,15 @@ class PortalExpeditionController(PortalAdminController):
             ],
             'advanced_search': json.dumps(self._get_expedition_advanced_search_fields())
         })
+        
+        # Procesar columnas para añadir flags de visibilidad según responsive
+        list_columns = values.get('list_columns', [])
+        for column in list_columns:
+            responsive = column.get('responsive', [])
+            column['show_in_sm'] = 'sm' in responsive
+            column['show_in_md'] = 'md' in responsive
+            column['show_in_lg'] = 'lg' in responsive
+        values['list_columns'] = list_columns
 
         return request.render("portal_expedition.portal_expedition_page", values)
 
