@@ -642,8 +642,21 @@ class PortalReceptionController(PortalAdminController):
         page = int(page)
         offset = (page - 1) * limit
 
+        # Get user's commercial partner account_partner_id
+        user_partner = request.env.user.partner_id
+        commercial_partner = user_partner.commercial_partner_id
+        account_partner_id = commercial_partner.account_id.id if commercial_partner.account_id else False
+
         # Build domain with optional search
         domain = [('is_storable', '=', True)]  # Only storable products
+        
+        # Filter by account_partner_id if it exists
+        if account_partner_id:
+            domain = expression.AND([
+                domain,
+                [('account_partner_id', '=', account_partner_id)]
+            ])
+        
         if search:
             domain = expression.AND([
                 domain,
@@ -690,6 +703,18 @@ class PortalReceptionController(PortalAdminController):
         self._ensure_user_lang_context()
         ProductProduct = request.env['product.product'].sudo()
         domain = [('is_storable', '=', True)]  # Only storable products
+
+        # Get user's commercial partner account_partner_id
+        user_partner = request.env.user.partner_id
+        commercial_partner = user_partner.commercial_partner_id
+        account_partner_id = commercial_partner.account_id.id if commercial_partner.account_id else False
+
+        # Filter by account_partner_id if it exists
+        if account_partner_id:
+            domain = expression.AND([
+                domain,
+                [('account_partner_id', '=', account_partner_id)]
+            ])
 
         if term:
             # Search in product name, code, barcode AND product attributes
