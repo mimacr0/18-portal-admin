@@ -32,7 +32,8 @@ class PortalExpeditionController(PortalAdminController):
         menus.append({
             'name': _('Expeditions'),
             'url': '/account/expedition',
-            'icon': 'fas fa-truck'
+            'icon': 'fas fa-truck',
+            'order': 40
         })
         return menus
 

@@ -7,7 +7,7 @@
             <div class="w-full" t-attf-id="page-#{page_name}-main-container">
 
                 <div class="card-title-container mb-4 flex items-center">
-                    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Receptions</h1>
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">RMA (Return Merchandise Authorization)</h1>
                 </div>
 
                 <!-- Barra de herramientas de acciones masivas: oculta por defecto, visible cuando se seleccionan elementos. -->

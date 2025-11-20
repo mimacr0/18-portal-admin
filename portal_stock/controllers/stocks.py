@@ -48,7 +48,8 @@ class PortalStockController(PortalAdminController):
         menus.append({
             'name': _('Stock'),
             'url': '/account/stock',
-            'icon': 'fas fa-cubes'
+            'icon': 'fas fa-cubes',
+            'order': 30
         })
         return menus
 
