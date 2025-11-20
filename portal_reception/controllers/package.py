@@ -50,7 +50,7 @@ class PortalReceptionController(PortalAdminController):
     def _get_admin_layout_menus(self):
         menus = super()._get_admin_layout_menus()
         menus.append({
-            'name': _('Receptions'),
+            'name': _('RMA'),
             'url': '/account/reception',
             'icon': 'fas fa-warehouse',
             'order': 20
@@ -95,7 +95,7 @@ class PortalReceptionController(PortalAdminController):
         values.update({
             'page_name': 'reception',
             'packages': packages,
-            'page_title': _('Receptions'),
+            'page_title': _('RMA'),
             'page_url': '/account/reception',
             'flatpickr': True,
             'select2': True,

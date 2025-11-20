@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: Odoo Server 18.0+t\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-21 16:29+0000\n"
-"PO-Revision-Date: 2025-08-21 16:29+0000\n"
+"POT-Creation-Date: 2025-11-20 12:57+0000\n"
+"PO-Revision-Date: 2025-11-20 12:57+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -205,7 +205,8 @@ msgid ""
 "<span class=\"help-text\">Enter package number, product and quantity "
 "respectively.</span>"
 msgstr ""
-"<span class=\"help-text\">Ingrese el número de paquete, el producto y la cantidad respectivamente.</span>"
+"<span class=\"help-text\">Ingrese el número de paquete, el producto y la "
+"cantidad respectivamente.</span>"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
@@ -221,17 +222,17 @@ msgstr ""
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "<span class=\"mx-1 text-sm\">cm</span>"
-msgstr "<span class=\"mx-1 text-sm\">cm</span>"
+msgstr ""
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "<span class=\"mx-1 text-sm\">kg</span>"
-msgstr "<span class=\"mx-1 text-sm\">kg</span>"
+msgstr ""
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "<span class=\"mx-1\">x</span>"
-msgstr "<span class=\"mx-1\">x</span>"
+msgstr ""
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
@@ -254,7 +255,7 @@ msgstr ""
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "<span class=\"text-red-500 ml-1\">*</span>"
-msgstr "<span class=\"text-red-500 ml-1\">*</span>"
+msgstr ""
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
@@ -263,9 +264,6 @@ msgid ""
 "gray-700 dark:text-[#A0A000] text-xs font-bold px-2 py-0.5 rounded-"
 "full\">0</span>"
 msgstr ""
-"<span id=\"selected-count\" class=\"ml-2 bg-white text-[#696900] dark:bg-"
-"gray-700 dark:text-[#A0A000] text-xs font-bold px-2 py-0.5 rounded-"
-"full\">0</span>"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
@@ -540,6 +538,17 @@ msgid "RECEPTION"
 msgstr "RECEPCIÓN"
 
 #. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/package.py:0
+msgid "RMA"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "RMA (Return Merchandise Authorization)"
+msgstr "RMA (Autorización de Devolución de Mercancía)"
+
+#. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "Reception Create"
 msgstr "Crear recepción"
@@ -579,13 +588,6 @@ msgstr "Recepción no encontrada o no se puede cancelar"
 #: code:addons/portal_reception/controllers/package.py:0
 msgid "Reception updated successfully"
 msgstr "Recepción actualizada correctamente"
-
-#. module: portal_reception
-#. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
-#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
-msgid "Receptions"
-msgstr "Recepciones"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
@@ -698,7 +700,7 @@ msgstr "No tiene permiso para cargar un adjunto aquí."
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
 msgid "kg"
-msgstr "kg"
+msgstr ""
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_product_catalog_pagination

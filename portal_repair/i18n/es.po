@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+t\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-17 10:33+0000\n"
-"PO-Revision-Date: 2025-11-17 10:33+0000\n"
+"POT-Creation-Date: 2025-11-20 12:55+0000\n"
+"PO-Revision-Date: 2025-11-20 12:55+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -175,7 +175,7 @@ msgstr ""
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "<span class=\"text-red-500 ml-1\">*</span>"
-msgstr "<span class=\"text-red-500 ml-1\">*</span>"
+msgstr ""
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
@@ -184,9 +184,6 @@ msgid ""
 "gray-700 dark:text-cyan-300 text-xs font-bold px-2 py-0.5 rounded-"
 "full\">0</span>"
 msgstr ""
-"<span id=\"selected-count\" class=\"ml-2 bg-white text-cyan-700 dark:bg-"
-"gray-700 dark:text-cyan-300 text-xs font-bold px-2 py-0.5 rounded-"
-"full\">0</span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
@@ -453,7 +450,7 @@ msgstr "Alerta de Calidad"
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "REF:"
-msgstr "REF:"
+msgstr ""
 
 #. module: portal_repair
 #. odoo-python
@@ -479,22 +476,9 @@ msgid "Repair"
 msgstr "Reparar"
 
 #. module: portal_repair
-#. odoo-python
-#: code:addons/portal_repair/controllers/repair_list.py:0
-msgid "Repair Alert"
-msgstr "Alerta de Reparación"
-
-#. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "Repair Alert Create"
 msgstr "Crear Alerta de Reparación"
-
-#. module: portal_repair
-#. odoo-python
-#: code:addons/portal_repair/controllers/repair_list.py:0
-#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
-msgid "Repair Alerts"
-msgstr "Alertas de Reparación"
 
 #. module: portal_repair
 #. odoo-python
@@ -557,6 +541,17 @@ msgstr "Devolución Postventa"
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Review"
 msgstr "Revisar"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "SAT"
+msgstr ""
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid "SAT (Technical Support Service)"
+msgstr "SAT (Servicio de Asistencia Tecnica)"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page

@@ -36,7 +36,7 @@ class PortalRepairController(PortalAdminController):
     def _get_admin_layout_menus(self):
         menus = super()._get_admin_layout_menus()
         menus.append({
-            'name': _('Repair Alert'),
+            'name': _('SAT'),
             'url': '/account/repair',
             'icon': 'fas fa-screwdriver-wrench',
             'order': 50
@@ -83,7 +83,7 @@ class PortalRepairController(PortalAdminController):
         values.update({
             'page_name': 'repair-alert',
             'alerts': alerts,
-            'page_title': _('Repair Alerts'),
+            'page_title': _('SAT'),
             'page_url': '/account/repair',
             'flatpickr': True,
             'select2': True,
