@@ -52,7 +52,8 @@ class PortalReceptionController(PortalAdminController):
         menus.append({
             'name': _('Receptions'),
             'url': '/account/reception',
-            'icon': 'fas fa-warehouse'
+            'icon': 'fas fa-warehouse',
+            'order': 20
         })
         return menus
 

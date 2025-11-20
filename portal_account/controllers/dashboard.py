@@ -18,7 +18,8 @@ class PortalDashboardController(PortalAdminController):
             {
                 'name': _('Home'),
                 'url': '/my',
-                'icon': 'fas fa-home'
+                'icon': 'fas fa-home', 
+                'order': 10
             }
         ])
         return menus
