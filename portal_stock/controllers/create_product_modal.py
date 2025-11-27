@@ -136,14 +136,19 @@ class ProductModalController(PortalAdminController):
                     'weight': weight
                 })
 
-            qweb = request.env['ir.qweb']
+            # Asegurar que el contexto use el idioma del usuario para las traducciones
+            self._ensure_user_lang_context()
+            user_lang = request.env.user.sudo().lang or 'en_US'
+            
+            qweb = request.env['ir.qweb'].with_context(lang=user_lang)
             return {
                 'status': 'success',
                 'message': _('Product created successfully'),
                 'product_id': template.id,
                 'product_attributes': qweb._render('portal_stock.portal_update_product_modal', {
                     'products': template.product_variant_ids,
-                    'template': template
+                    'template': template,
+                    'page_name': 'stock'
                 })
             }
         except Exception as e:
