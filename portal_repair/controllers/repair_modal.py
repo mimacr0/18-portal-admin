@@ -131,6 +131,7 @@ class PortalRepairController(PortalAdminController):
                 'text': lot.name,
                 'product_qty': total_available,  # usamos el total del lote
             })       
+        print(f'items: {items}')
         return {'status': 'success', 'items': items}
 
 

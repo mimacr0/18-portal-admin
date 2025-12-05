@@ -307,8 +307,11 @@ class PortalExpeditionController(PortalAdminController):
                 ])
             ])
 
-        # Get products with pagination
-        products = ProductProduct.search(domain, limit=limit, offset=offset)
+        # Obtener el idioma del usuario, por defecto español
+        user_lang = request.env.user.sudo().lang or 'es_ES'
+        
+        # Get products with pagination (con contexto de idioma)
+        products = ProductProduct.with_context(lang=user_lang).search(domain, limit=limit, offset=offset)
         total_count = ProductProduct.search_count(domain)
         total_pages = math.ceil(total_count / limit)
 
@@ -320,8 +323,8 @@ class PortalExpeditionController(PortalAdminController):
                 'active': i == page
             })
 
-        # Return both products and pagination data rendered with templates
-        qweb = request.env['ir.qweb']
+        # Return both products and pagination data rendered with templates (con contexto de idioma)
+        qweb = request.env['ir.qweb'].with_context(lang=user_lang)
         return {
             'status': 'success',
             'products_html': qweb._render('portal_expedition.portal_product_catalog_items', {

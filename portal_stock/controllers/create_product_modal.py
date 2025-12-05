@@ -47,7 +47,10 @@ class ProductModalController(PortalAdminController):
     @http.route('/account/stock/get/attributes', type='json', auth='user')
     def account_stock_get_attributes(self, **kw):
         """Return all product attributes for the product creation form"""
-        attributes = request.env['product.attribute'].sudo().search([])
+        # Obtener el idioma del usuario o usar español por defecto
+        user_lang = request.env.user.lang or 'es_ES'
+        # Obtener atributos con el contexto de idioma
+        attributes = request.env['product.attribute'].sudo().with_context(lang=user_lang).search([])
         return {
             'status': 'success',
             'attributes': [{'id': attr.id, 'name': attr.name} for attr in attributes]
@@ -58,8 +61,11 @@ class ProductModalController(PortalAdminController):
         """Return values for a specific attribute"""
         try:
             attribute_id = int(attribute_id)
-            attribute = request.env['product.attribute'].sudo().browse(attribute_id)
-            values = attribute.value_ids
+            # Obtener el idioma del usuario o usar español por defecto
+            user_lang = request.env.user.lang or 'es_ES'
+            # Obtener atributo y valores con el contexto de idioma
+            attribute = request.env['product.attribute'].sudo().with_context(lang=user_lang).browse(attribute_id)
+            values = attribute.value_ids.with_context(lang=user_lang)
             return {
                 'status': 'success',
                 'values': [{'id': value.id, 'name': value.name} for value in values]
@@ -136,14 +142,19 @@ class ProductModalController(PortalAdminController):
                     'weight': weight
                 })
 
-            qweb = request.env['ir.qweb']
+            # Asegurar que el contexto use el idioma del usuario para las traducciones
+            self._ensure_user_lang_context()
+            user_lang = request.env.user.sudo().lang or 'en_US'
+            
+            qweb = request.env['ir.qweb'].with_context(lang=user_lang)
             return {
                 'status': 'success',
                 'message': _('Product created successfully'),
                 'product_id': template.id,
                 'product_attributes': qweb._render('portal_stock.portal_update_product_modal', {
                     'products': template.product_variant_ids,
-                    'template': template
+                    'template': template,
+                    'page_name': 'stock'
                 })
             }
         except Exception as e:

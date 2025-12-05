@@ -4,9 +4,9 @@ import { reloadStockListPage } from "./stock_list.js";
 import { sortConfig } from "./stock_list.js";
 
 export const initProductsListSearch = () => {
-    const searchInput = document.getElementById('page-stock-products-list-search');
+    const searchInput = document.getElementById('page-stock-list-search');
     if(!searchInput) {
-        console.error('No se encontró el input de búsqueda con ID: page-stock-products-list-search');
+        console.error('No se encontró el input de búsqueda con ID: page-stock-list-search');
         return;
     }
     
@@ -261,9 +261,9 @@ export async function applyFiltersAndSort() {
     const currentPageInput = document.getElementById('stock-list-pagination-page');
     currentPageInput.value = 1;
 
-    const searchInput = document.getElementById('page-stock-products-list-search');
+    const searchInput = document.getElementById('page-stock-list-search');
     if (!searchInput) {
-        console.error('No se encontró el input de búsqueda con ID: page-stock-products-list-search');
+        console.error('No se encontró el input de búsqueda con ID: page-stock-list-search');
     }
     const search = searchInput ? searchInput.value : '';
 

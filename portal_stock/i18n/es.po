@@ -593,3 +593,13 @@ msgstr "de"
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "products"
 msgstr "productos"
+
+#. module: portal_stock
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Select an attribute"
+msgstr "Seleccione un atributo"
+
+#. module: portal_stock
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Select an attribute value"
+msgstr "Seleccione un valor de atributo"

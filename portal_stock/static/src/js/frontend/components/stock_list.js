@@ -36,7 +36,7 @@ export const reloadStockListPage = async () => {
     const currentPage = parseInt(currentPageInput.value);
 
     // Obtener y validar el campo de búsqueda
-    const searchInput = document.getElementById('page-stock-products-list-search');
+    const searchInput = document.getElementById('page-stock-list-search');
     if(!searchInput) return;
     const search = searchInput.value;
 
