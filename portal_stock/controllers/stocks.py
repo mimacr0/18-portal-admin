@@ -20,7 +20,7 @@ class PortalStockController(PortalAdminController):
 
     DEFAULT_LIMIT_PARAM = 'portal_stock.page_list_default_limit'
     DEFAULT_LIMIT_VALUE = '100'
-
+    
     def _get_lots_domain_for_product(self, product_id):
         """Obtiene el dominio para verificar si un producto tiene lotes accesibles"""
         partner_id = request.env.user.partner_id
@@ -131,7 +131,9 @@ class PortalStockController(PortalAdminController):
         SysParams = request.env['ir.config_parameter'].sudo()
         limit = int(SysParams.get_param(self.DEFAULT_LIMIT_PARAM, self.DEFAULT_LIMIT_VALUE))
         base_domain = self._build_product_domain('', None, 'all')
-        products = ProductProducts.search(base_domain, limit=limit, order='id desc')
+        # El contexto ya tiene el idioma establecido por _get_admin_layout_values()
+        user_lang = request.env.context.get('lang') or 'es_ES'
+        products = ProductProducts.with_context(lang=user_lang).search(base_domain, limit=limit, order='id desc')
         
         # Pre-cargar información de lotes para productos con tracking serial
         StockLot = request.env['stock.lot'].sudo()
@@ -144,12 +146,14 @@ class PortalStockController(PortalAdminController):
             else:
                 products_has_lots[product.id] = False
         
-        # Renderizar la lista de productos
+        # Renderizar la lista de productos (el contexto ya tiene el idioma establecido)
         qweb = request.env['ir.qweb']
         products_list_html = qweb._render('portal_stock.portal_products_list', {
             'products': products,
             'batch_actions': True,
-            'products_has_lots': products_has_lots
+            'products_has_lots': products_has_lots,
+            'label_in_stock': _('In Stock'),
+            'label_out_of_stock': _('Out of Stock')
         })
         
         # Preparar datos de paginación inicial
@@ -318,7 +322,10 @@ class PortalStockController(PortalAdminController):
 
         # Obtener productos y contar
         ProductProducts = request.env['product.product'].sudo()
-        products = ProductProducts.search(base_domain, limit=limit, offset=offset, order=order_by)
+        # Asegurar que el contexto tenga el idioma del usuario (endpoint JSON, no pasa por _get_admin_layout_values)
+        self._ensure_user_lang_context()
+        user_lang = request.env.context.get('lang') or 'es_ES'
+        products = ProductProducts.with_context(lang=user_lang).search(base_domain, limit=limit, offset=offset, order=order_by)
         items_total = ProductProducts.search_count(base_domain)
         items_count = len(products)
 
@@ -337,13 +344,16 @@ class PortalStockController(PortalAdminController):
         pagination_data = self._get_pagination_data(page, items_total, limit)
         pagination_data.update({'items_total': items_total, 'items_count': items_count})
 
+        # El contexto ya tiene el idioma establecido por _ensure_user_lang_context()
         qweb = request.env['ir.qweb']
         return {
             'status': 'success',
             'list': qweb._render('portal_stock.portal_products_list', {
                 'products': products,
                 'batch_actions': True,
-                'products_has_lots': products_has_lots
+                'products_has_lots': products_has_lots,
+                'label_in_stock': _('In Stock'),
+                'label_out_of_stock': _('Out of Stock')
             }),
             'pager': qweb._render('portal_stock.portal_stock_pager', {
                 'products': products,

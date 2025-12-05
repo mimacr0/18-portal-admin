@@ -19,4 +19,4 @@ msgstr ""
 #. odoo-python
 #: code:addons/portal_invoices/controllers/invoices.py:0
 msgid "Invoices"
-msgstr "Facturas"
+msgstr "发票"

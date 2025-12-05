@@ -17,7 +17,7 @@ odoo.define('portal_reception.reception_main', function (require) {
             'click #reception-list-pagination-next': '_onClickNextPage',
             'click #reception-list-pagination-previous': '_onClickPreviousPage',
             'click .reception-list-pagination-button': '_onClickPage',
-            'keyup #page-stock-products-list-search': '_onSearch',
+            'keyup #page-stock-list-search': '_onSearch',
             'click #page-reception-list-advanced-search-toggle': '_onToggleAdvancedSearch',
             'click #page-reception-list-advanced-search-add-line-btn': '_onAddAdvancedSearchLine',
             'click #page-reception-list-advanced-search-apply-btn': '_onApplyAdvancedSearch',

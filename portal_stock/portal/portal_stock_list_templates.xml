@@ -271,7 +271,7 @@
                                             <span class="text-red-500 ml-1">*</span>
                                         </div>
                                         <div>
-                                            <input type="text" name="barcode" id="page-stock-edit-form-barcode" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Barcode" required="required"/>
+                                            <input type="text" name="barcode" id="page-stock-edit-form-barcode" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Barcode" required="required" maxlength="13"/>
                                             <div class="form-error invisible" id="page-stock-edit-form-barcode-error"/>
                                         </div>
                                     </div>
@@ -399,7 +399,7 @@
 <!--                    </td>-->
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span t-attf-class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full #{product.qty_available > 0 and 'bg-green-100 text-green-800' or 'bg-red-100 text-red-800'}">
-                        <t t-esc="product.qty_available > 0 and 'In Stock' or 'Out of Stock'"/>
+                        <t t-esc="product.qty_available > 0 and label_in_stock or label_out_of_stock"/>
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -430,7 +430,7 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span t-attf-class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full #{product.qty_available > 0 and 'bg-green-100 text-green-800' or 'bg-red-100 text-red-800'}">
-                        <t t-esc="product.qty_available > 0 and 'In Stock' or 'Out of Stock'"/>
+                        <t t-esc="product.qty_available > 0 and label_in_stock or label_out_of_stock"/>
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
