@@ -195,8 +195,8 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" t-attf-id="#{page_name}-page-list-items">
-                                <t t-if="page_name == 'lots' and lots_list_html" t-raw="lots_list_html"/>
-                                <t t-if="page_name == 'stock' and products_list_html" t-raw="products_list_html"/>
+                                <t t-if="page_name == 'lots' and lots_list_html" t-out="lots_list_html"/>
+                                <t t-if="page_name == 'stock' and products_list_html" t-out="products_list_html"/>
                             </tbody>
                         </table>
                     </div>
@@ -207,8 +207,8 @@
             <div class="fixed bottom-0 right-0 z-10 mr-6 mb-6">
                 <input type="hidden" t-attf-id="#{page_name}-list-pagination-page" value="1"/>
                 <div class="pagination-container px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg flex items-center justify-between" t-attf-id="#{page_name}-list-pagination-container">
-                    <t t-if="page_name == 'lots' and lots_pager_html" t-raw="lots_pager_html"/>
-                    <t t-if="page_name == 'stock' and products_pager_html" t-raw="products_pager_html"/>
+                    <t t-if="page_name == 'lots' and lots_pager_html" t-out="lots_pager_html"/>
+                    <t t-if="page_name == 'stock' and products_pager_html" t-out="products_pager_html"/>
                 </div>
             </div>
 
