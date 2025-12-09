@@ -1,11 +1,42 @@
 
 import json
 
+from odoo import http
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal
 
 
 class PortalAdminController(CustomerPortal):
+
+    @http.route('/account/history/translate', type='json', auth='user')
+    def translate_history_titles(self, paths=None, **kw):
+        """Translate history titles based on current user's language.
+        
+        Receives a list of paths and returns a mapping of path -> translated title.
+        """
+        self._ensure_user_lang_context()
+        
+        if not paths:
+            return {}
+        
+        # Get all menus with their translated names
+        menus = self._get_admin_layout_menus()
+        
+        # Build a mapping of url -> translated name
+        url_to_title = {}
+        for menu in menus:
+            url = menu.get('url', '')
+            name = menu.get('name', '')
+            if url and name:
+                url_to_title[url] = name
+        
+        # Return translated titles for the requested paths
+        result = {}
+        for path in paths:
+            if path in url_to_title:
+                result[path] = url_to_title[path]
+        
+        return result
 
     def _ensure_user_lang_context(self):
         """Ensure the request rendering context uses the current user's lang.
