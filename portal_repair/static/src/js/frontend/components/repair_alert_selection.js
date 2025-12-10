@@ -73,14 +73,19 @@ export const portalAccountRepairAlertInitCheckboxSelect = () => {
         newSelectAllCheckbox.indeterminate = someChecked && !allChecked;
     }
 
-    // Helper function to get selected items
+    // Helper function to get selected items (unique IDs only)
     function getSelectedItems() {
-        return Array.from(document.querySelectorAll('.packages-list-checkbox'))
-            .filter(checkbox => checkbox.checked)
-            .map(checkbox => ({
-                id: checkbox.dataset.packageId,
-                name: checkbox.dataset.packageName || ''
-            }));
+        const selected = new Map();
+        document.querySelectorAll('.packages-list-checkbox:checked').forEach(checkbox => {
+            const id = checkbox.dataset.packageId;
+            if (!selected.has(id)) {
+                selected.set(id, {
+                    id: id,
+                    name: checkbox.dataset.packageName || ''
+                });
+            }
+        });
+        return Array.from(selected.values());
     }
 
     // Update selection state when filters change
