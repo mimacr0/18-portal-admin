@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_file_upload_modal" name="Portal File Upload Modal">
+        <!-- File Upload Modal -->
+        <div id="file-upload-modal" class="modal" data-outside-close="false">
+            <div class="modal-content max-w-lg w-full mx-auto">
+                <div class="modal-header">
+                    <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">Import Receptions from Excel</h3>
+                    <button data-modal-close="true" class="close-modal" aria-label="Close modal">
+                        <i class="fas fa-times"/>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-flex">
+                        <div class="form-group-flex">
+                            <label for="fileInput" class="form-label form-label-sm">Upload Excel File (.xlsx)</label>
+                            <div class="form-field-container">
+                                <div class="file-drop-area rounded-md border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 text-center cursor-pointer">
+                                    <input type="file" id="fileInput" name="file" class="hidden focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" required="required" accept=".xlsx,.xls"/>
+                                    <div class="file-input-content">
+                                        <i class="fas fa-file-excel text-2xl text-gray-400 dark:text-gray-500"/>
+                                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop an Excel file here, or <span class="text-[#696900] dark:text-[#A0A000] browse-link cursor-pointer hover:underline">browse</span></p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Maximum file size: 5MB</p>
+                                    </div>
+                                </div>
+                                <div class="file-preview mt-3 flex flex-col items-center"/>
+                                <div class="form-error invisible" id="fileInputError">Please select a file to upload.</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                                <i class="fas fa-info-circle mr-1"/>
+                                Required columns: <strong>tracking_number</strong>, <strong>scheduled_date</strong>, <strong>package_type</strong>, <strong>product</strong>, <strong>quantity</strong>
+                            </p>
+                            <a href="/portal_account/static/templates/receptions1.xlsx" class="text-xs text-[#696900] dark:text-[#A0A000] hover:underline" download="receptions_template.xlsx">
+                                <i class="fas fa-download mr-1"/>Download template
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700">
+                    <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
+                        <i class="fas fa-times"/> Cancel
+                    </button>
+                    <button class="modal-btn modal-btn-primary">
+                        <i class="fas fa-file-import"/> Import
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

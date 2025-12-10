@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Add Credit Modal -->
+    <template id="dashboard_add_credit_modal" name="Dashboard Add Credit Modal">
+        <div id="dashboard-page-add-credit-modal" class="modal" data-outside-close="false">
+            <div class="modal-content max-w-2xl w-full mx-auto">
+                <div class="modal-header">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Add Credit</h3>
+                    <button data-modal-close="true" class="close-modal" aria-label="Close modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="dashboard-add-credit-form">
+                        <!-- Credit amount field -->
+                        <div class="form-group">
+                            <div class="flex items-center">
+                                <label for="dashboard-page-add-credit-amount" class="form-label-sm font-sm">Credit Amount</label>
+                            </div>
+                            <div>
+                                <input type="number" name="credit_amount" id="dashboard-page-add-credit-amount" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#A0A000]" placeholder="Credit Amount" required="required" min="0"/>
+                                <div class="form-error invisible" id="dashboard-page-add-credit-amount-error"></div>
+                                <span class="ml-2 text-xs text-gray-500 italic">
+                                    <i class="fas fa-info-circle"></i> Enter the desired credit amount to initiate an approval process.
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700">
+                    <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button id="dashboard-page-add-credit-submit" class="modal-btn modal-btn-primary">
+                        <i class="fas fa-plus"></i> Add Credit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Import Receptions Modal -->
+    <template id="dashboard_import_receptions_modal" name="Dashboard Import Receptions Modal">
+        <div id="dashboard-page-import-receptions-modal" class="modal" data-outside-close="false">
+            <div class="modal-content max-w-lg w-full mx-auto">
+                <div class="modal-header">
+                    <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">Import Receptions from Excel</h3>
+                    <button data-modal-close="true" class="close-modal" aria-label="Close modal">
+                        <i class="fas fa-times"/>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="dashboard-import-receptions-form" class="form-flex">
+                        <div class="form-group-flex">
+                            <label for="receptions-file-input" class="form-label form-label-sm">Upload Excel File (.xlsx)</label>
+                            <div class="form-field-container">
+                                <div class="file-drop-area rounded-md border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 text-center cursor-pointer" id="receptions-file-drop-area">
+                                    <input type="file" id="receptions-file-input" name="file" class="hidden" accept=".xlsx,.xls"/>
+                                    <div class="file-input-content">
+                                        <i class="fas fa-file-excel text-2xl text-gray-400 dark:text-gray-500"/>
+                                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop an Excel file here, or <span class="text-[#696900] dark:text-[#A0A000] browse-link cursor-pointer hover:underline" id="receptions-browse-link">browse</span></p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Maximum file size: 5MB</p>
+                                    </div>
+                                </div>
+                                <div class="file-preview mt-3 flex flex-col items-center" id="receptions-file-preview"/>
+                                <div class="form-error invisible" id="receptions-file-error">Please select a file to upload.</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                                <i class="fas fa-info-circle mr-1"/>
+                                Required columns: <strong>tracking_number</strong>, <strong>scheduled_date</strong>, <strong>package_type</strong>, <strong>product</strong>, <strong>quantity</strong>
+                            </p>
+                            <a href="/portal_account/static/templates/receptions.xlsx" class="text-xs text-[#696900] dark:text-[#A0A000] hover:underline" download="receptions_template.xlsx">
+                                <i class="fas fa-download mr-1"/>Download template
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700">
+                    <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
+                        <i class="fas fa-times"/> Cancel
+                    </button>
+                    <button class="modal-btn modal-btn-primary" id="receptions-upload-btn">
+                        <i class="fas fa-file-import"/> Import
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Import Expeditions Modal -->
+    <template id="dashboard_import_expeditions_modal" name="Dashboard Import Expeditions Modal">
+        <div id="dashboard-page-import-expeditions-modal" class="modal" data-outside-close="false">
+            <div class="modal-content max-w-lg w-full mx-auto">
+                <div class="modal-header">
+                    <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">Import Expeditions from Excel</h3>
+                    <button data-modal-close="true" class="close-modal" aria-label="Close modal">
+                        <i class="fas fa-times"/>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="dashboard-import-expeditions-form" class="form-flex">
+                        <div class="form-group-flex">
+                            <label for="expeditions-file-input" class="form-label form-label-sm">Upload Excel File (.xlsx)</label>
+                            <div class="form-field-container">
+                                <div class="file-drop-area rounded-md border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 text-center cursor-pointer" id="expeditions-file-drop-area">
+                                    <input type="file" id="expeditions-file-input" name="file" class="hidden" accept=".xlsx,.xls"/>
+                                    <div class="file-input-content">
+                                        <i class="fas fa-file-excel text-2xl text-gray-400 dark:text-gray-500"/>
+                                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop an Excel file here, or <span class="text-[#696900] dark:text-[#A0A000] browse-link cursor-pointer hover:underline" id="expeditions-browse-link">browse</span></p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Maximum file size: 5MB</p>
+                                    </div>
+                                </div>
+                                <div class="file-preview mt-3 flex flex-col items-center" id="expeditions-file-preview"/>
+                                <div class="form-error invisible" id="expeditions-file-error">Please select a file to upload.</div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700">
+                    <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
+                        <i class="fas fa-times"/> Cancel
+                    </button>
+                    <button class="modal-btn modal-btn-primary" id="expeditions-upload-btn">
+                        <i class="fas fa-file-import"/> Import
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+</odoo>
