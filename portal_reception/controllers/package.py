@@ -7,8 +7,15 @@
 import math
 import json
 import pytz
+import io
 from datetime import datetime
 from functools import lru_cache
+
+try:
+    import xlsxwriter
+except ImportError:
+    xlsxwriter = None
+
 
 from odoo import fields, http, _
 from odoo.addons.portal_admin_theme.controllers.admin import PortalAdminController
@@ -114,7 +121,11 @@ class PortalReceptionController(PortalAdminController):
                 {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True, 'responsive': ['sm', 'md', 'lg']}
             ],
             'batch_actions': [
-                {'name': 'delete', 'label': _('Cancel'), 'icon': 'fas fa-ban'}
+                {'name': 'export', 'label': _('Export Excel'), 'icon': 'fas fa-file-excel', 'color': 'bg-[#696900] hover:bg-[#8A8A00]'},
+                {'name': 'delete', 'label': _('Cancel'), 'icon': 'fas fa-ban'},
+            ],
+            'tools_actions': [
+                {'name': 'import', 'label': _('Import'), 'icon': 'fas fa-file-import'}
             ],
             'advanced_search': json.dumps(self._get_reception_advanced_search_fields())
         })
@@ -1163,3 +1174,119 @@ class PortalReceptionController(PortalAdminController):
             return {'status': 'success', 'message': _('Reception updated successfully')}
         except Exception as e:
             return {'status': 'error', 'message': str(e)}
+
+    @http.route('/account/reception/export', type='http', auth='user', methods=['GET', 'POST'])
+    def account_reception_export(self, ids=None, **kw):
+        """Export receptions to Excel (XLSX) file.
+        
+        If ids parameter is provided (comma-separated), exports only those receptions.
+        Otherwise exports all receptions for the current user.
+        """
+        self._ensure_user_lang_context()
+        
+        if not xlsxwriter:
+            return request.make_response(
+                _('Excel export not available. Please install xlsxwriter.'),
+                headers=[('Content-Type', 'text/plain')]
+            )
+        
+        StockPicking = request.env['stock.picking'].sudo()
+        reception_type = request.env.ref('stock.picking_type_in')
+        partner_id = request.env.user.partner_id
+        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
+        
+        domain = [
+            ('picking_type_id', '=', reception_type.id),
+            ('partner_id', 'in', partner_ids)
+        ]
+        
+        # If specific IDs are provided, filter by them
+        if ids:
+            try:
+                id_list = [int(i) for i in ids.split(',') if i.strip()]
+                if id_list:
+                    domain.append(('id', 'in', id_list))
+            except ValueError:
+                pass
+        
+        pickings = StockPicking.search(domain, order='scheduled_date desc')
+
+        # Create Excel file in memory
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet(_('Receptions'))
+        
+        # Styles
+        header_format = workbook.add_format({
+            'bold': True,
+            'bg_color': '#696900',
+            'font_color': 'white',
+            'border': 1,
+            'align': 'center',
+            'valign': 'vcenter'
+        })
+        cell_format = workbook.add_format({
+            'border': 1,
+            'valign': 'vcenter'
+        })
+        date_format = workbook.add_format({
+            'border': 1,
+            'valign': 'vcenter',
+            'num_format': 'dd/mm/yyyy hh:mm'
+        })
+        
+        # Column widths
+        worksheet.set_column(0, 0, 15)  # Name
+        worksheet.set_column(1, 1, 20)  # Reference
+        worksheet.set_column(2, 2, 18)  # Scheduled Date
+        worksheet.set_column(3, 3, 10)  # Weight
+        worksheet.set_column(4, 4, 15)  # Package Type
+        worksheet.set_column(5, 5, 12)  # State
+        worksheet.set_column(6, 6, 40)  # Note
+        
+        # Header row
+        headers = [
+            _('Name'),
+            _('Reference'),
+            _('Scheduled Date'),
+            _('Weight'),
+            _('Package Type'),
+            _('State'),
+            _('Note'),
+        ]
+        for col, header in enumerate(headers):
+            worksheet.write(0, col, header, header_format)
+        
+        # Data rows
+        for row, picking in enumerate(pickings, start=1):
+            packages = picking.get_packages()
+            package_types = ', '.join(packages.mapped('package_type_id.name')) or ''
+            package_refs = ', '.join(packages.mapped('name')) or ''
+            state_label = dict(picking._fields['state'].selection).get(picking.state, picking.state)
+            
+            worksheet.write(row, 0, picking.name or '', cell_format)
+            worksheet.write(row, 1, package_refs, cell_format)
+            if picking.scheduled_date:
+                worksheet.write_datetime(row, 2, picking.scheduled_date.replace(tzinfo=None), date_format)
+            else:
+                worksheet.write(row, 2, '', cell_format)
+            worksheet.write(row, 3, picking.shipping_weight or 0, cell_format)
+            worksheet.write(row, 4, package_types, cell_format)
+            worksheet.write(row, 5, state_label, cell_format)
+            worksheet.write(row, 6, picking.get_note_text() or '', cell_format)
+        
+        workbook.close()
+        
+        # Prepare response
+        output.seek(0)
+        content = output.getvalue()
+        
+        filename = f"receptions_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        
+        return request.make_response(
+            content,
+            headers=[
+                ('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
+                ('Content-Disposition', f'attachment; filename="{filename}"'),
+            ]
+        )

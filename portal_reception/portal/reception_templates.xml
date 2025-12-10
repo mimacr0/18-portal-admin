@@ -17,9 +17,12 @@
                             <span id="selected-count" class="text-sm font-medium text-gray-700 dark:text-gray-300 mr-3">0 selected</span>
                             <div class="h-4 border-l border-gray-300 dark:border-gray-700 mr-3"></div>
                             <div class="flex flex-wrap gap-2">
-                                <button t-foreach="batch_actions" t-as="batch_action" t-attf-id="page-list-#{page_name}-batch-action-#{batch_action.get('name')}" class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors flex items-center">
-                                    <i t-attf-class="#{batch_action.get('icon')} mr-1.5"></i> <t t-out="batch_action.get('label')"/>
-                                </button>
+                                <t t-foreach="batch_actions" t-as="batch_action">
+                                    <button t-attf-id="page-list-#{page_name}-batch-action-#{batch_action.get('name')}" 
+                                            t-attf-class="px-3 py-1 text-white text-sm rounded transition-colors flex items-center #{batch_action.get('color', 'bg-red-600 hover:bg-red-700')}">
+                                        <i t-attf-class="#{batch_action.get('icon')} mr-1.5"></i> <t t-out="batch_action.get('label')"/>
+                                    </button>
+                                </t>
                             </div>
                         </div>
                         <button id="clear-selection" class="text-sm text-gray-600 hover:text-gray-800">
@@ -443,6 +446,9 @@
                     </div>
                 </div>
             </t>
+
+            <!-- File Upload Modal -->
+            <t t-call="portal_account.portal_file_upload_modal"/>
 
         </t>
     </template>
