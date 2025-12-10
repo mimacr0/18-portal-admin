@@ -273,3 +273,6 @@ export const initFileUploadModal = (options = {}) => {
     }
 };
 
+// Export to window for cross-module access
+window.initFileUploadModal = initFileUploadModal;
+
