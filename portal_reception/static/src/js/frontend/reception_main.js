@@ -5,6 +5,7 @@ import { portalAccountReceptionInitCheckboxSelect } from "./components/reception
 import { initTableSorting } from "./components/reception_sorting.js";
 import { initStickyTableHeader } from "./components/reception_header.js";
 import { initReceptionQuickSortFilters } from "./components/reception_quick_filter.js";
+import { initReceptionNotes } from "./components/reception_notes.js";
 
 // Inicialización al cargar el documento
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,4 +19,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initTableSorting();
     initStickyTableHeader();
     initReceptionQuickSortFilters();
+    initReceptionNotes();
 });

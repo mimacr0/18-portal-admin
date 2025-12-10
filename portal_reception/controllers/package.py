@@ -110,6 +110,7 @@ class PortalReceptionController(PortalAdminController):
                 {'id': 'type', 'label': _('Package Type'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
                 {'id': 'date', 'label': _('Date'), 'sortable': True, 'md': True, 'responsive': ['md', 'lg']},
                 {'id': 'state', 'label': _('Status'), 'sortable': True, 'md': True, 'responsive': ['md', 'lg']},
+                {'id': 'note', 'label': _('Note'), 'sortable': False, 'responsive': ['lg']},
                 {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True, 'responsive': ['sm', 'md', 'lg']}
             ],
             'batch_actions': [
@@ -1023,6 +1024,20 @@ class PortalReceptionController(PortalAdminController):
             return {'status': 'error', 'message': _('Reception not found or cannot be cancelled')}
 
         picking.action_cancel()
+        return {'status': 'success'}
+
+    @http.route('/account/reception/update/note', type='json', auth='user')
+    def account_reception_update_note(self, reception_id=None, note='', **kw):
+        """Update the note field of a reception."""
+        self._ensure_user_lang_context()
+        if not reception_id or not str(reception_id).isdigit():
+            return {'status': 'error', 'message': _('Invalid reception ID')}
+
+        picking = self._get_portal_reception_record(int(reception_id))
+        if not picking:
+            return {'status': 'error', 'message': _('Reception not found')}
+
+        picking.sudo().write({'note': note})
         return {'status': 'success'}
 
     @http.route('/account/reception/get', type='json', auth='user')

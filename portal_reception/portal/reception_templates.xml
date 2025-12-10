@@ -487,6 +487,21 @@
                         <span t-field="package.state"/>
                     </span>
                 </td>
+                <td class="px-6 py-4">
+                    <div class="flex items-start gap-2">
+                        <textarea class="reception-note-input text-sm text-gray-900 dark:text-gray-100 dark:bg-gray-700 bg-transparent border border-gray-300 dark:border-gray-600 focus:border-[#696900] focus:ring-0 flex-1 max-w-xs transition-colors rounded resize-none"
+                               t-att-data-reception-id="package.id"
+                               t-att-data-original-value="package.get_note_text()"
+                               rows="2"
+                               placeholder="Add note..."><t t-esc="package.get_note_text()"/></textarea>
+                        <button type="button"
+                                class="reception-note-save-btn px-2 py-1 text-xs bg-[#696900] text-white rounded hover:bg-[#8A8A00] transition-colors"
+                                style="display: none;"
+                                t-att-data-reception-id="package.id">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <a t-att-href="package.get_details_url()" t-attf-data-tooltip-target="tooltip-details-#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-info-circle"></i>
