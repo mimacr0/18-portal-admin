@@ -43,60 +43,102 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
         }
 
     @http.route('/account/dashboard/kpis/expeditions/chart', type='json', auth='user')
-    def account_dashboard_kpis_expeditions_chart(self, **kw):
+    def account_dashboard_kpis_expeditions_chart(self, period='7d', **kw):
         self._ensure_user_lang_context()
-        StockPicking = request.env['stock.picking'].sudo()
         partner_id = request.env.user.partner_id
         partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
 
         # Get expedition type
         expedition_type = request.env.ref('stock.picking_type_out')
-
-        # Query for expeditions by day (last 7 days)
-        query_expeditions = """
-            SELECT
-                DATE(date) as date,
-                COUNT(*) as count
-            FROM
-                stock_picking
-            WHERE
-                picking_type_id = %s
-                AND partner_id IN %s
-                AND state != 'draft'
-                AND date >= NOW() - INTERVAL '7 days'
-            GROUP BY
-                DATE(date)
-            ORDER BY
-                date ASC;
-        """
-
-        # Execute queries
-        request.cr.execute(query_expeditions, (expedition_type.id, tuple(partner_ids)))
-        expeditions_data = request.cr.dictfetchall()
-
-        # Format data for charts
-        expedition_values = []
-        dates = []
-
-        # Get last 7 days
+        
+        values = []
+        labels = []
         end_date = datetime.now().date()
-        start_date = end_date - timedelta(days=6)
-        current_date = start_date
 
-        # Create a date-indexed dict for easy lookup
-        expedition_by_date = {item['date'].strftime('%Y-%m-%d'): item['count'] for item in expeditions_data}
+        if period == '7d':
+            # Last 7 days - group by day
+            query = """
+                SELECT DATE(date) as period_date, COUNT(*) as count
+                FROM stock_picking
+                WHERE picking_type_id = %s AND partner_id IN %s AND state != 'draft'
+                    AND date >= NOW() - INTERVAL '7 days'
+                GROUP BY DATE(date)
+                ORDER BY period_date ASC;
+            """
+            request.cr.execute(query, (expedition_type.id, tuple(partner_ids)))
+            data = {item['period_date'].strftime('%Y-%m-%d'): item['count'] for item in request.cr.dictfetchall()}
+            
+            start_date = end_date - timedelta(days=6)
+            current = start_date
+            while current <= end_date:
+                key = current.strftime('%Y-%m-%d')
+                labels.append(current.strftime('%a %d'))  # "Mon 09"
+                values.append(data.get(key, 0))
+                current += timedelta(days=1)
 
-        # Fill in data for all 7 days
-        while current_date <= end_date:
-            date_str = current_date.strftime('%Y-%m-%d')
-            dates.append(date_str)
-            expedition_values.append(expedition_by_date.get(date_str, 0))
-            current_date += timedelta(days=1)
+        elif period == 'week':
+            # Last 4 weeks - group by week
+            query = """
+                SELECT DATE_TRUNC('week', date) as period_date, COUNT(*) as count
+                FROM stock_picking
+                WHERE picking_type_id = %s AND partner_id IN %s AND state != 'draft'
+                    AND date >= NOW() - INTERVAL '4 weeks'
+                GROUP BY DATE_TRUNC('week', date)
+                ORDER BY period_date ASC;
+            """
+            request.cr.execute(query, (expedition_type.id, tuple(partner_ids)))
+            data = {item['period_date'].date(): item['count'] for item in request.cr.dictfetchall()}
+            
+            # Generate last 4 weeks
+            from dateutil.relativedelta import relativedelta
+            for i in range(3, -1, -1):
+                week_start = end_date - timedelta(days=end_date.weekday()) - timedelta(weeks=i)
+                labels.append(f"Week {week_start.strftime('%d/%m')}")
+                values.append(data.get(week_start, 0))
+
+        elif period == 'month':
+            # Last 12 months - group by month
+            query = """
+                SELECT DATE_TRUNC('month', date) as period_date, COUNT(*) as count
+                FROM stock_picking
+                WHERE picking_type_id = %s AND partner_id IN %s AND state != 'draft'
+                    AND date >= NOW() - INTERVAL '12 months'
+                GROUP BY DATE_TRUNC('month', date)
+                ORDER BY period_date ASC;
+            """
+            request.cr.execute(query, (expedition_type.id, tuple(partner_ids)))
+            data = {item['period_date'].date(): item['count'] for item in request.cr.dictfetchall()}
+            
+            # Generate last 12 months
+            from dateutil.relativedelta import relativedelta
+            for i in range(11, -1, -1):
+                month_start = (end_date.replace(day=1) - relativedelta(months=i))
+                labels.append(month_start.strftime('%b %Y'))  # "Dec 2025"
+                values.append(data.get(month_start, 0))
+
+        elif period == 'year':
+            # Last 5 years - group by year
+            query = """
+                SELECT DATE_TRUNC('year', date) as period_date, COUNT(*) as count
+                FROM stock_picking
+                WHERE picking_type_id = %s AND partner_id IN %s AND state != 'draft'
+                    AND date >= NOW() - INTERVAL '5 years'
+                GROUP BY DATE_TRUNC('year', date)
+                ORDER BY period_date ASC;
+            """
+            request.cr.execute(query, (expedition_type.id, tuple(partner_ids)))
+            data = {item['period_date'].year: item['count'] for item in request.cr.dictfetchall()}
+            
+            # Generate last 5 years
+            for i in range(4, -1, -1):
+                year = end_date.year - i
+                labels.append(str(year))
+                values.append(data.get(year, 0))
 
         return {
             'status': 'success',
-            'dates': dates,
-            'values': expedition_values
+            'labels': labels,
+            'values': values
         }
 
     @http.route('/account/dashboard/import_expeditions', type='http', auth='user', methods=['POST'], csrf=False)

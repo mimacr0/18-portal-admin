@@ -3,13 +3,24 @@ import { rpc } from "@web/core/network/rpc";
 // Detect current theme
 const isDark = document.documentElement.classList.contains('dark');
 
+// Store chart instance for updates
+let receptionChartInstance = null;
+
+// Period labels mapping
+const periodLabels = {
+    '7d': 'Last 7 days',
+    'week': 'Last 4 weeks',
+    'month': 'Last 12 months',
+    'year': 'Last 5 years'
+};
+
 // Base sparkline chart options to reuse - true sparkline configuration
 const baseSparkOptions = {
     chart: {
         type: 'area',
         height: 120,
         sparkline: {
-            enabled: true  // This enables true sparkline mode
+            enabled: true
         },
         toolbar: {
             show: false
@@ -24,8 +35,8 @@ const baseSparkOptions = {
         tooltip: {
             enabled: true,
             enabledOnSeries: undefined,
-            followCursor: false,  // Don't follow cursor
-            intersect: false,     // Don't require intersect
+            followCursor: false,
+            intersect: false,
             inverseOrder: false,
             fillSeriesColor: false
         }
@@ -44,21 +55,21 @@ const baseSparkOptions = {
         }
     },
     markers: {
-        size: 0,  // No markers for cleaner look
+        size: 0,
         hover: {
-            size: 3  // Show markers only on hover
+            size: 3
         }
     },
     tooltip: {
         enabled: true,
         fixed: {
-            enabled: true,     // Try fixed position
+            enabled: true,
             position: 'topRight',
             offsetX: 0,
             offsetY: 0
         },
         marker: {
-            show: false        // Hide marker
+            show: false
         },
         x: {
             show: false
@@ -81,8 +92,10 @@ const baseSparkOptions = {
     grid: {
         show: false,
         padding: {
+            top: 10,
             left: 0,
-            right: 0
+            right: 0,
+            bottom: 0
         }
     },
     xaxis: {
@@ -108,10 +121,10 @@ const baseSparkOptions = {
         }
     },
     legend: {
-        show: false  // No legend for sparklines
+        show: false
     },
     dataLabels: {
-        enabled: false  // No data labels for cleaner look
+        enabled: false
     },
     crosshairs: {
         show: false,
@@ -125,51 +138,30 @@ const baseSparkOptions = {
     }
 };
 
-// Add this improved helper function at the beginning of the file
-function checkElementExists(selector) {
-    const element = document.querySelector(selector);
-    if (!element) {
-        console.warn(`Chart container not found: ${selector}`);
-        return false;
-    }
-    return true;
-}
-
-// Add a safe chart creation helper
-function createChart(selector, options) {
-    if (!checkElementExists(selector)) {
-        return null;
-    }
-
-    try {
-        const chart = new ApexCharts(document.querySelector(selector), options);
-        chart.render();
-        console.log(`Chart created for ${selector}`);
-        return chart;
-    } catch (error) {
-        console.error(`Failed to create chart for ${selector}:`, error);
-        return null;
-    }
-}
-
 // Function to handle receptions chart
-export const reloadReceptionsChartKpis = async () => {
-    const res = await rpc('/account/dashboard/kpis/receptions/chart');
+export const reloadReceptionsChartKpis = async (period = '7d') => {
+    const res = await rpc('/account/dashboard/kpis/receptions/chart', { period });
     if(res?.status != 'success') return;
 
-    // Receptions Chart
+    // Update period label
+    const labelEl = document.getElementById('receptions-chart-period-label');
+    if (labelEl) {
+        labelEl.textContent = periodLabels[period] || periodLabels['7d'];
+    }
+
+    // Receptions Chart options
     const receptionChartOptions = {
         ...baseSparkOptions,
         chart: {
             ...baseSparkOptions.chart,
             type: 'area',
-            height: 130
+            height: 160
         },
         series: [{
             name: 'Receptions',
             data: res.values
         }],
-        colors: [isDark ? '#0ea5e9' : '#0284c7'], // Blue color theme
+        colors: [isDark ? '#0ea5e9' : '#0284c7'],
         stroke: {
             curve: 'smooth',
             width: 2
@@ -190,8 +182,9 @@ export const reloadReceptionsChartKpis = async () => {
             },
             x: {
                 show: true,
-                formatter: function(idx) {
-                    return res.dates[idx];
+                formatter: function(val, opts) {
+                    const idx = opts?.dataPointIndex ?? (val - 1);
+                    return res.labels[idx] || '';
                 }
             },
             y: {
@@ -203,13 +196,27 @@ export const reloadReceptionsChartKpis = async () => {
         }
     };
 
-    // Create chart
-    const receptionChart = createChart("#receptions-chart", receptionChartOptions);
+    // Destroy previous chart if exists
+    if (receptionChartInstance) {
+        receptionChartInstance.destroy();
+        receptionChartInstance = null;
+    }
+
+    // Create new chart
+    const chartEl = document.querySelector("#receptions-chart");
+    if (chartEl) {
+        try {
+            receptionChartInstance = new ApexCharts(chartEl, receptionChartOptions);
+            receptionChartInstance.render();
+        } catch (error) {
+            console.error('Failed to create receptions chart:', error);
+        }
+    }
 
     // Update the KPI values in the dashboard
     const totalReceptions = res.values.reduce((acc, val) => acc + val, 0);
 
-    const receptionsValueEls = document.querySelectorAll('#dashboard-total-receptions-value');
+    const receptionsValueEls = document.querySelectorAll('#dashboard-chart-receptions-total');
     receptionsValueEls.forEach(el => {
         el.textContent = totalReceptions.toLocaleString();
         el.dataset.value = totalReceptions;

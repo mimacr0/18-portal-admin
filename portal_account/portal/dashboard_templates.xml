@@ -29,8 +29,10 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Receptions</p>
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-receptions-value" data-value="0">0</h3>
-                                <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-kpi-receptions-total">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-receptions-change">
+                                    <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+                                </p>
                             </div>
                             <div class="bg-cyan-100 dark:bg-cyan-900 p-3 rounded-full">
                                 <i class="fas fa-box text-cyan-500 dark:text-cyan-400"></i>
@@ -42,8 +44,10 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Expeditions</p>
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-expeditions-value" data-value="0">0</h3>
-                                <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-kpi-expeditions-total">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-expeditions-change">
+                                    <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+                                </p>
                             </div>
                             <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-full">
                                 <i class="fas fa-truck text-purple-500 dark:text-purple-400"></i>
@@ -55,8 +59,10 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Products</p>
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-products-value" data-value="0">0</h3>
-                                <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-kpi-products-total">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-products-change">
+                                    <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+                                </p>
                             </div>
                             <div class="bg-amber-100 dark:bg-amber-900 p-3 rounded-full">
                                 <i class="fas fa-cubes text-amber-500 dark:text-amber-400"></i>
@@ -68,8 +74,10 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Stock</p>
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-stock-value" data-value="0">0</h3>
-                                <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-kpi-stock-total">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-stock-change">
+                                    <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+                                </p>
                             </div>
                             <div class="bg-green-100 dark:bg-green-900 p-3 rounded-full">
                                 <i class="fas fa-boxes-stacked text-green-500 dark:text-green-400"></i>
@@ -137,17 +145,37 @@
 
                 </div>
 
+                <!-- Period Selector -->
+                <div class="flex justify-end mb-3">
+                    <div class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1">
+                        <button type="button" data-period="7d" class="dashboard-period-btn px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 bg-primary-theme text-white">
+                            7 days
+                        </button>
+                        <button type="button" data-period="week" class="dashboard-period-btn px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Weekly
+                        </button>
+                        <button type="button" data-period="month" class="dashboard-period-btn px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Monthly
+                        </button>
+                        <button type="button" data-period="year" class="dashboard-period-btn px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Yearly
+                        </button>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                     <!-- Spark Chart 1 -->
                     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Receptions</h3>
-                            <span class="text-sm text-gray-500 dark:text-gray-400">Last 7 days</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400" id="receptions-chart-period-label">Last 7 days</span>
                         </div>
-                        <div id="receptions-chart" class="h-36"></div>
+                        <div id="receptions-chart" class="h-40"></div>
                         <div class="flex items-center justify-center mt-3">
-                            <span class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-receptions-value" data-value="0">0</span>
-                            <span class="text-sm text-green-500 ml-2"><i class="fas fa-arrow-up mr-1"></i>0% since last month</span>
+                            <span class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-chart-receptions-total">-</span>
+                            <span class="text-sm ml-2" id="dashboard-chart-receptions-change">
+                                <i class="fas fa-spinner fa-spin mr-1"></i>
+                            </span>
                         </div>
                     </div>
 
@@ -155,15 +183,18 @@
                     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Expeditions</h3>
-                            <span class="text-sm text-gray-500 dark:text-gray-400">Last 7 days</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400" id="expeditions-chart-period-label">Last 7 days</span>
                         </div>
-                        <div id="expeditions-chart" class="h-36"></div>
+                        <div id="expeditions-chart" class="h-40"></div>
                         <div class="flex items-center justify-center mt-3">
-                            <span class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-expeditions-value" data-value="0">0</span>
-                            <span class="text-sm text-green-500 ml-2"><i class="fas fa-arrow-up mr-1"></i>0% since last month</span>
+                            <span class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-chart-expeditions-total">-</span>
+                            <span class="text-sm ml-2" id="dashboard-chart-expeditions-change">
+                                <i class="fas fa-spinner fa-spin mr-1"></i>
+                            </span>
                         </div>
                     </div>
                 </div>
+                <div class="h-80"></div>
 
             </div>
 
