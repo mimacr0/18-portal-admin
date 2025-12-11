@@ -188,7 +188,7 @@ class PortalStockController(PortalAdminController):
             'list_columns': list_columns,  # Añadimos las columnas a renderizar
             'advanced_search': json.dumps(self._get_advanced_search_fields()),
             'batch_actions': [
-                {'name': 'export', 'label': _('Export Excel'), 'icon': 'fas fa-file-excel', 'color': 'bg-[#696900] hover:bg-[#8A8A00]'},
+                {'name': 'export', 'label': _('Export Excel'), 'icon': 'fas fa-file-excel', 'color': 'btn-primary'},
                 {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt', 'color': 'bg-red-600 hover:bg-red-700'},
             ],
             'products_list_html': products_list_html,
