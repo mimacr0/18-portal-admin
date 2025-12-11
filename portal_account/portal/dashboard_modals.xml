@@ -19,7 +19,7 @@
                                 <label for="dashboard-page-add-credit-amount" class="form-label-sm font-sm">Credit Amount</label>
                             </div>
                             <div>
-                                <input type="number" name="credit_amount" id="dashboard-page-add-credit-amount" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#A0A000]" placeholder="Credit Amount" required="required" min="0"/>
+                                <input type="number" name="credit_amount" id="dashboard-page-add-credit-amount" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme " placeholder="Credit Amount" required="required" min="0"/>
                                 <div class="form-error invisible" id="dashboard-page-add-credit-amount-error"></div>
                                 <span class="ml-2 text-xs text-gray-500 italic">
                                     <i class="fas fa-info-circle"></i> Enter the desired credit amount to initiate an approval process.
@@ -59,7 +59,7 @@
                                     <input type="file" id="receptions-file-input" name="file" class="hidden" accept=".xlsx,.xls"/>
                                     <div class="file-input-content">
                                         <i class="fas fa-file-excel text-2xl text-gray-400 dark:text-gray-500"/>
-                                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop an Excel file here, or <span class="text-[#696900] dark:text-[#A0A000] browse-link cursor-pointer hover:underline" id="receptions-browse-link">browse</span></p>
+                                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop an Excel file here, or <span class="text-primary-theme browse-link cursor-pointer hover:underline" id="receptions-browse-link">browse</span></p>
                                         <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Maximum file size: 5MB</p>
                                     </div>
                                 </div>
@@ -72,7 +72,7 @@
                                 <i class="fas fa-info-circle mr-1"/>
                                 Required columns: <strong>tracking_number</strong>, <strong>scheduled_date</strong>, <strong>package_type</strong>, <strong>product</strong>, <strong>quantity</strong>
                             </p>
-                            <a href="/portal_account/static/templates/receptions1.xlsx" class="text-xs text-[#696900] dark:text-[#A0A000] hover:underline" download="receptions_template.xlsx">
+                            <a href="/portal_account/static/templates/receptions1.xlsx" class="text-xs text-primary-theme hover:underline" download="receptions_template.xlsx">
                                 <i class="fas fa-download mr-1"/>Download template
                             </a>
                         </div>
@@ -109,7 +109,7 @@
                                     <input type="file" id="expeditions-file-input" name="file" class="hidden" accept=".xlsx,.xls"/>
                                     <div class="file-input-content">
                                         <i class="fas fa-file-excel text-2xl text-gray-400 dark:text-gray-500"/>
-                                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop an Excel file here, or <span class="text-[#696900] dark:text-[#A0A000] browse-link cursor-pointer hover:underline" id="expeditions-browse-link">browse</span></p>
+                                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop an Excel file here, or <span class="text-primary-theme browse-link cursor-pointer hover:underline" id="expeditions-browse-link">browse</span></p>
                                         <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Maximum file size: 5MB</p>
                                     </div>
                                 </div>
@@ -122,7 +122,7 @@
                                 <i class="fas fa-info-circle mr-1"/>
                                 Required columns: <strong>reference</strong>, <strong>scheduled_date</strong>, <strong>product</strong>, <strong>quantity</strong>
                             </p>
-                            <a href="/portal_account/static/templates/expeditions.xlsx" class="text-xs text-[#696900] dark:text-[#A0A000] hover:underline" download="expeditions_template.xlsx">
+                            <a href="/portal_account/static/templates/expeditions.xlsx" class="text-xs text-primary-theme hover:underline" download="expeditions_template.xlsx">
                                 <i class="fas fa-download mr-1"/>Download template
                             </a>
                         </div>

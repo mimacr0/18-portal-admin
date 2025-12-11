@@ -80,6 +80,13 @@
                 .dark .menu-active-gradient {
                     background: linear-gradient(to right, var(--dark-hover-color), var(--dark-base-color));
                 }
+                /* Content gradients */
+                .content-gradient {
+                    background: linear-gradient(to right, var(--base-color), var(--hover-color));
+                }
+                .dark .content-gradient {
+                    background: linear-gradient(to right, var(--dark-base-color), var(--dark-hover-color));
+                }
                 /* History widget items */
                 .history-item-active {
                     background-color: var(--base-color);

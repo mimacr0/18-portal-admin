@@ -108,7 +108,7 @@
                     </div>
 
                     <!-- Account Balance Card -->
-                    <div class="bg-gradient-to-r from-[#8A8A00] to-[#696900] dark:from-[#8A8A00] dark:to-[#696900] p-4 rounded-lg shadow text-white">
+                    <div class="content-gradient p-4 rounded-lg shadow text-white">
                         <div class="flex justify-between items-start mb-4">
                             <h3 class="text-lg font-semibold">Account Balance</h3>
                             <i class="fas fa-credit-card text-white/80 text-xl"></i>
