@@ -5,6 +5,7 @@ import { portalAccountRepairAlertInitCheckboxSelect } from "./components/repair_
 import { initTableSorting } from "./components/repair_alert_sorting.js";
 import { initStickyTableHeader } from "./components/repair_alert_header.js";
 import { initRepairAlertQuickSortFilters } from "./components/repair_alert_quick_filter.js";
+import { initRepairExport } from "./components/repair_export.js";
 
 // Inicialización al cargar el documento
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,5 +19,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initTableSorting();
     initStickyTableHeader();
     initRepairAlertQuickSortFilters();
-
+    initRepairExport();
 });

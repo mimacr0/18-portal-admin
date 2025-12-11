@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMessageSending();
 
     document.addEventListener('portal_repair.portal_repair_details_reload_request', (event) => {
-        console.log('Reloading repair_alert details chatter', event.detail);
+        console.log('Reloading repair alert details chatter', event.detail);
         reloadRepairAlertDetailsChatter();
     });
 });

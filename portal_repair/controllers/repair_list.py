@@ -4,11 +4,17 @@
 #
 ##############################################################################
 
+import io
 import math
 import json
 import pytz
 from datetime import datetime
 from functools import lru_cache
+
+try:
+    import xlsxwriter
+except ImportError:
+    xlsxwriter = None
 
 from odoo import fields, http, _
 from odoo.addons.portal_admin_theme.controllers.admin import PortalAdminController
@@ -106,9 +112,13 @@ class PortalRepairController(PortalAdminController):
                 {'id': 'repair', 'label': _('Repair Info'), 'responsive': ['md', 'lg']},
             ],
             'batch_actions': [
-                {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
+                {'name': 'export', 'label': _('Export Excel'), 'icon': 'fas fa-file-excel', 'color': 'btn-primary'},
+                {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt', 'color': 'bg-red-600 hover:bg-red-700'},
             ],
-            'advanced_search': json.dumps(self._get_repair_advanced_search_fields())
+            'advanced_search': json.dumps(self._get_repair_advanced_search_fields()),
+            'base_color': '#696900',
+            'hover_color': '#8A8A00',
+            'light_bg_color': '#f0f0e0',
         })
         
         # Procesar columnas para añadir flags de visibilidad según responsive
@@ -323,3 +333,119 @@ class PortalRepairController(PortalAdminController):
             }),
             'last_page': pagination_data['last_page']
         }
+
+    @http.route('/account/repair/export', type='http', auth='user', methods=['GET', 'POST'])
+    def account_repair_export(self, ids=None, **kw):
+        """Export repair alerts to Excel (XLSX) file."""
+        if not xlsxwriter:
+            return request.make_response(
+                _('Excel export not available. Please install xlsxwriter.'),
+                headers=[('Content-Type', 'text/plain')]
+            )
+        
+        QualityAlert = request.env['quality.alert'].sudo()
+        partner_id = request.env.user.partner_id
+        
+        account_partner = request.env['account.partner'].sudo().search([
+            ('partner_id', '=', partner_id.commercial_partner_id.id)
+        ], limit=1)
+        
+        domain = [('account_partner_id', '=', account_partner.id if account_partner else 0)]
+        
+        if ids:
+            try:
+                id_list = [int(i) for i in ids.split(',') if i.strip()]
+                if id_list:
+                    domain.append(('id', 'in', id_list))
+            except ValueError:
+                pass
+        
+        alerts = QualityAlert.search(domain, order='create_date desc')
+
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet(_('Repairs'))
+        
+        # Formats
+        header_format = workbook.add_format({
+            'bold': True,
+            'bg_color': '#696900',
+            'font_color': 'white',
+            'border': 1,
+            'align': 'center',
+            'valign': 'vcenter'
+        })
+        cell_format = workbook.add_format({
+            'border': 1,
+            'valign': 'vcenter'
+        })
+        date_format = workbook.add_format({
+            'border': 1,
+            'valign': 'vcenter',
+            'num_format': 'dd/mm/yyyy hh:mm'
+        })
+        
+        # Column widths
+        worksheet.set_column(0, 0, 20)  # Title
+        worksheet.set_column(1, 1, 18)  # Name
+        worksheet.set_column(2, 2, 15)  # Stage
+        worksheet.set_column(3, 3, 25)  # Product
+        worksheet.set_column(4, 4, 18)  # Lot
+        worksheet.set_column(5, 5, 15)  # Lifecycle State
+        worksheet.set_column(6, 6, 20)  # Maintenance Type
+        worksheet.set_column(7, 7, 30)  # Results
+        worksheet.set_column(8, 8, 30)  # Diagnosis
+        worksheet.set_column(9, 9, 18)  # Create Date
+        
+        # Headers
+        headers = [
+            _('Title'),
+            _('Name'),
+            _('Stage'),
+            _('Product'),
+            _('Lot'),
+            _('Lifecycle State'),
+            _('Maintenance Type'),
+            _('Results'),
+            _('Diagnosis'),
+            _('Create Date'),
+        ]
+        for col, header in enumerate(headers):
+            worksheet.write(0, col, header, header_format)
+        
+        # Data rows
+        for row, alert in enumerate(alerts, start=1):
+            # Get repair order info
+            repair_orders = alert.repair_order_ids.filtered(lambda o: o.state == 'done')
+            maintenance_types = ', '.join(repair_orders.mapped('maintenance_type') or [])
+            results = ', '.join([', '.join(o.result_ids.mapped('name')) for o in repair_orders if o.result_ids])
+            diagnosis = ', '.join([', '.join(o.diagnosis_ids.mapped('name')) for o in repair_orders if o.diagnosis_ids])
+            
+            worksheet.write(row, 0, alert.title or '', cell_format)
+            worksheet.write(row, 1, alert.name or '', cell_format)
+            worksheet.write(row, 2, alert.stage_id.name or '', cell_format)
+            worksheet.write(row, 3, alert.product_id.display_name or '', cell_format)
+            worksheet.write(row, 4, alert.lot_id.display_name or '', cell_format)
+            worksheet.write(row, 5, alert.lot_id.lifecycle_state or '', cell_format)
+            worksheet.write(row, 6, maintenance_types, cell_format)
+            worksheet.write(row, 7, results, cell_format)
+            worksheet.write(row, 8, diagnosis, cell_format)
+            if alert.create_date:
+                worksheet.write_datetime(row, 9, alert.create_date.replace(tzinfo=None), date_format)
+            else:
+                worksheet.write(row, 9, '', cell_format)
+        
+        workbook.close()
+        
+        output.seek(0)
+        content = output.getvalue()
+        
+        filename = f"repairs_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        
+        return request.make_response(
+            content,
+            headers=[
+                ('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
+                ('Content-Disposition', f'attachment; filename="{filename}"'),
+            ]
+        )
