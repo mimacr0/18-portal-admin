@@ -1,13 +1,21 @@
 /**
  * Sticky table header implementation for stock management
+ * @param {string} tableSelector - Optional CSS selector for the table (default: auto-detect)
  */
-export function initStickyTableHeader() {
-    console.log("Initializing sticky table header");
-
-    // Find the stock table that contains the stock-page-list-items tbody
-    const stockTable = document.querySelector('#page-stock-list-table');
+export function initStickyTableHeader(tableSelector = null) {
+    // Auto-detect table if no selector provided
+    const selectors = tableSelector 
+        ? [tableSelector]
+        : ['#page-stock-list-table', '#page-lots-list-table'];
+    
+    let stockTable = null;
+    for (const sel of selectors) {
+        stockTable = document.querySelector(sel);
+        if (stockTable) break;
+    }
+    
     if (!stockTable) {
-        console.error("Stock table not found");
+        // Silently return if no table found - this is expected on other pages
         return;
     }
 
@@ -100,7 +108,6 @@ export function initStickyTableHeader() {
         tmpHeaderTable.appendChild(clonedHeader);
         document.body.appendChild(tmpHeaderTable);
         isFixed = true;
-        console.log("Fixed header created and displayed");
     }
 
     function removeFixedHeader() {
@@ -112,7 +119,6 @@ export function initStickyTableHeader() {
         }
 
         isFixed = false;
-        console.log("Fixed header removed");
     }
 
     // Create IntersectionObserver to monitor header visibility
@@ -170,6 +176,4 @@ export function initStickyTableHeader() {
     });
 
     observer.observe(document.documentElement, { attributes: true });
-
-    console.log("Sticky header initialized successfully");
 }

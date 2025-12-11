@@ -279,7 +279,6 @@ class PortalStockController(PortalAdminController):
                     ])
                 else:  # 'all' es el predeterminado
                     base_domain.extend(adv_conditions)
-        print(f"base_domain: {base_domain}")
         return base_domain
 
     def _get_pagination_data(self, page, items_total, limit):
@@ -372,7 +371,6 @@ class PortalStockController(PortalAdminController):
 
     @http.route('/account/stock/list/advanced_filters', type='json', auth='user')
     def account_stock_list_advanced_filters(self, **kw):
-        print(f"self._get_stock_advanced_search_fields(): {self._get_stock_advanced_search_fields()}")
         return {
             'status': 'success',
             'filters': json.dumps(self._get_stock_advanced_search_fields())
@@ -434,7 +432,6 @@ class PortalStockController(PortalAdminController):
             account_partner = request.env['account.partner'].sudo().search([
                 ('partner_id', '=', partner.commercial_partner_id.id)
             ], limit=1)
-            print(account_partner, product.account_partner_id.id, account_partner.id)
             if account_partner and product.account_partner_id.id != account_partner.id:
                 return {'status': 'error', 'message': _('You do not have access to this product')}
 
