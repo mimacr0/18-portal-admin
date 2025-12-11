@@ -78,7 +78,7 @@
 
                                 <!-- Action buttons -->
                                 <div class="flex items-center">
-                                    <button t-foreach="tools_actions" t-as="tools_action" t-attf-data-tooltip-target="page-list-#{page_name}-tools-action-#{tools_action.get('name')}" t-attf-id="page-list-#{page_name}-tools-action-#{tools_action.get('name')}" class="p-2 rounded-md hover:bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
+                                    <button t-foreach="tools_actions" t-as="tools_action" t-attf-data-tooltip-target="page-list-#{page_name}-tools-action-#{tools_action.get('name')}" t-attf-id="page-list-#{page_name}-tools-action-#{tools_action.get('name')}" t-att-data-modal-open="tools_action.get('modal_id')" class="p-2 rounded-md hover:bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
                                         <i t-att-class="tools_action.get('icon')"/>
                                     </button>
                                 </div>
@@ -220,6 +220,8 @@
                 <t t-call="portal_stock.portal_create_product_modal"/>
                 <!-- File Upload Modal -->
                 <t t-call="portal_stock.portal_file_upload_modal"/>
+                <!-- Import Products Modal -->
+                <t t-call="portal_stock.portal_import_products_modal"/>
 
                 <!-- Product Edit Modal -->
                 <div id="page-stock-edit-modal" class="modal" data-outside-close="false">

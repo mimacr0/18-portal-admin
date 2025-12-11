@@ -20,6 +20,7 @@
         'portal/portal_create_product_modal.xml',
         'portal/portal_update_product_modal.xml',
         'portal/portal_file_upload_modal.xml',
+        'portal/portal_import_products_modal.xml',
     ],
     'assets': {
         'portal_admin_theme.admin_assets_frontend': [
