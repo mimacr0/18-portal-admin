@@ -3,7 +3,7 @@
     <template id="portal_expedition_page" name="Portal Expedition Page">
         <t t-call="portal_admin_theme.portal_admin_layout">
 
-            <div class="w-full" t-attf-id="page-#{page_name}-main-container">
+            <div class="w-full max-w-full overflow-x-auto" t-attf-id="page-#{page_name}-main-container">
 
                 <div class="card-title-container mb-4 flex items-center">
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Expeditions</h1>
@@ -16,7 +16,7 @@
                             <span id="selected-count" class="text-sm font-medium text-gray-700 dark:text-gray-300 mr-3">0 selected</span>
                             <div class="h-4 border-l border-gray-300 dark:border-gray-700 mr-3"></div>
                             <div class="flex flex-wrap gap-2">
-                                <button t-foreach="batch_actions" t-as="batch_action" t-attf-id="page-list-#{page_name}-batch-action-#{batch_action.get('name')}" class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors flex items-center">
+                                <button t-foreach="batch_actions" t-as="batch_action" t-attf-id="page-list-#{page_name}-batch-action-#{batch_action.get('name')}" t-attf-class="px-3 py-1 text-white text-sm rounded transition-colors flex items-center #{batch_action.get('color', 'btn-primary ')}">
                                     <i t-attf-class="#{batch_action.get('icon')} mr-1.5"></i> <t t-out="batch_action.get('label')"/>
                                 </button>
                             </div>
@@ -33,7 +33,7 @@
                         <div class="flex overflow-x-auto scrollbar-hide">
                             <input type="hidden" t-attf-id="page-#{page_name}-list-quick-filter-active" value=""/>
                             <t t-foreach="list_filters" t-as="list_filter">
-                                <button t-if="list_filter.get('active')" type="button" t-attf-id="page-#{page_name}-list-filter-#{list_filter.get('id')}" class="tab-button active px-6 py-3 text-sm font-medium border-b-2 border-[#8A8A00] text-[#696900] focus:outline-none transition-colors duration-200 ease-in-out dark:text-white relative">
+                                <button t-if="list_filter.get('active')" type="button" t-attf-id="page-#{page_name}-list-filter-#{list_filter.get('id')}" class="tab-button active px-6 py-3 text-sm font-medium border-b-2 border-primary-theme text-primary-theme focus:outline-none transition-colors duration-200 ease-in-out dark:text-white relative">
                                     <i t-attf-class="#{list_filter.get('icon')} mr-2"></i>
                                     <t t-out="list_filter.get('label')"/>
                                 </button>
@@ -52,7 +52,7 @@
                         <div class="flex flex-col lg:flex-row justify-between gap-4">
                             <div class="flex flex-col sm:flex-row sm:items-center gap-2">
                                 <div class="flex items-center">
-                                    <button t-attf-id="launch-create-#{page_name}-form-button" class="px-3 py-1.5 bg-[#696900] text-white rounded-md hover:bg-[#8A8A00] transition-colors flex items-center">
+                                    <button t-attf-id="launch-create-#{page_name}-form-button" class="px-3 py-1.5 btn-primary text-white rounded-md  transition-colors flex items-center">
                                         <i class="fas fa-plus mr-1.5"></i> <span class="hidden sm:inline">Create</span>
                                     </button>
                                 </div>
@@ -64,7 +64,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i class="fas fa-search text-gray-400 dark:text-gray-500"></i>
                                     </div>
-                                    <input type="text" id="page-expedition-list-quick-search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-[#8A8A00] dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#A0A000]" placeholder="Search ..."/>
+                                    <input type="text" id="page-expedition-list-quick-search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-primary-theme dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus-ring-theme " placeholder="Search ..."/>
                                 </div>
 
                                 <!-- Botón de búsqueda avanzada -->
@@ -93,7 +93,7 @@
                                 <!-- Match Type Selector -->
                                 <div class="mb-4">
                                     <p class="text-sm text-gray-700 dark:text-gray-300">
-                                        <select t-attf-id="page-#{page_name}-list-advanced-search-match-type" class="inline-block mx-1 px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-[#8A8A00] focus:border-[#8A8A00] bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                                        <select t-attf-id="page-#{page_name}-list-advanced-search-match-type" class="inline-block mx-1 px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus-ring-theme focus:border-primary-theme bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                                             <option value="all" selected="selected">All</option>
                                             <option value="any">Any</option>
                                         </select>
@@ -106,7 +106,7 @@
 
                                 <!-- Botón de añadir línea de filtro -->
                                 <div class="mt-3">
-                                    <button t-attf-id="page-#{page_name}-list-advanced-search-add-line-btn" class="flex items-center text-[#696900] hover:text-[#8A8A00] text-sm font-medium">
+                                    <button t-attf-id="page-#{page_name}-list-advanced-search-add-line-btn" class="flex items-center text-primary-theme hover:text-primary-theme text-sm font-medium">
                                         <i class="fas fa-plus-circle mr-1.5"></i> Add filter condition
                                     </button>
                                 </div>
@@ -117,7 +117,7 @@
                                 <button t-attf-id="page-#{page_name}-list-advanced-search-reset-btn" class="px-3 py-1 text-sm border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700">
                                     Reset
                                 </button>
-                                <button t-attf-id="page-#{page_name}-list-advanced-search-apply-btn" class="px-3 py-1 text-sm bg-[#696900] text-white rounded-md shadow-sm hover:bg-[#8A8A00] dark:bg-[#696900] dark:text-white dark:hover:bg-[#8A8A00] dark:hover:text-white">
+                                <button t-attf-id="page-#{page_name}-list-advanced-search-apply-btn" class="px-3 py-1 text-sm btn-primary text-white rounded-md shadow-sm  dark:btn-primary dark:text-white dark: dark:hover:text-white">
                                     Apply Filters
                                 </button>
                             </div>
@@ -133,7 +133,7 @@
                                 <tr class="hidden lg:table-row">
                                     <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         <div class="flex items-center">
-                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox" type="checkbox" class="h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00] dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-[#696900] dark:checked:border-[#696900]"/>
+                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox" type="checkbox" class="h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme dark:border-gray-600 dark:bg-gray-700 dark:checked:btn-primary "/>
                                         </div>
                                     </th>
                                     <t t-foreach="list_columns" t-as="list_column">
@@ -152,7 +152,7 @@
                                 <tr class="hidden md:table-row lg:hidden">
                                     <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         <div class="flex items-center">
-                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox-md" type="checkbox" class="h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00] dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-[#696900] dark:checked:border-[#696900]"/>
+                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox-md" type="checkbox" class="h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme dark:border-gray-600 dark:bg-gray-700 dark:checked:btn-primary "/>
                                         </div>
                                     </th>
                                     <t t-foreach="list_columns" t-as="list_column">
@@ -173,7 +173,7 @@
                                 <tr class="table-row md:hidden">
                                     <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         <div class="flex items-center">
-                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox-sm" type="checkbox" class="h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00] dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-[#696900] dark:checked:border-[#696900]"/>
+                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox-sm" type="checkbox" class="h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme dark:border-gray-600 dark:bg-gray-700 dark:checked:btn-primary "/>
                                         </div>
                                     </th>
                                     <t t-foreach="list_columns" t-as="list_column">
@@ -203,12 +203,12 @@
                 <!-- Products Page Header -->
                 <div class="flex justify-between items-center mb-8 mt-5">
                     <div class="relative">
-                        <button t-attf-id="page-#{page_name}-product-catalog-select-close-btn" class="px-3 py-1.5 bg-[#696900] text-white rounded-md hover:bg-[#8A8A00] transition-colors flex items-center">
+                        <button t-attf-id="page-#{page_name}-product-catalog-select-close-btn" class="px-3 py-1.5 btn-primary text-white rounded-md  transition-colors flex items-center">
                             <i class="fas fa-arrow-left mr-1.5"></i> Go Back
                         </button>
                     </div>
                     <div class="relative max-w-md w-full">
-                        <input type="text" t-attf-id="page-#{page_name}-product-catalog-select-search" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-full shadow-md focus:ring-[#8A8A00] focus:border-[#8A8A00] block w-full p-3.5 pl-12 pr-12" placeholder="Search products..."/>
+                        <input type="text" t-attf-id="page-#{page_name}-product-catalog-select-search" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-full shadow-md focus-ring-theme focus:border-primary-theme block w-full p-3.5 pl-12 pr-12" placeholder="Search products..."/>
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-search text-gray-400"></i>
                         </div>
@@ -217,12 +217,12 @@
 
                 <!-- Selected products preview -->
                 <div t-attf-id="page-#{page_name}-product-catalog-select-selected-products-container" class="mb-4 bg-white dark:bg-gray-800 rounded-md shadow overflow-hidden text-sm">
-                    <div class="bg-gradient-to-r from-[#696900] to-[#8A8A00] dark:from-[#8A8A00] dark:to-[#A0A000] px-3 py-2">
+                    <div class="content-gradient px-3 py-2">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
                                 <i class="fas fa-shopping-cart text-white text-xs mr-2"></i>
                                 <h2 class="text-sm font-semibold text-white">Selected Products</h2>
-                                <span id="selected-count" class="ml-2 bg-white text-[#696900] dark:bg-gray-700 dark:text-[#A0A000] text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                                <span id="selected-count" class="ml-2 bg-white text-primary-theme dark:bg-gray-700  text-xs font-bold px-2 py-0.5 rounded-full">0</span>
                             </div>
                             <div>
                                 <button t-attf-id="page-#{page_name}-product-catalog-select-clear-selection-btn" class="text-white hover:text-gray-200 transition-colors text-xs">
@@ -278,10 +278,10 @@
                                     <label for="fileInput" class="form-label form-label-sm">Upload File</label>
                                     <div class="form-field-container">
                                         <div class="file-drop-area rounded-md border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 text-center cursor-pointer">
-                                            <input type="file" id="fileInput" name="fileInput" class="hidden focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#A0A000]" required="required" multiple="multiple"/>
+                                            <input type="file" id="fileInput" name="fileInput" class="hidden focus:outline-none focus:ring-1 focus-ring-theme " required="required" multiple="multiple"/>
                                             <div class="file-input-content">
                                                 <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 dark:text-gray-500"></i>
-                                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop a file here, or <span class="text-[#696900] dark:text-[#A0A000] browse-link">browse</span></p>
+                                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop a file here, or <span class="text-primary-theme  browse-link">browse</span></p>
                                                 <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Maximum file size: 5MB</p>
                                             </div>
                                         </div>
@@ -313,7 +313,7 @@
             <!-- Fila de pantallas grandes -->
             <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 hidden lg:table-row">
                 <td class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="orders-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-order-id="order.id"/>
+                    <input type="checkbox" class="orders-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme" t-att-data-order-id="order.id"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
@@ -455,9 +455,6 @@
                     <a t-att-href="order.get_details_url()" t-attf-data-tooltip-target="tooltip-details-#{order.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-info-circle"></i>
                     </a>
-                    <button t-attf-data-tooltip-target="tooltip-edit-#{order.id}"  t-attf-id="tooltip-edit-#{order.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
-                        <i class="fas fa-edit"></i>
-                    </button>
                     <button t-attf-data-tooltip-target="tooltip-delete-#{order.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -467,7 +464,7 @@
             <!-- Fila de pantallas medianas -->
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 hidden md:table-row lg:hidden">
                 <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="orders-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-order-id="order.id"/>
+                    <input type="checkbox" class="orders-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme" t-att-data-order-id="order.id"/>
                 </td>
                 <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="min-w-0">
@@ -580,9 +577,7 @@
                     <a t-att-href="order.get_details_url()" t-attf-data-tooltip-target="tooltip-details-#{order.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-info-circle"></i>
                     </a>
-                    <button t-attf-data-tooltip-target="tooltip-edit-#{order.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
-                        <i class="fas fa-edit"></i>
-                    </button>
+
                     <button t-attf-data-tooltip-target="tooltip-delete-#{order.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -592,7 +587,7 @@
             <!-- Fila de pantallas pequeñas -->
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 table-row md:hidden">
                 <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="orders-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-order-id="order.id"/>
+                    <input type="checkbox" class="orders-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme" t-att-data-order-id="order.id"/>
                 </td>
                 <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="min-w-0">
@@ -604,9 +599,7 @@
                     <a t-att-href="order.get_details_url()" t-attf-data-tooltip-target="tooltip-details-#{order.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-info-circle"></i>
                     </a>
-                    <button t-attf-data-tooltip-target="tooltip-edit-#{order.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
-                        <i class="fas fa-edit"></i>
-                    </button>
+
                     <button t-attf-data-tooltip-target="tooltip-delete-#{order.id}" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -633,7 +626,7 @@
                     <i class="fas fa-chevron-left"></i>
                 </button>
                 <t t-foreach="pages" t-as="page">
-                    <button type="button" t-if="page.get('active')" class="z-10 bg-[#f0f0e0] dark:bg-gray-800 border-[#8A8A00] dark:border-[#8A8A00] text-[#696900] dark:text-[#696900] relative inline-flex items-center px-3 py-2 border text-sm font-medium">
+                    <button type="button" t-if="page.get('active')" class="z-10 bg-light-active dark:bg-gray-800 border-primary-theme dark:border-primary-theme text-primary-theme dark:text-primary-theme relative inline-flex items-center px-3 py-2 border text-sm font-medium">
                         <span t-out="page.get('page')"/>
                     </button>
                     <button type="button" t-else="" class="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
@@ -658,7 +651,7 @@
                 </button>
                 <t t-foreach="pages" t-as="page">
 
-                    <button t-if="page.get('active')" aria-current="page" t-att-data-page="page.get('page')" class="expedition-list-pagination-button z-10 bg-[#f0f0e0] dark:bg-gray-800 border-[#8A8A00] dark:border-[#8A8A00] text-[#696900] dark:text-[#696900] relative inline-flex items-center px-3 py-2 border text-sm font-medium">
+                    <button t-if="page.get('active')" aria-current="page" t-att-data-page="page.get('page')" class="expedition-list-pagination-button z-10 bg-light-active dark:bg-gray-800 border-primary-theme dark:border-primary-theme text-primary-theme dark:text-primary-theme relative inline-flex items-center px-3 py-2 border text-sm font-medium">
                         <span t-out="page.get('page')"/>
                     </button>
                     <button t-else="" t-att-data-page="page.get('page')" class="expedition-list-pagination-button bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
@@ -721,7 +714,7 @@
                         <div class="flex items-center justify-between">
                             <!-- Initial Add button (shown when product is not added) -->
                             <div class="product-initial-add flex">
-                                <button class="product-add-btn px-3 py-1 bg-gradient-to-r from-[#696900] to-[#8A8A00] text-white rounded hover:from-[#8A8A00] hover:to-[#A0A000] transition-colors shadow-sm text-xs">
+                                <button class="product-add-btn px-3 py-1 btn-primary text-white rounded transition-colors shadow-sm text-xs">
                                     <i class="fas fa-plus mr-1"></i> Add
                                 </button>
                             </div>
@@ -769,7 +762,7 @@
                 </button>
 
                 <t t-foreach="pages" t-as="p">
-                    <button t-att-class="'product-catalog-page-btn px-3 py-1 rounded ' + ('bg-[#f0f0e0] text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300' if p['active'] else 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700')" t-att-data-page="p['page']">
+                    <button t-att-class="'product-catalog-page-btn px-3 py-1 rounded ' + ('bg-light-active text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300' if p['active'] else 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700')" t-att-data-page="p['page']">
                         <t t-out="p['page']"/>
                     </button>
                 </t>

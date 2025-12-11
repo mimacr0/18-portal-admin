@@ -31,7 +31,10 @@ export const portalAccountReceptionInitAdvancedFilters = async () => {
 
     // Comprobar si existe el botón de búsqueda avanzada
     const advancedSearchToggle = document.getElementById('page-reception-list-advanced-search-toggle');
-    if (!advancedSearchToggle) return;
+    
+    if (!advancedSearchToggle) {
+        return;
+    }
 
     // Evento para mostrar/ocultar el panel de búsqueda avanzada
     advancedSearchToggle.addEventListener('click', () => {

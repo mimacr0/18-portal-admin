@@ -13,7 +13,7 @@ class SaleOrder(models.Model):
 
     def get_details_url(self):
         portal_url = self.get_portal_url()
-        return portal_url.replace('/my/orders/', f'/account/expedition/details/')
+        return portal_url.replace('/my/orders/', '/account/expedition/details/')
 
     @api.returns('mail.message', lambda value: value.id)
     def message_post(self, **kwargs):

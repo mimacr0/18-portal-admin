@@ -3,10 +3,10 @@
 
     <template id="portal_user_notification_list" name="Portal User Notification List">
         <t t-foreach="notifications" t-as="notification">
-            <div class="px-4 py-3 border-l-4 border-[#8A8A00] notification-item">
+            <div class="px-4 py-3 border-l-4 border-primary-theme notification-item">
                 <div class="flex items-start">
                     <div class="flex-shrink-0 pt-0.5">
-                        <i t-attf-class="fas fa-#{notification.icon()} text-[#8A8A00] bg-[#f0f0e0] p-2 rounded-full notification-icon info"></i>
+                        <i t-attf-class="fas fa-#{notification.icon()} text-primary-theme bg-light-active p-2 rounded-full notification-icon info"></i>
                     </div>
                     <div class="ml-3 w-0 flex-1">
                         <p class="text-sm font-sm text-gray-900 dark:text-white notification-title"><t t-out="notification.title()"/></p>
@@ -28,6 +28,125 @@
             <meta charset="UTF-8"/>
             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <title><t t-out="page_title"/></title>
+            <!-- Theme CSS Variables -->
+            <style>
+                :root {
+                    --base-color: <t t-out="base_color or '#696900'"/>;
+                    --hover-color: <t t-out="hover_color or '#8A8A00'"/>;
+                    --light-bg-color: <t t-out="light_bg_color or '#f0f0e0'"/>;
+                    --dark-base-color: <t t-out="dark_base_color or '#A0A000'"/>;
+                    --dark-hover-color: <t t-out="dark_hover_color or '#C0C000'"/>;
+                    --dark-light-bg-color: <t t-out="dark_light_bg_color or '#3a3a1a'"/>;
+                }
+                /* Buttons */
+                .btn-primary { background-color: var(--base-color); }
+                .btn-primary:hover { background-color: var(--hover-color); }
+                .dark .btn-primary { background-color: var(--dark-base-color); }
+                .dark .btn-primary:hover { background-color: var(--dark-hover-color); }
+                /* Text */
+                .text-primary-theme { color: var(--base-color); }
+                .text-primary-theme:hover { color: var(--hover-color); }
+                .dark .text-primary-theme { color: var(--dark-base-color); }
+                .dark .text-primary-theme:hover { color: var(--dark-hover-color); }
+                /* Borders */
+                .border-primary-theme { border-color: var(--base-color); }
+                .dark .border-primary-theme { border-color: var(--dark-base-color); }
+                /* Backgrounds */
+                .bg-primary-theme { background-color: var(--base-color); }
+                .dark .bg-primary-theme { background-color: var(--dark-base-color); }
+                .bg-light-active { background-color: var(--light-bg-color); }
+                .dark .bg-light-active { background-color: var(--dark-light-bg-color); }
+                /* Form inputs */
+                .focus-ring-theme:focus { 
+                    --tw-ring-color: var(--hover-color);
+                    outline: none;
+                    box-shadow: 0 0 0 1px var(--hover-color);
+                }
+                /* Radio/Checkbox accent */
+                .accent-theme { accent-color: var(--hover-color); }
+                /* Icons */
+                .icon-primary-theme { color: var(--base-color); }
+                .dark .icon-primary-theme { color: var(--dark-base-color); }
+                /* Gradients */
+                .sidebar-gradient {
+                    background: linear-gradient(to bottom right, var(--hover-color), var(--base-color));
+                }
+                .dark .sidebar-gradient {
+                    background: linear-gradient(to bottom right, #374151, #1f2937);
+                }
+                .menu-active-gradient {
+                    background: linear-gradient(to right, var(--hover-color), var(--base-color));
+                }
+                .dark .menu-active-gradient {
+                    background: linear-gradient(to right, var(--dark-hover-color), var(--dark-base-color));
+                }
+                /* Content gradients */
+                .content-gradient {
+                    background: linear-gradient(to right, var(--base-color), var(--hover-color));
+                }
+                .dark .content-gradient {
+                    background: linear-gradient(to right, var(--dark-base-color), var(--dark-hover-color));
+                }
+                /* History widget items */
+                .history-item-active {
+                    background-color: var(--base-color);
+                    color: white;
+                }
+                .history-item-active:hover {
+                    background-color: var(--hover-color);
+                }
+                .dark .history-item-active {
+                    background-color: var(--dark-base-color);
+                }
+                .dark .history-item-active:hover {
+                    background-color: var(--dark-hover-color);
+                }
+                .history-item-inactive:hover {
+                    color: var(--base-color);
+                }
+                .dark .history-item-inactive:hover {
+                    color: var(--dark-hover-color);
+                }
+                /* Modal buttons */
+                .modal-btn {
+                    padding: 0.5rem 1rem;
+                    border-radius: 0.375rem;
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    transition: all 0.15s ease;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.375rem;
+                }
+                .modal-btn-primary {
+                    background-color: var(--base-color) !important;
+                    background-image: none !important;
+                    color: white !important;
+                }
+                .modal-btn-primary:hover {
+                    background-color: var(--hover-color) !important;
+                }
+                .dark .modal-btn-primary {
+                    background-color: var(--dark-base-color) !important;
+                }
+                .dark .modal-btn-primary:hover {
+                    background-color: var(--dark-hover-color) !important;
+                }
+                .modal-btn-secondary {
+                    background-color: #e5e7eb;
+                    color: #374151;
+                }
+                .modal-btn-secondary:hover {
+                    background-color: #d1d5db;
+                }
+                .dark .modal-btn-secondary {
+                    background-color: #374151;
+                    color: #e5e7eb;
+                }
+                .dark .modal-btn-secondary:hover {
+                    background-color: #4b5563;
+                }
+            </style>
             <t t-call-assets="web._assets_core" t-css="false" defer_load="True"/>
             <t t-call-assets="portal_admin_theme.admin_assets_frontend" defer_load="True"/>
             <script t-nocache="Session information should always be up to date." type="text/javascript">
@@ -114,18 +233,18 @@
                                         <a href="/account/user/update/lang/en_US" t-attf-class="language-item flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 #{user.lang == 'en_US' and 'bg-gray-50 dark:bg-gray-800'}">
                                             <img src="/portal_admin_theme/static/img/flags/en.svg" class="rounded-md w-5 mr-3" alt="English"/>
                                             <span>English</span>
-                                            <i t-if="user.lang == 'en_US'" class="fas fa-check ml-auto text-[#696900] dark:text-[#A0A000]"></i>
+                                            <i t-if="user.lang == 'en_US'" class="fas fa-check ml-auto text-primary-theme"></i>
                                         </a>
                                         <!-- Other languages -->
                                         <a href="/account/user/update/lang/es_ES" t-attf-class="language-item flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 #{user.lang == 'es_ES' and 'bg-gray-50 dark:bg-gray-800'}">
                                             <img src="/portal_admin_theme/static/img/flags/es.svg" class="rounded-md w-5 mr-3" alt="Spanish"/>
                                             <span>Español</span>
-                                            <i t-if="user.lang == 'es_ES'" class="fas fa-check ml-auto text-[#696900] dark:text-[#A0A000]"></i>
+                                            <i t-if="user.lang == 'es_ES'" class="fas fa-check ml-auto text-primary-theme"></i>
                                         </a>
                                         <a href="/account/user/update/lang/zh_CN" t-attf-class="language-item flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 #{user.lang == 'zh_CN' and 'bg-gray-50 dark:bg-gray-800'}">
                                             <img src="/portal_admin_theme/static/img/flags/zh.svg" class="rounded-md w-5 mr-3" alt="Chinese"/>
                                             <span>中文</span>
-                                            <i t-if="user.lang == 'zh_CN'" class="fas fa-check ml-auto text-[#696900] dark:text-[#A0A000]"></i>
+                                            <i t-if="user.lang == 'zh_CN'" class="fas fa-check ml-auto text-primary-theme"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -148,7 +267,7 @@
                                     </div>
                                     <div class="max-h-96 overflow-y-auto" id="layout-notifications-list"></div>
                                     <div class="border-t border-gray-100 dark:border-gray-700 p-2 hidden flex justify-center" id="layout-notifications-actions">
-                                        <button type="button" class="text-xs text-[#696900] hover:text-[#8A8A00] dark:text-[#A0A000] dark:hover:text-[#C0C000] font-sm" id="layout-clear-all-notifications-button">
+                                        <button type="button" class="text-xs text-primary-theme font-sm" id="layout-clear-all-notifications-button">
                                             Clear all notifications
                                         </button>
                                     </div>
@@ -174,7 +293,7 @@
                                         <!-- History items will be populated here dynamically -->
                                     </div>
                                     <div class="border-t border-gray-100 dark:border-gray-700 p-2">
-                                        <a href="#" class="block text-center text-xs text-[#696900] hover:text-[#8A8A00] dark:text-[#A0A000] dark:hover:text-[#C0C000] font-medium">
+                                        <a href="#" class="block text-center text-xs text-primary-theme font-medium">
                                             View all history
                                         </a>
                                     </div>
@@ -212,7 +331,7 @@
 
                 <div class="content-container flex h-full overflow-hidden">
                     <!-- Sidebar -->
-                    <aside id="sidebar" class="fixed h-[calc(100vh-61px)] w-64 overflow-y-auto bg-gradient-to-br from-[#8A8A00] to-[#696900] dark:from-gray-800 dark:to-gray-900 text-white transition-all duration-500 shadow-lg z-30 sidebar-collapsed-init">
+                    <aside id="sidebar" class="fixed h-[calc(100vh-61px)] w-64 overflow-y-auto sidebar-gradient text-white transition-all duration-500 shadow-lg z-30 sidebar-collapsed-init">
                         <div class="py-4">
                             <div class="px-4 mb-6 flex items-center bg-gradient-to-r from-black/10 to-transparent backdrop-blur-sm border-b border-white/10 py-4">
                                 <img src="/portal_admin_theme/static/img/logo.svg" alt="Logo" class="size-10 rounded"/>
@@ -225,7 +344,7 @@
                                         <a
                                             t-if="item.get('url') == page_url"
                                             t-att-href="item.get('url')"
-                                            class="menu-item-active relative font-semibold flex items-center px-4 py-3 mx-2 my-1 rounded-lg bg-gradient-to-r from-[#8A8A00] to-[#696900]"
+                                            class="menu-item-active relative font-semibold flex items-center px-4 py-3 mx-2 my-1 rounded-lg menu-active-gradient"
                                             t-att-data-history-url="item.get('url')"
                                             t-att-data-history-title="item.get('name')"
                                             t-att-data-history-icon="item.get('icon')"

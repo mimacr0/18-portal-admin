@@ -5,6 +5,7 @@ import { portalAccountProductsInitCheckboxSelect } from "./components/stock_sele
 import { initTableSorting } from "./components/stock_sorting.js";
 import { initStickyTableHeader } from "./components/stock_header.js";
 import { initStockQuickSortFilters } from "./components/stock_quick_filter.js";
+import { initStockExport } from "./components/stock_export.js";
 
 // Inicialización al cargar el documento
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,4 +21,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initTableSorting();
     initStickyTableHeader();
     initStockQuickSortFilters();
+    initStockExport();
 });

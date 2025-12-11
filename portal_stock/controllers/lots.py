@@ -23,7 +23,7 @@ class PortalLotsController(PortalAdminController):
     DEFAULT_LIMIT_VALUE = '100'
 
     @lru_cache(maxsize=1)
-    def _get_advanced_search_fields(self):
+    def _get_lots_advanced_search_fields(self):
         """Devuelve la configuración de campos para búsqueda avanzada de lotes"""
         return [
             {'id': 'name', 'label': _('Lot/Serial Number'), 'type': 'text'},
@@ -263,7 +263,7 @@ class PortalLotsController(PortalAdminController):
             'select2': True,
             'list_filters': list_filters,
             'list_columns': list_columns,
-            'advanced_search': json.dumps(self._get_advanced_search_fields()),
+            'advanced_search': json.dumps(self._get_lots_advanced_search_fields()),
             'batch_actions': [
                 {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
             ]
@@ -356,6 +356,14 @@ class PortalLotsController(PortalAdminController):
                 **pagination_data
             }),
             'last_page': pagination_data['last_page']
+        }
+
+    @http.route('/account/stock/lots/advanced_filters', type='json', auth='user')
+    def account_lots_advanced_filters(self, **kw):
+        """Returns advanced search filter configuration for lots"""
+        return {
+            'status': 'success',
+            'filters': json.dumps(self._get_lots_advanced_search_fields())
         }
 
     @http.route('/account/stock/lots/details/<int:lot_id>', type='http', auth="user", website=True)

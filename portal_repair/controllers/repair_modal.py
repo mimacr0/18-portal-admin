@@ -114,10 +114,15 @@ class PortalRepairController(PortalAdminController):
         for lot in lots:
             total_available = 0.0
             # Buscar todos los stock.quant del lote
-            quants = request.env['stock.quant'].search([
+            quants = request.env['stock.quant'].sudo().search([
                 ('lot_id', '=', lot.id),
-                ('product_id', '=', lot. product_id.id),
+                ('product_id', '=', lot.product_id.id),
             ])
+
+            print(f'[DEBUG] Lot {lot.name}: {len(quants)} quants found')
+            for q in quants:
+                loc_name = q.location_id.display_name if q.location_id else 'N/A'
+                print(f'  - Quant id={q.id}: qty={q.quantity}, reserved={q.reserved_quantity}, available={q.quantity - q.reserved_quantity}, location={loc_name}')
 
             # Filtramos los quants que tengan quantity - reserved_quantity > 0
             positive_quants = quants.filtered(lambda q: (q.quantity - q.reserved_quantity) > 0)

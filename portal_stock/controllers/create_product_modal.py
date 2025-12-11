@@ -19,8 +19,9 @@ class ProductModalController(PortalAdminController):
             # Optional: ensure product belongs to current account partner
             partner = request.env.user.partner_id
             account_partner = request.env['account.partner'].sudo().search([
-                ('id', '=', partner.commercial_partner_id.id)
+                ('partner_id', '=', partner.commercial_partner_id.id)
             ], limit=1)
+            print(account_partner, product.account_partner_id.id, account_partner.id)
             if account_partner and product.account_partner_id.id != account_partner.id:
                 return {'status': 'error', 'message': _('You do not have access to this product')}
 
@@ -215,8 +216,9 @@ class ProductModalController(PortalAdminController):
             # Optional: ensure product belongs to current account partner
             partner = request.env.user.partner_id
             account_partner = request.env['account.partner'].sudo().search([
-                ('id', '=', partner.commercial_partner_id.id)
+                ('partner_id', '=', partner.commercial_partner_id.id)
             ], limit=1)
+            print(account_partner, product.account_partner_id.id, account_partner.id)
             if account_partner and product.account_partner_id.id != account_partner.id:
                 return {'status': 'error', 'message': _('You do not have access to this product')}
 

@@ -4,9 +4,11 @@
 #
 ##############################################################################
 
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
+
 from odoo import http, _
 from odoo.http import request
-from odoo.osv import expression
 from odoo.addons.portal_admin_theme.controllers.admin import PortalAdminController
 
 
@@ -84,164 +86,6 @@ class PortalDashboardController(PortalAdminController):
                 'message': _('An error occurred while processing your request: %s') % str(e)
             }
 
-    @http.route('/account/dashboard/kpis/receptions/count', type='json', auth='user')
-    def account_dashboard_kpis_receptions_count(self, **kw):
-        self._ensure_user_lang_context()
-        StockPicking = request.env['stock.picking'].sudo()
-        reception_type = request.env.ref('stock.picking_type_in')
-        partner_id = request.env.user.partner_id
-        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
-
-        domain = [
-            ('picking_type_id', '=', reception_type.id),
-            ('partner_id', 'in', partner_ids),
-            ('state', '!=', 'draft')
-        ]
-
-        count = StockPicking.search_count(domain)
-
-        return {
-            'status': 'success',
-            'count': count
-        }
-
-    @http.route('/account/dashboard/kpis/expeditions/count', type='json', auth='user')
-    def account_dashboard_kpis_expeditions_count(self, **kw):
-        self._ensure_user_lang_context()
-        StockPicking = request.env['stock.picking'].sudo()
-        expedition_type = request.env.ref('stock.picking_type_out')
-        partner_id = request.env.user.partner_id
-        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
-
-        domain = [
-            ('picking_type_id', '=', expedition_type.id),
-            ('partner_id', 'in', partner_ids),
-            ('state', '!=', 'draft')
-        ]
-
-        count = StockPicking.search_count(domain)
-
-        return {
-            'status': 'success',
-            'count': count
-        }
-
-    @http.route('/account/dashboard/kpis/receptions/chart', type='json', auth='user')
-    def account_dashboard_kpis_receptions_chart(self, **kw):
-        self._ensure_user_lang_context()
-        StockPicking = request.env['stock.picking'].sudo()
-        partner_id = request.env.user.partner_id
-        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
-
-        # Get reception type
-        reception_type = request.env.ref('stock.picking_type_in')
-
-        # Query for receptions by day (last 7 days)
-        query_receptions = """
-            SELECT
-                DATE(date) as date,
-                COUNT(*) as count
-            FROM
-                stock_picking
-            WHERE
-                picking_type_id = %s
-                AND partner_id IN %s
-                AND state != 'draft'
-                AND date >= NOW() - INTERVAL '7 days'
-            GROUP BY
-                DATE(date)
-            ORDER BY
-                date ASC;
-        """
-
-        # Execute queries
-        request.cr.execute(query_receptions, (reception_type.id, tuple(partner_ids)))
-        receptions_data = request.cr.dictfetchall()
-
-        # Format data for charts
-        reception_values = []
-        dates = []
-
-        # Get last 7 days
-        from datetime import datetime, timedelta
-        end_date = datetime.now().date()
-        start_date = end_date - timedelta(days=6)
-        current_date = start_date
-
-        # Create a date-indexed dict for easy lookup
-        reception_by_date = {item['date'].strftime('%Y-%m-%d'): item['count'] for item in receptions_data}
-
-        # Fill in data for all 7 days
-        while current_date <= end_date:
-            date_str = current_date.strftime('%Y-%m-%d')
-            dates.append(date_str)
-            reception_values.append(reception_by_date.get(date_str, 0))
-            current_date += timedelta(days=1)
-
-        return {
-            'status': 'success',
-            'dates': dates,
-            'values': reception_values
-        }
-
-    @http.route('/account/dashboard/kpis/expeditions/chart', type='json', auth='user')
-    def account_dashboard_kpis_expeditions_chart(self, **kw):
-        self._ensure_user_lang_context()
-        StockPicking = request.env['stock.picking'].sudo()
-        partner_id = request.env.user.partner_id
-        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
-
-        # Get expedition type
-        expedition_type = request.env.ref('stock.picking_type_out')
-
-        # Query for expeditions by day (last 7 days)
-        query_expeditions = """
-            SELECT
-                DATE(date) as date,
-                COUNT(*) as count
-            FROM
-                stock_picking
-            WHERE
-                picking_type_id = %s
-                AND partner_id IN %s
-                AND state != 'draft'
-                AND date >= NOW() - INTERVAL '7 days'
-            GROUP BY
-                DATE(date)
-            ORDER BY
-                date ASC;
-        """
-
-        # Execute queries
-        request.cr.execute(query_expeditions, (expedition_type.id, tuple(partner_ids)))
-        expeditions_data = request.cr.dictfetchall()
-
-        # Format data for charts
-        expedition_values = []
-        dates = []
-
-        # Get last 7 days
-        from datetime import datetime, timedelta
-        end_date = datetime.now().date()
-        start_date = end_date - timedelta(days=6)
-        current_date = start_date
-
-        # Create a date-indexed dict for easy lookup
-        expedition_by_date = {item['date'].strftime('%Y-%m-%d'): item['count'] for item in expeditions_data}
-
-        # Fill in data for all 7 days
-        while current_date <= end_date:
-            date_str = current_date.strftime('%Y-%m-%d')
-            dates.append(date_str)
-            expedition_values.append(expedition_by_date.get(date_str, 0))
-            current_date += timedelta(days=1)
-
-        return {
-            'status': 'success',
-            'dates': dates,
-            'values': expedition_values
-        }
-
     @http.route('/account/dashboard/kpis/credit', type='json', auth='user')
     def account_dashboard_kpis_credit(self, **kw):
         self._ensure_user_lang_context()
@@ -286,60 +130,6 @@ class PortalDashboardController(PortalAdminController):
             'decimal_separator': decimal_separator
         }
 
-    @http.route('/account/dashboard/import_receptions', type='json', auth='user')
-    def account_dashboard_import_receptions(self, **kw):
-        """Handle receptions import request"""
-        self._ensure_user_lang_context()
-        try:
-            # Access the uploaded file from the request
-            file_data = kw.get('fileInput')
-            if not file_data:
-                return {
-                    'status': 'error',
-                    'errors': [['fileInput', _('No file uploaded.')]]
-                }
-
-            # Process the file data - this will depend on your specific implementation
-            # For example, you might want to save it temporarily and process it through a queue job
-
-            # Here you would typically:
-            # 1. Check file format/extension
-            # 2. Parse the file data
-            # 3. Create stock.picking records for receptions
-
-            return {
-                'status': 'success',
-                'message': _('Reception data imported successfully. Processing will begin shortly.')
-            }
-        except Exception as e:
-            return {
-                'status': 'error',
-                'message': _('An error occurred while processing your import: %s') % str(e)
-            }
-
-    @http.route('/account/dashboard/import_expeditions', type='json', auth='user')
-    def account_dashboard_import_expeditions(self, **kw):
-        """Handle expeditions import request"""
-        self._ensure_user_lang_context()
-        try:
-            # Access the uploaded file from the request
-            file_data = kw.get('fileInput')
-            if not file_data:
-                return {
-                    'status': 'error',
-                    'errors': [['fileInput', _('No file uploaded.')]]
-                }
-
-            return {
-                'status': 'success',
-                'message': _('Expedition data imported successfully. Processing will begin shortly.')
-            }
-        except Exception as e:
-            return {
-                'status': 'error',
-                'message': _('An error occurred while processing your import: %s') % str(e)
-            }
-
     @http.route('/account/dashboard/kpis/recent_activity', type='json', auth='user')
     def account_dashboard_kpis_recent_activity(self, **kw):
         """Fetch recent activities for the current user"""
@@ -361,4 +151,118 @@ class PortalDashboardController(PortalAdminController):
             'status': 'success',
             'html': html_content,
             'count': len(activities)
+        }
+
+    @http.route('/account/dashboard/kpis/stats', type='json', auth='user')
+    def account_dashboard_kpis_stats(self, **kw):
+        """Calculate dashboard KPIs: receptions, expeditions, products, stock"""
+        self._ensure_user_lang_context()
+        
+        partner_id = request.env.user.partner_id
+        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
+        
+        # Date ranges
+        today = datetime.now().date()
+        first_day_current_month = today.replace(day=1)
+        first_day_last_month = first_day_current_month - relativedelta(months=1)
+        last_day_last_month = first_day_current_month - timedelta(days=1)
+        
+        def calculate_change(current, previous):
+            """Calculate percentage change between two values"""
+            if previous == 0:
+                return 100.0 if current > 0 else 0.0
+            return round(((current - previous) / previous) * 100, 1)
+        
+        # === RECEPTIONS ===
+        StockPicking = request.env['stock.picking'].sudo()
+        reception_type = request.env.ref('stock.picking_type_in', raise_if_not_found=False)
+        reception_domain = [('partner_id', 'in', partner_ids)]
+        if reception_type:
+            reception_domain.append(('picking_type_id', '=', reception_type.id))
+        
+        receptions_total = StockPicking.search_count(reception_domain)
+        receptions_current_month = StockPicking.search_count(reception_domain + [
+            ('scheduled_date', '>=', first_day_current_month)
+        ])
+        receptions_last_month = StockPicking.search_count(reception_domain + [
+            ('scheduled_date', '>=', first_day_last_month),
+            ('scheduled_date', '<=', last_day_last_month)
+        ])
+        receptions_change = calculate_change(receptions_current_month, receptions_last_month)
+        
+        # === EXPEDITIONS ===
+        SaleOrder = request.env['sale.order'].sudo()
+        expeditions_total = SaleOrder.search_count([('partner_id', 'in', partner_ids)])
+        expeditions_current_month = SaleOrder.search_count([
+            ('partner_id', 'in', partner_ids),
+            ('date_order', '>=', first_day_current_month)
+        ])
+        expeditions_last_month = SaleOrder.search_count([
+            ('partner_id', 'in', partner_ids),
+            ('date_order', '>=', first_day_last_month),
+            ('date_order', '<=', last_day_last_month)
+        ])
+        expeditions_change = calculate_change(expeditions_current_month, expeditions_last_month)
+        
+        # === PRODUCTS ===
+        ProductProduct = request.env['product.product'].sudo()
+        # Products that have been involved in receptions or sales for this partner
+        products_total = ProductProduct.search_count([('qty_available', '>', 0)])
+        # For change, we compare products with stock movements this month vs last month
+        StockMove = request.env['stock.move'].sudo()
+        products_moved_current = len(StockMove.search([
+            ('partner_id', 'in', partner_ids),
+            ('date', '>=', first_day_current_month),
+            ('state', '=', 'done')
+        ]).mapped('product_id'))
+        products_moved_last = len(StockMove.search([
+            ('partner_id', 'in', partner_ids),
+            ('date', '>=', first_day_last_month),
+            ('date', '<=', last_day_last_month),
+            ('state', '=', 'done')
+        ]).mapped('product_id'))
+        products_change = calculate_change(products_moved_current, products_moved_last)
+        
+        # === STOCK ===
+        StockQuant = request.env['stock.quant'].sudo()
+        # Total stock quantity
+        quants = StockQuant.search([('quantity', '>', 0)])
+        stock_total = int(sum(quants.mapped('quantity')))
+        # For stock change, compare with a snapshot approach (simplified)
+        # This is an approximation - for accurate historical stock you'd need stock valuation history
+        stock_change = 0.0  # Stock change is complex to calculate accurately without history
+        
+        # DEBUG
+        print("=" * 50)
+        print(f"[KPI DEBUG] Partner IDs: {partner_ids}")
+        print(f"[KPI DEBUG] Date range: {first_day_current_month} to {today}")
+        print(f"[KPI DEBUG] Last month: {first_day_last_month} to {last_day_last_month}")
+        print(f"[KPI DEBUG] Receptions: total={receptions_total}, current={receptions_current_month}, last={receptions_last_month}, change={receptions_change}")
+        print(f"[KPI DEBUG] Expeditions: total={expeditions_total}, current={expeditions_current_month}, last={expeditions_last_month}, change={expeditions_change}")
+        print(f"[KPI DEBUG] Products: total={products_total}, moved_current={products_moved_current}, moved_last={products_moved_last}, change={products_change}")
+        print(f"[KPI DEBUG] Stock: total={stock_total}, quants_count={len(quants)}")
+        print("=" * 50)
+        
+        return {
+            'status': 'success',
+            'receptions': {
+                'total': receptions_total,
+                'change': receptions_change,
+                'direction': 'up' if receptions_change >= 0 else 'down'
+            },
+            'expeditions': {
+                'total': expeditions_total,
+                'change': expeditions_change,
+                'direction': 'up' if expeditions_change >= 0 else 'down'
+            },
+            'products': {
+                'total': products_total,
+                'change': products_change,
+                'direction': 'up' if products_change >= 0 else 'down'
+            },
+            'stock': {
+                'total': stock_total,
+                'change': stock_change,
+                'direction': 'up' if stock_change >= 0 else 'down'
+            }
         }

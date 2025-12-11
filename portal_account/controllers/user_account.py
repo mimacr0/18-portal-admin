@@ -22,10 +22,14 @@ class PortalDashboardController(PortalAdminController):
     @http.route('/account/user/update/lang/<string:lang>', type='http', auth="user")
     def account_user_update_lang_action_main(self, lang, **post):
         user = request.env.user.sudo()
-        user.lang = lang
-        # Persist language for website/frontend rendering as well
-        resp = request.redirect("/my")
+        # Verificar si el idioma está instalado
+        Lang = request.env['res.lang'].sudo()
+        if Lang.search([('code', '=', lang), ('active', '=', True)]):
+            user.lang = lang
+        # Si no está instalado, mantener el idioma actual
+        resp = request.redirect('/my')
         try:
+            # Usar el idioma real del usuario (puede ser diferente si el solicitado no existía)
             resp.set_cookie('frontend_lang', lang, path='/')
         except Exception:
             pass

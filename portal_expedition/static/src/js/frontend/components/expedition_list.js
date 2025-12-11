@@ -138,11 +138,11 @@ export const initExpeditionsManagementListPage = () => {
     // Configurar botón para eliminar por lote
     const batchDeleteButton = document.getElementById('page-list-expedition-batch-action-delete');
     if(batchDeleteButton) batchDeleteButton.addEventListener('click', async () => {
-        // Get selected ids
-        const selectedIds = [];
-        document.querySelectorAll('.packages-list-checkbox:checked').forEach(checkbox => {
-            selectedIds.push(checkbox.dataset.packageId);
-        });
+        // Get selected ids (unique only)
+        const selectedIds = [...new Set(
+            Array.from(document.querySelectorAll('.orders-list-checkbox:checked'))
+                .map(checkbox => checkbox.dataset.orderId)
+        )];
 
         if(selectedIds.length === 0) return;
 

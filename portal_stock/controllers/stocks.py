@@ -1,6 +1,13 @@
+import io
 import math
 import json
 from functools import lru_cache
+from datetime import datetime
+
+try:
+    import xlsxwriter
+except ImportError:
+    xlsxwriter = None
 
 from odoo import http, _
 from odoo.addons.portal_admin_theme.controllers.admin import PortalAdminController
@@ -54,7 +61,7 @@ class PortalStockController(PortalAdminController):
         return menus
 
     @lru_cache(maxsize=1)
-    def _get_advanced_search_fields(self):
+    def _get_stock_advanced_search_fields(self):
         """Devuelve la configuración de campos para búsqueda avanzada"""
         return [
             {'id': 'name', 'label': _('Name'), 'type': 'text'},
@@ -179,9 +186,10 @@ class PortalStockController(PortalAdminController):
             'select2': True,
             'list_filters': list_filters,
             'list_columns': list_columns,  # Añadimos las columnas a renderizar
-            'advanced_search': json.dumps(self._get_advanced_search_fields()),
+            'advanced_search': json.dumps(self._get_stock_advanced_search_fields()),
             'batch_actions': [
-                {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
+                {'name': 'export', 'label': _('Export Excel'), 'icon': 'fas fa-file-excel', 'color': 'btn-primary'},
+                {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt', 'color': 'bg-red-600 hover:bg-red-700'},
             ],
             'products_list_html': products_list_html,
             'products_pager_html': products_pager_html,
@@ -203,7 +211,6 @@ class PortalStockController(PortalAdminController):
                 [('default_code', 'ilike', term)],
                 [('barcode', 'ilike', term)]
             ]))
-
         # Aplicar dominio de búsqueda avanzada
         if domain and isinstance(domain, list) and domain:
             adv_conditions = []        # lista de tuplas (AND)
@@ -272,7 +279,7 @@ class PortalStockController(PortalAdminController):
                     ])
                 else:  # 'all' es el predeterminado
                     base_domain.extend(adv_conditions)
-
+        print(f"base_domain: {base_domain}")
         return base_domain
 
     def _get_pagination_data(self, page, items_total, limit):
@@ -365,9 +372,10 @@ class PortalStockController(PortalAdminController):
 
     @http.route('/account/stock/list/advanced_filters', type='json', auth='user')
     def account_stock_list_advanced_filters(self, **kw):
+        print(f"self._get_stock_advanced_search_fields(): {self._get_stock_advanced_search_fields()}")
         return {
             'status': 'success',
-            'filters': json.dumps(self._get_advanced_search_fields())
+            'filters': json.dumps(self._get_stock_advanced_search_fields())
         }
 
     @http.route('/account/stock/image/<int:pid>/<int:width>x<int:height>', type='http', auth='user')
@@ -424,8 +432,9 @@ class PortalStockController(PortalAdminController):
             # Ensure product belongs to current account partner
             partner = request.env.user.partner_id
             account_partner = request.env['account.partner'].sudo().search([
-                ('id', '=', partner.commercial_partner_id.id)
+                ('partner_id', '=', partner.commercial_partner_id.id)
             ], limit=1)
+            print(account_partner, product.account_partner_id.id, account_partner.id)
             if account_partner and product.account_partner_id.id != account_partner.id:
                 return {'status': 'error', 'message': _('You do not have access to this product')}
 
@@ -477,3 +486,110 @@ class PortalStockController(PortalAdminController):
             }
         except Exception as e:
             return {'status': 'error', 'message': str(e)}
+
+    @http.route('/account/stock/export', type='http', auth='user', methods=['GET', 'POST'])
+    def account_stock_export(self, ids=None, **kw):
+        """Export stock products to Excel (XLSX) file."""
+        
+        if not xlsxwriter:
+            return request.make_response(
+                _('Excel export not available. Please install xlsxwriter.'),
+                headers=[('Content-Type', 'text/plain')]
+            )
+        
+        ProductProduct = request.env['product.product'].sudo()
+        partner_id = request.env.user.partner_id
+        
+        account_partner = request.env['account.partner'].sudo().search([
+            ('partner_id', '=', partner_id.commercial_partner_id.id)
+        ], limit=1)
+        
+        domain = [
+            ('is_storable', '=', True),
+            ('account_partner_id', '=', account_partner.id if account_partner else 0)
+        ]
+        
+        if ids:
+            try:
+                id_list = [int(i) for i in ids.split(',') if i.strip()]
+                if id_list:
+                    domain.append(('id', 'in', id_list))
+            except ValueError:
+                pass
+        
+        products = ProductProduct.search(domain, order='name asc')
+
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet(_('Stock'))
+        
+        # Formats
+        header_format = workbook.add_format({
+            'bold': True,
+            'bg_color': '#696900',
+            'font_color': 'white',
+            'border': 1,
+            'align': 'center',
+            'valign': 'vcenter'
+        })
+        cell_format = workbook.add_format({
+            'border': 1,
+            'valign': 'vcenter'
+        })
+        number_format = workbook.add_format({
+            'border': 1,
+            'valign': 'vcenter',
+            'num_format': '#,##0.00'
+        })
+        
+        # Column widths
+        worksheet.set_column(0, 0, 35)  # Name
+        worksheet.set_column(1, 1, 15)  # SKU
+        worksheet.set_column(2, 2, 18)  # Barcode
+        worksheet.set_column(3, 3, 12)  # Real Stock
+        worksheet.set_column(4, 4, 12)  # Available
+        worksheet.set_column(5, 5, 12)  # Incoming
+        worksheet.set_column(6, 6, 12)  # Outgoing
+        worksheet.set_column(7, 7, 12)  # Status
+        
+        # Headers
+        headers = [
+            _('Name'),
+            _('SKU'),
+            _('Barcode'),
+            _('Real Stock'),
+            _('Available'),
+            _('Incoming'),
+            _('Outgoing'),
+            _('Status'),
+        ]
+        for col, header in enumerate(headers):
+            worksheet.write(0, col, header, header_format)
+        
+        # Data rows
+        for row, product in enumerate(products, start=1):
+            status = _('In Stock') if product.qty_available > 0 else _('Out of Stock')
+            
+            worksheet.write(row, 0, product.name or '', cell_format)
+            worksheet.write(row, 1, product.default_code or '', cell_format)
+            worksheet.write(row, 2, product.barcode or '', cell_format)
+            worksheet.write(row, 3, product.qty_available or 0, number_format)
+            worksheet.write(row, 4, product.free_qty or 0, number_format)
+            worksheet.write(row, 5, product.incoming_qty or 0, number_format)
+            worksheet.write(row, 6, product.outgoing_qty or 0, number_format)
+            worksheet.write(row, 7, status, cell_format)
+        
+        workbook.close()
+        
+        output.seek(0)
+        content = output.getvalue()
+        
+        filename = f"stock_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        
+        return request.make_response(
+            content,
+            headers=[
+                ('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
+                ('Content-Disposition', f'attachment; filename="{filename}"'),
+            ]
+        )

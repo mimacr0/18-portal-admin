@@ -4,8 +4,14 @@
 #
 ##############################################################################
 
+import io
 import json
 from functools import lru_cache
+
+try:
+    import xlsxwriter
+except ImportError:
+    xlsxwriter = None
 
 from odoo import http, _
 from odoo.addons.portal_admin_theme.controllers.admin import PortalAdminController
@@ -96,7 +102,8 @@ class PortalExpeditionController(PortalAdminController):
             'tools_actions': [
             ],
             'batch_actions': [
-                {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt'}
+                {'name': 'export', 'label': _('Export Excel'), 'icon': 'fas fa-file-excel', 'color': 'btn-primary'},
+                {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt', 'color': 'bg-red-600 hover:bg-red-700'},
             ],
             'advanced_search': json.dumps(self._get_expedition_advanced_search_fields())
         })
@@ -151,7 +158,6 @@ class PortalExpeditionController(PortalAdminController):
         """Construye el dominio de búsqueda para productos"""
         
         base_domain = self._get_account_partner_domain(domain)
-
         # Integrar el dominio pasado como argumento
         if domain:
             base_domain = expression.AND([base_domain, domain])
@@ -272,6 +278,7 @@ class PortalExpeditionController(PortalAdminController):
 
         # Construir dominio de búsqueda
         base_domain = self._build_sale_domain(search, domain, match_type, quick_filter)
+        print(f"base_domain: {base_domain}")
 
         # # Apply quick filters
         # if quick_filter and quick_filter != 'all':
@@ -316,22 +323,151 @@ class PortalExpeditionController(PortalAdminController):
             'filters': json.dumps(self._get_expedition_advanced_search_fields())
         }
 
-    @http.route('/account/expedition/details/<int:order_id>', type='http', auth='user')
-    def account_expedition_details(self, order_id, **kw):
+    @http.route('/account/expedition/details/<int:order_id>', type='http', auth='user', website=True)
+    def account_expedition_details(self, order_id, access_token=None, **kw):
+        self._ensure_user_lang_context()
         SaleOrder = request.env['sale.order'].sudo()
-        order = SaleOrder.browse(order_id)
+        partner_id = request.env.user.partner_id
+        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
 
-        if not order.exists():
-            return {
-                'status': 'error',
-                'message': _('The requested expedition does not exist.')
-            }
+        order = SaleOrder.search([
+            ('id', '=', order_id),
+            ('partner_id', 'in', partner_ids)
+        ], limit=1)
 
-        return request.render('portal_expedition.portal_expedition_details_page', {
+        if not order:
+            return request.redirect('/account/expedition')
+
+        values = self._get_admin_layout_values()
+        values.update({
             'page_name': 'expedition_details',
             'order': order,
-            'user': request.env.user, 
-            'company': request.env.company, 
             'page_title': _('Expedition Details'),
             'page_url': '/account/expedition/details/%s' % order_id,
         })
+
+        return request.render('portal_expedition.portal_expedition_details_page', values)
+
+    @http.route('/account/expedition/export', type='http', auth='user', methods=['GET', 'POST'])
+    def account_expedition_export(self, ids=None, **kw):
+        """Export expeditions to Excel (XLSX) file."""
+        
+        if not xlsxwriter:
+            return request.make_response(
+                _('Excel export not available. Please install xlsxwriter.'),
+                headers=[('Content-Type', 'text/plain')]
+            )
+        
+        SaleOrder = request.env['sale.order'].sudo()
+        domain = self._get_account_partner_domain()
+        
+        if ids:
+            try:
+                id_list = [int(i) for i in ids.split(',') if i.strip()]
+                if id_list:
+                    domain.append(('id', 'in', id_list))
+            except ValueError:
+                pass
+        
+        orders = SaleOrder.search(domain, order='date_order desc')
+
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet(_('Expeditions'))
+        
+        # Formats
+        header_format = workbook.add_format({
+            'bold': True,
+            'bg_color': '#696900',
+            'font_color': 'white',
+            'border': 1,
+            'align': 'center',
+            'valign': 'vcenter'
+        })
+        cell_format = workbook.add_format({
+            'border': 1,
+            'valign': 'vcenter'
+        })
+        date_format = workbook.add_format({
+            'border': 1,
+            'valign': 'vcenter',
+            'num_format': 'dd/mm/yyyy hh:mm'
+        })
+        currency_format = workbook.add_format({
+            'border': 1,
+            'valign': 'vcenter',
+            'num_format': '#,##0.00'
+        })
+        
+        # Column widths
+        worksheet.set_column(0, 0, 18)  # Name
+        worksheet.set_column(1, 1, 18)  # Client Ref
+        worksheet.set_column(2, 2, 18)  # Date Order
+        worksheet.set_column(3, 3, 35)  # Products
+        worksheet.set_column(4, 4, 12)  # Subtotal
+        worksheet.set_column(5, 5, 12)  # Tax
+        worksheet.set_column(6, 6, 12)  # Total
+        worksheet.set_column(7, 7, 18)  # Carrier
+        worksheet.set_column(8, 8, 20)  # Tracking Ref
+        worksheet.set_column(9, 9, 12)  # State
+        
+        # Headers
+        headers = [
+            _('Name'),
+            _('Client Reference'),
+            _('Date Order'),
+            _('Products'),
+            _('Subtotal'),
+            _('Tax'),
+            _('Total'),
+            _('Carrier'),
+            _('Tracking Ref'),
+            _('State'),
+        ]
+        for col, header in enumerate(headers):
+            worksheet.write(0, col, header, header_format)
+        
+        # Data rows
+        for row, order in enumerate(orders, start=1):
+            # Products info
+            products_info = ', '.join([
+                f"{line.product_id.name} x {int(line.product_uom_qty)}"
+                for line in order.order_line
+            ])
+            
+            # Get last picking for carrier/tracking info
+            last_picking = order.picking_ids.sorted('scheduled_date')[-1] if order.picking_ids else None
+            carrier_name = last_picking.carrier_id.name if last_picking and last_picking.carrier_id else ''
+            tracking_ref = last_picking.carrier_tracking_ref if last_picking else ''
+            
+            # State label
+            state_label = dict(order._fields['state'].selection).get(order.state, order.state)
+            
+            worksheet.write(row, 0, order.name or '', cell_format)
+            worksheet.write(row, 1, order.client_order_ref or '', cell_format)
+            if order.date_order:
+                worksheet.write_datetime(row, 2, order.date_order.replace(tzinfo=None), date_format)
+            else:
+                worksheet.write(row, 2, '', cell_format)
+            worksheet.write(row, 3, products_info, cell_format)
+            worksheet.write(row, 4, order.amount_untaxed or 0, currency_format)
+            worksheet.write(row, 5, order.amount_tax or 0, currency_format)
+            worksheet.write(row, 6, order.amount_total or 0, currency_format)
+            worksheet.write(row, 7, carrier_name, cell_format)
+            worksheet.write(row, 8, tracking_ref or '', cell_format)
+            worksheet.write(row, 9, state_label, cell_format)
+        
+        workbook.close()
+        
+        output.seek(0)
+        content = output.getvalue()
+        
+        filename = f"expeditions_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        
+        return request.make_response(
+            content,
+            headers=[
+                ('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
+                ('Content-Disposition', f'attachment; filename="{filename}"'),
+            ]
+        )

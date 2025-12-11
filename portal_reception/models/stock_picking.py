@@ -5,6 +5,7 @@
 ##############################################################################
 
 from odoo import models, api
+from odoo.tools import html2plaintext
 
 
 class StockPicking(models.Model):
@@ -67,3 +68,8 @@ class StockPicking(models.Model):
             del result['no_package']
 
         return result
+
+    def get_note_text(self):
+        """Returns the note field as plain text without HTML tags."""
+        self.ensure_one()
+        return html2plaintext(self.note or '')

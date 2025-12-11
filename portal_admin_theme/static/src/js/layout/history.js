@@ -1,5 +1,48 @@
 const HISTORY_MAX_WIDGET_ITEMS = 5; // Show fewer items in the widget
 
+// Helper to get current language from cookie
+const sysLayoutGetCurrentLang = () => {
+    return document.cookie.match(/frontend_lang=([^;]+)/)?.[1] || 'en_US';
+};
+
+// Translate history titles by calling the server
+const sysLayoutTranslateHistoryTitles = async () => {
+    const history = sysLayoutHistoryLoadHistory();
+    if (!history || history.length === 0) return;
+
+    // Get unique paths from history
+    const paths = [...new Set(history.map(item => item.path))];
+
+    try {
+        const response = await fetch('/account/history/translate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                jsonrpc: '2.0',
+                method: 'call',
+                params: { paths },
+                id: Date.now()
+            })
+        });
+
+        const data = await response.json();
+        if (data.result) {
+            // Update history items with translated titles
+            const translatedTitles = data.result;
+            const updatedHistory = history.map(item => ({
+                ...item,
+                title: translatedTitles[item.path] || item.title
+            }));
+            sysLayoutHistorySaveHistory(updatedHistory);
+            sysLayoutReloadPagesHistory();
+        }
+    } catch (error) {
+        console.error('Error translating history titles:', error);
+    }
+};
+
 // Move loadHistory and saveHistory to global scope
 const sysLayoutHistoryLoadHistory = () => {
     const pageStorageUid = document.getElementById('page-storage-uid')?.value;
@@ -20,9 +63,9 @@ const sysLayoutBuildDesktopHistoryItem = (item) => {
     historyItem.href = item.path;
 
     // Use the active property from the item
-    const activeClass = item.active ? 'bg-[#8A8A00] text-white hover:bg-[#696900] hover:text-white dark:hover:bg-[#8A8A00] dark:hover:text-white' : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600';
+    const activeClass = item.active ? 'history-item-active' : 'history-item-inactive bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600';
     historyItem.className = `history-widget-item flex items-center text-sm text-gray-600 dark:text-gray-300
-        hover:text-[#8A8A00] dark:hover:text-[#A0A000] rounded-md transition-all duration-200
+        rounded-md transition-all duration-200
         shadow-sm md:p-0.5 lg:p-1 text-sm ${activeClass} hidden sm:flex`;
     historyItem.setAttribute('data-history-id', item.path);
     historyItem.setAttribute('data-title', item.title);
@@ -190,6 +233,19 @@ const sysLayoutInitPagesHistory = () => {
     const pageStorageUid = document.getElementById('page-storage-uid')?.value;
     const pageStorageHistoryUID = `page-storage-history-${pageStorageUid}`;
 
+    // Check if language changed and translate history titles
+    const currentLang = sysLayoutGetCurrentLang();
+    const langStorageKey = `${pageStorageHistoryUID}-lang`;
+    const storedLang = localStorage.getItem(langStorageKey);
+    const languageChanged = storedLang && currentLang !== storedLang;
+        
+    if (languageChanged) {
+        // Language changed - translate history titles (will reload when done)
+        sysLayoutTranslateHistoryTitles();
+    }
+    
+    // Save current language for next comparison
+    localStorage.setItem(langStorageKey, currentLang);
     if (!historyActionElements) return;
 
     // DOM Elements
@@ -290,8 +346,11 @@ const sysLayoutInitPagesHistory = () => {
         });
     }
 
-    // Initial setup
-    sysLayoutReloadPagesHistory();
+    // Initial setup - only reload if language didn't change
+    // (if language changed, sysLayoutTranslateHistoryTitles will reload after translation)
+    if (!languageChanged) {
+        sysLayoutReloadPagesHistory();
+    }
     updateHistoryDropdown();
 }
 

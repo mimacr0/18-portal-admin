@@ -1,15 +1,16 @@
-import { reloadReceptionListPage } from './reception_list.js';
-
 /**
- * Inicializa el modal de carga de archivos para recepciones
+ * Inicializa el modal de carga de archivos para importación
  *
  * Esta función configura:
  * 1. Eventos de arrastrar y soltar archivos
  * 2. Vista previa de archivos seleccionados
  * 3. Validación de archivos
  * 4. Envío del formulario
+ * 
+ * @param {Object} options - Opciones de configuración
+ * @param {Function} options.onSuccess - Callback ejecutado cuando la importación es exitosa
  */
-export const initFileUploadModal = () => {
+export const initFileUploadModal = (options = {}) => {
     const fileUploadModal = document.getElementById('file-upload-modal');
     if (!fileUploadModal) return;
 
@@ -119,24 +120,53 @@ export const initFileUploadModal = () => {
             try {
                 const formData = new FormData();
 
-                // Agregar todos los archivos al FormData
-                selectedFiles.forEach(file => {
-                    formData.append('files', file);
-                });
+                // Agregar el archivo al FormData (solo se importa uno)
+                if (selectedFiles.length > 0) {
+                    formData.append('file', selectedFiles[0]);
+                }
 
                 // Mostrar mensaje de carga
                 uploadButton.disabled = true;
-                uploadButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+                uploadButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Importing...';
 
-                // Simular subida por ahora (implementar RPC real en producción)
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                // Send file to import endpoint
+                const response = await fetch('/account/dashboard/import_receptions', {
+                    method: 'POST',
+                    body: formData,
+                });
+                console.log(response);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // Cerrar modal y reiniciar formulario
+                    fileUploadModal.classList.add('hidden');
+                    resetUploadForm();
+                    
+                    // Show success notification if available
+                    if (window.systemShowNotification) {
+                        window.systemShowNotification(result.message, { type: 'success' });
+                    } else {
+                        alert(result.message);
+                    }
 
-                // Cerrar modal y reiniciar formulario
-                fileUploadModal.classList.add('hidden');
-                resetUploadForm();
-
-                // Recargar la lista para mostrar los nuevos elementos
-                reloadReceptionListPage();
+                    // Ejecutar callback de éxito si está definido
+                    if (options.onSuccess && typeof options.onSuccess === 'function') {
+                        options.onSuccess(result);
+                    }
+                } else {
+                    // Show error
+                    if (errorDiv) {
+                        let errorMsg = result.message || 'Error importing file';
+                        if (result.errors && result.errors.length > 0) {
+                            errorMsg += ':\n' + result.errors.slice(0, 5).join('\n');
+                            if (result.errors.length > 5) {
+                                errorMsg += `\n... and ${result.errors.length - 5} more errors`;
+                            }
+                        }
+                        errorDiv.textContent = errorMsg;
+                        errorDiv.classList.remove('invisible');
+                    }
+                }
 
             } catch (error) {
                 console.error('Error uploading files:', error);
@@ -146,7 +176,7 @@ export const initFileUploadModal = () => {
                 }
             } finally {
                 uploadButton.disabled = false;
-                uploadButton.innerHTML = '<i class="fas fa-save"></i> Upload';
+                uploadButton.innerHTML = '<i class="fas fa-file-import"></i> Import';
             }
         });
     }
@@ -242,3 +272,7 @@ export const initFileUploadModal = () => {
         selectedFiles = [];
     }
 };
+
+// Export to window for cross-module access
+window.initFileUploadModal = initFileUploadModal;
+

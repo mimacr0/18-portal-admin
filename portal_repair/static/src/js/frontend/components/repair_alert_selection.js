@@ -16,12 +16,9 @@ export const portalAccountRepairAlertInitCheckboxSelect = () => {
     newSelectAllCheckbox.addEventListener('change', function() {
         const isChecked = this.checked;
 
-        // Update all visible user checkboxes to match the select all state
-        document.querySelectorAll('.packages-list-checkbox').forEach(checkbox => {
-            // Only change checkboxes for visible rows
-            if (checkbox.closest('tr').style.display !== 'none') {
-                checkbox.checked = isChecked;
-            }
+        // Update all checkboxes to match the select all state
+        document.querySelectorAll('.repair-alert-list-checkbox').forEach(checkbox => {
+            checkbox.checked = isChecked;
         });
 
         updateBulkActionsToolbar();
@@ -29,7 +26,7 @@ export const portalAccountRepairAlertInitCheckboxSelect = () => {
 
     // Handle individual user checkboxes - using event delegation for dynamically created checkboxes
     document.querySelector('table tbody').addEventListener('change', function(e) {
-        if (e.target && e.target.classList.contains('packages-list-checkbox')) {
+        if (e.target && e.target.classList.contains('repair-alert-list-checkbox')) {
             updateSelectAllCheckbox();
             updateBulkActionsToolbar();
         }
@@ -38,7 +35,7 @@ export const portalAccountRepairAlertInitCheckboxSelect = () => {
     // Handle clear selection button
     if (clearSelectionButton) {
         clearSelectionButton.addEventListener('click', function() {
-            document.querySelectorAll('.packages-list-checkbox').forEach(checkbox => {
+            document.querySelectorAll('.repair-alert-list-checkbox').forEach(checkbox => {
                 checkbox.checked = false;
             });
             newSelectAllCheckbox.checked = false;
@@ -49,7 +46,6 @@ export const portalAccountRepairAlertInitCheckboxSelect = () => {
     // Update the bulk actions toolbar based on selection state
     function updateBulkActionsToolbar() {
         const selectedCount = getSelectedItems().length;
-
         if (selectedCount > 0) {
             bulkActionsToolbar.classList.remove('hidden');
             selectedCountSpan.textContent = `${selectedCount} selected`;
@@ -58,29 +54,39 @@ export const portalAccountRepairAlertInitCheckboxSelect = () => {
         }
     }
 
-    // Update the "Select All" checkbox based on individual checkboxes
+    // Update the "Select All" checkbox based on individual checkboxes (unique IDs only)
     function updateSelectAllCheckbox() {
-        const visibleCheckboxes = Array.from(document.querySelectorAll('.packages-list-checkbox')).filter(checkbox =>
-            checkbox.closest('tr').style.display !== 'none'
-        );
+        const uniqueIds = new Set();
+        const checkedIds = new Set();
+        
+        document.querySelectorAll('.repair-alert-list-checkbox').forEach(checkbox => {
+            const id = checkbox.dataset.alertId;
+            uniqueIds.add(id);
+            if (checkbox.checked) {
+                checkedIds.add(id);
+            }
+        });
 
-        const allChecked = visibleCheckboxes.length > 0 &&
-                          visibleCheckboxes.every(checkbox => checkbox.checked);
-
-        const someChecked = visibleCheckboxes.some(checkbox => checkbox.checked);
+        const allChecked = uniqueIds.size > 0 && uniqueIds.size === checkedIds.size;
+        const someChecked = checkedIds.size > 0;
 
         newSelectAllCheckbox.checked = allChecked;
         newSelectAllCheckbox.indeterminate = someChecked && !allChecked;
     }
 
-    // Helper function to get selected items
+    // Helper function to get selected items (unique IDs only)
     function getSelectedItems() {
-        return Array.from(document.querySelectorAll('.packages-list-checkbox'))
-            .filter(checkbox => checkbox.checked)
-            .map(checkbox => ({
-                id: checkbox.dataset.packageId,
-                name: checkbox.dataset.packageName || ''
-            }));
+        const selected = new Map();
+        document.querySelectorAll('.repair-alert-list-checkbox:checked').forEach(checkbox => {
+            const id = checkbox.dataset.alertId;
+            if (!selected.has(id)) {
+                selected.set(id, {
+                    id: id,
+                    name: checkbox.dataset.alertName || ''
+                });
+            }
+        });
+        return Array.from(selected.values());
     }
 
     // Update selection state when filters change

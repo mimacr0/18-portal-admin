@@ -1,27 +1,35 @@
-import { reloadLotsListPage, initLotsManagementListPage } from "./components/stock_lots.js";
-import { initProductsListSearch, portalAccountProductsInitAdvancedFilters, initAdvancedSearch } from "./components/stock_search.js";
-import { portalAccountProductsInitCheckboxSelect } from "./components/stock_selection.js";
+import { reloadLotsListPage, initLotsManagementListPage } from "./components/lot_list.js";
+import { initLotsListSearch, initLotsAdvancedFilters, initLotsAdvancedSearch } from "./components/lot_search.js";
+import { initLotsCheckboxSelect, reinitLotsSelection } from "./components/lot_selection.js";
+import { initLotsQuickFilters } from "./components/lot_quick_filter.js";
 import { initTableSorting } from "./components/stock_sorting.js";
 import { initStickyTableHeader } from "./components/stock_header.js";
-import { initStockQuickSortFilters } from "./components/stock_quick_filter.js";
 
-// Inicialización al cargar el documento
+// Initialization on document load
 document.addEventListener('DOMContentLoaded', () => {
-    if(!document.getElementById('lots-page-list-items')) return;
+    if (!document.getElementById('lots-page-list-items')) return;
     
-    // Obtener product_id de la URL si existe
+    // Get product_id from URL if exists
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('product_id');
     
+    // Initial load
     reloadLotsListPage(productId);
+    
+    // Initialize components
     initLotsManagementListPage();
-    document.addEventListener('lots:reload', () => reloadLotsListPage(productId));
-    initProductsListSearch();
-    portalAccountProductsInitCheckboxSelect();
-    portalAccountProductsInitAdvancedFilters();
-    initAdvancedSearch();
+    initLotsListSearch();
+    initLotsCheckboxSelect();
+    initLotsAdvancedFilters();
+    initLotsAdvancedSearch();
+    initLotsQuickFilters();
     initTableSorting();
     initStickyTableHeader();
-    initStockQuickSortFilters();
+    
+    // Event listeners for reloading
+    document.addEventListener('lots:reload', () => {
+        reloadLotsListPage(productId);
+        // Re-init selection after reload
+        setTimeout(() => reinitLotsSelection(), 100);
+    });
 });
-

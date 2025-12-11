@@ -29,8 +29,10 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Receptions</p>
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-receptions-value" data-value="0">0</h3>
-                                <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-kpi-receptions-total">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-receptions-change">
+                                    <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+                                </p>
                             </div>
                             <div class="bg-cyan-100 dark:bg-cyan-900 p-3 rounded-full">
                                 <i class="fas fa-box text-cyan-500 dark:text-cyan-400"></i>
@@ -42,8 +44,10 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Expeditions</p>
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-expeditions-value" data-value="0">0</h3>
-                                <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-kpi-expeditions-total">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-expeditions-change">
+                                    <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+                                </p>
                             </div>
                             <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-full">
                                 <i class="fas fa-truck text-purple-500 dark:text-purple-400"></i>
@@ -55,8 +59,10 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Products</p>
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-products-value" data-value="0">0</h3>
-                                <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-kpi-products-total">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-products-change">
+                                    <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+                                </p>
                             </div>
                             <div class="bg-amber-100 dark:bg-amber-900 p-3 rounded-full">
                                 <i class="fas fa-cubes text-amber-500 dark:text-amber-400"></i>
@@ -68,8 +74,10 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Stock</p>
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-stock-value" data-value="0">0</h3>
-                                <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-kpi-stock-total">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-stock-change">
+                                    <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+                                </p>
                             </div>
                             <div class="bg-green-100 dark:bg-green-900 p-3 rounded-full">
                                 <i class="fas fa-boxes-stacked text-green-500 dark:text-green-400"></i>
@@ -108,7 +116,7 @@
                     </div>
 
                     <!-- Account Balance Card -->
-                    <div class="bg-gradient-to-r from-[#8A8A00] to-[#696900] dark:from-[#8A8A00] dark:to-[#696900] p-4 rounded-lg shadow text-white">
+                    <div class="content-gradient p-4 rounded-lg shadow text-white">
                         <div class="flex justify-between items-start mb-4">
                             <h3 class="text-lg font-semibold">Account Balance</h3>
                             <i class="fas fa-credit-card text-white/80 text-xl"></i>
@@ -137,17 +145,37 @@
 
                 </div>
 
+                <!-- Period Selector -->
+                <div class="flex justify-end mb-3">
+                    <div class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1">
+                        <button type="button" data-period="7d" class="dashboard-period-btn px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 bg-primary-theme text-white">
+                            7 days
+                        </button>
+                        <button type="button" data-period="week" class="dashboard-period-btn px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Weekly
+                        </button>
+                        <button type="button" data-period="month" class="dashboard-period-btn px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Monthly
+                        </button>
+                        <button type="button" data-period="year" class="dashboard-period-btn px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Yearly
+                        </button>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                     <!-- Spark Chart 1 -->
                     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Receptions</h3>
-                            <span class="text-sm text-gray-500 dark:text-gray-400">Last 7 days</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400" id="receptions-chart-period-label">Last 7 days</span>
                         </div>
-                        <div id="receptions-chart" class="h-36"></div>
+                        <div id="receptions-chart" class="h-40"></div>
                         <div class="flex items-center justify-center mt-3">
-                            <span class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-receptions-value" data-value="0">0</span>
-                            <span class="text-sm text-green-500 ml-2"><i class="fas fa-arrow-up mr-1"></i>0% since last month</span>
+                            <span class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-chart-receptions-total">-</span>
+                            <span class="text-sm ml-2" id="dashboard-chart-receptions-change">
+                                <i class="fas fa-spinner fa-spin mr-1"></i>
+                            </span>
                         </div>
                     </div>
 
@@ -155,133 +183,28 @@
                     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Expeditions</h3>
-                            <span class="text-sm text-gray-500 dark:text-gray-400">Last 7 days</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400" id="expeditions-chart-period-label">Last 7 days</span>
                         </div>
-                        <div id="expeditions-chart" class="h-36"></div>
+                        <div id="expeditions-chart" class="h-40"></div>
                         <div class="flex items-center justify-center mt-3">
-                            <span class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-expeditions-value" data-value="0">0</span>
-                            <span class="text-sm text-green-500 ml-2"><i class="fas fa-arrow-up mr-1"></i>0% since last month</span>
+                            <span class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-chart-expeditions-total">-</span>
+                            <span class="text-sm ml-2" id="dashboard-chart-expeditions-change">
+                                <i class="fas fa-spinner fa-spin mr-1"></i>
+                            </span>
                         </div>
                     </div>
+                </div>
+                <div style="height: 75px;">
+
                 </div>
 
             </div>
 
             <t t-set="footer_content">
-                <!-- Modal -->
-                <div id="dashboard-page-add-credit-modal" class="modal" data-outside-close="false">
-                    <div class="modal-content max-w-2xl w-full mx-auto">
-                        <div class="modal-header">
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Add Credit</h3>
-                            <button data-modal-close="true" class="close-modal" aria-label="Close modal">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="dashboard-add-credit-form">
-                                <!-- Credit amount field -->
-                                <div class="form-group">
-                                    <div class="flex items-center">
-                                        <label for="dashboard-page-add-credit-amount" class="form-label-sm font-sm">Credit Amount</label>
-                                    </div>
-                                    <div>
-                                        <input type="number" name="credit_amount" id="dashboard-page-add-credit-amount" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#A0A000]" placeholder="Credit Amount" required="required" min="0"/>
-                                        <div class="form-error invisible" id="dashboard-page-add-credit-amount-error"></div>
-                                        <span class="ml-2 text-xs text-gray-500 italic">
-                                            <i class="fas fa-info-circle"></i> Enter the desired credit amount to initiate an approval process.
-                                        </span>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700">
-                            <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
-                                <i class="fas fa-times"></i> Cancel
-                            </button>
-                            <button id="dashboard-page-add-credit-submit" class="modal-btn modal-btn-primary">
-                                <i class="fas fa-plus"></i> Add Credit
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Import receptions Modal -->
-                <div id="dashboard-page-import-receptions-modal" class="modal" data-outside-close="false">
-                    <div class="modal-content max-w-lg w-full mx-auto">
-                        <div class="modal-header">
-                            <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">Import Receptions</h3>
-                            <button data-modal-close="true" class="close-modal" aria-label="Close modal">
-                                <i class="fas fa-times"/>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="dashboard-import-receptions-form" class="form-flex">
-                                <div class="form-group-flex">
-                                    <label for="fileInput" class="form-label form-label-sm">Upload File</label>
-                                    <div class="form-field-container">
-                                        <div class="file-drop-area rounded-md border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 text-center cursor-pointer">
-                                            <input type="file" id="fileInput" name="fileInput" class="hidden focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#A0A000]" required="required" multiple="multiple"/>
-                                            <div class="file-input-content">
-                                                <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 dark:text-gray-500"/>
-                                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop a file here, or <span class="text-[#696900] dark:text-[#A0A000] browse-link">browse</span></p>
-                                                <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Maximum file size: 5MB</p>
-                                            </div>
-                                        </div>
-                                        <div class="file-preview mt-3 flex flex-col items-center"/>
-                                        <div class="form-error" id="fileInputError">Please select a file to upload.</div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700">
-                            <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
-                                <i class="fas fa-times"/> Cancel
-                            </button>
-                            <button class="modal-btn modal-btn-primary">
-                                <i class="fas fa-save"/> Upload
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Import expeditions Modal -->
-                <div id="dashboard-page-import-expeditions-modal" class="modal" data-outside-close="false">
-                    <div class="modal-content max-w-lg w-full mx-auto">
-                        <div class="modal-header">
-                            <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">Import Expeditions</h3>
-                            <button data-modal-close="true" class="close-modal" aria-label="Close modal">
-                                <i class="fas fa-times"/>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="dashboard-import-expeditions-form" class="form-flex">
-                                <div class="form-group-flex">
-                                    <label for="fileInput" class="form-label form-label-sm">Upload File</label>
-                                    <div class="form-field-container">
-                                        <div class="file-drop-area rounded-md border-2 border-dashed border-gray-300 dark:border-gray-600 p-4 text-center cursor-pointer">
-                                            <input type="file" id="fileInput" name="fileInput" class="hidden focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#A0A000]" required="required" multiple="multiple"/>
-                                            <div class="file-input-content">
-                                                <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 dark:text-gray-500"/>
-                                                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Drag and drop a file here, or <span class="text-[#696900] dark:text-[#A0A000] browse-link">browse</span></p>
-                                                <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Maximum file size: 5MB</p>
-                                            </div>
-                                        </div>
-                                        <div class="file-preview mt-3 flex flex-col items-center"/>
-                                        <div class="form-error" id="fileInputError">Please select a file to upload.</div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700">
-                            <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
-                                <i class="fas fa-times"/> Cancel
-                            </button>
-                            <button class="modal-btn modal-btn-primary">
-                                <i class="fas fa-save"/> Upload
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <!-- Dashboard Modals -->
+                <t t-call="portal_account.dashboard_add_credit_modal"/>
+                <t t-call="portal_account.dashboard_import_receptions_modal"/>
+                <t t-call="portal_account.dashboard_import_expeditions_modal"/>
             </t>
 
         </t>
