@@ -1,43 +1,38 @@
 import { rpc } from "@web/core/network/rpc";
 import { debounce } from "./stock_utils.js";
-import { reloadStockListPage } from "./stock_list.js";
-import { sortConfig } from "./stock_list.js";
+import { reloadLotsListPage } from "./lot_list.js";
 
-export const initProductsListSearch = () => {
-    const searchInput = document.getElementById('page-stock-list-search');
-    if(!searchInput) {
-        console.error('No se encontró el input de búsqueda con ID: page-stock-list-search');
-        return;
-    }
+export const initLotsListSearch = () => {
+    const searchInput = document.getElementById('page-lots-list-search');
+    if (!searchInput) return;
     
-    const currentPageInput = document.getElementById('stock-list-pagination-page');
-    if(!currentPageInput) return;
+    const currentPageInput = document.getElementById('lots-list-pagination-page');
+    if (!currentPageInput) return;
     
-    // Usando la función debounce importada
     searchInput.addEventListener('input', debounce(() => {
         currentPageInput.value = 1;
-        reloadStockListPage();
+        reloadLotsListPage();
     }, 500));
-}
+};
 
-export const portalAccountProductsInitAdvancedFilters = async () => {
-    const res = await rpc('/account/stock/list/advanced_filters');
+export const initLotsAdvancedFilters = async () => {
+    const res = await rpc('/account/stock/lots/advanced_filters');
     if (res?.status != 'success') return;
 
-    const fieldsInput = document.getElementById('page-stock-list-advanced-search-fields');
+    const fieldsInput = document.getElementById('page-lots-list-advanced-search-fields');
     if (!fieldsInput) return;
 
     fieldsInput.value = res.filters;
-}
+};
 
-export function initAdvancedSearch() {
-    const advancedSearchToggle = document.getElementById('page-stock-list-advanced-search-toggle') || document.getElementById('page-stock-list-advanced-search-toggle');
-    const advancedSearchPanel = document.getElementById('page-stock-list-advanced-search-panel') || document.getElementById('page-stock-list-advanced-search-panel') || document.querySelector('[id^="page-"][id$="-list-advanced-search-panel"]');
-    const applyAdvancedSearchButton = document.getElementById('page-stock-list-advanced-search-apply-btn');
-    const resetAdvancedSearchButton = document.getElementById('page-stock-list-advanced-search-reset-btn');
-    const addFilterLineBtn = document.getElementById('page-stock-list-advanced-search-add-line-btn');
-    const matchTypeSelector = document.getElementById('page-stock-list-advanced-search-match-type');
-    const linesContainer = document.getElementById('page-stock-list-advanced-search-lines-container');
+export function initLotsAdvancedSearch() {
+    const advancedSearchToggle = document.getElementById('page-lots-list-advanced-search-toggle');
+    const advancedSearchPanel = document.getElementById('page-lots-list-advanced-search-panel');
+    const applyAdvancedSearchButton = document.getElementById('page-lots-list-advanced-search-apply-btn');
+    const resetAdvancedSearchButton = document.getElementById('page-lots-list-advanced-search-reset-btn');
+    const addFilterLineBtn = document.getElementById('page-lots-list-advanced-search-add-line-btn');
+    const matchTypeSelector = document.getElementById('page-lots-list-advanced-search-match-type');
+    const linesContainer = document.getElementById('page-lots-list-advanced-search-lines-container');
 
     if (!advancedSearchToggle || !advancedSearchPanel) return;
 
@@ -66,7 +61,6 @@ export function initAdvancedSearch() {
     if (resetAdvancedSearchButton) {
         resetAdvancedSearchButton.addEventListener('click', function() {
             resetFilters();
-            // Reload with cleared filters
             applyFiltersAndSort();
         });
     }
@@ -95,8 +89,11 @@ export function initAdvancedSearch() {
 }
 
 function addFilterLine() {
-    const fieldsData = JSON.parse(document.getElementById('page-stock-list-advanced-search-fields').value || '[]');
-    const linesContainer = document.getElementById('page-stock-list-advanced-search-lines-container');
+    const fieldsInput = document.getElementById('page-lots-list-advanced-search-fields');
+    if (!fieldsInput) return;
+    
+    const fieldsData = JSON.parse(fieldsInput.value || '[]');
+    const linesContainer = document.getElementById('page-lots-list-advanced-search-lines-container');
 
     const lineId = Date.now();
     const line = document.createElement('div');
@@ -115,7 +112,7 @@ function addFilterLine() {
         fieldSelect.appendChild(option);
     });
 
-    // Operator select (dynamic by field type)
+    // Operator select
     const operatorSelect = document.createElement('select');
     operatorSelect.className = 'px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700';
     operatorSelect.dataset.type = 'operator';
@@ -147,7 +144,8 @@ function addFilterLine() {
     };
 
     const getFieldSpec = (id) => {
-        const fieldsData = JSON.parse(document.getElementById('page-stock-list-advanced-search-fields').value || '[]');
+        const fieldsInput = document.getElementById('page-lots-list-advanced-search-fields');
+        const fieldsData = JSON.parse(fieldsInput?.value || '[]');
         return fieldsData.find(f => f.id === id) || { id, type: 'text' };
     };
 
@@ -161,7 +159,7 @@ function addFilterLine() {
         });
     };
 
-    // Value input (dynamic by field type)
+    // Value input
     const buildValueInput = (fieldSpec) => {
         if (fieldSpec.type === 'number') {
             const input = document.createElement('input');
@@ -198,12 +196,11 @@ function addFilterLine() {
     removeBtn.innerHTML = '<i class="fas fa-times"></i>';
     removeBtn.addEventListener('click', function() {
         line.remove();
-        // Auto-apply after removal
-        const applyBtn = document.getElementById('page-stock-list-advanced-search-apply-btn');
+        const applyBtn = document.getElementById('page-lots-list-advanced-search-apply-btn');
         applyBtn && applyBtn.click();
     });
 
-    // Initialize operator/value by initial field
+    // Initialize
     const initialSpec = getFieldSpec(fieldSelect.value);
     populateOperatorOptions(initialSpec.type);
     let valueInput = buildValueInput(initialSpec);
@@ -226,100 +223,73 @@ function addFilterLine() {
 }
 
 function resetFilters() {
-    const linesContainer = document.getElementById('page-stock-list-advanced-search-lines-container');
-    linesContainer.innerHTML = '';
+    const linesContainer = document.getElementById('page-lots-list-advanced-search-lines-container');
+    if (linesContainer) linesContainer.innerHTML = '';
     addFilterLine();
-    document.getElementById('page-stock-list-advanced-search-match-type').value = 'all';
-    document.getElementById('page-stock-list-advanced-search-domain').value = '[]';
+    const matchType = document.getElementById('page-lots-list-advanced-search-match-type');
+    if (matchType) matchType.value = 'all';
+    const domain = document.getElementById('page-lots-list-advanced-search-domain');
+    if (domain) domain.value = '[]';
 }
 
 function buildSearchDomain() {
-    const matchType = document.getElementById('page-stock-list-advanced-search-match-type').value;
-    const lines = document.querySelectorAll('#page-stock-list-advanced-search-lines-container > div');
+    const matchType = document.getElementById('page-lots-list-advanced-search-match-type')?.value || 'all';
+    const lines = document.querySelectorAll('#page-lots-list-advanced-search-lines-container > div');
     const conditions = [];
 
     lines.forEach(line => {
-        const field = line.querySelector('[data-type="field"]').value;
-        const operator = line.querySelector('[data-type="operator"]').value;
-        const value = line.querySelector('[data-type="value"]').value.trim();
+        const field = line.querySelector('[data-type="field"]')?.value;
+        const operator = line.querySelector('[data-type="operator"]')?.value;
+        const value = line.querySelector('[data-type="value"]')?.value?.trim();
 
-        if (value) {
+        if (field && operator && value) {
             conditions.push([field, operator, value]);
         }
     });
 
-    if (conditions.length === 0) return [];
-
-    document.getElementById('page-stock-list-advanced-search-domain').value = JSON.stringify(conditions);
+    const domainInput = document.getElementById('page-lots-list-advanced-search-domain');
+    if (domainInput) domainInput.value = JSON.stringify(conditions);
+    
     return conditions;
 }
 
 export async function applyFiltersAndSort() {
     const searchDomain = buildSearchDomain();
-    const matchType = document.getElementById('page-stock-list-advanced-search-match-type').value;
-    const currentPageInput = document.getElementById('stock-list-pagination-page');
-    currentPageInput.value = 1;
+    const matchType = document.getElementById('page-lots-list-advanced-search-match-type')?.value || 'all';
+    const currentPageInput = document.getElementById('lots-list-pagination-page');
+    if (currentPageInput) currentPageInput.value = 1;
 
-    const searchInput = document.getElementById('page-stock-list-search');
-    if (!searchInput) {
-        console.error('No se encontró el input de búsqueda con ID: page-stock-list-search');
-    }
+    const searchInput = document.getElementById('page-lots-list-search');
     const search = searchInput ? searchInput.value : '';
 
-    const pageListItems = document.getElementById('stock-page-list-items');
+    // Get product_id from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('product_id');
+
+    const quickFiltersInput = document.getElementById('page-lots-list-quick-filter-active');
+    const quickFilter = quickFiltersInput ? quickFiltersInput.value : 'all';
 
     try {
-        const quickFiltersInput = document.getElementById('page-stock-list-quick-filter-active');
-        const quickFilter = quickFiltersInput ? quickFiltersInput.value : 'all';
-        const res = await rpc('/account/stock/list/reload', {
+        const res = await rpc('/account/stock/lots/reload', {
             page: 1,
             search: search,
             domain: searchDomain,
             match_type: matchType,
-            sort: sortConfig.column,
-            order: sortConfig.direction,
+            product_id: productId,
             quick_filter: quickFilter
         });
 
         if (res?.status !== 'success') return;
 
+        const pageListItems = document.getElementById('lots-page-list-items');
         if (pageListItems) pageListItems.innerHTML = res.list;
 
-        const paginationContainer = document.getElementById('stock-list-pagination-container');
+        const paginationContainer = document.getElementById('lots-list-pagination-container');
         if (paginationContainer) paginationContainer.innerHTML = res.pager;
 
-        // IDs y clases corregidos para paginador
-        const paginationPrevious = document.getElementById('stock-list-pagination-previous');
-        const paginationButton = document.querySelectorAll('.stock-list-pagination-button');
-        const paginationNext = document.getElementById('stock-list-pagination-next');
-
-        if (paginationPrevious) {
-            paginationPrevious.addEventListener('click', () => {
-                if ((parseInt(currentPageInput.value) - 1) < 1) return;
-                currentPageInput.value = parseInt(currentPageInput.value) - 1;
-                reloadStockListPage();
-            });
-        }
-
-        if (paginationButton) {
-            paginationButton.forEach(button => {
-                button.addEventListener('click', () => {
-                    currentPageInput.value = parseInt(button.dataset.page);
-                    reloadStockListPage();
-                });
-            });
-        }
-
-        if (paginationNext) {
-            paginationNext.addEventListener('click', () => {
-                if ((parseInt(currentPageInput.value) + 1) > res.last_page) return;
-                currentPageInput.value = parseInt(currentPageInput.value) + 1;
-                reloadStockListPage();
-            });
-        }
-
-        document.dispatchEvent(new CustomEvent('filtersApplied'));
+        document.dispatchEvent(new CustomEvent('lotsFiltersApplied'));
     } catch (error) {
-        console.error('Error applying filters:', error);
+        console.error('Error applying lot filters:', error);
     }
 }
+

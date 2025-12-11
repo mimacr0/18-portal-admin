@@ -61,7 +61,7 @@ class PortalStockController(PortalAdminController):
         return menus
 
     @lru_cache(maxsize=1)
-    def _get_advanced_search_fields(self):
+    def _get_stock_advanced_search_fields(self):
         """Devuelve la configuración de campos para búsqueda avanzada"""
         return [
             {'id': 'name', 'label': _('Name'), 'type': 'text'},
@@ -186,7 +186,7 @@ class PortalStockController(PortalAdminController):
             'select2': True,
             'list_filters': list_filters,
             'list_columns': list_columns,  # Añadimos las columnas a renderizar
-            'advanced_search': json.dumps(self._get_advanced_search_fields()),
+            'advanced_search': json.dumps(self._get_stock_advanced_search_fields()),
             'batch_actions': [
                 {'name': 'export', 'label': _('Export Excel'), 'icon': 'fas fa-file-excel', 'color': 'btn-primary'},
                 {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt', 'color': 'bg-red-600 hover:bg-red-700'},
@@ -211,7 +211,6 @@ class PortalStockController(PortalAdminController):
                 [('default_code', 'ilike', term)],
                 [('barcode', 'ilike', term)]
             ]))
-
         # Aplicar dominio de búsqueda avanzada
         if domain and isinstance(domain, list) and domain:
             adv_conditions = []        # lista de tuplas (AND)
@@ -280,7 +279,7 @@ class PortalStockController(PortalAdminController):
                     ])
                 else:  # 'all' es el predeterminado
                     base_domain.extend(adv_conditions)
-
+        print(f"base_domain: {base_domain}")
         return base_domain
 
     def _get_pagination_data(self, page, items_total, limit):
@@ -373,9 +372,10 @@ class PortalStockController(PortalAdminController):
 
     @http.route('/account/stock/list/advanced_filters', type='json', auth='user')
     def account_stock_list_advanced_filters(self, **kw):
+        print(f"self._get_stock_advanced_search_fields(): {self._get_stock_advanced_search_fields()}")
         return {
             'status': 'success',
-            'filters': json.dumps(self._get_advanced_search_fields())
+            'filters': json.dumps(self._get_stock_advanced_search_fields())
         }
 
     @http.route('/account/stock/image/<int:pid>/<int:width>x<int:height>', type='http', auth='user')
