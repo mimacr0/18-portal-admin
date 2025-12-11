@@ -8,6 +8,15 @@ from odoo.addons.portal.controllers.portal import CustomerPortal
 
 class PortalAdminController(CustomerPortal):
 
+    # Theme colors - can be overridden in child classes
+    BASE_COLOR = '#A8A800'
+    HOVER_COLOR = '#8A8A00'
+    LIGHT_BG_COLOR = '#f0f0e0'
+    # Dark mode colors
+    DARK_BASE_COLOR = '#FF1414'
+    DARK_HOVER_COLOR = '#FF1414'
+    DARK_LIGHT_BG_COLOR = '#3a3a1a'
+
     @http.route('/account/history/translate', type='json', auth='user')
     def translate_history_titles(self, paths=None, **kw):
         """Translate history titles based on current user's language.
@@ -75,5 +84,13 @@ class PortalAdminController(CustomerPortal):
             'list_columns': [],
             'user': user,
             'company': company,
-            'json': json
+            'json': json,
+            # Theme colors
+            'base_color': self.BASE_COLOR,
+            'hover_color': self.HOVER_COLOR,
+            'light_bg_color': self.LIGHT_BG_COLOR,
+            # Dark mode colors
+            'dark_base_color': self.DARK_BASE_COLOR,
+            'dark_hover_color': self.DARK_HOVER_COLOR,
+            'dark_light_bg_color': self.DARK_LIGHT_BG_COLOR,
         }

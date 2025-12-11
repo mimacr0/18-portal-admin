@@ -121,13 +121,13 @@ function setupFileUploadModal(config) {
 
         ['dragenter', 'dragover'].forEach(eventName => {
             dropArea.addEventListener(eventName, () => {
-                dropArea.classList.add('border-[#696900]', 'bg-gray-50', 'dark:bg-gray-700');
+                dropArea.classList.add('border-primary-theme', 'bg-gray-50', 'dark:bg-gray-700');
             }, false);
         });
 
         ['dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, () => {
-                dropArea.classList.remove('border-[#696900]', 'bg-gray-50', 'dark:bg-gray-700');
+                dropArea.classList.remove('border-primary-theme', 'bg-gray-50', 'dark:bg-gray-700');
             }, false);
         });
 
