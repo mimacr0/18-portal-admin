@@ -118,6 +118,10 @@ class PortalReceptionListController(PortalAdminController):
                 {'id': 'note', 'label': _('Note'), 'sortable': False, 'responsive': ['lg']},
                 {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True, 'responsive': ['sm', 'md', 'lg']}
             ],
+            'tools_actions': [
+                {'name': 'import', 'label': _('Import Excel'), 'icon': 'fas fa-file-import', 'color': 'btn-primary', 'modal_id': 'dashboard-page-import-receptions-modal'},
+            ],
+
             'batch_actions': [
                 {'name': 'export', 'label': _('Export Excel'), 'icon': 'fas fa-file-excel', 'color': 'btn-primary'},
                 {'name': 'delete', 'label': _('Cancel'), 'icon': 'fas fa-ban'},
@@ -369,7 +373,6 @@ class PortalReceptionListController(PortalAdminController):
         offset = (page - 1) * limit
 
         base_domain = self._build_reception_domain(search, domain, match_type, quick_filter)
-        print(f"base_domain: {base_domain}")
         
         if quick_filter and quick_filter == 'pending':
             base_domain.append(('state', '=', 'assigned'))
