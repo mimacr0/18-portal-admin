@@ -323,25 +323,30 @@ class PortalExpeditionController(PortalAdminController):
             'filters': json.dumps(self._get_expedition_advanced_search_fields())
         }
 
-    @http.route('/account/expedition/details/<int:order_id>', type='http', auth='user')
-    def account_expedition_details(self, order_id, **kw):
+    @http.route('/account/expedition/details/<int:order_id>', type='http', auth='user', website=True)
+    def account_expedition_details(self, order_id, access_token=None, **kw):
+        self._ensure_user_lang_context()
         SaleOrder = request.env['sale.order'].sudo()
-        order = SaleOrder.browse(order_id)
+        partner_id = request.env.user.partner_id
+        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
 
-        if not order.exists():
-            return {
-                'status': 'error',
-                'message': _('The requested expedition does not exist.')
-            }
+        order = SaleOrder.search([
+            ('id', '=', order_id),
+            ('partner_id', 'in', partner_ids)
+        ], limit=1)
 
-        return request.render('portal_expedition.portal_expedition_details_page', {
+        if not order:
+            return request.redirect('/account/expedition')
+
+        values = self._get_admin_layout_values()
+        values.update({
             'page_name': 'expedition_details',
             'order': order,
-            'user': request.env.user, 
-            'company': request.env.company, 
             'page_title': _('Expedition Details'),
             'page_url': '/account/expedition/details/%s' % order_id,
         })
+
+        return request.render('portal_expedition.portal_expedition_details_page', values)
 
     @http.route('/account/expedition/export', type='http', auth='user', methods=['GET', 'POST'])
     def account_expedition_export(self, ids=None, **kw):
