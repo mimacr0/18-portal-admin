@@ -11,14 +11,27 @@
     'version': '18.0.1.0.0',
     'author': 'DaFe Solutions',
     'maintainer': 'Angel Zhou Hu, Programador 2',
-    'description': """Modulo para gestionar las expediciones desde el portal""",
+    'description': """
+        Module to manage expeditions (deliveries) from the portal.
+        
+        In the context of the Sale + Delivery process:
+        - SALE (sale.order): Customer sales order with products, prices and conditions.
+        - EXPEDITION (stock.picking OUT): Physical preparation and shipment of goods to the customer.
+        
+        An expedition is the warehouse outbound document (delivery note) that is automatically 
+        generated when a sale is confirmed. It represents the physical movement of products 
+        from the warehouse to the customer.
+        
+        Flow: Quote → Confirmed Order → Expedition (picking) → Delivery
+    """,
     'summary': """
-        Este es un ejemplo de como debería ser una descripción de un módulo
-        - Los cambios del frontend deben ir en las carpetas 'controllers' y 'portal'
-        - Los cambios del backend deben ir en las carpetas 'models' y 'views'
-        - Para elementos avanzados en JS se debe añadir la Logica en la carpeta 'static/src',
-          donde tendremos una carpeta para el JS 'static/src/js', otra para los QWeb 'static/src/xml'
-          y otra para los estilos 'static/src/scss'.
+        Management of expeditions (outbound delivery notes) from the customer portal.
+        
+        Features:
+        - View pending and completed expeditions
+        - Track shipment status
+        - Export data to Excel
+        - Bulk import of sales orders
     """,
     'depends': ['base', 'portal_admin_theme', 'portal_account', 'stock_reception'],
     'license': 'AGPL-3',
