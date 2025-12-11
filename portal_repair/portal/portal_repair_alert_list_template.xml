@@ -3,20 +3,6 @@
 
     <template id="portal_repair_alert_page_main" name="Portal Repair Alert Page">
         <t t-call="portal_admin_theme.portal_admin_layout">
-            <!-- CSS Variables for dynamic colors -->
-            <style>
-                :root {
-                    --base-color: <t t-out="base_color or '#696900'"/>;
-                    --hover-color: <t t-out="hover_color or '#8A8A00'"/>;
-                    --light-bg-color: <t t-out="light_bg_color or '#f0f0e0'"/>;
-                }
-                .btn-primary { background-color: var(--base-color); }
-                .btn-primary:hover { background-color: var(--hover-color); }
-                .text-primary-theme { color: var(--base-color); }
-                .text-primary-theme:hover { color: var(--hover-color); }
-                .border-primary-theme { border-color: var(--hover-color); }
-                .bg-light-active { background-color: var(--light-bg-color); }
-            </style>
             <div class="w-full" t-attf-id="page-#{page_name}-main-container">
                 <div class="card-title-container mb-4 flex items-center">
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">SAT (Technical Support Service)</h1>

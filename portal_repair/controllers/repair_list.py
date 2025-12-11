@@ -24,7 +24,6 @@ from odoo.osv import expression
 
 class PortalRepairController(PortalAdminController):
     'Keep in mind that what we are really showning are quality.alert instances, no repair.order'
-
     ALERT_FIELDS_MAPPING = {
         'stage': 'stage_id',
         'name': 'name',
@@ -116,9 +115,6 @@ class PortalRepairController(PortalAdminController):
                 {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt', 'color': 'bg-red-600 hover:bg-red-700'},
             ],
             'advanced_search': json.dumps(self._get_repair_advanced_search_fields()),
-            'base_color': '#696900',
-            'hover_color': '#8A8A00',
-            'light_bg_color': '#f0f0e0',
         })
         
         # Procesar columnas para añadir flags de visibilidad según responsive
@@ -369,7 +365,7 @@ class PortalRepairController(PortalAdminController):
         # Formats
         header_format = workbook.add_format({
             'bold': True,
-            'bg_color': '#696900',
+            'bg_color': self.BASE_COLOR,
             'font_color': 'white',
             'border': 1,
             'align': 'center',
