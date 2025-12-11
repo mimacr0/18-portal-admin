@@ -122,9 +122,6 @@ class PortalReceptionListController(PortalAdminController):
                 {'name': 'export', 'label': _('Export Excel'), 'icon': 'fas fa-file-excel', 'color': 'bg-[#696900] hover:bg-[#8A8A00]'},
                 {'name': 'delete', 'label': _('Cancel'), 'icon': 'fas fa-ban'},
             ],
-            'tools_actions': [
-                {'name': 'import', 'label': _('Import'), 'icon': 'fas fa-file-import'}
-            ],
             'advanced_search': json.dumps(self._get_reception_advanced_search_fields())
         })
         

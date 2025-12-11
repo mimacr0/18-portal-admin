@@ -30,26 +30,19 @@ export const portalAccountReceptionInitAdvancedFilters = async () => {
     const url = '/account/reception/list/advanced_filters';
 
     // Comprobar si existe el botón de búsqueda avanzada
-    console.log('[AdvancedFilters] Looking for toggle button...');
     const advancedSearchToggle = document.getElementById('page-reception-list-advanced-search-toggle');
-    console.log('[AdvancedFilters] Toggle button:', advancedSearchToggle);
     
     if (!advancedSearchToggle) {
-        console.log('[AdvancedFilters] Toggle button not found, exiting');
         return;
     }
 
     // Evento para mostrar/ocultar el panel de búsqueda avanzada
     advancedSearchToggle.addEventListener('click', () => {
-        console.log('[AdvancedFilters] Toggle clicked');
         const advancedSearchPanel = document.getElementById('page-reception-list-advanced-search-panel');
-        console.log('[AdvancedFilters] Panel:', advancedSearchPanel);
         if (advancedSearchPanel) {
             advancedSearchPanel.classList.toggle('hidden');
-            console.log('[AdvancedFilters] Panel hidden class toggled');
         }
     });
-    console.log('[AdvancedFilters] Event listener added');
 };
 
 export const initAdvancedSearch = () => {
