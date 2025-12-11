@@ -24,7 +24,6 @@ export const reloadAccountCreditKpis = async () => {
     }
 
     sysToolsUdateNumber('#dashboard-page-available-credit-value', res.available_credit);
-    console.log(res.available_credit);
     sysToolsUdateNumber('#dashboard-page-pending-approval-value', res.pending_approval);
 
     // Show/hide pending approval section based on whether there are pending requests

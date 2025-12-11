@@ -26,6 +26,40 @@ class PortalDashboardController(PortalAdminController):
         ])
         return menus
 
+    def _get_partner_ids(self):
+        """Get partner IDs for the current user (user + commercial partner)"""
+        partner_id = request.env.user.partner_id
+        return list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
+
+    def _get_expedition_domain(self, partner_ids=None):
+        """Get domain for expeditions (stock.picking out)"""
+        if partner_ids is None:
+            partner_ids = self._get_partner_ids()
+        
+        expedition_type = request.env.ref('stock.picking_type_out', raise_if_not_found=False)
+        domain = [('partner_id', 'in', partner_ids)]
+        if expedition_type:
+            domain.append(('picking_type_id', '=', expedition_type.id))
+        return domain
+
+    def _get_reception_domain(self, partner_ids=None):
+        """Get domain for receptions (stock.picking in)"""
+        if partner_ids is None:
+            partner_ids = self._get_partner_ids()
+        
+        reception_type = request.env.ref('stock.picking_type_in', raise_if_not_found=False)
+        domain = [('partner_id', 'in', partner_ids)]
+        if reception_type:
+            domain.append(('picking_type_id', '=', reception_type.id))
+        return domain
+
+    def _get_sales_domain(self, partner_ids=None):
+        """Get domain for sales (sale.order)"""
+        if partner_ids is None:
+            partner_ids = self._get_partner_ids()
+        
+        return [('partner_id', 'in', partner_ids)]
+
     @http.route('/account', type='http', auth="user", website=True)
     def account_redirect(self, **post):
         """Redirige /account a /my"""
@@ -158,8 +192,7 @@ class PortalDashboardController(PortalAdminController):
         """Calculate dashboard KPIs: receptions, expeditions, products, stock"""
         self._ensure_user_lang_context()
         
-        partner_id = request.env.user.partner_id
-        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
+        partner_ids = self._get_partner_ids()
         
         # Date ranges
         today = datetime.now().date()
@@ -175,10 +208,7 @@ class PortalDashboardController(PortalAdminController):
         
         # === RECEPTIONS ===
         StockPicking = request.env['stock.picking'].sudo()
-        reception_type = request.env.ref('stock.picking_type_in', raise_if_not_found=False)
-        reception_domain = [('partner_id', 'in', partner_ids)]
-        if reception_type:
-            reception_domain.append(('picking_type_id', '=', reception_type.id))
+        reception_domain = self._get_reception_domain(partner_ids)
         
         receptions_total = StockPicking.search_count(reception_domain)
         receptions_current_month = StockPicking.search_count(reception_domain + [
@@ -190,19 +220,32 @@ class PortalDashboardController(PortalAdminController):
         ])
         receptions_change = calculate_change(receptions_current_month, receptions_last_month)
         
-        # === EXPEDITIONS ===
+        # === EXPEDITIONS (stock.picking salida) ===
+        expedition_domain = self._get_expedition_domain(partner_ids)
+        
+        expeditions_total = StockPicking.search_count(expedition_domain)
+        expeditions_current_month = StockPicking.search_count(expedition_domain + [
+            ('scheduled_date', '>=', first_day_current_month)
+        ])
+        expeditions_last_month = StockPicking.search_count(expedition_domain + [
+            ('scheduled_date', '>=', first_day_last_month),
+            ('scheduled_date', '<=', last_day_last_month)
+        ])
+        expeditions_change = calculate_change(expeditions_current_month, expeditions_last_month)
+        
+        # === SALES (sale.order) ===
         SaleOrder = request.env['sale.order'].sudo()
-        expeditions_total = SaleOrder.search_count([('partner_id', 'in', partner_ids)])
-        expeditions_current_month = SaleOrder.search_count([
-            ('partner_id', 'in', partner_ids),
+        sales_domain = self._get_sales_domain(partner_ids)
+        
+        sales_total = SaleOrder.search_count(sales_domain)
+        sales_current_month = SaleOrder.search_count(sales_domain + [
             ('date_order', '>=', first_day_current_month)
         ])
-        expeditions_last_month = SaleOrder.search_count([
-            ('partner_id', 'in', partner_ids),
+        sales_last_month = SaleOrder.search_count(sales_domain + [
             ('date_order', '>=', first_day_last_month),
             ('date_order', '<=', last_day_last_month)
         ])
-        expeditions_change = calculate_change(expeditions_current_month, expeditions_last_month)
+        sales_change = calculate_change(sales_current_month, sales_last_month)
         
         # === PRODUCTS ===
         ProductProduct = request.env['product.product'].sudo()
@@ -233,15 +276,6 @@ class PortalDashboardController(PortalAdminController):
         stock_change = 0.0  # Stock change is complex to calculate accurately without history
         
         # DEBUG
-        print("=" * 50)
-        print(f"[KPI DEBUG] Partner IDs: {partner_ids}")
-        print(f"[KPI DEBUG] Date range: {first_day_current_month} to {today}")
-        print(f"[KPI DEBUG] Last month: {first_day_last_month} to {last_day_last_month}")
-        print(f"[KPI DEBUG] Receptions: total={receptions_total}, current={receptions_current_month}, last={receptions_last_month}, change={receptions_change}")
-        print(f"[KPI DEBUG] Expeditions: total={expeditions_total}, current={expeditions_current_month}, last={expeditions_last_month}, change={expeditions_change}")
-        print(f"[KPI DEBUG] Products: total={products_total}, moved_current={products_moved_current}, moved_last={products_moved_last}, change={products_change}")
-        print(f"[KPI DEBUG] Stock: total={stock_total}, quants_count={len(quants)}")
-        print("=" * 50)
         
         return {
             'status': 'success',
@@ -254,6 +288,11 @@ class PortalDashboardController(PortalAdminController):
                 'total': expeditions_total,
                 'change': expeditions_change,
                 'direction': 'up' if expeditions_change >= 0 else 'down'
+            },
+            'sales': {
+                'total': sales_total,
+                'change': sales_change,
+                'direction': 'up' if sales_change >= 0 else 'down'
             },
             'products': {
                 'total': products_total,

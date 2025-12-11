@@ -17,8 +17,9 @@ export const initDashboardStatsKpi = async () => {
             // Update KPI cards
             updateKpiCard('receptions', response.receptions);
             updateKpiCard('expeditions', response.expeditions);
+            updateKpiCard('sales', response.sales);
             updateKpiCard('products', response.products);
-            updateKpiCard('stock', response.stock);
+            // updateKpiCard('stock', response.stock); // Stock card is hidden
             
             // Update chart totals (if they exist)
             updateChartTotal('receptions', response.receptions);
@@ -27,7 +28,7 @@ export const initDashboardStatsKpi = async () => {
     } catch (error) {
         console.error('Error loading dashboard stats:', error);
         // Show error state
-        ['receptions', 'expeditions', 'products', 'stock'].forEach(kpi => {
+        ['receptions', 'expeditions', 'sales', 'products'].forEach(kpi => {
             const totalEl = document.getElementById(`dashboard-kpi-${kpi}-total`);
             const changeEl = document.getElementById(`dashboard-kpi-${kpi}-change`);
             if (totalEl) totalEl.textContent = '-';

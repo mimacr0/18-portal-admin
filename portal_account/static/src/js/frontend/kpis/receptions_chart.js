@@ -155,7 +155,13 @@ export const reloadReceptionsChartKpis = async (period = '7d') => {
         chart: {
             ...baseSparkOptions.chart,
             type: 'area',
-            height: 160
+            height: 220,
+            sparkline: {
+                enabled: false
+            },
+            toolbar: {
+                show: false
+            }
         },
         series: [{
             name: 'Receptions',
@@ -170,9 +176,65 @@ export const reloadReceptionsChartKpis = async (period = '7d') => {
             type: 'gradient',
             gradient: {
                 shadeIntensity: 1,
-                opacityFrom: 0.7,
-                opacityTo: 0.3,
+                opacityFrom: 0.5,
+                opacityTo: 0.1,
                 stops: [0, 90, 100]
+            }
+        },
+        legend: {
+            show: true,
+            showForSingleSeries: true,
+            position: 'top',
+            horizontalAlign: 'center',
+            fontSize: '11px',
+            markers: {
+                width: 8,
+                height: 8,
+                radius: 2
+            },
+            labels: {
+                colors: isDark ? '#9ca3af' : '#6b7280'
+            }
+        },
+        grid: {
+            show: true,
+            borderColor: isDark ? '#374151' : '#e5e7eb',
+            strokeDashArray: 3,
+            padding: {
+                top: 5,
+                left: 5,
+                right: 15,
+                bottom: 0
+            }
+        },
+        xaxis: {
+            categories: res.labels,
+            labels: {
+                show: true,
+                style: {
+                    colors: isDark ? '#9ca3af' : '#6b7280',
+                    fontSize: '10px'
+                },
+                rotate: -45,
+                rotateAlways: false
+            },
+            axisTicks: {
+                show: false
+            },
+            axisBorder: {
+                show: false
+            }
+        },
+        yaxis: {
+            labels: {
+                show: true,
+                style: {
+                    colors: isDark ? '#9ca3af' : '#6b7280',
+                    fontSize: '10px'
+                },
+                formatter: function(val) {
+                    return val.toFixed(0);
+                }
             }
         },
         tooltip: {
@@ -212,13 +274,4 @@ export const reloadReceptionsChartKpis = async (period = '7d') => {
             console.error('Failed to create receptions chart:', error);
         }
     }
-
-    // Update the KPI values in the dashboard
-    const totalReceptions = res.values.reduce((acc, val) => acc + val, 0);
-
-    const receptionsValueEls = document.querySelectorAll('#dashboard-chart-receptions-total');
-    receptionsValueEls.forEach(el => {
-        el.textContent = totalReceptions.toLocaleString();
-        el.dataset.value = totalReceptions;
-    });
 }

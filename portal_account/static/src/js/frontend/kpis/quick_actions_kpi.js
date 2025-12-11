@@ -11,6 +11,9 @@ function formatFileSize(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
+// Track initialized modals to prevent duplicate event listeners
+const initializedModals = new Set();
+
 // Generic file upload modal setup
 function setupFileUploadModal(config) {
     const {
@@ -26,6 +29,11 @@ function setupFileUploadModal(config) {
         onSuccess
     } = config;
 
+    // Prevent duplicate initialization
+    if (initializedModals.has(modalId)) {
+        return;
+    }
+
     const modal = document.getElementById(modalId);
     const openButton = document.getElementById(openButtonId);
     const fileInput = document.getElementById(fileInputId);
@@ -36,6 +44,9 @@ function setupFileUploadModal(config) {
     const uploadButton = document.getElementById(uploadButtonId);
 
     if (!modal) return;
+
+    // Mark as initialized
+    initializedModals.add(modalId);
 
     let selectedFiles = [];
 
@@ -188,31 +199,64 @@ function setupFileUploadModal(config) {
                     body: formData,
                 });
 
-                const result = await response.json();
+                const responseText = await response.text();
+                
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (parseError) {
+                    if (errorDiv) {
+                        errorDiv.textContent = 'Error parsing server response: ' + responseText.substring(0, 200);
+                        errorDiv.classList.remove('invisible');
+                    }
+                    return;
+                }
 
                 if (result.status === 'success') {
-                    Modal.close(modalId);
+                    // Close modal and reset form first
                     resetForm();
-                    if (window.systemShowNotification) {
-                        systemShowNotification(result.message, { type: 'success' });
+                    if (typeof Modal !== 'undefined' && Modal.close) {
+                        Modal.close(modalId);
                     } else {
-                        alert(result.message);
+                        // Fallback: close modal manually
+                        const modalEl = document.getElementById(modalId);
+                        if (modalEl) {
+                            modalEl.setAttribute('data-open', 'false');
+                            document.body.classList.remove('modal-open');
+                        }
+                    }
+                    
+                    let successMsg = result.message;
+                    // Show warnings if any rows were skipped
+                    if (result.errors && result.errors.length > 0) {
+                        successMsg += '\n\nWarnings:\n' + result.errors.join('\n');
+                    }
+                    if (window.systemShowNotification) {
+                        systemShowNotification(successMsg, { type: 'success', duration: 6000 });
+                    } else {
+                        alert(successMsg);
                     }
                     if (onSuccess) onSuccess(result);
                 } else {
                     let errorMsg = result.message || 'Error importing file';
                     if (result.errors && result.errors.length > 0) {
-                        errorMsg += ':\n' + result.errors.slice(0, 5).join('\n');
+                        errorMsg += '\n\nDetails:\n' + result.errors.slice(0, 5).join('\n');
                         if (result.errors.length > 5) {
                             errorMsg += `\n... and ${result.errors.length - 5} more errors`;
                         }
                     }
+                    // Log traceback to console for debugging
+                    if (result.traceback) {
+                        console.error('Import error traceback:', result.traceback);
+                    }
                     if (errorDiv) {
-                        errorDiv.textContent = errorMsg;
+                        // Show formatted error in modal
+                        errorDiv.innerHTML = errorMsg.replace(/\n/g, '<br>');
                         errorDiv.classList.remove('invisible');
+                        errorDiv.classList.add('text-left', 'whitespace-pre-wrap');
                     }
                     if (window.systemShowNotification) {
-                        systemShowNotification(errorMsg, { type: 'error' });
+                        systemShowNotification(errorMsg, { type: 'error', duration: 8000 });
                     }
                 }
             } catch (error) {
@@ -267,3 +311,7 @@ export const updateAccountQuickActionssKpis = () => {
     setupDashboardImportReceptionsModal();
     setupDashboardImportExpeditionsModal();
 };
+
+// Expose functions globally for use in other modules
+window.setupDashboardImportReceptionsModal = setupDashboardImportReceptionsModal;
+window.setupDashboardImportExpeditionsModal = setupDashboardImportExpeditionsModal;
