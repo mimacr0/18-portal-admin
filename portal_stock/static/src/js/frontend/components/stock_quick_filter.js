@@ -12,12 +12,12 @@ export const initStockQuickSortFilters = () => {
 
             if (filterId === activeFilterId) {
                 // Activar este filtro
-                filter.classList.add('active', 'border-[#8A8A00]', 'text-[#696900]');
+                filter.classList.add('active', 'border-primary-theme', 'text-primary-theme');
                 filter.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700',
                                       'hover:border-gray-300', 'dark:hover:text-gray-300');
             } else {
                 // Desactivar los demás
-                filter.classList.remove('active', 'border-[#8A8A00]', 'text-[#696900]');
+                filter.classList.remove('active', 'border-primary-theme', 'text-primary-theme');
                 filter.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700',
                                     'hover:border-gray-300', 'dark:hover:text-gray-300');
             }
@@ -25,8 +25,8 @@ export const initStockQuickSortFilters = () => {
             for(const f of quickSortFilters) {
                 // Remove active classes
                 f.classList.remove('active');
-                f.classList.remove('border-[#8A8A00]');
-                f.classList.remove('text-[#696900]');
+                f.classList.remove('border-primary-theme');
+                f.classList.remove('text-primary-theme');
 
                 // Add inactive classes
                 f.classList.add('border-transparent');
@@ -38,8 +38,8 @@ export const initStockQuickSortFilters = () => {
 
             // Add active classes to clicked filter
             button.classList.add('active');
-            button.classList.add('border-[#8A8A00]');
-            button.classList.add('text-[#696900]');
+            button.classList.add('border-primary-theme');
+            button.classList.add('text-primary-theme');
 
             // Remove inactive classes from clicked filter
             button.classList.remove('border-transparent');

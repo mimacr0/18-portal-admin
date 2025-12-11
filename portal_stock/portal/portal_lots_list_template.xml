@@ -6,7 +6,7 @@
             <!-- Large screens row -->
             <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 hidden lg:table-row">
                 <td class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="lots-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-lot-id="lot.id" t-att-data-lot-name="lot.name"/>
+                    <input type="checkbox" class="lots-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme" t-att-data-lot-id="lot.id" t-att-data-lot-name="lot.name"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
@@ -45,7 +45,7 @@
                     <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="lot.product_qty"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <a t-attf-href="/account/stock/lots/details/#{lot.id}" class="text-[#696900] hover:text-[#8A8A00] dark:text-[#A0A000] dark:hover:text-[#C0C000] transition-colors" title="Ver detalles">
+                    <a t-attf-href="/account/stock/lots/details/#{lot.id}" class="text-primary-theme  transition-colors" title="Ver detalles">
                         <i class="fas fa-eye"/>
                     </a>
                 </td>
@@ -54,7 +54,7 @@
             <!-- Medium screens row -->
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 hidden md:table-row lg:hidden">
                 <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="lots-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-lot-id="lot.id" t-att-data-lot-name="lot.name"/>
+                    <input type="checkbox" class="lots-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme" t-att-data-lot-id="lot.id" t-att-data-lot-name="lot.name"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
@@ -83,7 +83,7 @@
                     <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="lot.product_qty"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <a t-attf-href="/account/stock/lots/details/#{lot.id}" class="text-[#696900] hover:text-[#8A8A00] dark:text-[#A0A000] dark:hover:text-[#C0C000] transition-colors" title="Ver detalles">
+                    <a t-attf-href="/account/stock/lots/details/#{lot.id}" class="text-primary-theme  transition-colors" title="Ver detalles">
                         <i class="fas fa-eye"/>
                     </a>
                 </td>
@@ -92,7 +92,7 @@
             <!-- Small screens row -->
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 table-row md:hidden">
                 <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="lots-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-lot-id="lot.id" t-att-data-lot-name="lot.name"/>
+                    <input type="checkbox" class="lots-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme" t-att-data-lot-id="lot.id" t-att-data-lot-name="lot.name"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
@@ -109,7 +109,7 @@
                 </td>
 
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <a t-attf-href="/account/stock/lots/details/#{lot.id}" class="text-[#696900] hover:text-[#8A8A00] dark:text-[#A0A000] dark:hover:text-[#C0C000] transition-colors" title="Ver detalles">
+                    <a t-attf-href="/account/stock/lots/details/#{lot.id}" class="text-primary-theme  transition-colors" title="Ver detalles">
                         <i class="fas fa-eye"/>
                     </a>
                 </td>
@@ -137,7 +137,7 @@
                     <i class="fas fa-chevron-left"/>
                 </button>
                 <t t-foreach="pages" t-as="page">
-                    <button type="button" t-if="page.get('active')" class="z-10 bg-[#f0f0e0] dark:bg-gray-800 border-[#8A8A00] dark:border-[#8A8A00] text-[#696900] dark:text-[#696900] relative inline-flex items-center px-3 py-2 border text-sm font-medium">
+                    <button type="button" t-if="page.get('active')" class="z-10 bg-light-active dark:bg-gray-800 border-primary-theme dark:border-primary-theme text-primary-theme dark:text-primary-theme relative inline-flex items-center px-3 py-2 border text-sm font-medium">
                         <span t-out="page.get('page')"/>
                     </button>
                     <button type="button" t-else="" class="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
@@ -162,7 +162,7 @@
                     <i class="fas fa-chevron-left"/>
                 </button>
                 <t t-foreach="pages" t-as="page">
-                    <button t-if="page.get('active')" aria-current="page" t-att-data-page="page.get('page')" class="lot-list-pagination-button z-10 bg-[#f0f0e0] dark:bg-gray-800 border-[#8A8A00] dark:border-[#8A8A00] text-[#696900] dark:text-[#696900] relative inline-flex items-center px-3 py-2 border text-sm font-medium">
+                    <button t-if="page.get('active')" aria-current="page" t-att-data-page="page.get('page')" class="lot-list-pagination-button z-10 bg-light-active dark:bg-gray-800 border-primary-theme dark:border-primary-theme text-primary-theme dark:text-primary-theme relative inline-flex items-center px-3 py-2 border text-sm font-medium">
                         <span t-out="page.get('page')"/>
                     </button>
                     <button t-else="" t-att-data-page="page.get('page')" class="lot-list-pagination-button bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 relative inline-flex items-center px-3 py-2 border text-sm font-medium">

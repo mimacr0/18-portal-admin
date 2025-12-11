@@ -17,7 +17,7 @@
                             <span id="selected-count" class="text-sm font-medium text-gray-700 dark:text-gray-300 mr-3">0 selected</span>
                             <div class="h-4 border-l border-gray-300 dark:border-gray-700 mr-3"/>
                             <div class="flex flex-wrap gap-2">
-                                <button t-foreach="batch_actions" t-as="batch_action" t-attf-id="page-list-#{page_name}-batch-action-#{batch_action.get('name')}" t-attf-class="px-3 py-1 text-white text-sm rounded transition-colors flex items-center #{batch_action.get('color', 'bg-[#696900] hover:bg-[#8A8A00]')}">
+                                <button t-foreach="batch_actions" t-as="batch_action" t-attf-id="page-list-#{page_name}-batch-action-#{batch_action.get('name')}" t-attf-class="px-3 py-1 text-white text-sm rounded transition-colors flex items-center #{batch_action.get('color', 'btn-primary ')}">
                                     <i t-attf-class="#{batch_action.get('icon')} mr-1.5"/> <t t-out="batch_action.get('label')"/>
                                 </button>
                             </div>
@@ -34,7 +34,7 @@
                         <div class="flex overflow-x-auto scrollbar-hide">
                             <input type="hidden" t-attf-id="page-#{page_name}-list-quick-filter-active" value="all"/>
                             <t t-foreach="list_filters" t-as="list_filter">
-                                <button t-if="list_filter.get('active')" type="button" t-att-data-filter-id="list_filter.get('id')" t-attf-id="page-#{page_name}-list-filter-#{list_filter.get('id')}" t-attf-class="page-#{page_name}-list-filter tab-button active px-6 py-3 text-sm font-medium border-b-2 border-[#8A8A00] text-[#696900] focus:outline-none transition-colors duration-200 ease-in-out dark:text-white relative">
+                                <button t-if="list_filter.get('active')" type="button" t-att-data-filter-id="list_filter.get('id')" t-attf-id="page-#{page_name}-list-filter-#{list_filter.get('id')}" t-attf-class="page-#{page_name}-list-filter tab-button active px-6 py-3 text-sm font-medium border-b-2 border-primary-theme text-primary-theme focus:outline-none transition-colors duration-200 ease-in-out dark:text-white relative">
                                     <i t-attf-class="#{list_filter.get('icon')} mr-2"/>
                                     <t t-out="list_filter.get('label')"/>
                                 </button>
@@ -53,10 +53,10 @@
                         <div class="flex flex-col lg:flex-row justify-between gap-4">
                             <div class="flex flex-col sm:flex-row sm:items-center gap-2">
                                 <div class="flex items-center gap-2">
-                                    <a t-if="page_name == 'lots'" href="/account/stock" class="px-3 py-1.5 bg-[#696900] text-white rounded-md hover:bg-[#8A8A00] transition-colors flex items-center">
+                                    <a t-if="page_name == 'lots'" href="/account/stock" class="px-3 py-1.5 btn-primary text-white rounded-md  transition-colors flex items-center">
                                         <i class="fas fa-arrow-left mr-1.5"/> <span class="hidden sm:inline">Volver</span>
                                     </a>
-                                    <button t-if="page_name == 'stock'" t-attf-id="launch-create-#{page_name}-form-button" class="px-3 py-1.5 bg-[#696900] text-white rounded-md hover:bg-[#8A8A00] transition-colors flex items-center">
+                                    <button t-if="page_name == 'stock'" t-attf-id="launch-create-#{page_name}-form-button" class="px-3 py-1.5 btn-primary text-white rounded-md  transition-colors flex items-center">
                                         <i class="fas fa-plus mr-1.5"/> <span class="hidden sm:inline">Create Product</span>
                                     </button>
                                 </div>
@@ -68,7 +68,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i class="fas fa-search text-gray-400 dark:text-gray-500"/>
                                     </div>
-                                    <input type="text" t-attf-id="page-#{page_name}-list-search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-[#8A8A00] dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Search ..."/>
+                                    <input type="text" t-attf-id="page-#{page_name}-list-search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-primary-theme dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Search ..."/>
                                 </div>
 
                                 <!-- Advanced search toggle button -->
@@ -98,7 +98,7 @@
                                 <!-- Match Type Selector -->
                                 <div class="mb-4">
                                     <p class="text-sm text-gray-700 dark:text-gray-300">
-                                        <select t-attf-id="page-#{page_name}-list-advanced-search-match-type" class="inline-block mx-1 px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-[#8A8A00] focus:border-[#8A8A00] bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                                        <select t-attf-id="page-#{page_name}-list-advanced-search-match-type" class="inline-block mx-1 px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus-ring-theme focus:border-primary-theme bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                                             <option value="all" selected="selected">All</option>
                                             <option value="any">Any</option>
                                         </select>
@@ -111,7 +111,7 @@
 
                                 <!-- Add Filter Line Button -->
                                 <div class="mt-3">
-                                    <button t-attf-id="page-#{page_name}-list-advanced-search-add-line-btn" class="flex items-center text-[#696900] hover:text-[#8A8A00] text-sm font-medium">
+                                    <button t-attf-id="page-#{page_name}-list-advanced-search-add-line-btn" class="flex items-center text-primary-theme hover:text-primary-theme text-sm font-medium">
                                         <i class="fas fa-plus-circle mr-1.5"/> Add filter condition
                                     </button>
                                 </div>
@@ -122,7 +122,7 @@
                                 <button t-attf-id="page-#{page_name}-list-advanced-search-reset-btn" class="px-3 py-1 text-sm border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700">
                                     Reset
                                 </button>
-                                <button t-attf-id="page-#{page_name}-list-advanced-search-apply-btn" class="px-3 py-1 text-sm bg-[#696900] text-white rounded-md shadow-sm hover:bg-[#8A8A00] dark:bg-[#696900] dark:text-white dark:hover:bg-[#8A8A00] dark:hover:text-white">
+                                <button t-attf-id="page-#{page_name}-list-advanced-search-apply-btn" class="px-3 py-1 text-sm btn-primary text-white rounded-md shadow-sm  dark:btn-primary dark:text-white dark: dark:hover:text-white">
                                     Apply Filters
                                 </button>
                             </div>
@@ -136,7 +136,7 @@
                                 <tr class="hidden lg:table-row">
                                     <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         <div class="flex items-center">
-                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox" type="checkbox" class="h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00] dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-[#696900] dark:checked:border-[#696900]"/>
+                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox" type="checkbox" class="h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme dark:border-gray-600 dark:bg-gray-700 dark:checked:btn-primary "/>
                                         </div>
                                     </th>
                                     <t t-foreach="list_columns" t-as="list_column">
@@ -155,7 +155,7 @@
                                 <tr class="hidden md:table-row lg:hidden">
                                     <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         <div class="flex items-center">
-                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox-md" type="checkbox" class="h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00] dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-[#696900] dark:checked:border-[#696900]"/>
+                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox-md" type="checkbox" class="h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme dark:border-gray-600 dark:bg-gray-700 dark:checked:btn-primary "/>
                                         </div>
                                     </th>
                                     <t t-foreach="list_columns" t-as="list_column">
@@ -176,7 +176,7 @@
                                 <tr class="table-row md:hidden">
                                     <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         <div class="flex items-center">
-                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox-sm" type="checkbox" class="h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00] dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-[#696900] dark:checked:border-[#696900]"/>
+                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox-sm" type="checkbox" class="h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme dark:border-gray-600 dark:bg-gray-700 dark:checked:btn-primary "/>
                                         </div>
                                     </th>
                                     <t t-foreach="list_columns" t-as="list_column">
@@ -238,7 +238,7 @@
                                     <div class="grid grid-cols-2 items-start">
                                         <div class="col-span-1 w-full p-2">
                                             <label for="page-stock-edit-form-name" class="form-label-sm font-sm mb-1">Name <span class="text-red-500 text-xl">*</span></label>
-                                            <input type="text" name="name" id="page-stock-edit-form-name" class="form-input text-xl rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Name" required="required"/>
+                                            <input type="text" name="name" id="page-stock-edit-form-name" class="form-input text-xl rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Name" required="required"/>
                                             <div class="form-error invisible mt-1" id="page-stock-edit-form-name-error"/>
                                         </div>
                                         <div class="col-start-2 flex justify-end items-start">
@@ -261,7 +261,7 @@
                                             <span class="text-red-500 ml-1">*</span>
                                         </div>
                                         <div>
-                                            <input type="text" name="sku" id="page-stock-edit-form-sku" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="SKU" required="required"/>
+                                            <input type="text" name="sku" id="page-stock-edit-form-sku" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="SKU" required="required"/>
                                             <div class="form-error invisible" id="page-stock-edit-form-sku-error"/>
                                         </div>
                                     </div>
@@ -271,7 +271,7 @@
                                             <span class="text-red-500 ml-1">*</span>
                                         </div>
                                         <div>
-                                            <input type="text" name="barcode" id="page-stock-edit-form-barcode" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Barcode" required="required" maxlength="13"/>
+                                            <input type="text" name="barcode" id="page-stock-edit-form-barcode" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Barcode" required="required" maxlength="13"/>
                                             <div class="form-error invisible" id="page-stock-edit-form-barcode-error"/>
                                         </div>
                                     </div>
@@ -280,7 +280,7 @@
                                             <label for="page-stock-edit-form-volume" class="form-label-sm font-sm">Volume (cm³)</label>
                                         </div>
                                         <div class="flex items-center gap-2">
-                                            <input type="number" name="volume" id="page-stock-edit-form-volume" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Volume" step="0.01" min="0"/>
+                                            <input type="number" name="volume" id="page-stock-edit-form-volume" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Volume" step="0.01" min="0"/>
                                             <span class="mx-1 text-sm">cm³</span>
                                             <div class="form-error invisible" id="page-stock-edit-form-volume-error"/>
                                         </div>
@@ -290,7 +290,7 @@
                                             <label for="page-stock-edit-form-weight" class="form-label-sm font-sm">Weight (kg)</label>
                                         </div>
                                         <div class="flex items-center gap-2">
-                                            <input type="number" name="weight" id="page-stock-edit-form-weight" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#8A8A00] dark:focus:ring-[#8A8A00]" placeholder="Weight" step="0.01" min="0"/>
+                                            <input type="number" name="weight" id="page-stock-edit-form-weight" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Weight" step="0.01" min="0"/>
                                             <span class="mx-1 text-sm">kg</span>
                                             <div class="form-error invisible" id="page-stock-edit-form-weight-error"/>
                                         </div>
@@ -300,11 +300,11 @@
                                     <div>
                                         <div class="flex space-x-4 mt-1">
                                             <div class="flex items-center">
-                                                <input type="radio" name="tracking" id="page-stock-edit-tracking-serial" value="serial" class="w-4 h-4 text-[#696900] border-gray-300 focus:ring-[#8A8A00]"/>
+                                                <input type="radio" name="tracking" id="page-stock-edit-tracking-serial" value="serial" class="w-4 h-4 text-primary-theme border-gray-300 focus-ring-theme"/>
                                                 <label for="page-stock-edit-tracking-serial" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">Return</label>
                                             </div>
                                             <div class="flex items-center">
-                                                <input type="radio" name="tracking" id="page-stock-edit-tracking-none" value="none" class="w-4 h-4 text-[#696900] border-gray-300 focus:ring-[#8A8A00]"/>
+                                                <input type="radio" name="tracking" id="page-stock-edit-tracking-none" value="none" class="w-4 h-4 text-primary-theme border-gray-300 focus-ring-theme"/>
                                                 <label for="page-stock-edit-tracking-none" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">New</label>
                                             </div>
                                         </div>
@@ -334,7 +334,7 @@
             <!-- Large screens row -->
             <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 hidden lg:table-row">
                 <td class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-product-id="product.id" t-att-data-product-name="product.name"/>
+                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme" t-att-data-product-id="product.id" t-att-data-product-name="product.name"/>
                 </td>
                 <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="flex items-center">
@@ -420,7 +420,7 @@
             <!-- Medium screens row -->
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 hidden md:table-row lg:hidden">
                 <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-product-id="product.id" t-att-data-product-name="product.name"/>
+                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme" t-att-data-product-id="product.id" t-att-data-product-name="product.name"/>
                 </td>
                 <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="min-w-0">
@@ -451,7 +451,7 @@
             <!-- Small screens row -->
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 table-row md:hidden">
                 <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-[#696900] border-gray-300 rounded focus:ring-[#8A8A00]" t-att-data-product-id="product.id" t-att-data-product-name="product.name"/>
+                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme" t-att-data-product-id="product.id" t-att-data-product-name="product.name"/>
                 </td>
                 <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words" t-esc="product.name"/>
@@ -493,7 +493,7 @@
                     <i class="fas fa-chevron-left"/>
                 </button>
                 <t t-foreach="pages" t-as="page">
-                    <button type="button" t-if="page.get('active')" class="z-10 bg-[#f0f0e0] dark:bg-gray-800 border-[#8A8A00] dark:border-[#8A8A00] text-[#696900] dark:text-[#696900] relative inline-flex items-center px-3 py-2 border text-sm font-medium">
+                    <button type="button" t-if="page.get('active')" class="z-10 bg-light-active dark:bg-gray-800 border-primary-theme dark:border-primary-theme text-primary-theme dark:text-primary-theme relative inline-flex items-center px-3 py-2 border text-sm font-medium">
                         <span t-out="page.get('page')"/>
                     </button>
                     <button type="button" t-else="" class="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
@@ -518,7 +518,7 @@
                     <i class="fas fa-chevron-left"/>
                 </button>
                 <t t-foreach="pages" t-as="page">
-                    <button t-if="page.get('active')" aria-current="page" t-att-data-page="page.get('page')" class="stock-list-pagination-button z-10 bg-[#f0f0e0] dark:bg-gray-800 border-[#8A8A00] dark:border-[#8A8A00] text-[#696900] dark:text-[#696900] relative inline-flex items-center px-3 py-2 border text-sm font-medium">
+                    <button t-if="page.get('active')" aria-current="page" t-att-data-page="page.get('page')" class="stock-list-pagination-button z-10 bg-light-active dark:bg-gray-800 border-primary-theme dark:border-primary-theme text-primary-theme dark:text-primary-theme relative inline-flex items-center px-3 py-2 border text-sm font-medium">
                         <span t-out="page.get('page')"/>
                     </button>
                     <button t-else="" t-att-data-page="page.get('page')" class="stock-list-pagination-button bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 relative inline-flex items-center px-3 py-2 border text-sm font-medium">
