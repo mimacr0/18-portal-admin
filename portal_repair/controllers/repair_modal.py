@@ -119,10 +119,8 @@ class PortalRepairController(PortalAdminController):
                 ('product_id', '=', lot.product_id.id),
             ])
 
-            print(f'[DEBUG] Lot {lot.name}: {len(quants)} quants found')
             for q in quants:
                 loc_name = q.location_id.display_name if q.location_id else 'N/A'
-                print(f'  - Quant id={q.id}: qty={q.quantity}, reserved={q.reserved_quantity}, available={q.quantity - q.reserved_quantity}, location={loc_name}')
 
             # Filtramos los quants que tengan quantity - reserved_quantity > 0
             positive_quants = quants.filtered(lambda q: (q.quantity - q.reserved_quantity) > 0)
@@ -136,7 +134,6 @@ class PortalRepairController(PortalAdminController):
                 'text': lot.name,
                 'product_qty': total_available,  # usamos el total del lote
             })       
-        print(f'items: {items}')
         return {'status': 'success', 'items': items}
 
 
