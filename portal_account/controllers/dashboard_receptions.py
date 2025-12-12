@@ -131,7 +131,16 @@ class PortalDashboardReceptionsController(PortalDashboardController):
         return {
             'status': 'success',
             'labels': labels,
-            'values': values
+            'values': values,
+            'translations': {
+                'series_name': _('Receptions'),
+                'period_labels': {
+                    '7d': _('Last 7 days'),
+                    'week': _('Last 4 weeks'),
+                    'month': _('Last 12 months'),
+                    'year': _('Last 5 years'),
+                }
+            }
         }
 
     @http.route('/account/dashboard/import_receptions', type='http', auth='user', methods=['POST'], csrf=False)

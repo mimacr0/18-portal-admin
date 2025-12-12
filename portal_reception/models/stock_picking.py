@@ -4,7 +4,7 @@
 #
 ##############################################################################
 
-from odoo import models, api
+from odoo import models, api, _
 from odoo.tools import html2plaintext
 
 
@@ -26,10 +26,10 @@ class StockPicking(models.Model):
         partner_ids.extend(self.user_id.partner_id.ids)
         if user and user.partner_id.id in partner_ids:
             user._bus_send( "portal_reception.reception_details_reload_request", { 'action': 'reload' } )
-            user.send_portal_user_recent_activity( "New message in reception", "New message in reception", "fas fa-bell", "info" )
+            user.send_portal_user_recent_activity( _("New message in reception"), _("New message in reception"), "fas fa-bell", "info" )
 
         if user and user.partner_id.id == self.partner_id.id:
-            user.send_portal_user_notification( "New message in reception", "New message in reception", "fas fa-bell", "info" )
+            user.send_portal_user_notification( _("New message in reception"), _("New message in reception"), "fas fa-bell", "info" )
 
         return res
 

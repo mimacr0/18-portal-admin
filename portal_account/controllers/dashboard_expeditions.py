@@ -237,7 +237,18 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
             'values': expedition_values,  # Mantener compatibilidad
             'expeditions': expedition_values,
             'sales_draft': sales_draft_values,
-            'sales_delivery': sales_delivery_values
+            'sales_delivery': sales_delivery_values,
+            'translations': {
+                'deliveries': _('Deliveries'),
+                'quotes': _('Quotes'),
+                'sales': _('Sales'),
+                'period_labels': {
+                    '7d': _('Last 7 days'),
+                    'week': _('Last 4 weeks'),
+                    'month': _('Last 12 months'),
+                    'year': _('Last 5 years'),
+                }
+            }
         }
 
     @http.route('/account/dashboard/import_expeditions', type='http', auth='user', methods=['POST'], csrf=False)

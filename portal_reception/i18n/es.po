@@ -723,3 +723,9 @@ msgstr "paquetes"
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_product_catalog_pagination
 msgid "products)"
 msgstr "productos)"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/models/stock_picking.py:0
+msgid "New message in reception"
+msgstr "Nuevo mensaje en recepción"

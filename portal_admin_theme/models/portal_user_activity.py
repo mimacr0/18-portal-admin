@@ -44,15 +44,15 @@ class PortalUserActivity(models.Model):
             # Calculate the time difference
             seconds = diff.total_seconds()
             if seconds < 60:
-                record.time_ago = 'Just now'
+                record.time_ago = _('Just now')
             elif seconds < 3600:
                 minutes = int(seconds / 60)
-                record.time_ago = f'{minutes} minute{"s" if minutes > 1 else ""} ago'
+                record.time_ago = _('{minutes} minute{s} ago').format(minutes=minutes, s='s' if minutes > 1 else '')
             elif seconds < 86400:
                 hours = int(seconds / 3600)
-                record.time_ago = f'{hours} hour{"s" if hours > 1 else ""} ago'
+                record.time_ago = _('{hours} hour{s} ago').format(hours=hours, s='s' if hours > 1 else '')
             elif seconds < 604800:
                 days = int(seconds / 86400)
-                record.time_ago = f'{days} day{"s" if days > 1 else ""} ago'
+                record.time_ago = _('{days} day{s} ago').format(days=days, s='s' if days > 1 else '')
             else:
                 record.time_ago = record.create_date.strftime('%b %d, %Y')

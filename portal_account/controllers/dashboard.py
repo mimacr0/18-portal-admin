@@ -279,6 +279,10 @@ class PortalDashboardController(PortalAdminController):
         
         return {
             'status': 'success',
+            'translations': {
+                'since_last_month': _('since last month'),
+                'error_loading': _('Error loading data'),
+            },
             'receptions': {
                 'total': receptions_total,
                 'change': receptions_change,

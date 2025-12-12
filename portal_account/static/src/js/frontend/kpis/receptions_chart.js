@@ -6,8 +6,8 @@ const isDark = document.documentElement.classList.contains('dark');
 // Store chart instance for updates
 let receptionChartInstance = null;
 
-// Period labels mapping
-const periodLabels = {
+// Default period labels (will be overridden by translations from server)
+const defaultPeriodLabels = {
     '7d': 'Last 7 days',
     'week': 'Last 4 weeks',
     'month': 'Last 12 months',
@@ -143,10 +143,15 @@ export const reloadReceptionsChartKpis = async (period = '7d') => {
     const res = await rpc('/account/dashboard/kpis/receptions/chart', { period });
     if(res?.status != 'success') return;
 
+    // Get translations from response
+    const t = res.translations || {};
+    const periodLabels = t.period_labels || defaultPeriodLabels;
+    const seriesName = t.series_name || 'Receptions';
+
     // Update period label
     const labelEl = document.getElementById('receptions-chart-period-label');
     if (labelEl) {
-        labelEl.textContent = periodLabels[period] || periodLabels['7d'];
+        labelEl.textContent = periodLabels[period] || periodLabels['7d'] || defaultPeriodLabels['7d'];
     }
 
     // Receptions Chart options
@@ -164,7 +169,7 @@ export const reloadReceptionsChartKpis = async (period = '7d') => {
             }
         },
         series: [{
-            name: 'Receptions',
+            name: seriesName,
             data: res.values
         }],
         colors: [isDark ? '#0ea5e9' : '#0284c7'],

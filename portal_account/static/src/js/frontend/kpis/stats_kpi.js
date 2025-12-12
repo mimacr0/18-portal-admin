@@ -14,12 +14,14 @@ export const initDashboardStatsKpi = async () => {
         const response = await rpc('/account/dashboard/kpis/stats', {});
         
         if (response?.status === 'success') {
+            const t = response.translations || {};
+            
             // Update KPI cards
-            updateKpiCard('receptions', response.receptions);
-            updateKpiCard('expeditions', response.expeditions);
-            updateKpiCard('sales', response.sales);
-            updateKpiCard('products', response.products);
-            // updateKpiCard('stock', response.stock); // Stock card is hidden
+            updateKpiCard('receptions', response.receptions, t);
+            updateKpiCard('expeditions', response.expeditions, t);
+            updateKpiCard('sales', response.sales, t);
+            updateKpiCard('products', response.products, t);
+            // updateKpiCard('stock', response.stock, t); // Stock card is hidden
             
             // Update chart totals (if they exist)
             updateChartTotal('receptions', response.receptions);
@@ -42,7 +44,7 @@ export const initDashboardStatsKpi = async () => {
 /**
  * Update a single KPI card with data
  */
-function updateKpiCard(kpiName, data) {
+function updateKpiCard(kpiName, data, t = {}) {
     const totalEl = document.getElementById(`dashboard-kpi-${kpiName}-total`);
     const changeEl = document.getElementById(`dashboard-kpi-${kpiName}-change`);
     
@@ -56,9 +58,10 @@ function updateKpiCard(kpiName, data) {
     const icon = isPositive ? 'fa-arrow-up' : 'fa-arrow-down';
     const colorClass = isPositive ? 'text-green-500' : 'text-red-500';
     const changeValue = Math.abs(data.change);
+    const sinceText = t.since_last_month || 'since last month';
     
     changeEl.className = `text-xs ${colorClass}`;
-    changeEl.innerHTML = `<i class="fas ${icon} mr-1"></i>${changeValue}% since last month`;
+    changeEl.innerHTML = `<i class="fas ${icon} mr-1"></i>${changeValue}% ${sinceText}`;
 }
 
 /**
