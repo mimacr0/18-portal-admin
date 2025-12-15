@@ -729,3 +729,15 @@ msgstr "productos)"
 #: code:addons/portal_reception/models/stock_picking.py:0
 msgid "New message in reception"
 msgstr "Nuevo mensaje en recepción"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_modal.py:0
+msgid "Reception '%s' created"
+msgstr "Recepción '%s' creada"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_modal.py:0
+msgid "New reception"
+msgstr "Nueva recepción"

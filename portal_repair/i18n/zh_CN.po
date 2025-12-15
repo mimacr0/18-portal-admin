@@ -663,3 +663,15 @@ msgstr "共"
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "of the following conditions:"
 msgstr "以下条件："
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_modal.py:0
+msgid "%d repair alert(s) created"
+msgstr "已创建%d个维修警报"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_modal.py:0
+msgid "New repair alert"
+msgstr "新维修警报"

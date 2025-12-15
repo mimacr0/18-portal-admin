@@ -264,6 +264,19 @@ class PortalRepairController(PortalAdminController):
         if not alerts_created:
             return {'status': 'error', 'message': _('No valid lots or locations to create alerts.')}
 
+        # Send recent activity notification
+        try:
+            user = request.env.user
+            user.send_portal_user_recent_activity(
+                "%d repair alert(s) created",
+                "New repair alert",
+                "fas fa-tools",
+                "success",
+                message_args=[len(alerts_created)]
+            )
+        except Exception:
+            pass  # Don't break if notification fails
+
         return {
             'status': 'success',
             'alert_ids': [a.id for a in alerts_created],

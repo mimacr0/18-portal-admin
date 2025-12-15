@@ -793,3 +793,27 @@ msgstr "Presupuestos"
 #: code:addons/portal_account/controllers/dashboard_expeditions.py:0
 msgid "Sales"
 msgstr "Ventas"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
+msgid "%d expedition(s) imported from Excel"
+msgstr "%d expedición(es) importada(s) desde Excel"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
+msgid "Expeditions imported"
+msgstr "Expediciones importadas"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_receptions.py:0
+msgid "%d reception(s) imported from Excel"
+msgstr "%d recepción(es) importada(s) desde Excel"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_receptions.py:0
+msgid "Receptions imported"
+msgstr "Recepciones importadas"

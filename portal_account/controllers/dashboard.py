@@ -173,7 +173,7 @@ class PortalDashboardController(PortalAdminController):
         # Get most recent activities for the current user
         activities = UserActivity.search([
             ('user_id', '=', request.env.user.id)
-        ], limit=3, order='create_date desc')
+        ], limit=10, order='create_date desc')
 
         # Render the recent activity template
         html_content = request.env['ir.ui.view']._render_template(

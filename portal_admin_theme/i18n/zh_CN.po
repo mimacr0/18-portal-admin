@@ -194,3 +194,129 @@ msgstr "查看所有历史记录"
 #: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
 msgid "default-user"
 msgstr "默认用户"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Just now"
+msgstr "刚刚"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "1 minute ago"
+msgstr "1分钟前"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d minutes ago"
+msgstr "%d分钟前"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "1 hour ago"
+msgstr "1小时前"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d hours ago"
+msgstr "%d小时前"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "1 day ago"
+msgstr "1天前"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d days ago"
+msgstr "%d天前"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "New repair alert"
+msgstr "新维修警报"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d repair alert(s) created"
+msgstr "已创建%d个维修警报"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "New product"
+msgstr "新产品"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Product '%s' created"
+msgstr "产品 '%s' 已创建"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Products imported"
+msgstr "产品已导入"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d product(s) imported from Excel"
+msgstr "已从Excel导入%d个产品"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "New reception"
+msgstr "新收货单"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Reception '%s' created"
+msgstr "收货单 '%s' 已创建"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Receptions imported"
+msgstr "收货单已导入"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d reception(s) imported from Excel"
+msgstr "已从Excel导入%d个收货单"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "New expedition"
+msgstr "新发货单"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Expedition '%s' created"
+msgstr "发货单 '%s' 已创建"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Expeditions imported"
+msgstr "发货单已导入"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d expedition(s) imported from Excel"
+msgstr "已从Excel导入%d个发货单"

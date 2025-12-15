@@ -153,6 +153,16 @@ class ProductModalController(PortalAdminController):
             self._ensure_user_lang_context()
             user_lang = request.env.user.sudo().lang or 'en_US'
             
+            # Send recent activity notification
+            user = request.env.user
+            user.send_portal_user_recent_activity(
+                "Product '%s' created",
+                "New product",
+                "fas fa-box",
+                "success",
+                message_args=[template.name]
+            )
+            
             qweb = request.env['ir.qweb'].with_context(lang=user_lang)
             return {
                 'status': 'success',
@@ -426,6 +436,17 @@ class ProductModalController(PortalAdminController):
             
             result_message = _('%d product(s) created successfully.') % created_count
             all_messages = warnings + errors
+            
+            # Send recent activity notification for imported products
+            if created_count > 0:
+                user = request.env.user
+                user.send_portal_user_recent_activity(
+                    "%d product(s) imported from Excel",
+                    "Products imported",
+                    "fas fa-file-import",
+                    "success",
+                    message_args=[created_count]
+                )
             
             return request.make_json_response({
                 'status': 'success',

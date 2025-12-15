@@ -603,3 +603,27 @@ msgstr "Seleccione un atributo"
 #: code:addons/portal_stock/static/src/js/create_modal_page.js:0
 msgid "Select an attribute value"
 msgstr "Seleccione un valor de atributo"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Product '%s' created"
+msgstr "Producto '%s' creado"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "New product"
+msgstr "Nuevo producto"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "%d product(s) imported from Excel"
+msgstr "%d producto(s) importado(s) desde Excel"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Products imported"
+msgstr "Productos importados"

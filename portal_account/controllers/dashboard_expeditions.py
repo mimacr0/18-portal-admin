@@ -518,6 +518,17 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
             if errors:
                 result_message += '\n' + _('Warnings: %d rows skipped') % len(errors)
             
+            # Send recent activity notification for imported expeditions
+            if created_count > 0:
+                user = request.env.user
+                user.send_portal_user_recent_activity(
+                    "%d expedition(s) imported from Excel",
+                    "Expeditions imported",
+                    "fas fa-file-import",
+                    "success",
+                    message_args=[created_count]
+                )
+            
             return request.make_json_response({
                 'status': 'success',
                 'message': result_message,

@@ -125,7 +125,17 @@ class PortalExpeditionController(PortalAdminController):
             'client_order_ref': client_order_ref,
         })
 
-        return { 'status': 'success', 'message': _('Reception created successfully') }
+        # Send recent activity notification
+        user = request.env.user
+        user.send_portal_user_recent_activity(
+            "Expedition '%s' created",
+            "New expedition",
+            "fas fa-plus-circle",
+            "success",
+            message_args=[order.name]
+        )
+
+        return { 'status': 'success', 'message': _('Expedition created successfully') }
 
     @http.route('/account/expedition/product-search', type='json', auth='user')
     def account_expedition_product_search(self, term='', **kw):

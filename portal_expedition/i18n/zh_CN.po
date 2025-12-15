@@ -903,3 +903,27 @@ msgstr "订单"
 #: model_terms:ir.ui.view,arch_db:portal_expedition.portal_product_catalog_pagination
 msgid "products)"
 msgstr "产品）"
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order_modal.py:0
+msgid "Expedition '%s' created"
+msgstr "发货单 '%s' 已创建"
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order_modal.py:0
+msgid "New expedition"
+msgstr "新发货单"
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order_modal.py:0
+msgid "Expedition created successfully"
+msgstr "发货单创建成功"
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/models/sale_order.py:0
+msgid "New message in expedition"
+msgstr "发货单中有新消息"

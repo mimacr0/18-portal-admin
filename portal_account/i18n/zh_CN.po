@@ -793,3 +793,27 @@ msgstr "报价单"
 #: code:addons/portal_account/controllers/dashboard_expeditions.py:0
 msgid "Sales"
 msgstr "销售"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
+msgid "%d expedition(s) imported from Excel"
+msgstr "已从Excel导入%d个发货单"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
+msgid "Expeditions imported"
+msgstr "发货单已导入"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_receptions.py:0
+msgid "%d reception(s) imported from Excel"
+msgstr "已从Excel导入%d个收货单"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_receptions.py:0
+msgid "Receptions imported"
+msgstr "收货单已导入"

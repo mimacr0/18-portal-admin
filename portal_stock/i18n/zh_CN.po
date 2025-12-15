@@ -593,3 +593,27 @@ msgstr "共"
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "products"
 msgstr "产品"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Product '%s' created"
+msgstr "产品 '%s' 已创建"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "New product"
+msgstr "新产品"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "%d product(s) imported from Excel"
+msgstr "已从Excel导入%d个产品"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Products imported"
+msgstr "产品已导入"

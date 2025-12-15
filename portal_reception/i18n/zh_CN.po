@@ -725,3 +725,15 @@ msgstr "个产品)"
 #: code:addons/portal_reception/models/stock_picking.py:0
 msgid "New message in reception"
 msgstr "收货单中有新消息"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_modal.py:0
+msgid "Reception '%s' created"
+msgstr "收货单 '%s' 已创建"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_modal.py:0
+msgid "New reception"
+msgstr "新收货单"
