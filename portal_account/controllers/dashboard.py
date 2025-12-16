@@ -334,8 +334,11 @@ class PortalDashboardController(PortalAdminController):
             ('partner_id', '=', partner.commercial_partner_id.id)
         ], limit=1)
         
-        # Base domain for customer's products
-        products_domain = [('account_partner_id', '=', account_partner.id)] if account_partner else [('id', '=', False)]
+        # Base domain for customer's storable products
+        products_domain = [
+            ('account_partner_id', '=', account_partner.id),
+            ('is_storable', '=', True)
+        ] if account_partner else [('id', '=', False)]
         
         # Total products of this customer
         products_total = ProductProduct.search_count(products_domain)
