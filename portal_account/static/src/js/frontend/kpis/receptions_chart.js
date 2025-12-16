@@ -25,6 +25,9 @@ const baseSparkOptions = {
         toolbar: {
             show: false
         },
+        zoom: {
+            enabled: false
+        },
         animations: {
             enabled: true,
             easing: 'easeinout',
