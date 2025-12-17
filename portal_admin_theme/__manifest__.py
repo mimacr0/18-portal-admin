@@ -37,6 +37,10 @@
             'portal_admin_theme/static/src/network/rpc.js',
             'portal_admin_theme/static/src/js/realtime/portal_realtime_service.js',
             'portal_admin_theme/static/src/js/layout/user_notifications.js'
+        ],
+        'portal_admin_theme.tools': [
+            'portal_admin_theme/static/src/js/tools/numbers.js',
+            'portal_admin_theme/static/src/js/tools/actions.js',
         ]
     }
 }
