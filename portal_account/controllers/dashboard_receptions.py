@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import logging
 
 import pytz
+from babel.dates import format_date
 
 try:
     import openpyxl
@@ -47,6 +48,9 @@ class PortalDashboardReceptionsController(PortalDashboardController):
         values = []
         labels = []
         end_date = datetime.now().date()
+        
+        # Get user language for localized date formatting (Babel expects underscore, e.g. 'en_US')
+        locale = request.env.user.lang or 'en_US'
 
         if period == '7d':
             # Last 7 days - group by day
@@ -65,7 +69,8 @@ class PortalDashboardReceptionsController(PortalDashboardController):
             current = start_date
             while current <= end_date:
                 key = current.strftime('%Y-%m-%d')
-                labels.append(current.strftime('%a %d'))  # "Mon 09"
+                # Format: "lun 09" (localized day abbreviation + day number)
+                labels.append(format_date(current, format='EEE d', locale=locale))
                 values.append(data.get(key, 0))
                 current += timedelta(days=1)
 
@@ -86,7 +91,7 @@ class PortalDashboardReceptionsController(PortalDashboardController):
             from dateutil.relativedelta import relativedelta
             for i in range(3, -1, -1):
                 week_start = end_date - timedelta(days=end_date.weekday()) - timedelta(weeks=i)
-                labels.append(f"Week {week_start.strftime('%d/%m')}")
+                labels.append(f"{_('Week')} {week_start.strftime('%d/%m')}")
                 values.append(data.get(week_start, 0))
 
         elif period == 'month':
@@ -106,7 +111,8 @@ class PortalDashboardReceptionsController(PortalDashboardController):
             from dateutil.relativedelta import relativedelta
             for i in range(11, -1, -1):
                 month_start = (end_date.replace(day=1) - relativedelta(months=i))
-                labels.append(month_start.strftime('%b %Y'))  # "Dec 2025"
+                # Format: "dic 2025" (localized month abbreviation + year)
+                labels.append(format_date(month_start, format='MMM yyyy', locale=locale))
                 values.append(data.get(month_start, 0))
 
         elif period == 'year':

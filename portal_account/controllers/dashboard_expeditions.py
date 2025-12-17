@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import logging
 
 import pytz
+from babel.dates import format_date
 
 try:
     import openpyxl
@@ -48,6 +49,9 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
         sales_delivery_values = []   # Ventas con transporte (tienen picking)
         labels = []
         end_date = datetime.now().date()
+        
+        # Get user language for localized date formatting (Babel expects underscore, e.g. 'en_US')
+        locale = request.env.user.lang or 'en_US'
 
         if period == '7d':
             interval = '7 days'
@@ -94,7 +98,8 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
             current = start_date
             while current <= end_date:
                 key = current.strftime('%Y-%m-%d')
-                labels.append(current.strftime('%a %d'))
+                # Format: "lun 09" (localized day abbreviation + day number)
+                labels.append(format_date(current, format='EEE d', locale=locale))
                 expedition_values.append(exp_data.get(key, 0))
                 sales_draft_values.append(sales_draft_data.get(key, 0))
                 sales_delivery_values.append(sales_delivery_data.get(key, 0))
@@ -140,7 +145,7 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
             
             for i in range(3, -1, -1):
                 week_start = end_date - timedelta(days=end_date.weekday()) - timedelta(weeks=i)
-                labels.append(f"Week {week_start.strftime('%d/%m')}")
+                labels.append(f"{_('Week')} {week_start.strftime('%d/%m')}")
                 expedition_values.append(exp_data.get(week_start, 0))
                 sales_draft_values.append(sales_draft_data.get(week_start, 0))
                 sales_delivery_values.append(sales_delivery_data.get(week_start, 0))
@@ -184,7 +189,8 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
             
             for i in range(11, -1, -1):
                 month_start = (end_date.replace(day=1) - relativedelta(months=i))
-                labels.append(month_start.strftime('%b %Y'))
+                # Format: "dic 2025" (localized month abbreviation + year)
+                labels.append(format_date(month_start, format='MMM yyyy', locale=locale))
                 expedition_values.append(exp_data.get(month_start, 0))
                 sales_draft_values.append(sales_draft_data.get(month_start, 0))
                 sales_delivery_values.append(sales_delivery_data.get(month_start, 0))

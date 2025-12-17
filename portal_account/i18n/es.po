@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+t\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-12 15:58+0000\n"
-"PO-Revision-Date: 2025-12-12 15:58+0000\n"
+"POT-Creation-Date: 2025-12-17 13:36+0000\n"
+"PO-Revision-Date: 2025-12-17 13:36+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -93,7 +93,8 @@ msgstr ""
 #. module: portal_account
 #: model_terms:ir.ui.view,arch_db:portal_account.home_and_security_link
 msgid "<i class=\"fas fa-lock mr-2 text-gray-500 dark:text-gray-400\"/> Security"
-msgstr "<i class=\"fas fa-lock mr-2 text-gray-500 dark:text-gray-400\"/> Seguridad"
+msgstr ""
+"<i class=\"fas fa-lock mr-2 text-gray-500 dark:text-gray-400\"/> Seguridad"
 
 #. module: portal_account
 #: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
@@ -107,8 +108,12 @@ msgstr "<i class=\"fas fa-plus\"/> Añadir Crédito"
 
 #. module: portal_account
 #: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
-msgid "<i class=\"fas fa-spinner fa-spin mr-1\"/>Loading..."
-msgstr "<i class=\"fas fa-spinner fa-spin mr-1\"/>Cargando..."
+msgid ""
+"<i class=\"fas fa-spinner fa-spin text-white/60 mr-2\"/>\n"
+"                                    <span class=\"text-white/60 text-xs\">Loading...</span>"
+msgstr ""
+"<i class=\"fas fa-spinner fa-spin text-white/60 mr-2\"/>\n"
+"                                <span class=\"text-white/60 text-xs\">Loading...</span>"
 
 #. module: portal_account
 #: model_terms:ir.ui.view,arch_db:portal_account.dashboard_add_credit_modal
@@ -253,9 +258,20 @@ msgid "An error occurred while processing your request: %s"
 msgstr "Se ha producido un error al procesar su solicitud: %s"
 
 #. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard.py:0
+msgid "Approved"
+msgstr "Aprobado"
+
+#. module: portal_account
 #: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
 msgid "Archived"
 msgstr "Archivado"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Arrived"
+msgstr "Recibido"
 
 #. module: portal_account
 #: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
@@ -273,6 +289,12 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard.py:0
+msgid "Cancelled"
+msgstr "Cancelado"
+
+#. module: portal_account
 #: model_terms:ir.ui.view,arch_db:portal_account.dashboard_add_credit_modal
 #: model_terms:ir.ui.view,arch_db:portal_account.dashboard_import_expeditions_modal
 #: model_terms:ir.ui.view,arch_db:portal_account.dashboard_import_receptions_modal
@@ -286,10 +308,22 @@ msgid "Credit Amount"
 msgstr "Cantidad de Crédito"
 
 #. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Credit History"
+msgstr "Hitorial de crédito"
+
+#. module: portal_account
 #. odoo-python
 #: code:addons/portal_account/controllers/dashboard.py:0
 msgid "Credit request submitted successfully and pending approval."
 msgstr "Solicitud de crédito enviada con éxito y pendiente de aprobación."
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Deliveries"
+msgstr "Entregas"
 
 #. module: portal_account
 #. odoo-python
@@ -339,6 +373,12 @@ msgstr "Dirección de Correo Electrónico"
 #: code:addons/portal_account/static/src/js/frontend/account_user_profile.js:0
 msgid "Email is required"
 msgstr "El correo electrónico es obligatorio"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard.py:0
+msgid "Error loading data"
+msgstr "Error al cargar datos"
 
 #. module: portal_account
 #. odoo-python
@@ -394,9 +434,42 @@ msgid "Import failed: %s"
 msgstr "Importación fallida: %s"
 
 #. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "In Stock"
+msgstr "Con Stock"
+
+#. module: portal_account
 #: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
 msgid "JPG, GIF or PNG. 5MB max."
 msgstr "JPG, GIF o PNG. Máx. 5MB."
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
+#: code:addons/portal_account/controllers/dashboard_receptions.py:0
+msgid "Last 12 months"
+msgstr "Últimos 12 meses"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
+#: code:addons/portal_account/controllers/dashboard_receptions.py:0
+msgid "Last 4 weeks"
+msgstr "Últimas 4 semanas"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
+#: code:addons/portal_account/controllers/dashboard_receptions.py:0
+msgid "Last 5 years"
+msgstr "Últimos 5 años"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
+#: code:addons/portal_account/controllers/dashboard_receptions.py:0
+msgid "Last 7 days"
+msgstr "Últimos 7 días"
 
 #. module: portal_account
 #: model_terms:ir.ui.view,arch_db:portal_account.portal_user_settings_page
@@ -449,6 +522,16 @@ msgid "Name is required"
 msgstr "El nombre es obligatorio"
 
 #. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "New"
+msgstr "Nuevo"
+
+#. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "No Stock"
+msgstr "Sin Stock"
+
+#. module: portal_account
 #. odoo-python
 #: code:addons/portal_account/controllers/dashboard_expeditions.py:0
 #: code:addons/portal_account/controllers/dashboard_receptions.py:0
@@ -491,6 +574,13 @@ msgstr "Notificación eliminada"
 #: code:addons/portal_account/controllers/user_account.py:0
 msgid "Notifications"
 msgstr "Notificaciones"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard.py:0
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Pending"
+msgstr "Pendiente"
 
 #. module: portal_account
 #: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
@@ -565,11 +655,20 @@ msgid "Quick Actions"
 msgstr "Acciones Rápidas"
 
 #. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Quotes"
+msgstr "Presupuestos"
+
+#. module: portal_account
 #: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
 msgid "Recent Activity"
 msgstr "Actividad Reciente"
 
 #. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_receptions.py:0
 #: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
 msgid "Receptions"
 msgstr "Recepciones"
@@ -578,6 +677,12 @@ msgstr "Recepciones"
 #: model_terms:ir.ui.view,arch_db:portal_account.res_users_form
 msgid "Record Rules"
 msgstr "Reglas de Registro"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard.py:0
+msgid "Rejected"
+msgstr "Rechazado"
 
 #. module: portal_account
 #: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
@@ -644,6 +749,8 @@ msgid "Row %d: Product \"%s\" not found"
 msgstr "Fila %d: Producto \"%s\" no encontrado"
 
 #. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
 #: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
 msgid "Sales"
 msgstr "Ventas"
@@ -682,6 +789,11 @@ msgid "The number of items to display per page (default: 100)"
 msgstr "El número de elementos a mostrar por página (predeterminado: 100)"
 
 #. module: portal_account
+#: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
+msgid "Total"
+msgstr "Total"
+
+#. module: portal_account
 #: model_terms:ir.ui.view,arch_db:portal_account.portal_user_profile_page
 msgid "Update your personal information and preferences"
 msgstr "Actualizar su información personal y preferencias"
@@ -704,6 +816,13 @@ msgstr "Usuario"
 #: code:addons/portal_account/controllers/dashboard_receptions.py:0
 msgid "Warnings: %d rows skipped"
 msgstr "Advertencias: %d filas omitidas"
+
+#. module: portal_account
+#. odoo-python
+#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
+#: code:addons/portal_account/controllers/dashboard_receptions.py:0
+msgid "Week"
+msgstr "Semana"
 
 #. module: portal_account
 #: model_terms:ir.ui.view,arch_db:portal_account.portal_dashboard_page
@@ -735,85 +854,3 @@ msgstr "ej. email@tucompañia.com"
 #: code:addons/portal_account/controllers/dashboard.py:0
 msgid "since last month"
 msgstr "desde el mes pasado"
-
-#. module: portal_account
-#. odoo-python
-#: code:addons/portal_account/controllers/dashboard.py:0
-msgid "Error loading data"
-msgstr "Error al cargar datos"
-
-#. module: portal_account
-#. odoo-python
-#: code:addons/portal_account/controllers/dashboard_receptions.py:0
-msgid "Receptions"
-msgstr "Recepciones"
-
-#. module: portal_account
-#. odoo-python
-#: code:addons/portal_account/controllers/dashboard_receptions.py:0
-#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
-msgid "Last 7 days"
-msgstr "Últimos 7 días"
-
-#. module: portal_account
-#. odoo-python
-#: code:addons/portal_account/controllers/dashboard_receptions.py:0
-#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
-msgid "Last 4 weeks"
-msgstr "Últimas 4 semanas"
-
-#. module: portal_account
-#. odoo-python
-#: code:addons/portal_account/controllers/dashboard_receptions.py:0
-#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
-msgid "Last 12 months"
-msgstr "Últimos 12 meses"
-
-#. module: portal_account
-#. odoo-python
-#: code:addons/portal_account/controllers/dashboard_receptions.py:0
-#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
-msgid "Last 5 years"
-msgstr "Últimos 5 años"
-
-#. module: portal_account
-#. odoo-python
-#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
-msgid "Deliveries"
-msgstr "Entregas"
-
-#. module: portal_account
-#. odoo-python
-#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
-msgid "Quotes"
-msgstr "Presupuestos"
-
-#. module: portal_account
-#. odoo-python
-#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
-msgid "Sales"
-msgstr "Ventas"
-
-#. module: portal_account
-#. odoo-python
-#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
-msgid "%d expedition(s) imported from Excel"
-msgstr "%d expedición(es) importada(s) desde Excel"
-
-#. module: portal_account
-#. odoo-python
-#: code:addons/portal_account/controllers/dashboard_expeditions.py:0
-msgid "Expeditions imported"
-msgstr "Expediciones importadas"
-
-#. module: portal_account
-#. odoo-python
-#: code:addons/portal_account/controllers/dashboard_receptions.py:0
-msgid "%d reception(s) imported from Excel"
-msgstr "%d recepción(es) importada(s) desde Excel"
-
-#. module: portal_account
-#. odoo-python
-#: code:addons/portal_account/controllers/dashboard_receptions.py:0
-msgid "Receptions imported"
-msgstr "Recepciones importadas"
