@@ -29,8 +29,8 @@
                                 <span class="ml-4 text-xl font-medium text-blue-600 dark:text-blue-400"><t t-out="alert.name"/></span>
                             </div>
                             <div class="mt-4 space-y-1">
-                                <span class="text-gray-500 dark:text-gray-400">Current Alarm Stage:<strong> <t t-esc="alert.stage_id.name"></t></strong></span><br/>
-                                <span class="text-gray-500 dark:text-gray-400">Maintenance Operation:<strong> <t t-esc="alert.maintenance_type"></t></strong></span>
+                                <span class="text-gray-500 dark:text-gray-400"><span>Current Alarm Stage:</span><strong> <t t-esc="alert.stage_id.name"></t></strong></span><br/>
+                                <span class="text-gray-500 dark:text-gray-400"><span>Maintenance Operation:</span><strong> <t t-esc="alert.maintenance_type"></t></strong></span>
                             </div>
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                             Repair Information
                         </h3>
                         <div class="text-sm space-y-2 dark:text-gray-300">
-                            <p class="font-medium text-base text-gray-800 dark:text-white">Description: <t t-out="alert.description"/></p>
+                            <p class="font-medium text-base text-gray-800 dark:text-white"><span>Description:</span> <t t-out="alert.description"/></p>
                         </div>
                     </div>
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
@@ -54,11 +54,11 @@
                         </h3>
                         <div class="text-sm space-y-2 dark:text-gray-300">
                             <t t-set="lot" t-value="alert.lot_id"/>
-                            <p class="font-medium text-base text-gray-800 dark:text-white">Lot name: <t t-out="lot.name"/></p>
-                            <p class="text-gray-700 dark:text-gray-200">Product Name: <t t-esc="lot.product_id.display_name"/></p>
-                            <p class="text-gray-700 dark:text-gray-200">Lot Quantity: <t t-esc="lot.product_qty"/></p>
-                            <p class="text-gray-700 dark:text-gray-200">REF: <t t-esc="lot.ref"/></p>
-                            <p class="text-gray-700 dark:text-gray-200">Lifecycle State: <t t-esc="lot.lifecycle_state"/></p>
+                            <p class="font-medium text-base text-gray-800 dark:text-white"><span>Lot name:</span> <t t-out="lot.name"/></p>
+                            <p class="text-gray-700 dark:text-gray-200"><span>Product Name:</span> <t t-esc="lot.product_id.display_name"/></p>
+                            <p class="text-gray-700 dark:text-gray-200"><span>Lot Quantity:</span> <t t-esc="lot.product_qty"/></p>
+                            <p class="text-gray-700 dark:text-gray-200"><span>REF:</span> <t t-esc="lot.ref"/></p>
+                            <p class="text-gray-700 dark:text-gray-200"><span>Lifecycle State:</span> <t t-esc="lot.lifecycle_state"/></p>
                         </div>
                     </div>
                 </div>
@@ -170,7 +170,7 @@
                                             <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
                                         </svg>
                                     </div>
-                                    <span class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-200">Chat with <span t-out="user_id.name"/></span>
+                                    <span class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-200"><span>Chat with</span> <span t-out="user_id.name"/></span>
                                 </div>
                             </div>
                             <!-- Messages container with increased height -->

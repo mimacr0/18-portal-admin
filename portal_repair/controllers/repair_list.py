@@ -51,8 +51,7 @@ class PortalRepairController(PortalAdminController):
     @lru_cache(maxsize=1)
     def _get_repair_advanced_search_fields(self):
         """Devuelve la configuración de campos para búsqueda avanzada"""
-
-        Stage = request.env['quality.alert.stage'].sudo()
+        Stage = self._sudo_with_lang('quality.alert.stage')
         stages = Stage.search([], order="sequence asc")
         stage_options = [
             {'id': st.id, 'label': st.name}
@@ -74,7 +73,7 @@ class PortalRepairController(PortalAdminController):
         ]
     @http.route('/account/repair', type='http', auth="user", website=True)
     def account_repair_alert_action(self, **post):
-        QualityAlert = request.env['quality.alert'].sudo()
+        QualityAlert = self._sudo_with_lang('quality.alert')
 
         # Obtener dominio base según account.partner del usuario actual
         domain = self._get_account_partner_domain()
@@ -307,8 +306,8 @@ class PortalRepairController(PortalAdminController):
         if sort and sort in self.ALERT_FIELDS_MAPPING:
             order_by = f"{self.ALERT_FIELDS_MAPPING[sort]} {order}"
 
-        # Obtener recepciones y contar
-        QualityAlert = request.env['quality.alert'].sudo()
+        # Obtener recepciones y contar (preservar idioma del usuario)
+        QualityAlert = self._sudo_with_lang('quality.alert')
         alerts = QualityAlert.search(base_domain, limit=limit, offset=offset, order=order_by)
         items_total = QualityAlert.search_count(base_domain)
         items_count = len(alerts)
@@ -316,7 +315,9 @@ class PortalRepairController(PortalAdminController):
         pagination_data = self._get_pagination_data(page, items_total, limit)
         pagination_data.update({'items_total': items_total, 'items_count': items_count})
 
-        qweb = request.env['ir.qweb']
+        # QWeb necesita el contexto del idioma para traducir los templates
+        user_lang = request.env.user.lang or 'en_US'
+        qweb = request.env['ir.qweb'].with_context(lang=user_lang)
         return {
             'status': 'success',
             'list': qweb._render('portal_repair.portal_repair_alert_list', {
@@ -339,7 +340,7 @@ class PortalRepairController(PortalAdminController):
                 headers=[('Content-Type', 'text/plain')]
             )
         
-        QualityAlert = request.env['quality.alert'].sudo()
+        QualityAlert = self._sudo_with_lang('quality.alert')
         partner_id = request.env.user.partner_id
         
         account_partner = request.env['account.partner'].sudo().search([

@@ -245,29 +245,29 @@
                     <input type="checkbox" class="repair-alert-list-checkbox h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500" t-att-data-alert-id="alert.id"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100">Title: <t t-out="alert.title"/></div>
-                    <div class="text-sm text-gray-900 dark:text-gray-100">Name: <t t-out="alert.name"/></div>
+                    <div class="text-sm text-gray-900 dark:text-gray-100"><span>Title:</span> <t t-out="alert.title"/></div>
+                    <div class="text-sm text-gray-900 dark:text-gray-100"><span>Name:</span> <t t-out="alert.name"/></div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100">Current stage: <t t-out="alert.stage_id.name"/></div>
+                    <div class="text-sm text-gray-900 dark:text-gray-100"><span>Current stage:</span> <t t-out="alert.stage_id.name"/></div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100">Product: <t t-out="alert.product_id.display_name"/></div>
-                    <div class="text-sm text-gray-900 dark:text-gray-100">Lot: <t t-out="alert.lot_id.display_name"/></div>
-                    <div class="text-sm text-gray-900 dark:text-gray-100">State: <t t-out="alert.lot_id.lifecycle_state"/></div>
+                    <div class="text-sm text-gray-900 dark:text-gray-100"><span>Product:</span> <t t-out="alert.product_id.display_name"/></div>
+                    <div class="text-sm text-gray-900 dark:text-gray-100"><span>Lot:</span> <t t-out="alert.lot_id.display_name"/></div>
+                    <div class="text-sm text-gray-900 dark:text-gray-100"><span>State:</span> <t t-out="alert.lot_id.lifecycle_state"/></div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <table class="w-full border-collapse border-0">
                         <tr t-foreach="alert.repair_order_ids" t-as="order">
                             <t t-if="order.state == 'done'">
-                                <div class="text-sm text-gray-900 dark:text-gray-100">Type: <t t-out="order.maintenance_type"/></div>
+                                <div class="text-sm text-gray-900 dark:text-gray-100"><span>Type:</span> <t t-out="order.maintenance_type"/></div>
 
                                 <td class="px-4 py-2">
                                     <div class="text-sm text-gray-900 dark:text-gray-100">
-                                        Result: <t t-esc="', '.join([r.name for r in order.result_ids])"/>
+                                        <span>Result:</span> <t t-esc="', '.join([r.name for r in order.result_ids])"/>
                                     </div>
                                     <div class="text-sm text-gray-900 dark:text-gray-100">
-                                        Diagnostic: <t t-esc="', '.join([d.name for d in order.diagnosis_ids])"/>
+                                        <span>Diagnostic:</span> <t t-esc="', '.join([d.name for d in order.diagnosis_ids])"/>
                                     </div>
                                 </td>
                             </t>
@@ -294,21 +294,21 @@
                 </td>
                 <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="min-w-0">
-                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words">Title: <t t-out="alert.title"/></div>
-                        <div class="text-sm text-gray-900 dark:text-gray-100 break-words">Name: <t t-out="alert.name"/></div>
+                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words"><span>Title:</span> <t t-out="alert.title"/></div>
+                        <div class="text-sm text-gray-900 dark:text-gray-100 break-words"><span>Name:</span> <t t-out="alert.name"/></div>
                     </div>
                 </td>
                 <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="min-w-0">
-                        <div class="text-sm text-gray-900 dark:text-gray-100 break-words">Product: <t t-out="alert.product_id.display_name"/></div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 break-words">Lot: <t t-out="alert.lot_id.display_name"/></div>
+                        <div class="text-sm text-gray-900 dark:text-gray-100 break-words"><span>Product:</span> <t t-out="alert.product_id.display_name"/></div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 break-words"><span>Lot:</span> <t t-out="alert.lot_id.display_name"/></div>
                     </div>
                 </td>
                 <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="min-w-0">
                         <t t-foreach="alert.repair_order_ids" t-as="order">
                             <t t-if="order.state == 'done'">
-                                <div class="text-sm text-gray-900 dark:text-gray-100 break-words">Type: <t t-out="order.maintenance_type"/></div>
+                                <div class="text-sm text-gray-900 dark:text-gray-100 break-words"><span>Type:</span> <t t-out="order.maintenance_type"/></div>
                             </t>
                         </t>
                     </div>
@@ -327,8 +327,8 @@
                 </td>
                 <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="min-w-0">
-                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words">Title: <t t-out="alert.title"/></div>
-                        <div class="text-sm text-gray-900 dark:text-gray-100 break-words">Name: <t t-out="alert.name"/></div>
+                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words"><span>Title:</span> <t t-out="alert.title"/></div>
+                        <div class="text-sm text-gray-900 dark:text-gray-100 break-words"><span>Name:</span> <t t-out="alert.name"/></div>
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -374,7 +374,7 @@
         <!-- Paginación de escritorio -->
         <div class="hidden sm:flex sm:items-center" t-if="items_count > 0">
             <p class="text-sm text-gray-700 dark:text-gray-300 mr-4">
-                <span class="font-medium">Showing</span> <span class="font-medium">1-<span t-out="items_count"/></span> <span>of</span> <span class="font-medium" t-out="items_total"/> <span t-out="items_label"/> <span class="text-gray-500 ml-1"></span>
+                <span class="font-medium">Showing</span> <span class="font-medium">1-<span t-out="items_count"/></span> <span>of</span> <span class="font-medium" t-out="items_total"/> <span t-out="items_label"/>
             </p>
             <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
                 <button type="button" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700" id="stock-list-pagination-previous">
