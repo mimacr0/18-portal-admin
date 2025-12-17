@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+t\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-17 11:52+0000\n"
-"PO-Revision-Date: 2025-12-17 11:52+0000\n"
+"POT-Creation-Date: 2025-12-17 11:53+0000\n"
+"PO-Revision-Date: 2025-12-17 11:53+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "<i class=\"fas fa-arrow-left mr-1.5\"/> Go Back"
-msgstr "<i class=\"fas fa-arrow-left mr-1.5\"/> Volver"
+msgstr "<i class=\"fas fa-arrow-left mr-1.5\"/> Go Back"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
@@ -26,8 +26,6 @@ msgid ""
 "<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
 "                            Product Information"
 msgstr ""
-"<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
-"                            Información del Producto"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
@@ -35,8 +33,6 @@ msgid ""
 "<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
 "                            Repair Information"
 msgstr ""
-"<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
-"                            Información de Reparación"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
@@ -44,8 +40,6 @@ msgid ""
 "<i class=\"fas fa-comments mr-2 icon-primary-theme\"/>\n"
 "                                Communication history"
 msgstr ""
-"<i class=\"fas fa-comments mr-2 icon-primary-theme\"/>\n"
-"                                Historial de Comunicación"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
@@ -53,8 +47,6 @@ msgid ""
 "<i class=\"fas fa-exchange mr-2 icon-primary-theme\"/>\n"
 "                        Movement History"
 msgstr ""
-"<i class=\"fas fa-exchange mr-2 icon-primary-theme\"/>\n"
-"                        Historial de Movimientos"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
@@ -62,23 +54,21 @@ msgid ""
 "<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden "
 "sm:inline\">Create</span>"
 msgstr ""
-"<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden "
-"sm:inline\">Crear</span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "<i class=\"fas fa-plus mr-1.5\"/> Add Product"
-msgstr "<i class=\"fas fa-plus mr-1.5\"/> Añadir Producto"
+msgstr "<i class=\"fas fa-plus mr-1.5\"/> Add Product"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "<i class=\"fas fa-plus-circle mr-1.5\"/> Add filter condition"
-msgstr "<i class=\"fas fa-plus-circle mr-1.5\"/> Añadir condición de filtro"
+msgstr "<i class=\"fas fa-plus-circle mr-1.5\"/> Add filter condition"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "<i class=\"fas fa-save\"/> Save"
-msgstr "<i class=\"fas fa-save\"/> Guardar"
+msgstr "<i class=\"fas fa-save\"/> Save"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
@@ -86,23 +76,21 @@ msgid ""
 "<i class=\"fas fa-screwdriver-wrench mr-2 icon-primary-theme\"/>\n"
 "                            Repair Information"
 msgstr ""
-"<i class=\"fas fa-screwdriver-wrench mr-2 icon-primary-theme\"/>\n"
-"                            Información de Reparación"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "<i class=\"fas fa-times mr-1\"/> Clear selection"
-msgstr "<i class=\"fas fa-times mr-1\"/> Limpiar selección"
+msgstr "<i class=\"fas fa-times mr-1\"/> Clear selection"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "<i class=\"fas fa-times\"/> Cancel"
-msgstr "<i class=\"fas fa-times\"/> Cancelar"
+msgstr "<i class=\"fas fa-times\"/> Cancel"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "<i class=\"fas fa-trash-alt mr-1\"/> Clear"
-msgstr "<i class=\"fas fa-trash-alt mr-1\"/> Limpiar"
+msgstr "<i class=\"fas fa-trash-alt mr-1\"/> Clear"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
@@ -110,38 +98,36 @@ msgid ""
 "<option value=\"all\" selected=\"selected\">All</option>\n"
 "                                        <option value=\"any\">Any</option>"
 msgstr ""
-"<option value=\"all\" selected=\"selected\">Todos</option>\n"
-"                                        <option value=\"any\">Cualquiera</option>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
 msgid "<span class=\"font-medium\">No results found</span>"
-msgstr "<span class=\"font-medium\">No se encontraron resultados</span>"
+msgstr "<span class=\"font-medium\">No results found</span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
 msgid "<span class=\"font-medium\">Showing</span>"
-msgstr "<span class=\"font-medium\">Mostrando</span>"
+msgstr "<span class=\"font-medium\">Showing</span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "<span class=\"ml-2 text-sm\">Renew</span>"
-msgstr "<span class=\"ml-2 text-sm\">Renovar</span>"
+msgstr "<span class=\"ml-2 text-sm\">Renew</span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "<span class=\"ml-2 text-sm\">Repair</span>"
-msgstr "<span class=\"ml-2 text-sm\">Reparar</span>"
+msgstr "<span class=\"ml-2 text-sm\">Repair</span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "<span class=\"ml-2 text-sm\">Review</span>"
-msgstr "<span class=\"ml-2 text-sm\">Revisar</span>"
+msgstr "<span class=\"ml-2 text-sm\">Review</span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "<span class=\"ml-2 text-sm\">Warranty</span>"
-msgstr "<span class=\"ml-2 text-sm\">Garantía</span>"
+msgstr "<span class=\"ml-2 text-sm\">Warranty</span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
@@ -150,9 +136,6 @@ msgid ""
 "                                            <i class=\"fas fa-info-circle\"/> Add products manually\n"
 "                                        </span>"
 msgstr ""
-"<span class=\"ml-2 text-xs text-gray-500 italic\">\n"
-"                                            <i class=\"fas fa-info-circle\"/> Añadir productos manualmente\n"
-"                                        </span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
@@ -160,8 +143,6 @@ msgid ""
 "<span class=\"sr-only\">Next</span>\n"
 "                    <i class=\"fas fa-chevron-right\"/>"
 msgstr ""
-"<span class=\"sr-only\">Siguiente</span>\n"
-"                    <i class=\"fas fa-chevron-right\"/>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
@@ -169,8 +150,6 @@ msgid ""
 "<span class=\"sr-only\">Previous</span>\n"
 "                    <i class=\"fas fa-chevron-left\"/>"
 msgstr ""
-"<span class=\"sr-only\">Anterior</span>\n"
-"                    <i class=\"fas fa-chevron-left\"/>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
@@ -184,9 +163,6 @@ msgid ""
 "gray-700 dark:text-cyan-300 text-xs font-bold px-2 py-0.5 rounded-"
 "full\">0</span>"
 msgstr ""
-"<span id=\"selected-count\" class=\"ml-2 bg-white text-cyan-700 dark:bg-"
-"gray-700 dark:text-cyan-300 text-xs font-bold px-2 py-0.5 rounded-"
-"full\">0</span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
@@ -194,295 +170,293 @@ msgid ""
 "<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
 "dark:text-gray-300 mr-3\">0 selected</span>"
 msgstr ""
-"<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
-"dark:text-gray-300 mr-3\">0 seleccionados</span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
 msgid "<span>of</span>"
-msgstr "<span>de</span>"
+msgstr "<span>of</span>"
 
 #. module: portal_repair
 #: model:ir.model.fields,field_description:portal_repair.field_quality_alert__access_warning
 msgid "Access warning"
-msgstr "Advertencia de acceso"
+msgstr "Access warning"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Active"
-msgstr "Activo"
+msgstr "Active"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "Add products using the \"Add\" button"
-msgstr "Añadir productos usando el botón \"Añadir\""
+msgstr "Add products using the \"Add\" button"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "Advanced Search"
-msgstr "Búsqueda Avanzada"
+msgstr "Advanced Search"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Alert"
-msgstr "Alerta"
+msgstr "Alert"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "All"
-msgstr "Todos"
+msgstr "All"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "Apply Filters"
-msgstr "Aplicar Filtros"
+msgstr "Apply Filters"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Cancelled"
-msgstr "Cancelado"
+msgstr "Cancelled"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Chat with"
-msgstr "Chatear con"
+msgstr "Chat with"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "Close modal"
-msgstr "Cerrar modal"
+msgstr "Close modal"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Create Date"
-msgstr "Fecha de Creación"
+msgstr "Create Date"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Current Alarm Stage:"
-msgstr "Etapa Actual de Alerta:"
+msgstr "Current Alarm Stage:"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
 msgid "Current stage:"
-msgstr "Etapa actual:"
+msgstr "Current stage:"
 
 #. module: portal_repair
 #: model:ir.model.fields,help:portal_repair.field_quality_alert__access_url
 msgid "Customer Portal URL"
-msgstr "URL del Portal del Cliente"
+msgstr "Customer Portal URL"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Delete"
-msgstr "Eliminar"
+msgstr "Delete"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Description"
-msgstr "Descripción"
+msgstr "Description"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Description:"
-msgstr "Descripción:"
+msgstr "Description:"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Destination Location"
-msgstr "Ubicación de Destino"
+msgstr "Destination Location"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Diagnosis"
-msgstr "Diagnóstico"
+msgstr "Diagnosis"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
 msgid "Diagnostic:"
-msgstr "Diagnóstico:"
+msgstr "Diagnostic:"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Done Date"
-msgstr "Fecha de Finalización"
+msgstr "Done Date"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Excel export not available. Please install xlsxwriter."
-msgstr "Exportación a Excel no disponible. Por favor, instale xlsxwriter."
+msgstr "Excel export not available. Please install xlsxwriter."
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Export Excel"
-msgstr "Exportar a Excel"
+msgstr "Export Excel"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Go back"
-msgstr "Volver"
+msgstr "Go back"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "In transit"
-msgstr "En tránsito"
+msgstr "In transit"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "In warehouse"
-msgstr "En almacén"
+msgstr "In warehouse"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Lifecycle State"
-msgstr "Estado del Ciclo de Vida"
+msgstr "Lifecycle State"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Lifecycle State:"
-msgstr "Estado del Ciclo de Vida:"
+msgstr "Lifecycle State:"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Lot"
-msgstr "Lote"
+msgstr "Lot"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Lot Quantity:"
-msgstr "Cantidad de Lote:"
+msgstr "Lot Quantity:"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Lot name:"
-msgstr "Nombre de lote:"
+msgstr "Lot name:"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
 msgid "Lot:"
-msgstr "Lote:"
+msgstr "Lot:"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "Maintenance Operation"
-msgstr "Operación de Mantenimiento"
+msgstr "Maintenance Operation"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Maintenance Operation:"
-msgstr "Operación de Mantenimiento:"
+msgstr "Maintenance Operation:"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Maintenance Type"
-msgstr "Tipo de Mantenimiento"
+msgstr "Maintenance Type"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "Name"
-msgstr "Nombre"
+msgstr "Name"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
 msgid "Name:"
-msgstr "Nombre:"
+msgstr "Name:"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "No products selected"
-msgstr "No hay productos seleccionados"
+msgstr "No products selected"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_modal.py:0
 msgid "No products selected for the repair alert."
-msgstr "No se han seleccionado productos para la alerta de reparación."
+msgstr "No products selected for the repair alert."
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_modal.py:0
 msgid "No valid lots or locations to create alerts."
-msgstr "No hay lotes o ubicaciones válidas para crear alertas."
+msgstr "No valid lots or locations to create alerts."
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Origin Location"
-msgstr "Ubicación de Origen"
+msgstr "Origin Location"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
 msgid "Pagination"
-msgstr "Paginación"
+msgstr "Pagination"
 
 #. module: portal_repair
 #: model:ir.model.fields,field_description:portal_repair.field_quality_alert__access_url
 msgid "Portal Access URL"
-msgstr "URL de Acceso al Portal"
+msgstr "Portal Access URL"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "Problem"
-msgstr "Problema"
+msgstr "Problem"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "Problem Description"
-msgstr "Descripción del Problema"
+msgstr "Problem Description"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Product"
-msgstr "Producto"
+msgstr "Product"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Product Info"
-msgstr "Información del Producto"
+msgstr "Product Info"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Product Name:"
-msgstr "Nombre del Producto:"
+msgstr "Product Name:"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_modal.py:0
 msgid "Product not found."
-msgstr "Producto no encontrado."
+msgstr "Product not found."
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
 msgid "Product:"
-msgstr "Producto:"
+msgstr "Product:"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "Products"
-msgstr "Productos"
+msgstr "Products"
 
 #. module: portal_repair
 #: model:ir.model,name:portal_repair.model_quality_alert
 msgid "Quality Alert"
-msgstr "Alerta de Calidad"
+msgstr "Quality Alert"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
@@ -493,99 +467,99 @@ msgstr "REF:"
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_details.py:0
 msgid "Reception Details"
-msgstr "Detalles de Recepción"
+msgstr "Reception Details"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Reference"
-msgstr "Referencia"
+msgstr "Reference"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Renew"
-msgstr "Renovar"
+msgstr "Renew"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Repair"
-msgstr "Reparar"
+msgstr "Repair"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "Repair Alert Create"
-msgstr "Crear Alerta de Reparación"
+msgstr "Repair Alert Create"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Repair Done Date"
-msgstr "Fecha de Reparación Finalizada"
+msgstr "Repair Done Date"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Repair ID"
-msgstr "ID de Reparación"
+msgstr "Repair ID"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Repair Info"
-msgstr "Información de Reparación"
+msgstr "Repair Info"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Repair Schedule Date"
-msgstr "Fecha Programada de Reparación"
+msgstr "Repair Schedule Date"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_modal.py:0
 msgid "Repair alert(s) created successfully."
-msgstr "Alerta(s) de reparación creada(s) exitosamente."
+msgstr "Repair alert(s) created successfully."
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Repairing"
-msgstr "Reparando"
+msgstr "Repairing"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Repairs"
-msgstr "Reparaciones"
+msgstr "Repairs"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "Reset"
-msgstr "Restablecer"
+msgstr "Reset"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
 msgid "Result:"
-msgstr "Resultado:"
+msgstr "Result:"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Results"
-msgstr "Resultados"
+msgstr "Results"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Return After Sales"
-msgstr "Devolución Postventa"
+msgstr "Return After Sales"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Review"
-msgstr "Revisar"
+msgstr "Review"
 
 #. module: portal_repair
 #. odoo-python
@@ -596,123 +570,123 @@ msgstr "SAT"
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "SAT (Technical Support Service)"
-msgstr "SAT (Servicio de Asistencia Tecnica)"
+msgstr "SAT (Technical Support Service)"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Scheduled Date"
-msgstr "Fecha Programada"
+msgstr "Scheduled Date"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "Search ..."
-msgstr "Buscar ..."
+msgstr "Search ..."
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "Search products..."
-msgstr "Buscar productos..."
+msgstr "Search products..."
 
 #. module: portal_repair
 #: model:ir.model.fields,field_description:portal_repair.field_quality_alert__access_token
 msgid "Security Token"
-msgstr "Token de Seguridad"
+msgstr "Security Token"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "Selected Products"
-msgstr "Productos Seleccionados"
+msgstr "Selected Products"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Sent for recycling"
-msgstr "Enviado para reciclaje"
+msgstr "Sent for recycling"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Sent to client"
-msgstr "Enviado al cliente"
+msgstr "Sent to client"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Sent to repair"
-msgstr "Enviado a reparación"
+msgstr "Sent to repair"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
 msgid "Showing 1-"
-msgstr "Mostrando 1-"
+msgstr "Showing 1-"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Stage"
-msgstr "Etapa"
+msgstr "Stage"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "State"
-msgstr "Estado"
+msgstr "State"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
 msgid "State:"
-msgstr "Estado:"
+msgstr "State:"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Title"
-msgstr "Título"
+msgstr "Title"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
 msgid "Title:"
-msgstr "Título:"
+msgstr "Title:"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Type"
-msgstr "Tipo"
+msgstr "Type"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
 msgid "Type:"
-msgstr "Tipo:"
+msgstr "Type:"
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Warranty"
-msgstr "Garantía"
+msgstr "Warranty"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Write a message..."
-msgstr "Escribir un mensaje..."
+msgstr "Write a message..."
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_details.py:0
 msgid "You are not allowed to upload an attachment here."
-msgstr "No tiene permitido subir un adjunto aquí."
+msgstr "You are not allowed to upload an attachment here."
 
 #. module: portal_repair
 #. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "alerts"
-msgstr "alertas"
+msgstr "alerts"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
 msgid "of"
-msgstr "de"
+msgstr "of"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "of the following conditions:"
-msgstr "de las siguientes condiciones:"
+msgstr "of the following conditions:"

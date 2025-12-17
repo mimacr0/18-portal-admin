@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+t\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-20 12:55+0000\n"
-"PO-Revision-Date: 2025-11-20 12:55+0000\n"
+"POT-Creation-Date: 2025-12-17 11:52+0000\n"
+"PO-Revision-Date: 2025-12-17 11:52+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -23,37 +23,37 @@ msgstr "<i class=\"fas fa-arrow-left mr-1.5\"/> 返回"
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid ""
-"<i class=\"fas fa-box mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
 "                            Product Information"
 msgstr ""
-"<i class=\"fas fa-box mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
 "                            产品信息"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid ""
-"<i class=\"fas fa-box mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
 "                            Repair Information"
 msgstr ""
-"<i class=\"fas fa-box mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
 "                            维修信息"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid ""
-"<i class=\"fas fa-comments mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-comments mr-2 icon-primary-theme\"/>\n"
 "                                Communication history"
 msgstr ""
-"<i class=\"fas fa-comments mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-comments mr-2 icon-primary-theme\"/>\n"
 "                                沟通历史"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid ""
-"<i class=\"fas fa-exchange mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-exchange mr-2 icon-primary-theme\"/>\n"
 "                        Movement History"
 msgstr ""
-"<i class=\"fas fa-exchange mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-exchange mr-2 icon-primary-theme\"/>\n"
 "                        移动历史"
 
 #. module: portal_repair
@@ -81,10 +81,10 @@ msgstr "<i class=\"fas fa-save\"/> 保存"
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid ""
-"<i class=\"fas fa-screwdriver-wrench mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-screwdriver-wrench mr-2 icon-primary-theme\"/>\n"
 "                            Repair Information"
 msgstr ""
-"<i class=\"fas fa-screwdriver-wrench mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-screwdriver-wrench mr-2 icon-primary-theme\"/>\n"
 "                            维修信息"
 
 #. module: portal_repair
@@ -251,6 +251,12 @@ msgid "Close modal"
 msgstr "关闭模态框"
 
 #. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Create Date"
+msgstr ""
+
+#. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Current Alarm Stage:"
 msgstr "当前警报阶段："
@@ -287,6 +293,8 @@ msgid "Destination Location"
 msgstr "目标位置"
 
 #. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Diagnosis"
 msgstr "诊断"
@@ -300,6 +308,18 @@ msgstr "诊断："
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Done Date"
 msgstr "完成日期"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Excel export not available. Please install xlsxwriter."
+msgstr ""
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Export Excel"
+msgstr ""
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
@@ -319,6 +339,8 @@ msgid "In warehouse"
 msgstr "在仓库中"
 
 #. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Lifecycle State"
 msgstr "生命周期状态"
@@ -327,6 +349,12 @@ msgstr "生命周期状态"
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Lifecycle State:"
 msgstr "生命周期状态："
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Lot"
+msgstr ""
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
@@ -352,6 +380,12 @@ msgstr "维护操作"
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Maintenance Operation:"
 msgstr "维护操作："
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Maintenance Type"
+msgstr ""
 
 #. module: portal_repair
 #. odoo-python
@@ -514,6 +548,12 @@ msgid "Repairing"
 msgstr "维修中"
 
 #. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Repairs"
+msgstr ""
+
+#. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "Reset"
 msgstr "重置"
@@ -524,6 +564,8 @@ msgid "Result:"
 msgstr "结果："
 
 #. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Results"
 msgstr "结果"
@@ -616,6 +658,12 @@ msgid "State:"
 msgstr "状态："
 
 #. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Title"
+msgstr ""
+
+#. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
 msgid "Title:"
 msgstr "标题："
@@ -663,15 +711,3 @@ msgstr "共"
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
 msgid "of the following conditions:"
 msgstr "以下条件："
-
-#. module: portal_repair
-#. odoo-python
-#: code:addons/portal_repair/controllers/repair_modal.py:0
-msgid "%d repair alert(s) created"
-msgstr "已创建%d个维修警报"
-
-#. module: portal_repair
-#. odoo-python
-#: code:addons/portal_repair/controllers/repair_modal.py:0
-msgid "New repair alert"
-msgstr "新维修警报"
