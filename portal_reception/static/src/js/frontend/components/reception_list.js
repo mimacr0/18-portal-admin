@@ -144,8 +144,8 @@ export const initReceptionsManagementListPage = () => {
     // Configurar botón para importar archivos
     const fileUploadButton = document.getElementById('page-list-reception-tools-action-import');
     if(fileUploadButton) fileUploadButton.addEventListener('click', () => {
-        // Open the file upload modal
-        const modal = document.getElementById('file-upload-modal');
+        // Open the import receptions modal
+        const modal = document.getElementById('dashboard-page-import-receptions-modal');
         if (modal) modal.classList.remove('hidden');
     });
 

@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     reloadExpeditionListPage();
     initExpeditionsManagementListPage();
     initFileUploadModal();
+    // Initialize import expeditions modal
+    if (window.setupDashboardImportExpeditionsModal) {
+        window.setupDashboardImportExpeditionsModal();
+    }
     initExpeditionListSearch();
     portalAccountExpeditionInitCheckboxSelect();
     portalAccountExpeditionInitAdvancedFilters();

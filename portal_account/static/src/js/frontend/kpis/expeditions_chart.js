@@ -6,8 +6,8 @@ const isDark = document.documentElement.classList.contains('dark');
 // Store chart instance for updates
 let expeditionsChartInstance = null;
 
-// Period labels mapping
-const periodLabels = {
+// Default period labels (will be overridden by translations from server)
+const defaultPeriodLabels = {
     '7d': 'Last 7 days',
     'week': 'Last 4 weeks',
     'month': 'Last 12 months',
@@ -24,6 +24,9 @@ const baseSparkOptions = {
         },
         toolbar: {
             show: false
+        },
+        zoom: {
+            enabled: false
         },
         animations: {
             enabled: true,
@@ -138,30 +141,59 @@ const baseSparkOptions = {
     }
 };
 
-// Function to handle expeditions chart
+// Function to handle expeditions chart (with sales breakdown)
 export const reloadExpeditionsChartKpis = async (period = '7d') => {
     const res = await rpc('/account/dashboard/kpis/expeditions/chart', { period });
     if(res?.status != 'success') return;
 
+    // Get translations from response
+    const t = res.translations || {};
+    const periodLabels = t.period_labels || defaultPeriodLabels;
+
     // Update period label
     const labelEl = document.getElementById('expeditions-chart-period-label');
     if (labelEl) {
-        labelEl.textContent = periodLabels[period] || periodLabels['7d'];
+        labelEl.textContent = periodLabels[period] || periodLabels['7d'] || defaultPeriodLabels['7d'];
     }
 
-    // Expeditions Chart options
+    // Get data for all series
+    const expeditionsData = res.expeditions || res.values || [];
+    const salesDraftData = res.sales_draft || [];
+    const salesDeliveryData = res.sales_delivery || [];
+
+    // Expeditions + Sales Chart options (multiple series)
     const expeditionsChartOptions = {
         ...baseSparkOptions,
         chart: {
             ...baseSparkOptions.chart,
             type: 'area',
-            height: 160
+            height: 220,
+            sparkline: {
+                enabled: false
+            },
+            toolbar: {
+                show: false
+            }
         },
-        series: [{
-            name: 'Expeditions',
-            data: res.values
-        }],
-        colors: [isDark ? '#a78bfa' : '#8b5cf6'],
+        series: [
+            {
+                name: t.deliveries || 'Deliveries',
+                data: expeditionsData
+            },
+            {
+                name: t.quotes || 'Quotes',
+                data: salesDraftData
+            },
+            {
+                name: t.sales || 'Sales',
+                data: salesDeliveryData
+            }
+        ],
+        colors: [
+            isDark ? '#a78bfa' : '#8b5cf6',  // Purple - Deliveries (expeditions)
+            isDark ? '#fbbf24' : '#f59e0b',  // Amber - Quotes (draft)
+            isDark ? '#60a5fa' : '#3b82f6'   // Blue - With transport
+        ],
         stroke: {
             curve: 'smooth',
             width: 2
@@ -170,16 +202,74 @@ export const reloadExpeditionsChartKpis = async (period = '7d') => {
             type: 'gradient',
             gradient: {
                 shadeIntensity: 1,
-                opacityFrom: 0.7,
-                opacityTo: 0.3,
+                opacityFrom: 0.4,
+                opacityTo: 0.05,
                 stops: [0, 90, 100]
+            }
+        },
+        legend: {
+            show: true,
+            position: 'top',
+            horizontalAlign: 'center',
+            fontSize: '10px',
+            markers: {
+                width: 8,
+                height: 8,
+                radius: 2
+            },
+            labels: {
+                colors: isDark ? '#9ca3af' : '#6b7280'
+            },
+            itemMargin: {
+                horizontal: 8,
+                vertical: 0
+            }
+        },
+        grid: {
+            show: true,
+            borderColor: isDark ? '#374151' : '#e5e7eb',
+            strokeDashArray: 3,
+            padding: {
+                top: 5,
+                left: 5,
+                right: 15,
+                bottom: 0
+            }
+        },
+        xaxis: {
+            categories: res.labels,
+            labels: {
+                show: true,
+                style: {
+                    colors: isDark ? '#9ca3af' : '#6b7280',
+                    fontSize: '10px'
+                },
+                rotate: -45,
+                rotateAlways: false
+            },
+            axisTicks: {
+                show: false
+            },
+            axisBorder: {
+                show: false
+            }
+        },
+        yaxis: {
+            labels: {
+                show: true,
+                style: {
+                    colors: isDark ? '#9ca3af' : '#6b7280',
+                    fontSize: '10px'
+                },
+                formatter: function(val) {
+                    return val.toFixed(0);
+                }
             }
         },
         tooltip: {
             enabled: true,
-            fixed: {
-                enabled: false
-            },
+            shared: true,
+            intersect: false,
             x: {
                 show: true,
                 formatter: function(val, opts) {
@@ -189,7 +279,7 @@ export const reloadExpeditionsChartKpis = async (period = '7d') => {
             },
             y: {
                 formatter: function(value) {
-                    return value.toLocaleString();
+                    return value ? value.toLocaleString() : '0';
                 }
             },
             theme: isDark ? 'dark' : 'light'
@@ -214,7 +304,7 @@ export const reloadExpeditionsChartKpis = async (period = '7d') => {
     }
 
     // Update the KPI values in the dashboard
-    const totalExpeditions = res.values.reduce((acc, val) => acc + val, 0);
+    const totalExpeditions = expeditionsData.reduce((acc, val) => acc + val, 0);
 
     const expeditionsValueEls = document.querySelectorAll('#dashboard-chart-expeditions-total');
     expeditionsValueEls.forEach(el => {

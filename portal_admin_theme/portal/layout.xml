@@ -82,11 +82,29 @@
                 }
                 /* Content gradients */
                 .content-gradient {
-                    background: linear-gradient(to right, var(--base-color), var(--hover-color));
+                    background: linear-gradient(to right, var(--base-color), var(--hover-color)) !important;
                 }
-                .dark .content-gradient {
-                    background: linear-gradient(to right, var(--dark-base-color), var(--dark-hover-color));
+                html.dark .content-gradient {
+                    background: linear-gradient(to right, var(--dark-base-color), var(--dark-hover-color)) !important;
                 }
+                /* Dark mode utilities (Tailwind v4 fix) */
+                html.dark .dark\:bg-gray-700\/50 { background-color: rgb(55 65 81 / 0.5) !important; }
+                html.dark .dark\:bg-gray-800 { background-color: #1f2937 !important; }
+                html.dark .dark\:bg-gray-900 { background-color: #111827 !important; }
+                html.dark .dark\:bg-gray-900\/30 { background-color: rgb(17 24 39 / 0.3) !important; }
+                html.dark .dark\:bg-green-900\/30 { background-color: rgb(20 83 45 / 0.3) !important; }
+                html.dark .dark\:bg-amber-900\/30 { background-color: rgb(120 53 15 / 0.3) !important; }
+                html.dark .dark\:bg-purple-900\/30 { background-color: rgb(88 28 135 / 0.3) !important; }
+                html.dark .dark\:bg-blue-900\/30 { background-color: rgb(30 58 138 / 0.3) !important; }
+                html.dark .dark\:bg-red-900\/30 { background-color: rgb(127 29 29 / 0.3) !important; }
+                html.dark .dark\:text-white { color: #ffffff !important; }
+                html.dark .dark\:text-gray-400 { color: #9ca3af !important; }
+                html.dark .dark\:text-gray-300 { color: #d1d5db !important; }
+                html.dark .dark\:text-green-400 { color: #4ade80 !important; }
+                html.dark .dark\:text-amber-400 { color: #fbbf24 !important; }
+                html.dark .dark\:text-purple-400 { color: #c084fc !important; }
+                html.dark .dark\:text-cyan-400 { color: #22d3ee !important; }
+                html.dark .dark\:border-gray-700 { border-color: #374151 !important; }
                 /* History widget items */
                 .history-item-active {
                     background-color: var(--base-color);
@@ -149,6 +167,7 @@
             </style>
             <t t-call-assets="web._assets_core" t-css="false" defer_load="True"/>
             <t t-call-assets="portal_admin_theme.admin_assets_frontend" defer_load="True"/>
+            <t t-call-assets="portal_admin_theme.tools" t-css="false" defer_load="True"/>
             <script t-nocache="Session information should always be up to date." type="text/javascript">
                 document.addEventListener('DOMContentLoaded', () => {
                     odoo.__session_info__ = <t t-out="json.dumps(request.env['ir.http'].get_frontend_session_info())"/>;
@@ -181,10 +200,10 @@
             </t>
         </head>
         <body class="bg-gray-100 dark:bg-gray-900">
-            <div class="page-container">
+            <div class="page-container min-h-screen">
                 <!-- Header -->
-                <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
-                    <div class="grid grid-cols-2 items-center px-4 py-3">
+                <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 min-h-[61px]">
+                    <div class="grid grid-cols-2 items-center px-4 py-3 min-h-[61px]">
                         <!-- Left section with sidebar toggle -->
                         <div class="flex items-center justify-start">
                             <button id="sidebar-toggle" class="size-10 rounded-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none relative" data-sidebar-state="full">
@@ -205,16 +224,15 @@
                         <!-- Right section with buttons -->
                         <div class="flex items-center gap-2 justify-end">
                             <!-- Theme toggle button -->
-                            <button id="theme-toggle-button" class="flex items-center justify-center size-10 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
-                                <!-- Light mode icon (default visible) -->
-                                <svg id="light-theme-icon" class="size-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-slot="icon">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"></path>
-                                </svg>
-                                <!-- Dark mode icon (hidden by default) -->
-                                <svg id="dark-theme-icon" class="size-5 text-gray-600 dark:text-gray-300 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-slot="icon">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"></path>
-                                </svg>
-                            </button>
+                             <div class="relative">
+                                <button id="theme-toggle-button" class="flex items-center justify-center size-10 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
+                                    <!-- Light mode icon (default visible) -->
+                                    <img id="light-theme-icon" src="/portal_admin_theme/static/img/icons/sun.svg" class="w-5 h-5" alt="Light mode"/>
+                                    <!-- Dark mode icon (hidden by default) -->
+                                    <img id="dark-theme-icon" src="/portal_admin_theme/static/img/icons/moon.svg" class="w-5 h-5 hidden" alt="Dark mode"/>
+                                </button>
+                             </div>
+                          
 
                             <!-- Language selector dropdown -->
                             <div class="relative">

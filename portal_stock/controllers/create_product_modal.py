@@ -1,4 +1,11 @@
 import json
+import traceback
+
+try:
+    import openpyxl
+except ImportError:
+    openpyxl = None
+
 from odoo import http, _
 from odoo.http import request
 from odoo.addons.portal_admin_theme.controllers.admin import PortalAdminController
@@ -21,7 +28,6 @@ class ProductModalController(PortalAdminController):
             account_partner = request.env['account.partner'].sudo().search([
                 ('partner_id', '=', partner.commercial_partner_id.id)
             ], limit=1)
-            print(account_partner, product.account_partner_id.id, account_partner.id)
             if account_partner and product.account_partner_id.id != account_partner.id:
                 return {'status': 'error', 'message': _('You do not have access to this product')}
 
@@ -147,6 +153,16 @@ class ProductModalController(PortalAdminController):
             self._ensure_user_lang_context()
             user_lang = request.env.user.sudo().lang or 'en_US'
             
+            # Send recent activity notification
+            user = request.env.user
+            user.send_portal_user_recent_activity(
+                "Product '%s' created",
+                "New product",
+                "fas fa-box",
+                "success",
+                message_args=[template.name]
+            )
+            
             qweb = request.env['ir.qweb'].with_context(lang=user_lang)
             return {
                 'status': 'success',
@@ -218,7 +234,6 @@ class ProductModalController(PortalAdminController):
             account_partner = request.env['account.partner'].sudo().search([
                 ('partner_id', '=', partner.commercial_partner_id.id)
             ], limit=1)
-            print(account_partner, product.account_partner_id.id, account_partner.id)
             if account_partner and product.account_partner_id.id != account_partner.id:
                 return {'status': 'error', 'message': _('You do not have access to this product')}
 
@@ -257,3 +272,193 @@ class ProductModalController(PortalAdminController):
             }
         except Exception as e:
             return {'status': 'error', 'message': str(e)}
+
+    @http.route('/account/stock/import_products', type='http', auth='user', methods=['POST'], csrf=False)
+    def account_stock_import_products(self, file=None, **kw):
+        """Import products from Excel (XLSX) file.
+        
+        Required columns:
+        - name: Product name (required)
+        - tracking: 'serial' or 'none' (required)
+        - width: Width in cm (required)
+        - height: Height in cm (required)
+        - length: Length in cm (required)
+        - weight: Weight in kg (required)
+        
+        Optional columns:
+        - sku: Internal code (default_code)
+        - barcode: Product barcode
+        """
+        self._ensure_user_lang_context()
+        
+        if not openpyxl:
+            return request.make_json_response({
+                'status': 'error',
+                'message': _('Excel import not available. Please install openpyxl.')
+            })
+        
+        if not file:
+            return request.make_json_response({
+                'status': 'error',
+                'message': _('No file provided')
+            })
+        
+        try:
+            # Read Excel file
+            workbook = openpyxl.load_workbook(file, data_only=True)
+            sheet = workbook.active
+            
+            # Get headers from first row
+            headers = [cell.value.lower().strip() if cell.value else '' for cell in sheet[1]]
+            
+            # Required columns
+            required_cols = ['name', 'tracking', 'width', 'height', 'length', 'weight']
+            missing_cols = [col for col in required_cols if col not in headers]
+            
+            if missing_cols:
+                return request.make_json_response({
+                    'status': 'error',
+                    'message': _('Missing required columns: %s') % ', '.join(missing_cols)
+                })
+            
+            # Get column indices
+            col_idx = {header: idx for idx, header in enumerate(headers)}
+            
+            # Get models
+            partner = request.env.user.partner_id
+            account_partner = request.env['account.partner'].sudo().search([
+                ('partner_id', '=', partner.commercial_partner_id.id)
+            ], limit=1)
+            
+            ProductTemplate = request.env['product.template'].sudo()
+            
+            errors = []
+            warnings = []
+            created_count = 0
+            row_num = 1
+            
+            for row in sheet.iter_rows(min_row=2, values_only=True):
+                row_num += 1
+                
+                # Skip empty rows
+                if not any(row):
+                    continue
+                
+                # Get name (required)
+                name = str(row[col_idx['name']] or '').strip()
+                if not name:
+                    errors.append(_('Row %d: Missing product name') % row_num)
+                    continue
+                
+                # Get tracking (required)
+                tracking = str(row[col_idx['tracking']] or '').strip().lower()
+                if tracking not in ['serial', 'none']:
+                    errors.append(_('Row %d: Invalid tracking value "%s" (must be "serial" or "none")') % (row_num, tracking))
+                    continue
+                
+                # Get dimensions (required)
+                try:
+                    width = float(row[col_idx['width']] or 0)
+                    height = float(row[col_idx['height']] or 0)
+                    length = float(row[col_idx['length']] or 0)
+                    weight = float(row[col_idx['weight']] or 0)
+                    
+                    if width <= 0 or height <= 0 or length <= 0:
+                        errors.append(_('Row %d: Dimensions must be greater than 0') % row_num)
+                        continue
+                    if weight < 0:
+                        errors.append(_('Row %d: Weight cannot be negative') % row_num)
+                        continue
+                except (ValueError, TypeError):
+                    errors.append(_('Row %d: Invalid numeric values for dimensions or weight') % row_num)
+                    continue
+                
+                # Calculate volume (cm³)
+                volume = width * height * length
+                
+                # Optional fields
+                sku = str(row[col_idx.get('sku', -1)] or '').strip() if 'sku' in col_idx else ''
+                barcode = str(row[col_idx.get('barcode', -1)] or '').strip() if 'barcode' in col_idx else ''
+                
+                # Check for duplicate barcode
+                if barcode:
+                    existing = ProductTemplate.search([('barcode', '=', barcode)], limit=1)
+                    if existing:
+                        warnings.append(_('Row %d: Barcode "%s" already exists, skipping') % (row_num, barcode))
+                        continue
+                
+                # Check for duplicate SKU
+                if sku:
+                    existing = ProductTemplate.search([('default_code', '=', sku)], limit=1)
+                    if existing:
+                        warnings.append(_('Row %d: SKU "%s" already exists, skipping') % (row_num, sku))
+                        continue
+                
+                # Create product template
+                values = {
+                    'account_partner_id': account_partner.id if account_partner else False,
+                    'name': name,
+                    'sale_ok': False,
+                    'purchase_ok': False,
+                    'type': 'consu',
+                    'list_price': 0.0,
+                    'standard_price': 0.0,
+                    'volume': volume / 1000000,  # Convert cm³ to m³ for Odoo
+                    'weight': weight,
+                    'barcode': barcode or False,
+                    'default_code': sku or False,
+                    'is_storable': True,
+                    'tracking': tracking,
+                }
+                
+                try:
+                    template = ProductTemplate.create(values)
+                    
+                    # Update variants with same weight/volume
+                    for variant in template.product_variant_ids:
+                        variant.write({
+                            'volume': volume / 1000000,
+                            'weight': weight
+                        })
+                    
+                    created_count += 1
+                except Exception as e:
+                    errors.append(_('Row %d: Error creating product - %s') % (row_num, str(e)))
+                    continue
+            
+            if errors and created_count == 0:
+                return request.make_json_response({
+                    'status': 'error',
+                    'message': _('Import failed with %d errors.') % len(errors),
+                    'errors': errors[:10],
+                    'traceback': ''
+                })
+            
+            result_message = _('%d product(s) created successfully.') % created_count
+            all_messages = warnings + errors
+            
+            # Send recent activity notification for imported products
+            if created_count > 0:
+                user = request.env.user
+                user.send_portal_user_recent_activity(
+                    "%d product(s) imported from Excel",
+                    "Products imported",
+                    "fas fa-file-import",
+                    "success",
+                    message_args=[created_count]
+                )
+            
+            return request.make_json_response({
+                'status': 'success',
+                'message': result_message,
+                'created': created_count,
+                'errors': all_messages[:10] if all_messages else []
+            })
+            
+        except Exception as e:
+            error_traceback = traceback.format_exc()
+            return request.make_json_response({
+                'status': 'error',
+                'message': _('Import failed: %s') % str(e),
+                'traceback': error_traceback
+            })

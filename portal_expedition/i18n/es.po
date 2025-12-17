@@ -903,3 +903,27 @@ msgstr "pedidos"
 #: model_terms:ir.ui.view,arch_db:portal_expedition.portal_product_catalog_pagination
 msgid "products)"
 msgstr "productos)"
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order_modal.py:0
+msgid "Expedition '%s' created"
+msgstr "Expedición '%s' creada"
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order_modal.py:0
+msgid "New expedition"
+msgstr "Nueva expedición"
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order_modal.py:0
+msgid "Expedition created successfully"
+msgstr "Expedición creada correctamente"
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/models/sale_order.py:0
+msgid "New message in expedition"
+msgstr "Nuevo mensaje en expedición"

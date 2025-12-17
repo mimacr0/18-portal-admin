@@ -6,8 +6,8 @@ const isDark = document.documentElement.classList.contains('dark');
 // Store chart instance for updates
 let receptionChartInstance = null;
 
-// Period labels mapping
-const periodLabels = {
+// Default period labels (will be overridden by translations from server)
+const defaultPeriodLabels = {
     '7d': 'Last 7 days',
     'week': 'Last 4 weeks',
     'month': 'Last 12 months',
@@ -24,6 +24,9 @@ const baseSparkOptions = {
         },
         toolbar: {
             show: false
+        },
+        zoom: {
+            enabled: false
         },
         animations: {
             enabled: true,
@@ -143,10 +146,15 @@ export const reloadReceptionsChartKpis = async (period = '7d') => {
     const res = await rpc('/account/dashboard/kpis/receptions/chart', { period });
     if(res?.status != 'success') return;
 
+    // Get translations from response
+    const t = res.translations || {};
+    const periodLabels = t.period_labels || defaultPeriodLabels;
+    const seriesName = t.series_name || 'Receptions';
+
     // Update period label
     const labelEl = document.getElementById('receptions-chart-period-label');
     if (labelEl) {
-        labelEl.textContent = periodLabels[period] || periodLabels['7d'];
+        labelEl.textContent = periodLabels[period] || periodLabels['7d'] || defaultPeriodLabels['7d'];
     }
 
     // Receptions Chart options
@@ -155,10 +163,16 @@ export const reloadReceptionsChartKpis = async (period = '7d') => {
         chart: {
             ...baseSparkOptions.chart,
             type: 'area',
-            height: 160
+            height: 220,
+            sparkline: {
+                enabled: false
+            },
+            toolbar: {
+                show: false
+            }
         },
         series: [{
-            name: 'Receptions',
+            name: seriesName,
             data: res.values
         }],
         colors: [isDark ? '#0ea5e9' : '#0284c7'],
@@ -170,9 +184,65 @@ export const reloadReceptionsChartKpis = async (period = '7d') => {
             type: 'gradient',
             gradient: {
                 shadeIntensity: 1,
-                opacityFrom: 0.7,
-                opacityTo: 0.3,
+                opacityFrom: 0.5,
+                opacityTo: 0.1,
                 stops: [0, 90, 100]
+            }
+        },
+        legend: {
+            show: true,
+            showForSingleSeries: true,
+            position: 'top',
+            horizontalAlign: 'center',
+            fontSize: '11px',
+            markers: {
+                width: 8,
+                height: 8,
+                radius: 2
+            },
+            labels: {
+                colors: isDark ? '#9ca3af' : '#6b7280'
+            }
+        },
+        grid: {
+            show: true,
+            borderColor: isDark ? '#374151' : '#e5e7eb',
+            strokeDashArray: 3,
+            padding: {
+                top: 5,
+                left: 5,
+                right: 15,
+                bottom: 0
+            }
+        },
+        xaxis: {
+            categories: res.labels,
+            labels: {
+                show: true,
+                style: {
+                    colors: isDark ? '#9ca3af' : '#6b7280',
+                    fontSize: '10px'
+                },
+                rotate: -45,
+                rotateAlways: false
+            },
+            axisTicks: {
+                show: false
+            },
+            axisBorder: {
+                show: false
+            }
+        },
+        yaxis: {
+            labels: {
+                show: true,
+                style: {
+                    colors: isDark ? '#9ca3af' : '#6b7280',
+                    fontSize: '10px'
+                },
+                formatter: function(val) {
+                    return val.toFixed(0);
+                }
             }
         },
         tooltip: {
@@ -212,13 +282,4 @@ export const reloadReceptionsChartKpis = async (period = '7d') => {
             console.error('Failed to create receptions chart:', error);
         }
     }
-
-    // Update the KPI values in the dashboard
-    const totalReceptions = res.values.reduce((acc, val) => acc + val, 0);
-
-    const receptionsValueEls = document.querySelectorAll('#dashboard-chart-receptions-total');
-    receptionsValueEls.forEach(el => {
-        el.textContent = totalReceptions.toLocaleString();
-        el.dataset.value = totalReceptions;
-    });
 }

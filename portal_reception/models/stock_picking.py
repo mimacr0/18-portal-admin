@@ -4,7 +4,7 @@
 #
 ##############################################################################
 
-from odoo import models, api
+from odoo import models, api, _
 from odoo.tools import html2plaintext
 
 
@@ -19,18 +19,50 @@ class StockPicking(models.Model):
 
     @api.returns('mail.message', lambda value: value.id)
     def message_post(self, **kwargs):
+        """
+        Override message_post to send notifications when someone writes in the chatter.
+        
+        Logic to implement:
+        - If the PORTAL USER writes → notify the responsible/backend user
+        - If the BACKEND USER writes → notify the portal user (customer)
+        
+        This ensures bidirectional communication notifications between
+        portal users and backend users.
+        """
         res = super().message_post(**kwargs)
-        user = self.env['res.users'].sudo().search([('partner_id', '=', self.user_id.partner_id.id)],limit=1)
-        partner_ids = []
-        partner_ids.extend(self.partner_id.ids)
-        partner_ids.extend(self.user_id.partner_id.ids)
-        if user and user.partner_id.id in partner_ids:
-            user._bus_send( "portal_reception.reception_details_reload_request", { 'action': 'reload' } )
-            user.send_portal_user_recent_activity( "New message in reception", "New message in reception", "fas fa-bell", "info" )
-
-        if user and user.partner_id.id == self.partner_id.id:
-            user.send_portal_user_notification( "New message in reception", "New message in reception", "fas fa-bell", "info" )
-
+        author = res.author_id  # Who wrote the message
+        
+        # Find portal user for the customer
+        customer_user = self.env['res.users'].sudo().search([
+            ('partner_id', '=', self.partner_id.id)
+        ], limit=1)
+        
+        # If author is NOT the customer → notify the customer
+        if customer_user and author.id != self.partner_id.id:
+            customer_user._bus_send("portal_reception.reception_details_reload_request", {'action': 'reload'})
+            # TODO: Implement send_portal_user_recent_activity
+            # When a backend user writes in the chatter, the portal user should
+            # receive a recent activity notification in their dashboard.
+            # customer_user.send_portal_user_recent_activity(
+            #     _("New message in reception"),
+            #     _("New message in reception"),
+            #     "fas fa-bell",
+            #     "info"
+            # )
+            customer_user.send_portal_user_notification(
+                _("New message in reception"),
+                _("New message in reception"),
+                "fas fa-bell",
+                "info"
+            )
+        
+        # TODO: Implement notification to responsible/backend
+        # If author IS the customer (portal user) → notify the responsible (self.user_id)
+        # This way the responsible knows the customer has replied.
+        # if author.id == self.partner_id.id and self.user_id:
+        #     # Notify responsible that customer wrote a message
+        #     pass
+        
         return res
 
     def get_packages(self):

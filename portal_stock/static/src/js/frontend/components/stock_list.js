@@ -119,7 +119,7 @@ export const initProductsManagementListPage = () => {
     // Configurar botón para importar archivos
     const fileUploadButton = document.getElementById('page-list-stock-tools-action-import');
     if(fileUploadButton) fileUploadButton.addEventListener('click', () => {
-        Modal.open('file-upload-modal');
+        Modal.open('page-stock-import-products-modal');
     });
 
     // Hook edit and delete buttons (event delegation after each reload)

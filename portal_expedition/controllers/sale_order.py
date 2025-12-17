@@ -100,6 +100,7 @@ class PortalExpeditionController(PortalAdminController):
                 {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True, 'responsive': ['sm', 'md', 'lg']}
             ],
             'tools_actions': [
+                {'name': 'import', 'label': _('Import Excel'), 'icon': 'fas fa-file-import', 'color': 'btn-primary', 'modal_id': 'dashboard-page-import-expeditions-modal'},
             ],
             'batch_actions': [
                 {'name': 'export', 'label': _('Export Excel'), 'icon': 'fas fa-file-excel', 'color': 'btn-primary'},
@@ -278,7 +279,6 @@ class PortalExpeditionController(PortalAdminController):
 
         # Construir dominio de búsqueda
         base_domain = self._build_sale_domain(search, domain, match_type, quick_filter)
-        print(f"base_domain: {base_domain}")
 
         # # Apply quick filters
         # if quick_filter and quick_filter != 'all':

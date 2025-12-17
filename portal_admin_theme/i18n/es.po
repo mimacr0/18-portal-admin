@@ -194,3 +194,129 @@ msgstr "Ver todo el historial"
 #: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
 msgid "default-user"
 msgstr "usuario-predeterminado"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Just now"
+msgstr "Ahora mismo"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "1 minute ago"
+msgstr "Hace 1 minuto"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d minutes ago"
+msgstr "Hace %d minutos"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "1 hour ago"
+msgstr "Hace 1 hora"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d hours ago"
+msgstr "Hace %d horas"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "1 day ago"
+msgstr "Hace 1 día"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d days ago"
+msgstr "Hace %d días"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "New repair alert"
+msgstr "Nueva alerta de reparación"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d repair alert(s) created"
+msgstr "%d alerta(s) de reparación creada(s)"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "New product"
+msgstr "Nuevo producto"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Product '%s' created"
+msgstr "Producto '%s' creado"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Products imported"
+msgstr "Productos importados"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d product(s) imported from Excel"
+msgstr "%d producto(s) importado(s) desde Excel"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "New reception"
+msgstr "Nueva recepción"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Reception '%s' created"
+msgstr "Recepción '%s' creada"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Receptions imported"
+msgstr "Recepciones importadas"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d reception(s) imported from Excel"
+msgstr "%d recepción(es) importada(s) desde Excel"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "New expedition"
+msgstr "Nueva expedición"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Expedition '%s' created"
+msgstr "Expedición '%s' creada"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Expeditions imported"
+msgstr "Expediciones importadas"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d expedition(s) imported from Excel"
+msgstr "%d expedición(es) importada(s) desde Excel"

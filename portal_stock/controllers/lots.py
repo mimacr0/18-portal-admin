@@ -43,7 +43,11 @@ class PortalLotsController(PortalAdminController):
         ]
 
     def _get_lots_domain(self, product_id=None):
-        """Obtiene el dominio base para lotes basado en el partner del usuario"""
+        """Obtiene el dominio base para lotes basado en el partner del usuario
+        
+        Args:
+            product_id: ID del producto (puede ser string o int)
+        """
         partner_id = request.env.user.partner_id
         account_partner = request.env['account.partner'].sudo().search([
             ('partner_id', '=', partner_id.commercial_partner_id.id)
@@ -64,11 +68,12 @@ class PortalLotsController(PortalAdminController):
         base_domain = [('product_id', 'in', products.ids)]
         
         # Filtrar por producto específico si se proporciona
+        # Convertir a int para comparación correcta con products.ids
         if product_id:
             try:
-                product_id = int(product_id)
-                if product_id in products.ids:
-                    base_domain = [('product_id', '=', product_id)]
+                product_id_int = int(product_id)
+                if product_id_int in products.ids:
+                    base_domain = [('product_id', '=', product_id_int)]
             except (ValueError, TypeError):
                 pass
         
@@ -164,6 +169,44 @@ class PortalLotsController(PortalAdminController):
 
         return base_domain
 
+    def _get_lots_repair_status(self, lots, account_partner):
+        """
+        Obtiene el estado de reparación de los lotes desde quality.alert.
+        
+        Args:
+            lots: recordset de stock.lot
+            account_partner: account.partner del usuario
+            
+        Returns:
+            dict {lot_id: {'stage_name': str, 'maintenance_type': str} or None}
+        """
+        if not lots or not account_partner:
+            return {lot.id: None for lot in lots}
+        
+        QualityAlert = request.env['quality.alert'].sudo()
+        
+        # Buscar alertas activas para estos lotes
+        alerts = QualityAlert.search([
+            ('lot_id', 'in', lots.ids),
+            ('account_partner_id', '=', account_partner.id),
+        ])
+        
+        # Crear diccionario con el estado más reciente de cada lote
+        lots_repair_status = {lot.id: None for lot in lots}
+        
+        for alert in alerts:
+            if alert.lot_id:
+                # Si ya hay un estado, solo sobrescribir si este es más reciente
+                current = lots_repair_status.get(alert.lot_id.id)
+                if current is None or alert.id > current.get('alert_id', 0):
+                    lots_repair_status[alert.lot_id.id] = {
+                        'alert_id': alert.id,
+                        'stage_name': alert.stage_id.name if alert.stage_id else '',
+                        'maintenance_type': alert.maintenance_type or '',
+                    }
+        
+        return lots_repair_status
+
     def _get_pagination_data(self, page, items_total, limit):
         """Calcula datos de paginación"""
         first_page = 1
@@ -189,15 +232,17 @@ class PortalLotsController(PortalAdminController):
         """Página principal de lotes"""
         StockLot = request.env['stock.lot'].sudo()
         
+        # Obtener account_partner del usuario
+        partner_id = request.env.user.partner_id
+        account_partner = request.env['account.partner'].sudo().search([
+            ('partner_id', '=', partner_id.commercial_partner_id.id)
+        ], limit=1)
+        
         # Obtener producto si se especifica
         product = None
         if product_id:
             try:
                 product_id = int(product_id)
-                partner_id = request.env.user.partner_id
-                account_partner = request.env['account.partner'].sudo().search([
-                    ('partner_id', '=', partner_id.commercial_partner_id.id)
-                ], limit=1)
                 if account_partner:
                     products = request.env['product.product'].sudo().search([
                         ('is_storable', '=', True),
@@ -239,6 +284,7 @@ class PortalLotsController(PortalAdminController):
             {'id': 'image', 'label': _('Image'), 'sortable': False, 'responsive': ['sm', 'md', 'lg']},
             {'id': 'name', 'label': _('Name'), 'sortable': True, 'responsive': ['sm', 'md', 'lg']},
             {'id': 'lot_serial', 'label': _('Lot/Serial Number'), 'sortable': True, 'responsive': ['lg']},
+            {'id': 'repair_status', 'label': _('Repair'), 'sortable': False, 'responsive': ['lg']},
             {'id': 'state', 'label': _('Estado'), 'sortable': True, 'responsive': ['lg']},
             {'id': 'location', 'label': _('Location'), 'sortable': True, 'responsive': ['md', 'lg']},
             {'id': 'quantity', 'label': _('Quantity'), 'sortable': True, 'responsive': ['md', 'lg']},
@@ -274,11 +320,17 @@ class PortalLotsController(PortalAdminController):
         StockLot = request.env['stock.lot'].sudo()
         lots = StockLot.search(base_domain, limit=100, order='id desc')
         
+        # Obtener estados de reparación de los lotes
+        lots_repair_status = self._get_lots_repair_status(lots, account_partner)
+        
         # Renderizar la lista de lotes
         qweb = request.env['ir.qweb']
         lots_list_html = qweb._render('portal_stock.portal_lots_list', {
             'lots': lots,
-            'batch_actions': True
+            'batch_actions': True,
+            'lots_repair_status': lots_repair_status,
+            'label_repair': _('Repair'),
+            'label_review': _('Review'),
         })
         
         # Preparar datos de paginación inicial
@@ -338,6 +390,15 @@ class PortalLotsController(PortalAdminController):
         lots = StockLot.search(base_domain, limit=limit, offset=offset, order=order_by)
         items_total = StockLot.search_count(base_domain)
         items_count = len(lots)
+        
+        # Obtener account_partner para los estados de reparación
+        partner_id = request.env.user.partner_id
+        account_partner = request.env['account.partner'].sudo().search([
+            ('partner_id', '=', partner_id.commercial_partner_id.id)
+        ], limit=1)
+        
+        # Obtener estados de reparación de los lotes
+        lots_repair_status = self._get_lots_repair_status(lots, account_partner)
 
         # Preparar datos de paginación
         pagination_data = self._get_pagination_data(page, items_total, limit)
@@ -348,7 +409,10 @@ class PortalLotsController(PortalAdminController):
             'status': 'success',
             'list': qweb._render('portal_stock.portal_lots_list', {
                 'lots': lots,
-                'batch_actions': True
+                'batch_actions': True,
+                'lots_repair_status': lots_repair_status,
+                'label_repair': _('Repair'),
+                'label_review': _('Review'),
             }),
             'pager': qweb._render('portal_stock.portal_lot_pager', {
                 'lots': lots,
@@ -401,12 +465,22 @@ class PortalLotsController(PortalAdminController):
             # Asegurar que el lote existe y está accesible
             lot.ensure_one()
             
+            # Obtener historial de alertas de calidad (reparaciones/revisiones) del lote
+            QualityAlert = request.env['quality.alert'].sudo()
+            lot_alerts = QualityAlert.search([
+                ('lot_id', '=', lot.id),
+                ('account_partner_id', '=', account_partner.id),
+            ], order='create_date desc')
+            
             values = self._get_admin_layout_values()
             values.update({
                 'page_name': 'lot_details',
                 'lot': lot,
+                'lot_alerts': lot_alerts,
                 'page_title': _('Lot Details'),
                 'page_url': '/account/stock/lots/details/%s' % lot_id,
+                'label_repair': _('Repair'),
+                'label_review': _('Review'),
             })
             
             return request.render("portal_stock.portal_lot_details_page", values)

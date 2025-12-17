@@ -74,7 +74,11 @@
 
                                 <!-- Botones de acción-->
                                 <div class="flex items-center">
-                                    <button t-foreach="tools_actions" t-as="tools_action" t-attf-data-tooltip-target="page-#{page_name}-list-#{tools_action.get('name')}-action-tool" t-attf-id="page-#{page_name}-list-#{tools_action.get('name')}-action-tool" class="p-2 rounded-md hover:bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
+                                    <button t-foreach="tools_actions" t-as="tools_action" 
+                                        t-attf-data-tooltip-target="page-#{page_name}-list-#{tools_action.get('name')}-action-tool" 
+                                        t-attf-id="page-#{page_name}-list-#{tools_action.get('name')}-action-tool" 
+                                        t-att-data-modal-open="tools_action.get('modal_id')"
+                                        class="p-2 rounded-md hover:bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
                                         <i t-att-class="tools_action.get('icon')"></i>
                                     </button>
                                 </div>
@@ -301,6 +305,9 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Import Expeditions Modal -->
+                <t t-call="portal_account.dashboard_import_expeditions_modal"/>
             </t>
         </t>
     </template>

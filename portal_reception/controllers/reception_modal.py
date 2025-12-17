@@ -174,6 +174,16 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
         picking.action_confirm()
         picking.action_assign()
 
+        # Send recent activity notification
+        user = request.env.user
+        user.send_portal_user_recent_activity(
+            "Reception '%s' created",
+            "New reception",
+            "fas fa-plus-circle",
+            "success",
+            message_args=[picking.name]
+        )
+
         return {'status': 'success', 'message': _('Reception created successfully')}
 
     @http.route('/account/reception/product-catalog', type='json', auth='user')

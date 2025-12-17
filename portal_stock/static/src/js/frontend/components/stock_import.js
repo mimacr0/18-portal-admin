@@ -1,5 +1,5 @@
 /**
- * Dashboard Import Modals with Drag & Drop support
+ * Stock Products Import Modal Handler
  */
 
 // Helper function to format file size
@@ -14,20 +14,18 @@ function formatFileSize(bytes) {
 // Track initialized modals to prevent duplicate event listeners
 const initializedModals = new Set();
 
-// Generic file upload modal setup
-function setupFileUploadModal(config) {
-    const {
-        modalId,
-        openButtonId,
-        fileInputId,
-        dropAreaId,
-        browseLinkId,
-        previewId,
-        errorId,
-        uploadButtonId,
-        uploadUrl,
-        onSuccess
-    } = config;
+/**
+ * Setup the products import modal with drag & drop support
+ */
+export function setupProductsImportModal(onSuccess) {
+    const modalId = 'page-stock-import-products-modal';
+    const fileInputId = 'stock-products-file-input';
+    const dropAreaId = 'stock-products-file-drop-area';
+    const browseLinkId = 'stock-products-browse-link';
+    const previewId = 'stock-products-file-preview';
+    const errorId = 'stock-products-file-error';
+    const uploadButtonId = 'stock-products-upload-btn';
+    const uploadUrl = '/account/stock/import_products';
 
     // Prevent duplicate initialization
     if (initializedModals.has(modalId)) {
@@ -35,7 +33,6 @@ function setupFileUploadModal(config) {
     }
 
     const modal = document.getElementById(modalId);
-    const openButton = document.getElementById(openButtonId);
     const fileInput = document.getElementById(fileInputId);
     const dropArea = document.getElementById(dropAreaId);
     const browseLink = document.getElementById(browseLinkId);
@@ -100,11 +97,22 @@ function setupFileUploadModal(config) {
             return false;
         }
 
+        const file = selectedFiles[0];
         const maxSize = 5 * 1024 * 1024; // 5MB
-        const oversizedFiles = selectedFiles.filter(f => f.size > maxSize);
-        if (oversizedFiles.length > 0) {
+
+        if (file.size > maxSize) {
             if (errorDiv) {
-                errorDiv.textContent = 'File exceeds maximum size of 5MB.';
+                errorDiv.textContent = 'File size exceeds 5MB limit.';
+                errorDiv.classList.remove('invisible');
+            }
+            return false;
+        }
+
+        const validExtensions = ['.xlsx', '.xls'];
+        const fileName = file.name.toLowerCase();
+        if (!validExtensions.some(ext => fileName.endsWith(ext))) {
+            if (errorDiv) {
+                errorDiv.textContent = 'Please select an Excel file (.xlsx or .xls)';
                 errorDiv.classList.remove('invisible');
             }
             return false;
@@ -113,11 +121,26 @@ function setupFileUploadModal(config) {
         return true;
     }
 
-    // Open modal button
-    if (openButton) {
-        openButton.addEventListener('click', () => {
-            resetForm();
-            Modal.open(modalId);
+    // Handle file selection
+    function handleFiles(files) {
+        selectedFiles = Array.from(files).slice(0, 1); // Only one file
+        updateFilePreview();
+    }
+
+    // File input change
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFiles(e.target.files);
+            }
+        });
+    }
+
+    // Browse link click
+    if (browseLink) {
+        browseLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (fileInput) fileInput.click();
         });
     }
 
@@ -127,115 +150,77 @@ function setupFileUploadModal(config) {
             dropArea.addEventListener(eventName, (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-            }, false);
+            });
         });
 
         ['dragenter', 'dragover'].forEach(eventName => {
             dropArea.addEventListener(eventName, () => {
                 dropArea.classList.add('border-primary-theme', 'bg-gray-50', 'dark:bg-gray-700');
-            }, false);
+            });
         });
 
         ['dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, () => {
                 dropArea.classList.remove('border-primary-theme', 'bg-gray-50', 'dark:bg-gray-700');
-            }, false);
+            });
         });
 
-        // Handle drop
         dropArea.addEventListener('drop', (e) => {
             const files = e.dataTransfer.files;
-            if (files.length > 0 && fileInput) {
-                const dataTransfer = new DataTransfer();
-                for (let i = 0; i < files.length; i++) {
-                    dataTransfer.items.add(files[i]);
-                }
-                fileInput.files = dataTransfer.files;
-                fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+            if (files.length > 0) {
+                handleFiles(files);
             }
-        }, false);
+        });
 
-        // Click to browse
+        // Click on drop area
         dropArea.addEventListener('click', () => {
             if (fileInput) fileInput.click();
         });
     }
 
-    // Browse link
-    if (browseLink) {
-        browseLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (fileInput) fileInput.click();
-        });
-    }
-
-    // File input change
-    if (fileInput) {
-        fileInput.addEventListener('change', () => {
-            selectedFiles = Array.from(fileInput.files);
-            updateFilePreview();
-        });
-    }
-
-    // Upload button
+    // Upload button click
     if (uploadButton) {
         uploadButton.addEventListener('click', async () => {
             if (!validateFiles()) return;
 
-            const formData = new FormData();
-            if (selectedFiles.length > 0) {
-                formData.append('file', selectedFiles[0]);
-            }
-
             // Show loading state
             uploadButton.disabled = true;
             const originalContent = uploadButton.innerHTML;
-            uploadButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Importing...';
+            uploadButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Importing...';
 
             try {
+                const formData = new FormData();
+                formData.append('file', selectedFiles[0]);
+
                 const response = await fetch(uploadUrl, {
                     method: 'POST',
-                    body: formData,
+                    body: formData
                 });
 
-                const responseText = await response.text();
-                
-                let result;
-                try {
-                    result = JSON.parse(responseText);
-                } catch (parseError) {
-                    if (errorDiv) {
-                        errorDiv.textContent = 'Error parsing server response: ' + responseText.substring(0, 200);
-                        errorDiv.classList.remove('invisible');
-                    }
-                    return;
-                }
+                const result = await response.json();
 
                 if (result.status === 'success') {
-                    // Close modal and reset form first
                     resetForm();
-                    if (typeof Modal !== 'undefined' && Modal.close) {
+                    
+                    // Close modal
+                    if (window.Modal && Modal.close) {
                         Modal.close(modalId);
                     } else {
-                        // Fallback: close modal manually
-                        const modalEl = document.getElementById(modalId);
-                        if (modalEl) {
-                            modalEl.setAttribute('data-open', 'false');
-                            document.body.classList.remove('modal-open');
-                        }
+                        const modalElement = document.getElementById(modalId);
+                        if (modalElement) modalElement.setAttribute('data-open', 'false');
                     }
-                    
+
                     let successMsg = result.message;
-                    // Show warnings if any rows were skipped
                     if (result.errors && result.errors.length > 0) {
                         successMsg += '\n\nWarnings:\n' + result.errors.join('\n');
                     }
+
                     if (window.systemShowNotification) {
                         systemShowNotification(successMsg, { type: 'success', duration: 6000 });
                     } else {
                         alert(successMsg);
                     }
+
                     if (onSuccess) onSuccess(result);
                 } else {
                     let errorMsg = result.message || 'Error importing file';
@@ -245,25 +230,29 @@ function setupFileUploadModal(config) {
                             errorMsg += `\n... and ${result.errors.length - 5} more errors`;
                         }
                     }
-                    // Log traceback to console for debugging
+
                     if (result.traceback) {
                         console.error('Import error traceback:', result.traceback);
                     }
+
                     if (errorDiv) {
-                        // Show formatted error in modal
                         errorDiv.innerHTML = errorMsg.replace(/\n/g, '<br>');
                         errorDiv.classList.remove('invisible');
                         errorDiv.classList.add('text-left', 'whitespace-pre-wrap');
                     }
+
                     if (window.systemShowNotification) {
                         systemShowNotification(errorMsg, { type: 'error', duration: 8000 });
                     }
                 }
             } catch (error) {
-                console.error('Error uploading file:', error);
+                console.error('Upload error:', error);
                 if (errorDiv) {
-                    errorDiv.textContent = 'Error uploading file. Please try again.';
+                    errorDiv.textContent = 'Network error. Please try again.';
                     errorDiv.classList.remove('invisible');
+                }
+                if (window.systemShowNotification) {
+                    systemShowNotification('Network error. Please try again.', { type: 'error' });
                 }
             } finally {
                 uploadButton.disabled = false;
@@ -271,47 +260,15 @@ function setupFileUploadModal(config) {
             }
         });
     }
+
+    // Reset form when modal is closed
+    modal.addEventListener('click', (e) => {
+        if (e.target.matches('[data-modal-close]')) {
+            resetForm();
+        }
+    });
 }
 
-export const setupDashboardImportReceptionsModal = () => {
-    setupFileUploadModal({
-        modalId: 'dashboard-page-import-receptions-modal',
-        openButtonId: 'dashboard-page-import-receptions-button',
-        fileInputId: 'receptions-file-input',
-        dropAreaId: 'receptions-file-drop-area',
-        browseLinkId: 'receptions-browse-link',
-        previewId: 'receptions-file-preview',
-        errorId: 'receptions-file-error',
-        uploadButtonId: 'receptions-upload-btn',
-        uploadUrl: '/account/dashboard/import_receptions',
-        onSuccess: () => {
-            // Optionally refresh dashboard data
-        }
-    });
-};
+// Export for global access
+window.setupProductsImportModal = setupProductsImportModal;
 
-export const setupDashboardImportExpeditionsModal = () => {
-    setupFileUploadModal({
-        modalId: 'dashboard-page-import-expeditions-modal',
-        openButtonId: 'dashboard-page-import-expeditions-button',
-        fileInputId: 'expeditions-file-input',
-        dropAreaId: 'expeditions-file-drop-area',
-        browseLinkId: 'expeditions-browse-link',
-        previewId: 'expeditions-file-preview',
-        errorId: 'expeditions-file-error',
-        uploadButtonId: 'expeditions-upload-btn',
-        uploadUrl: '/account/dashboard/import_expeditions',
-        onSuccess: () => {
-            // Optionally refresh dashboard data
-        }
-    });
-};
-
-export const updateAccountQuickActionssKpis = () => {
-    setupDashboardImportReceptionsModal();
-    setupDashboardImportExpeditionsModal();
-};
-
-// Expose functions globally for use in other modules
-window.setupDashboardImportReceptionsModal = setupDashboardImportReceptionsModal;
-window.setupDashboardImportExpeditionsModal = setupDashboardImportExpeditionsModal;

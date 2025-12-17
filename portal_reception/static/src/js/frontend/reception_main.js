@@ -15,6 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.initFileUploadModal) {
         window.initFileUploadModal({ onSuccess: () => reloadReceptionListPage() });
     }
+    // Initialize import receptions modal
+    if (window.setupDashboardImportReceptionsModal) {
+        window.setupDashboardImportReceptionsModal();
+    }
     initReceptionListSearch();
     portalAccountReceptionInitCheckboxSelect();
     portalAccountReceptionInitAdvancedFilters();
