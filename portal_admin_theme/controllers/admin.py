@@ -63,6 +63,19 @@ class PortalAdminController(CustomerPortal):
             # Do not block request rendering on context update issues
             pass
 
+    def _sudo_with_lang(self, model_name):
+        """Returns a model recordset with sudo and user's language context.
+        
+        Use this instead of request.env[model].sudo() when you need
+        translatable fields (Selection, related names) to respect user's language.
+        
+        Example:
+            QualityAlert = self._sudo_with_lang('quality.alert')
+            alerts = QualityAlert.search(domain)
+        """
+        user_lang = request.env.user.lang or 'en_US'
+        return request.env[model_name].with_context(lang=user_lang).sudo()
+
     def _get_admin_layout_menus(self):
         return []
 

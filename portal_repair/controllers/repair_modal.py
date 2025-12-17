@@ -32,7 +32,7 @@ class PortalRepairController(PortalAdminController):
         
     @http.route('/account/repair-alert/product-search', type='json', auth='user')
     def account_report_product_search(self, term='', **kw):
-        ProductProduct = request.env['product.product'].sudo()
+        ProductProduct = self._sudo_with_lang('product.product')
 
         # Obtener dominio base según account.partner del usuario actual
         base_domain = self._get_account_partner_domain()
@@ -91,92 +91,85 @@ class PortalRepairController(PortalAdminController):
 
     @http.route('/account/repair-alert/product-lots', type='json', auth='user')
     def account_repair_alert_product_lots(self, **kw):
+        """Obtiene lotes disponibles para un producto (optimizado con read_group)."""
         product_id = kw.get('product_id')
-        term = kw.get('term', '')  # Obtener término de búsqueda
+        term = kw.get('term', '')
 
         if not product_id:
             return {'status': 'error', 'message': 'product_id is required.'}
 
-        StockLot = request.env['stock.lot'].sudo()
-        ProductProduct = request.env['product.product'].sudo()
+        StockQuant = request.env['stock.quant'].sudo()
 
-        product = ProductProduct.browse(int(product_id))
-        if not product.exists():
-            return {'status': 'error', 'message': _('Product not found.')}
-
-        # Buscar lotes que coincidan con el producto y contengan el término
-        domain = [('product_id', '=', product.id), ('product_qty', '>', 0)]
+        # Dominio base: quants con lote, ubicación interna
+        domain = [
+            ('product_id', '=', int(product_id)),
+            ('lot_id', '!=', False),
+            ('location_id.usage', '=', 'internal'),
+        ]
         if term:
-            domain.append(('name', 'ilike', term))
+            domain.append(('lot_id.name', 'ilike', term))
 
-        lots = StockLot.search(domain, limit=20)  # Puedes limitar resultados
+        # read_group: 1 query SQL agrupando por lote
+        groups = StockQuant.read_group(
+            domain=domain,
+            fields=['lot_id', 'quantity:sum', 'reserved_quantity:sum'],
+            groupby=['lot_id'],
+            limit=20
+        )
+
         items = []
-        for lot in lots:
-            total_available = 0.0
-            # Buscar todos los stock.quant del lote
-            quants = request.env['stock.quant'].sudo().search([
-                ('lot_id', '=', lot.id),
-                ('product_id', '=', lot.product_id.id),
-            ])
+        for g in groups:
+            available = g['quantity'] - g['reserved_quantity']
+            if available > 0:
+                lot = g['lot_id']  # (id, name) tuple
+                items.append({
+                    'id': lot[0],
+                    'text': lot[1],
+                    'product_qty': available,
+                })
 
-            for q in quants:
-                loc_name = q.location_id.display_name if q.location_id else 'N/A'
-
-            # Filtramos los quants que tengan quantity - reserved_quantity > 0
-            positive_quants = quants.filtered(lambda q: (q.quantity - q.reserved_quantity) > 0)
-
-            # Sumamos la cantidad disponible de los quants positivos
-            total_available = sum(q.quantity - q.reserved_quantity for q in positive_quants)
-
-            # Guardamos la info del lote
-            items.append({
-                'id': lot.id,
-                'text': lot.name,
-                'product_qty': total_available,  # usamos el total del lote
-            })       
         return {'status': 'success', 'items': items}
 
 
     @http.route('/account/repair-alert/product-locations', type='json', auth='user')
     def account_repair_alert_product_locations(self, **kw):
+        """Obtiene ubicaciones con stock disponible para un producto (optimizado con read_group)."""
         product_id = kw.get('product_id')
-        term = kw.get('term', '')  # Término de búsqueda opcional
+        term = kw.get('term', '')
 
         if not product_id:
             return {'status': 'error', 'message': 'product_id is required.'}
 
-        ProductProduct = request.env['product.product'].sudo()
-        product = ProductProduct.browse(int(product_id))
-        if not product.exists():
-            return {'status': 'error', 'message': _('Product not found.')}
+        StockQuant = request.env['stock.quant'].sudo()
 
-        # Buscar quants del producto con cantidad disponible
-        quants = request.env['stock.quant'].sudo().search([
-            ('product_id', '=', product.id),
+        # Dominio base: quants con cantidad, ubicación interna
+        domain = [
+            ('product_id', '=', int(product_id)),
             ('quantity', '>', 0),
-            ("location_id.usage", "=", "internal"),
-        ])
-
-        # Filtrar por término de búsqueda en el nombre de la ubicación
+            ('location_id', 'child_of', request.env.ref('stock.stock_location_stock').id),
+            ('location_id', '!=', request.env.ref('repair_module.stock_location_repairs').id),
+        ]
         if term:
-            quants = quants.filtered(lambda q: term.lower() in q.location_id.name.lower())
+            domain.append(('location_id.name', 'ilike', term))
 
-        # Agrupar por ubicación
-        location_dict = {}
-        for quant in quants:
-            loc = quant.location_id
-            available_qty = quant.quantity - quant.reserved_quantity
-            if available_qty <= 0:
-                continue
-            if loc.id not in location_dict:
-                location_dict[loc.id] = {
-                    'id': loc.id,
-                    'text': loc.name,
-                    'product_qty': 0.0
-                }
-            location_dict[loc.id]['product_qty'] += available_qty
+        # read_group: 1 query SQL agrupando por ubicación
+        groups = StockQuant.read_group(
+            domain=domain,
+            fields=['location_id', 'quantity:sum', 'reserved_quantity:sum'],
+            groupby=['location_id'],
+        )
 
-        items = list(location_dict.values())
+        items = []
+        for g in groups:
+            available = g['quantity'] - g['reserved_quantity']
+            if available > 0:
+                loc = g['location_id']  # (id, name) tuple
+                items.append({
+                    'id': loc[0],
+                    'text': loc[1],
+                    'product_qty': available,
+                })
+
         return {'status': 'success', 'items': items}
 
     @http.route('/account/repair-alert/create', type='json', auth='user')

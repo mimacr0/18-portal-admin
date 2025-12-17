@@ -19,7 +19,9 @@ from odoo.osv import expression
 class PortalRepairController(PortalAdminController):
     @http.route('/account/repair/details/<int:alert_id>', type='http', auth="user", website=True)
     def account_repair_details_action(self, alert_id, access_token=None, **post):
-        QualityAlert = request.env['quality.alert'].sudo()
+        # Asegurar contexto de idioma para traducciones del template
+        self._ensure_user_lang_context()
+        QualityAlert = self._sudo_with_lang('quality.alert')
 
         # Dominio base según el account.partner del usuario actual
         base_domain = self._get_account_partner_domain()

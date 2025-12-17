@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+t\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-17 11:53+0000\n"
-"PO-Revision-Date: 2025-12-17 11:53+0000\n"
+"POT-Creation-Date: 2025-12-17 16:02+0000\n"
+"PO-Revision-Date: 2025-12-17 16:02+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -26,6 +26,8 @@ msgid ""
 "<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
 "                            Product Information"
 msgstr ""
+"<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
+"                            Product Information"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
@@ -33,6 +35,8 @@ msgid ""
 "<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
 "                            Repair Information"
 msgstr ""
+"<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
+"                            Repair Information"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
@@ -40,6 +44,8 @@ msgid ""
 "<i class=\"fas fa-comments mr-2 icon-primary-theme\"/>\n"
 "                                Communication history"
 msgstr ""
+"<i class=\"fas fa-comments mr-2 icon-primary-theme\"/>\n"
+"                                Communication history"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
@@ -47,6 +53,8 @@ msgid ""
 "<i class=\"fas fa-exchange mr-2 icon-primary-theme\"/>\n"
 "                        Movement History"
 msgstr ""
+"<i class=\"fas fa-exchange mr-2 icon-primary-theme\"/>\n"
+"                        Movement History"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
@@ -54,6 +62,8 @@ msgid ""
 "<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden "
 "sm:inline\">Create</span>"
 msgstr ""
+"<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden "
+"sm:inline\">Create</span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
@@ -76,6 +86,8 @@ msgid ""
 "<i class=\"fas fa-screwdriver-wrench mr-2 icon-primary-theme\"/>\n"
 "                            Repair Information"
 msgstr ""
+"<i class=\"fas fa-screwdriver-wrench mr-2 icon-primary-theme\"/>\n"
+"                            Repair Information"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
@@ -98,6 +110,8 @@ msgid ""
 "<option value=\"all\" selected=\"selected\">All</option>\n"
 "                                        <option value=\"any\">Any</option>"
 msgstr ""
+"<option value=\"all\" selected=\"selected\">All</option>\n"
+"                                        <option value=\"any\">Any</option>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
@@ -136,6 +150,9 @@ msgid ""
 "                                            <i class=\"fas fa-info-circle\"/> Add products manually\n"
 "                                        </span>"
 msgstr ""
+"<span class=\"ml-2 text-xs text-gray-500 italic\">\n"
+"                                            <i class=\"fas fa-info-circle\"/> Add products manually\n"
+"                                        </span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
@@ -143,6 +160,8 @@ msgid ""
 "<span class=\"sr-only\">Next</span>\n"
 "                    <i class=\"fas fa-chevron-right\"/>"
 msgstr ""
+"<span class=\"sr-only\">Next</span>\n"
+"                    <i class=\"fas fa-chevron-right\"/>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
@@ -150,6 +169,8 @@ msgid ""
 "<span class=\"sr-only\">Previous</span>\n"
 "                    <i class=\"fas fa-chevron-left\"/>"
 msgstr ""
+"<span class=\"sr-only\">Previous</span>\n"
+"                    <i class=\"fas fa-chevron-left\"/>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
@@ -163,6 +184,9 @@ msgid ""
 "gray-700 dark:text-cyan-300 text-xs font-bold px-2 py-0.5 rounded-"
 "full\">0</span>"
 msgstr ""
+"<span id=\"selected-count\" class=\"ml-2 bg-white text-cyan-700 dark:bg-"
+"gray-700 dark:text-cyan-300 text-xs font-bold px-2 py-0.5 rounded-"
+"full\">0</span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
@@ -170,6 +194,38 @@ msgid ""
 "<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
 "dark:text-gray-300 mr-3\">0 selected</span>"
 msgstr ""
+"<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
+"dark:text-gray-300 mr-3\">0 selected</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
+msgid "<span>Current stage:</span>"
+msgstr "<span>Current stage:</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
+msgid "<span>Lot:</span>"
+msgstr "<span>Lot:</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
+msgid "<span>Name:</span>"
+msgstr "<span>Name:</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
+msgid "<span>Product:</span>"
+msgstr "<span>Product:</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
+msgid "<span>State:</span>"
+msgstr "<span>State:</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
+msgid "<span>Title:</span>"
+msgstr "<span>Title:</span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
@@ -239,11 +295,6 @@ msgstr "Create Date"
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "Current Alarm Stage:"
 msgstr "Current Alarm Stage:"
-
-#. module: portal_repair
-#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
-msgid "Current stage:"
-msgstr "Current stage:"
 
 #. module: portal_repair
 #: model:ir.model.fields,help:portal_repair.field_quality_alert__access_url
@@ -438,12 +489,6 @@ msgid "Product Name:"
 msgstr "Product Name:"
 
 #. module: portal_repair
-#. odoo-python
-#: code:addons/portal_repair/controllers/repair_modal.py:0
-msgid "Product not found."
-msgstr "Product not found."
-
-#. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
 msgid "Product:"
 msgstr "Product:"
@@ -630,11 +675,6 @@ msgstr "Stage"
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
 msgid "State"
 msgstr "State"
-
-#. module: portal_repair
-#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
-msgid "State:"
-msgstr "State:"
 
 #. module: portal_repair
 #. odoo-python
