@@ -399,6 +399,39 @@
 <!--                    <td class="px-6 py-4 whitespace-nowrap">-->
 <!--                        <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="product.outgoing_qty"/>-->
 <!--                    </td>-->
+                <!-- Columna de Reparaciones/Revisiones -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <t t-set="stats" t-value="products_repair_stats.get(product.id, {})"/>
+                    <div class="text-sm text-gray-900 dark:text-gray-100">
+                        <t t-if="stats.get('in_repair', 0) > 0">
+                            <div class="flex mb-1">
+                                <div class="text-left pr-2 w-24"><strong><t t-esc="label_in_repair"/>: </strong></div>
+                                <div><t t-esc="stats.get('in_repair', 0)"/></div>
+                            </div>
+                        </t>
+                        <t t-if="stats.get('repaired', 0) > 0">
+                            <div class="flex mb-1">
+                                <div class="text-left pr-2 w-24"><strong><t t-esc="label_repaired"/>: </strong></div>
+                                <div><t t-esc="stats.get('repaired', 0)"/></div>
+                            </div>
+                        </t>
+                        <t t-if="stats.get('in_review', 0) > 0">
+                            <div class="flex mb-1">
+                                <div class="text-left pr-2 w-24"><strong><t t-esc="label_in_review"/>: </strong></div>
+                                <div><t t-esc="stats.get('in_review', 0)"/></div>
+                            </div>
+                        </t>
+                        <t t-if="stats.get('reviewed', 0) > 0">
+                            <div class="flex mb-1">
+                                <div class="text-left pr-2 w-24"><strong><t t-esc="label_reviewed"/>: </strong></div>
+                                <div><t t-esc="stats.get('reviewed', 0)"/></div>
+                            </div>
+                        </t>
+                        <t t-if="not stats.get('in_repair', 0) and not stats.get('repaired', 0) and not stats.get('in_review', 0) and not stats.get('reviewed', 0)">
+                            <span class="text-gray-400">-</span>
+                        </t>
+                    </div>
+                </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span t-attf-class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full #{product.qty_available > 0 and 'bg-green-100 text-green-800' or 'bg-red-100 text-red-800'}">
                         <t t-esc="product.qty_available > 0 and label_in_stock or label_out_of_stock"/>

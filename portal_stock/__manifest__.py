@@ -11,7 +11,7 @@
     'license': 'AGPL-3',
     'category': 'Extra Tools',
     'summary': 'Stock',
-    'depends': ['portal_account'],
+    'depends': ['portal_account', 'repair_module'],
     'data': [
         'security/ir.model.access.csv',
         'portal/portal_stock_list_templates.xml',

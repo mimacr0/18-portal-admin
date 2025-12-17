@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+t\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-17 11:01+0000\n"
-"PO-Revision-Date: 2025-11-17 11:01+0000\n"
+"POT-Creation-Date: 2025-12-17 10:56+0000\n"
+"PO-Revision-Date: 2025-12-17 10:56+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,13 +16,108 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "%d product(s) created successfully."
+msgstr "成功创建 %d 个产品。"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid ""
+"<i class=\"fas fa-arrow-left mr-1.5\"/> <span class=\"hidden "
+"sm:inline\">Volver</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<i class=\"fas fa-box mr-2 text-primary-theme \"/>\n"
+"                            Product Information"
+msgstr ""
+"<i class=\"fas fa-box mr-2 text-primary-theme \"/>\n"
+"                            产品信息"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<i class=\"fas fa-check-double mr-1\"/>\n"
+"                                                                            <span class=\"font-medium mr-1\">Done:</span>"
+msgstr ""
+"<i class=\"fas fa-check-double mr-1\"/>\n"
+"                                                                            <span class=\"font-medium mr-1\">完成：</span>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<i class=\"fas fa-clipboard-check mr-1\"/>\n"
+"                                                                            <span class=\"font-medium mr-1\">Confirmed:</span>"
+msgstr ""
+"<i class=\"fas fa-clipboard-check mr-1\"/>\n"
+"                                                                            <span class=\"font-medium mr-1\">已确认：</span>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<i class=\"fas fa-comments mr-2 text-primary-theme \"/>\n"
+"                                Communication History"
+msgstr ""
+"<i class=\"fas fa-comments mr-2 text-primary-theme \"/>\n"
+"                                沟通历史"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid "<i class=\"fas fa-download mr-1\"/>Download template"
+msgstr "<i class=\"fas fa-download mr-1\"/>下载模板"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid "<i class=\"fas fa-file-import\"/> Import"
+msgstr "<i class=\"fas fa-file-import\"/> 导入"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid ""
+"<i class=\"fas fa-info-circle mr-1\"/>\n"
+"                                Required columns: <strong>name</strong>, <strong>tracking</strong>, <strong>width</strong>, <strong>height</strong>, <strong>length</strong>, <strong>weight</strong>"
+msgstr ""
+"<i class=\"fas fa-info-circle mr-1\"/>\n"
+"                                必填列：<strong>name</strong>、<strong>tracking</strong>、<strong>width</strong>、<strong>height</strong>、<strong>length</strong>、<strong>weight</strong>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<i class=\"fas fa-info-circle mr-2 text-primary-theme \"/>\n"
+"                            Lot Information"
+msgstr ""
+"<i class=\"fas fa-info-circle mr-2 text-primary-theme \"/>\n"
+"                            批次信息"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<i class=\"fas fa-map-marker-alt mr-2 text-primary-theme \"/>\n"
+"                            Location"
+msgstr ""
+"<i class=\"fas fa-map-marker-alt mr-2 text-primary-theme \"/>\n"
+"                            位置"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<i class=\"fas fa-play-circle mr-1\"/>\n"
+"                                                                            <span class=\"font-medium mr-1\">In Progress:</span>"
+msgstr ""
+"<i class=\"fas fa-play-circle mr-1\"/>\n"
+"                                                                            <span class=\"font-medium mr-1\">进行中：</span>"
+
+#. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid ""
 "<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden sm:inline\">Create "
 "Product</span>"
 msgstr ""
-"<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden sm:inline\">创建"
-"产品</span>"
+"<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden "
+"sm:inline\">创建产品</span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
@@ -53,34 +148,75 @@ msgstr "<i class=\"fas fa-times mr-1\"/> 清除选择"
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "<i class=\"fas fa-times\"/> Cancel"
 msgstr "<i class=\"fas fa-times\"/> 取消"
 
 #. module: portal_stock
-#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
 msgid ""
-"<select id=\"page-stock-list-advanced-search-match-type\" class=\"inline-block mx-1 px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-[#8A8A00] focus:border-[#8A8A00] bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700\">\n"
-"                                            <option value=\"all\" selected=\"selected\">All</option>\n"
-"                                            <option value=\"any\">Any</option>\n"
-"                                        </select>\n"
-"                                        of the following conditions:"
+"<i class=\"fas fa-tools mr-2 text-primary-theme\"/>\n"
+"                            Repair / Review History"
 msgstr ""
-"<select id=\"page-stock-list-advanced-search-match-type\" class=\"inline-block mx-1 px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-[#8A8A00] focus:border-[#8A8A00] bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700\">\n"
-"                                            <option value=\"all\" selected=\"selected\">全部</option>\n"
-"                                            <option value=\"any\">任意</option>\n"
-"                                        </select>\n"
-"                                        以下条件："
+"<i class=\"fas fa-tools mr-2 text-primary-theme\"/>\n"
+"                            维修/审核历史"
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid ""
+"<option value=\"all\" selected=\"selected\">All</option>\n"
+"                                            <option value=\"any\">Any</option>"
+msgstr ""
+"<option value=\"all\" selected=\"selected\">全部</option>\n"
+"                                            <option value=\"any\">任一</option>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "<span class=\"font-medium\">Internal Reference:</span>"
+msgstr "<span class=\"font-medium\">内部参考：</span>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "<span class=\"font-medium\">Location:</span>"
+msgstr "<span class=\"font-medium\">位置：</span>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "<span class=\"font-medium\">Lot/Serial Number:</span>"
+msgstr "<span class=\"font-medium\">批次/序列号：</span>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "<span class=\"font-medium\">Name:</span>"
+msgstr "<span class=\"font-medium\">名称：</span>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
 msgid "<span class=\"font-medium\">No results found</span>"
 msgstr "<span class=\"font-medium\">未找到结果</span>"
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "<span class=\"font-medium\">Quantity:</span>"
+msgstr "<span class=\"font-medium\">数量：</span>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "<span class=\"font-medium\">Reference:</span>"
+msgstr "<span class=\"font-medium\">参考：</span>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
 msgid "<span class=\"font-medium\">Showing</span>"
 msgstr "<span class=\"font-medium\">显示</span>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "<span class=\"font-medium\">State:</span>"
+msgstr "<span class=\"font-medium\">状态：</span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
@@ -104,9 +240,15 @@ msgstr "<span class=\"mx-1 text-sm\">千克</span>"
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 msgid "<span class=\"mx-1\">x</span>"
-msgstr "<span class=\"mx-1\">x</span>"
+msgstr ""
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lots_list
+msgid "<span class=\"mx-1\">·</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
 msgid ""
 "<span class=\"sr-only\">Next</span>\n"
@@ -116,6 +258,7 @@ msgstr ""
 "                    <i class=\"fas fa-chevron-right\"/>"
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
 msgid ""
 "<span class=\"sr-only\">Previous</span>\n"
@@ -123,6 +266,13 @@ msgid ""
 msgstr ""
 "<span class=\"sr-only\">上一页</span>\n"
 "                    <i class=\"fas fa-chevron-left\"/>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lots_list
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_products_list
+msgid "<span class=\"text-gray-400\">-</span>"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
@@ -142,7 +292,51 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "<span class=\"text-red-500 ml-1\">*</span>"
-msgstr "<span class=\"text-red-500 ml-1\">*</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<span class=\"text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide\">\n"
+"                                                                    <i class=\"fas fa-check-circle mr-1\"/>Results\n"
+"                                                                </span>"
+msgstr ""
+"<span class=\"text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide\">\n"
+"                                                                    <i class=\"fas fa-check-circle mr-1\"/>结果\n"
+"                                                                </span>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<span class=\"text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide\">\n"
+"                                                                    <i class=\"fas fa-history mr-1\"/>State History\n"
+"                                                                </span>"
+msgstr ""
+"<span class=\"text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide\">\n"
+"                                                                    <i class=\"fas fa-history mr-1\"/>状态历史\n"
+"                                                                </span>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<span class=\"text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide\">\n"
+"                                                                    <i class=\"fas fa-stethoscope mr-1\"/>Diagnosis\n"
+"                                                                </span>"
+msgstr ""
+"<span class=\"text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide\">\n"
+"                                                                    <i class=\"fas fa-stethoscope mr-1\"/>诊断\n"
+"                                                                </span>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<span class=\"text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide\">\n"
+"                                                                    <i class=\"fas fa-sticky-note mr-1\"/>Notes\n"
+"                                                                </span>"
+msgstr ""
+"<span class=\"text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide\">\n"
+"                                                                    <i class=\"fas fa-sticky-note mr-1\"/>备注\n"
+"                                                                </span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
@@ -154,6 +348,7 @@ msgstr ""
 "dark:text-gray-300 mr-3\">已选择 0</span>"
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
 msgid "<span>of</span>"
 msgstr "<span>共</span>"
@@ -180,6 +375,13 @@ msgstr "<strong>实际库存：</strong>"
 
 #. module: portal_stock
 #. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Account partner not found"
+msgstr "未找到账户合作伙伴"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Actions"
 msgstr "操作"
@@ -191,6 +393,7 @@ msgstr "高级搜索"
 
 #. module: portal_stock
 #. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "All"
 msgstr "全部"
@@ -217,6 +420,18 @@ msgstr ""
 
 #. module: portal_stock
 #. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Available"
+msgstr "可用"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "Back"
+msgstr "返回"
+
+#. module: portal_stock
+#. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
@@ -224,14 +439,21 @@ msgid "Barcode"
 msgstr "条形码"
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "Chat about"
+msgstr "关于...的聊天"
+
+#. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "Close modal"
 msgstr "关闭模态框"
 
 #. module: portal_stock
 #. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Delete"
 msgstr "删除"
@@ -239,11 +461,20 @@ msgstr "删除"
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
 msgid ""
-"Drag and drop a file here, or <span class=\"text-[#696900] "
-"dark:text-[#A0A000] browse-link\">browse</span>"
+"Drag and drop a file here, or <span class=\"text-primary-theme browse-"
+"link\">browse</span>"
+msgstr "将文件拖放到此处，或 <span class=\"text-primary-theme browse-link\">浏览</span>"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid ""
+"Drag and drop an Excel file here, or <span class=\"text-primary-theme "
+"browse-link cursor-pointer hover:underline\" id=\"stock-products-browse-"
+"link\">browse</span>"
 msgstr ""
-"将文件拖放到此处，或 <span class=\"text-[#696900] "
-"dark:text-[#A0A000] browse-link\">浏览</span>"
+"将Excel文件拖放到此处，或 <span class=\"text-primary-theme "
+"browse-link cursor-pointer hover:underline\" id=\"stock-products-browse-"
+"link\">浏览</span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
@@ -299,6 +530,30 @@ msgid "Error al obtener valores de atributo"
 msgstr "获取属性值时出错"
 
 #. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Estado"
+msgstr "状态"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Excel export not available. Please install xlsxwriter."
+msgstr "Excel导出不可用。请安装xlsxwriter。"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Excel import not available. Please install openpyxl."
+msgstr "Excel导入不可用。请安装openpyxl。"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Export Excel"
+msgstr "导出Excel"
+
+#. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
 msgid "File Upload"
 msgstr "文件上传"
@@ -316,9 +571,68 @@ msgstr "高度"
 
 #. module: portal_stock
 #. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Image"
+msgstr "图片"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Import Excel"
+msgstr "导入Excel"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid "Import Products from Excel"
+msgstr "从Excel导入产品"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Import failed with %d errors."
+msgstr "导入失败，共 %d 个错误。"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Import failed: %s"
+msgstr "导入失败：%s"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "In Repair"
+msgstr "维修中"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "In Review"
+msgstr "审核中"
+
+#. module: portal_stock
+#. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "In Stock"
 msgstr "有库存"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Incoming"
+msgstr "入库"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Internal Reference"
+msgstr "内部参考"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Invalid lots payload"
+msgstr "无效的批次数据"
 
 #. module: portal_stock
 #. odoo-python
@@ -332,7 +646,49 @@ msgid "Length"
 msgstr "长度"
 
 #. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Location"
+msgstr "位置"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Lot Details"
+msgstr "批次详情"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Lot deleted successfully"
+msgstr "批次删除成功"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Lot not found"
+msgstr "未找到批次"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "Lot/Serial"
+msgstr "批次/序列号"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Lot/Serial Number"
+msgstr "批次/序列号"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Lots/Serials"
+msgstr "批次/序列号"
+
+#. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
 msgid "Maximum file size: 5MB"
 msgstr "最大文件大小：5MB"
 
@@ -343,6 +699,12 @@ msgstr "尺寸（厘米）"
 
 #. module: portal_stock
 #. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Missing lot identifier"
+msgstr "缺少批次标识符"
+
+#. module: portal_stock
+#. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Missing product identifier"
@@ -350,6 +712,13 @@ msgstr "缺少产品标识符"
 
 #. module: portal_stock
 #. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Missing required columns: %s"
+msgstr "缺少必填列：%s"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
 #: code:addons/portal_stock/controllers/stocks.py:0
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
@@ -377,6 +746,29 @@ msgid "New"
 msgstr "新建"
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "No additional information"
+msgstr "没有额外信息"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "No file provided"
+msgstr "未提供文件"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "No lots selected"
+msgstr "未选择批次"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "No permitted lots found for deletion"
+msgstr "未找到允许删除的批次"
+
+#. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "No permitted products found for deletion"
@@ -384,9 +776,20 @@ msgstr "未找到允许删除的产品"
 
 #. module: portal_stock
 #. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "No products found"
+msgstr "未找到产品"
+
+#. module: portal_stock
+#. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "No products selected"
 msgstr "未选择产品"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "No repair or review history"
+msgstr "没有维修或审核历史"
 
 #. module: portal_stock
 #. odoo-javascript
@@ -396,9 +799,20 @@ msgstr "未找到要更新的变体"
 
 #. module: portal_stock
 #. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "No valid lots to delete"
+msgstr "没有有效的批次可删除"
+
+#. module: portal_stock
+#. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "No valid products to delete"
 msgstr "没有有效的产品可删除"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid "Optional: <strong>sku</strong>, <strong>barcode</strong>"
+msgstr "可选：<strong>sku</strong>、<strong>barcode</strong>"
 
 #. module: portal_stock
 #. odoo-python
@@ -407,6 +821,13 @@ msgid "Out of Stock"
 msgstr "缺货"
 
 #. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Outgoing"
+msgstr "出库"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
 msgid "Pagination"
 msgstr "分页"
@@ -418,6 +839,7 @@ msgstr "重量"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
 msgid "Please select a file to upload."
 msgstr "请选择要上传的文件。"
 
@@ -426,6 +848,12 @@ msgstr "请选择要上传的文件。"
 #: code:addons/portal_stock/static/src/js/create_modal_page.js:0
 msgid "Por favor, seleccione un archivo de imagen válido"
 msgstr "请选择有效的图像文件"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Product"
+msgstr "产品"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
@@ -469,15 +897,55 @@ msgid "Product variants updated successfully"
 msgstr "产品变体更新成功"
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "Product:"
+msgstr "产品："
+
+#. module: portal_stock
 #. odoo-javascript
 #: code:addons/portal_stock/static/src/js/create_modal_page.js:0
 msgid "Producto actualizado correctamente"
 msgstr "产品更新成功"
 
 #. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Quantity"
+msgstr "数量"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "Quantity:"
+msgstr "数量："
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Real Stock"
+msgstr "实际库存"
+
+#. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "Remove image"
 msgstr "删除图片"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Repair"
+msgstr "维修"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Repaired"
+msgstr "已维修"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Repairs"
+msgstr "维修"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
@@ -492,11 +960,71 @@ msgstr "退货"
 
 #. module: portal_stock
 #. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Review"
+msgstr "审核"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Reviewed"
+msgstr "已审核"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Barcode \"%s\" already exists, skipping"
+msgstr "第 %d 行：条形码 \"%s\" 已存在，跳过"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Dimensions must be greater than 0"
+msgstr "第 %d 行：尺寸必须大于0"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Error creating product - %s"
+msgstr "第 %d 行：创建产品时出错 - %s"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Invalid numeric values for dimensions or weight"
+msgstr "第 %d 行：尺寸或重量的数值无效"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Invalid tracking value \"%s\" (must be \"serial\" or \"none\")"
+msgstr "第 %d 行：追踪值 \"%s\" 无效（必须是 \"serial\" 或 \"none\"）"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Missing product name"
+msgstr "第 %d 行：缺少产品名称"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: SKU \"%s\" already exists, skipping"
+msgstr "第 %d 行：SKU \"%s\" 已存在，跳过"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Weight cannot be negative"
+msgstr "第 %d 行：重量不能为负数"
+
+#. module: portal_stock
+#. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "SKU"
-msgstr "SKU"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
@@ -504,12 +1032,14 @@ msgid "Search ..."
 msgstr "搜索 ..."
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
 msgid "Showing 1-"
 msgstr "显示 1-"
 
 #. module: portal_stock
 #. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Status"
 msgstr "状态"
@@ -517,7 +1047,6 @@ msgstr "状态"
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
-#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "Stock"
 msgstr "库存"
 
@@ -525,6 +1054,17 @@ msgstr "库存"
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 msgid "Subir imagen"
 msgstr "上传图片"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Unavailable"
+msgstr "不可用"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid "Upload Excel File (.xlsx)"
+msgstr "上传Excel文件 (.xlsx)"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
@@ -535,6 +1075,11 @@ msgstr "上传文件"
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "Upload image"
 msgstr "上传图片"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lots_list
+msgid "Ver detalles"
+msgstr "查看详情"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
@@ -577,6 +1122,23 @@ msgid "Width x Height x Length"
 msgstr "宽度 x 高度 x 长度"
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "Write a message..."
+msgstr "写一条消息..."
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "You are not allowed to upload an attachment here."
+msgstr "您无权在此处上传附件。"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "You do not have access to this lot"
+msgstr "您无权访问此批次"
+
+#. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 #: code:addons/portal_stock/controllers/stocks.py:0
@@ -584,36 +1146,24 @@ msgid "You do not have access to this product"
 msgstr "您无权访问此产品"
 
 #. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "lots"
+msgstr "批次"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
 msgid "of"
 msgstr "共"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "of the following conditions:"
+msgstr "以下条件："
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "products"
 msgstr "产品"
-
-#. module: portal_stock
-#. odoo-python
-#: code:addons/portal_stock/controllers/create_product_modal.py:0
-msgid "Product '%s' created"
-msgstr "产品 '%s' 已创建"
-
-#. module: portal_stock
-#. odoo-python
-#: code:addons/portal_stock/controllers/create_product_modal.py:0
-msgid "New product"
-msgstr "新产品"
-
-#. module: portal_stock
-#. odoo-python
-#: code:addons/portal_stock/controllers/create_product_modal.py:0
-msgid "%d product(s) imported from Excel"
-msgstr "已从Excel导入%d个产品"
-
-#. module: portal_stock
-#. odoo-python
-#: code:addons/portal_stock/controllers/create_product_modal.py:0
-msgid "Products imported"
-msgstr "产品已导入"

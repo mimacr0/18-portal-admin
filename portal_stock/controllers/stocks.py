@@ -50,6 +50,147 @@ class PortalStockController(PortalAdminController):
         
         return [('product_id', '=', product_id)]
 
+    def _get_repair_stages(self):
+        """Obtiene los IDs de stages para reparaciones en proceso y completadas"""
+        # Stages en proceso
+        stage_received = request.env.ref('repair_module.quality_alert_stage_received', raise_if_not_found=False)  # In Warehouse
+        stage_repairing = request.env.ref('repair_module.quality_alert_stage_repairing', raise_if_not_found=False)
+        stage_sent_review = request.env.ref('repair_module.quality_alert_stage_sent_to_review_repair', raise_if_not_found=False)
+        
+        # Stages completados
+        stage_postsale = request.env.ref('repair_module.quality_alert_stage_sent_to_postsale', raise_if_not_found=False)
+        stage_sent_client = request.env.ref('repair_module.quality_alert_stage_sent_to_client', raise_if_not_found=False)
+        stage_sent_recycle = request.env.ref('repair_module.quality_alert_stage_sent_to_recycle', raise_if_not_found=False)  # Sent for Recycling
+        
+        in_progress_stages = [s.id for s in [stage_received, stage_repairing, stage_sent_review] if s]
+        done_stages = [s.id for s in [stage_postsale, stage_sent_client, stage_sent_recycle] if s]
+        
+        return in_progress_stages, done_stages
+
+    def _get_products_repair_data(self, products, account_partner):
+        """
+        Obtiene información de lotes y estadísticas de reparación para una lista de productos.
+        Optimizado para hacer consultas en batch en lugar de por producto.
+        
+        Args:
+            products: recordset de productos
+            account_partner: account.partner del usuario
+            
+        Returns:
+            tuple (products_has_lots, products_repair_stats)
+        """
+        StockLot = request.env['stock.lot'].sudo()
+        QualityAlert = request.env['quality.alert'].sudo()
+        
+        products_has_lots = {}
+        products_repair_stats = {}
+        
+        # Inicializar stats vacías para todos los productos
+        empty_stats = {'in_repair': 0, 'repaired': 0, 'in_review': 0, 'reviewed': 0}
+        for product in products:
+            products_repair_stats[product.id] = empty_stats.copy()
+        
+        # Separar productos por tipo de tracking
+        products_with_tracking = products.filtered(lambda p: p.tracking in ['serial', 'lot'])
+        products_without_tracking = products.filtered(lambda p: p.tracking not in ['serial', 'lot'])
+        
+        # Verificar lotes solo para productos con tracking serial
+        serial_products = products.filtered(lambda p: p.tracking == 'serial')
+        if serial_products:
+            # Una sola consulta para verificar qué productos tienen lotes
+            lots_data = StockLot.read_group(
+                [('product_id', 'in', serial_products.ids)],
+                ['product_id'],
+                ['product_id']
+            )
+            products_with_lots = {d['product_id'][0] for d in lots_data if d['product_id']}
+            for product in products:
+                products_has_lots[product.id] = product.id in products_with_lots
+        else:
+            for product in products:
+                products_has_lots[product.id] = False
+        
+        # Obtener stages
+        in_progress_stages, done_stages = self._get_repair_stages()
+        all_stages = in_progress_stages + done_stages
+        
+        if not all_stages or not account_partner:
+            return products_has_lots, products_repair_stats
+        
+        # Base domain común
+        base_domain = [
+            ('account_partner_id', '=', account_partner.id),
+            ('stage_id', 'in', all_stages)
+        ]
+        
+        # --- Productos CON tracking: contar alertas ---
+        if products_with_tracking:
+            tracking_domain = base_domain + [('product_id', 'in', products_with_tracking.ids)]
+            
+            # Una sola consulta agrupada por producto, maintenance_type y stage
+            alerts_grouped = QualityAlert.read_group(
+                tracking_domain,
+                ['product_id', 'maintenance_type', 'stage_id'],
+                ['product_id', 'maintenance_type', 'stage_id'],
+                lazy=False
+            )
+            
+            for group in alerts_grouped:
+                product_id = group['product_id'][0] if group['product_id'] else None
+                if not product_id:
+                    continue
+                    
+                mtype = group['maintenance_type']
+                stage_id = group['stage_id'][0] if group['stage_id'] else None
+                count = group['__count']
+                
+                # Determinar la categoría
+                if mtype == 'repair':
+                    if stage_id in in_progress_stages:
+                        products_repair_stats[product_id]['in_repair'] += count
+                    elif stage_id in done_stages:
+                        products_repair_stats[product_id]['repaired'] += count
+                elif mtype == 'review':
+                    if stage_id in in_progress_stages:
+                        products_repair_stats[product_id]['in_review'] += count
+                    elif stage_id in done_stages:
+                        products_repair_stats[product_id]['reviewed'] += count
+        
+        # --- Productos SIN tracking: sumar cantidades ---
+        if products_without_tracking:
+            no_tracking_domain = base_domain + [('product_id', 'in', products_without_tracking.ids)]
+            
+            # Una sola consulta agrupada sumando quantity
+            alerts_grouped = QualityAlert.read_group(
+                no_tracking_domain,
+                ['product_id', 'maintenance_type', 'stage_id', 'quantity:sum'],
+                ['product_id', 'maintenance_type', 'stage_id'],
+                lazy=False
+            )
+            
+            for group in alerts_grouped:
+                product_id = group['product_id'][0] if group['product_id'] else None
+                if not product_id:
+                    continue
+                    
+                mtype = group['maintenance_type']
+                stage_id = group['stage_id'][0] if group['stage_id'] else None
+                qty_sum = group['quantity'] or 0
+                
+                # Determinar la categoría
+                if mtype == 'repair':
+                    if stage_id in in_progress_stages:
+                        products_repair_stats[product_id]['in_repair'] += qty_sum
+                    elif stage_id in done_stages:
+                        products_repair_stats[product_id]['repaired'] += qty_sum
+                elif mtype == 'review':
+                    if stage_id in in_progress_stages:
+                        products_repair_stats[product_id]['in_review'] += qty_sum
+                    elif stage_id in done_stages:
+                        products_repair_stats[product_id]['reviewed'] += qty_sum
+        
+        return products_has_lots, products_repair_stats
+
     def _get_admin_layout_menus(self):
         menus = super()._get_admin_layout_menus()
         menus.append({
@@ -123,6 +264,7 @@ class PortalStockController(PortalAdminController):
             {'id': 'sku', 'label': _('SKU'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
             {'id': 'barcode', 'label': _('Barcode'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
             {'id': 'stock', 'label': _('Stock'), 'sortable': True, 'md': True, 'responsive': ['lg']},
+            {'id': 'repairs', 'label': _('Repairs'), 'sortable': False, 'lg': True, 'responsive': ['lg']},
             {'id': 'status', 'label': _('Status'), 'sortable': True, 'responsive': ['md', 'lg']},
             {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True, 'responsive': ['sm', 'md', 'lg']}
         ]
@@ -142,16 +284,8 @@ class PortalStockController(PortalAdminController):
         user_lang = request.env.context.get('lang') or 'es_ES'
         products = ProductProducts.with_context(lang=user_lang).search(base_domain, limit=limit, order='id desc')
         
-        # Pre-cargar información de lotes para productos con tracking serial
-        StockLot = request.env['stock.lot'].sudo()
-        products_has_lots = {}
-        for product in products:
-            if product.tracking == 'serial':
-                # Verificar si el producto tiene lotes accesibles
-                lot_domain = self._get_lots_domain_for_product(product.id)
-                products_has_lots[product.id] = bool(StockLot.search_count(lot_domain) > 0)
-            else:
-                products_has_lots[product.id] = False
+        # Pre-cargar información de lotes y estadísticas de reparación para productos
+        products_has_lots, products_repair_stats = self._get_products_repair_data(products, account_partner)
         
         # Renderizar la lista de productos (el contexto ya tiene el idioma establecido)
         qweb = request.env['ir.qweb']
@@ -159,8 +293,13 @@ class PortalStockController(PortalAdminController):
             'products': products,
             'batch_actions': True,
             'products_has_lots': products_has_lots,
+            'products_repair_stats': products_repair_stats,
             'label_in_stock': _('In Stock'),
-            'label_out_of_stock': _('Out of Stock')
+            'label_out_of_stock': _('Out of Stock'),
+            'label_in_repair': _('In Repair'),
+            'label_repaired': _('Repaired'),
+            'label_in_review': _('In Review'),
+            'label_reviewed': _('Reviewed'),
         })
         
         # Preparar datos de paginación inicial
@@ -338,16 +477,14 @@ class PortalStockController(PortalAdminController):
         items_total = ProductProducts.search_count(base_domain)
         items_count = len(products)
 
-        # Pre-cargar información de lotes para productos con tracking serial
-        StockLot = request.env['stock.lot'].sudo()
-        products_has_lots = {}
-        for product in products:
-            if product.tracking == 'serial':
-                # Verificar si el producto tiene lotes accesibles
-                lot_domain = self._get_lots_domain_for_product(product.id)
-                products_has_lots[product.id] = bool(StockLot.search_count(lot_domain) > 0)
-            else:
-                products_has_lots[product.id] = False
+        # Obtener account_partner del usuario actual
+        partner_id = request.env.user.partner_id
+        account_partner = request.env['account.partner'].sudo().search([
+            ('partner_id', '=', partner_id.commercial_partner_id.id)
+        ], limit=1)
+        
+        # Pre-cargar información de lotes y estadísticas de reparación para productos
+        products_has_lots, products_repair_stats = self._get_products_repair_data(products, account_partner)
 
         # Preparar datos de paginación
         pagination_data = self._get_pagination_data(page, items_total, limit)
@@ -361,8 +498,13 @@ class PortalStockController(PortalAdminController):
                 'products': products,
                 'batch_actions': True,
                 'products_has_lots': products_has_lots,
+                'products_repair_stats': products_repair_stats,
                 'label_in_stock': _('In Stock'),
-                'label_out_of_stock': _('Out of Stock')
+                'label_out_of_stock': _('Out of Stock'),
+                'label_in_repair': _('In Repair'),
+                'label_repaired': _('Repaired'),
+                'label_in_review': _('In Review'),
+                'label_reviewed': _('Reviewed')
             }),
             'pager': qweb._render('portal_stock.portal_stock_pager', {
                 'products': products,

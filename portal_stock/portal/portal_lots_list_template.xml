@@ -21,6 +21,23 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="lot.name"/>
                 </td>
+                <!-- Columna de estado de reparación -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <t t-set="repair_status" t-value="lots_repair_status.get(lot.id) if lots_repair_status else None"/>
+                    <t t-if="repair_status">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300">
+                            <i class="fas fa-tools mr-1 text-xs"/>
+                            <t t-if="repair_status.get('maintenance_type') == 'repair'" t-esc="label_repair"/>
+                            <t t-elif="repair_status.get('maintenance_type') == 'review'" t-esc="label_review"/>
+                            <t t-else=""><t t-esc="repair_status.get('maintenance_type')"/></t>
+                            <span class="mx-1">·</span>
+                            <t t-esc="repair_status.get('stage_name', '-')"/>
+                        </span>
+                    </t>
+                    <t t-else="">
+                        <span class="text-gray-400">-</span>
+                    </t>
+                </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900 dark:text-gray-100">
                         <t t-if="lot.lifecycle_state">
