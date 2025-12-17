@@ -200,7 +200,24 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
         commercial_partner = user_partner.commercial_partner_id
         account_partner_id = commercial_partner.account_id.id if commercial_partner.account_id else False
 
-        domain = [('is_storable', '=', True)]
+        # Solo productos con stock disponible en ubicaciones hijas de Stock (excepto Reparaciones)
+        StockQuant = request.env['stock.quant'].sudo()
+        stock_location = request.env.ref('stock.stock_location_stock')
+        repairs_location = request.env.ref('repair_module.stock_location_repairs', raise_if_not_found=False)
+        
+        quant_domain = [
+            ('quantity', '>', 0),
+            ('location_id', 'child_of', stock_location.id),
+        ]
+        if repairs_location:
+            quant_domain.append(('location_id', '!=', repairs_location.id))
+        
+        product_ids_with_stock = StockQuant.search(quant_domain).mapped('product_id').ids
+
+        domain = [
+            # ('is_storable', '=', True),
+            ('id', 'in', product_ids_with_stock)
+        ]
         
         if account_partner_id:
             domain = expression.AND([
