@@ -17,19 +17,33 @@ function debounce(func, wait) {
     };
 }
 
-// Add to the top of the file
-let currentCatalogPage = 1;
-let catalogSearchQuery = '';
+// TODO: Product catalog variables - Currently unused, kept for future use
+// let currentCatalogPage = 1;
+// let catalogSearchQuery = '';
 
-// Create a debounced search function outside of any other function
-const debouncedSearch = debounce(function() {
-    catalogSearchQuery = this.value;
-    currentCatalogPage = 1; // Reset to first page when searching
-    loadProductCatalog();
+// Lot catalog variables
+let currentLotCatalogPage = 1;
+let lotCatalogSearchQuery = '';
+
+// TODO: Product catalog debounced search - Currently unused, kept for future use
+// const debouncedSearch = debounce(function() {
+//     catalogSearchQuery = this.value;
+//     currentCatalogPage = 1; // Reset to first page when searching
+//     loadProductCatalog();
+// }, 300);
+
+// Create a debounced search function for lots
+const debouncedLotSearch = debounce(function() {
+    lotCatalogSearchQuery = this.value;
+    currentLotCatalogPage = 1; // Reset to first page when searching
+    loadLotCatalog();
 }, 300);
 
 // Add a shared product registry to track products across views
 const selectedProductsRegistry = new Map();
+
+// Add a shared lot registry to track lots across views
+const selectedLotsRegistry = new Map();
 
 const updateExpeditionsProductsField = () => {
     const productsContainer = document.getElementById('page-expedition-list-create-form-products-line-items-container');
@@ -81,9 +95,9 @@ export const initExpeditionCreateForm = () => {
 
     const createModal = document.getElementById('page-expedition-list-create-modal');
     const submitButton = document.getElementById('page-expedition-list-create-product-form-submit');
-    const catalogButton = document.getElementById('page-expedition-list-create-form-products-add-catalog-btn');
+    const lotCatalogButton = document.getElementById('page-expedition-list-create-form-lots-add-catalog-btn');
     const pageMainContainer = document.querySelector('#page-expedition-main-container');
-    const productCatalogSelectContainer = document.querySelector('#page-expedition-product-catalog-select');
+    const lotCatalogSelectContainer = document.querySelector('#page-expedition-lot-catalog-select');
 
     const carrierSelectInput = document.getElementById('page-expedition-list-create-form-carrier-id');
     const searchSelectInput = document.getElementById('page-expedition-list-create-form-address');
@@ -163,38 +177,57 @@ export const initExpeditionCreateForm = () => {
         countryInputId.value = data.country_id || '';
     });
 
-    catalogButton.addEventListener('click', async () => {
+    // Event listener for lot catalog button
+    if (lotCatalogButton) {
+        lotCatalogButton.addEventListener('click', async () => {
+            const skipStickyHeader = document.getElementById('skip-list-page-sticky-header');
+            if(skipStickyHeader) skipStickyHeader.value = 'true';
 
-        const skipStickyHeader = document.getElementById('skip-list-page-sticky-header');
-        if(skipStickyHeader) skipStickyHeader.value = 'true';
+            const paginationContainerMain = document.getElementById('page-expedition-list-pagination-container-main');
+            if (paginationContainerMain) {
+                paginationContainerMain.classList.add('hidden');
+            }
 
-        const paginationContainerMain = document.getElementById('page-expedition-list-pagination-container-main');
-        if (paginationContainerMain) {
-            paginationContainerMain.classList.add('hidden'); // Hide the main pagination
-        }
+            const expeditionListTable = document.getElementById('page-expedition-list-table');
+            if (expeditionListTable) {
+                expeditionListTable.style.display = 'none';
+            }
 
-        // Hide the expedition list table
-        const expeditionListTable = document.getElementById('page-expedition-list-table');
-        if (expeditionListTable) {
-            expeditionListTable.style.display = 'none';
-        }
+            lotCatalogSelectContainer.classList.remove('hidden');
+            pageMainContainer.classList.add('hidden');
+            createModal.dataset.open = 'false';
 
-        productCatalogSelectContainer.classList.remove('hidden');
-        pageMainContainer.classList.add('hidden');
-        createModal.dataset.open = 'false';
+            // Reset pagination and load first page
+            currentLotCatalogPage = 1;
+            lotCatalogSearchQuery = '';
+            const searchInput = document.getElementById(`page-${pageName}-lot-catalog-select-search`);
+            if (searchInput) searchInput.value = '';
 
-        // Reset pagination and load first page
-        currentCatalogPage = 1;
-        catalogSearchQuery = '';
-        // Reset search input value - Now pageName is defined
-        const searchInput = document.getElementById(`page-${pageName}-product-catalog-select-search`);
-        if (searchInput) searchInput.value = '';
+            // Sync registry with form lots before opening catalog
+            syncLotsRegistryFromForm();
 
-        loadProductCatalog();
+            loadLotCatalog();
 
-        // Setup search input event listener right after opening the catalog
-        setupSearchListener();
-    });
+            // Rebuild selected lots list from registry
+            rebuildSelectedLotsList();
+
+            setupLotSearchListener();
+        });
+    }
+
+    // Set up close lot catalog button
+    const closeLotCatalogButton = document.getElementById(`page-${pageName}-lot-catalog-select-close-btn`);
+    if (closeLotCatalogButton) {
+        closeLotCatalogButton.addEventListener('click', closeLotCatalog);
+    }
+
+    // Set up clear lot selection button
+    const clearLotSelectionButton = document.getElementById(`page-${pageName}-lot-catalog-select-clear-selection-btn`);
+    if (clearLotSelectionButton) {
+        clearLotSelectionButton.addEventListener('click', () => {
+            clearLotSelection();
+        });
+    }
 
     // Set up close catalog button
     const closeCatalogButton = document.getElementById(`page-${pageName}-product-catalog-select-close-btn`);
@@ -223,19 +256,22 @@ export const initExpeditionCreateForm = () => {
             }
 
             // Reset all product cards in the catalog
-            document.querySelectorAll('.product-card').forEach(card => {
-                const addBtn = card.querySelector('.product-add-btn');
-                if (addBtn) {
-                    addBtn.innerHTML = '<i class="fas fa-plus mr-1"></i> Add';
-                    addBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
-                    addBtn.classList.add('bg-gradient-to-r', 'from-purple-600', 'to-purple-700', 'hover:from-purple-700', 'hover:to-purple-800');
-                }
+            const productGrid = document.getElementById('page-expedition-product-catalog-select-products-grid');
+            if (productGrid) {
+                productGrid.querySelectorAll('.product-card').forEach(card => {
+                    const addBtn = card.querySelector('.product-add-btn');
+                    if (addBtn) {
+                        addBtn.innerHTML = '<i class="fas fa-plus mr-1"></i> Add';
+                        addBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                        addBtn.classList.add('bg-gradient-to-r', 'from-purple-600', 'to-purple-700', 'hover:from-purple-700', 'hover:to-purple-800');
+                    }
 
-                const addedQtyDisplay = card.querySelector('.product-added-qty');
-                if (addedQtyDisplay) {
-                    addedQtyDisplay.classList.add('hidden');
-                }
-            });
+                    const addedQtyDisplay = card.querySelector('.product-added-qty');
+                    if (addedQtyDisplay) {
+                        addedQtyDisplay.classList.add('hidden');
+                    }
+                });
+            }
 
             // Update counter
             const selectedCount = document.getElementById("selected-count");
@@ -247,7 +283,6 @@ export const initExpeditionCreateForm = () => {
 
     createButton.addEventListener('click', () => {
         Modal.open('page-expedition-list-create-modal');
-        initManualProductAdd();
     });
 
     submitButton.addEventListener('click', async () => {
@@ -323,23 +358,842 @@ function formatAddress(data) {
 }
 
 
-// Create a separate function to set up the search functionality
-function setupSearchListener() {
+// TODO: Product catalog search listener - Currently unused, kept for future use
+// function setupSearchListener() {
+//     const pageName = "expedition";
+//     const searchInput = document.getElementById(`page-${pageName}-product-catalog-select-search`);
+//
+//     if (searchInput) {
+//         searchInput.removeEventListener('input', debouncedSearch);
+//         searchInput.addEventListener('input', debouncedSearch);
+//     } else {
+//         console.error(`Search input not found with ID: page-${pageName}-product-catalog-select-search`);
+//     }
+// }
+
+// Sync selectedLotsRegistry from the form's current lot lines
+function syncLotsRegistryFromForm() {
     const pageName = "expedition";
-    const searchInput = document.getElementById(`page-${pageName}-product-catalog-select-search`);
+    const productsContainer = document.getElementById(`page-${pageName}-list-create-form-products-line-items-container`);
+    
+    if (!productsContainer) return;
+
+    const productLines = productsContainer.querySelectorAll('.line-item');
+    
+    // Clear registry and rebuild from form
+    selectedLotsRegistry.clear();
+    
+    for (const line of productLines) {
+        const lineId = line.dataset.lineId;
+        const hasLot = line.dataset.hasLot === 'true';
+        const lotId = line.dataset.lotId || '';
+        const select = line.querySelector('.product-select');
+        const qtyInput = line.querySelector('.product-qty');
+
+        if (!select) continue;
+
+        try {
+            const selectData = $(select).select2('data')[0];
+            if (selectData) {
+                // Create unique key based on lineId or generate from product+lot
+                const itemKey = lineId || `lot-${lotId || selectData.id}`;
+                
+                selectedLotsRegistry.set(itemKey, {
+                    id: itemKey,
+                    lotId: lotId || $(select).data('lot_id') || '',
+                    lotName: $(select).data('lot_name') || '',
+                    hasLot: hasLot,
+                    name: selectData.text || '',
+                    productId: selectData.id || '',
+                    productName: selectData.text || '',
+                    productCode: selectData.default_code || '',
+                    quantity: parseInt(qtyInput?.value) || 1,
+                    maxQty: Infinity
+                });
+            }
+        } catch (e) {
+            console.error('Error syncing lot to registry:', e);
+        }
+    }
+    
+    console.log('Synced lots registry from form:', selectedLotsRegistry.size, 'items');
+}
+
+// Rebuild the selected lots list in the catalog from registry
+function rebuildSelectedLotsList() {
+    const pageName = "expedition";
+    const selectedLotsList = document.getElementById(`page-${pageName}-lot-catalog-select-selected-lots-list`);
+    const noLotsMessage = document.getElementById(`page-${pageName}-lot-catalog-select-no-lots-message`);
+    const selectedCount = document.getElementById(`page-${pageName}-lot-catalog-selected-count`);
+
+    if (!selectedLotsList) return;
+
+    // Clear current list
+    selectedLotsList.innerHTML = '';
+
+    // Rebuild from registry
+    if (selectedLotsRegistry.size > 0) {
+        selectedLotsList.classList.remove('hidden');
+        if (noLotsMessage) noLotsMessage.classList.add('hidden');
+
+        selectedLotsRegistry.forEach((item, itemKey) => {
+            // Badge HTML: show "No Lot" for products without lot
+            const badgeHtml = item.hasLot 
+                ? '' 
+                : '<span class="ml-1 text-2xs px-1 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">No Lot</span>';
+
+            const displayName = item.hasLot ? item.lotName : item.productName;
+
+            const lotItem = document.createElement('div');
+            lotItem.className = 'bg-white dark:bg-gray-700 rounded p-2 flex flex-col justify-between h-full';
+            lotItem.dataset.itemKey = itemKey;
+
+            lotItem.innerHTML = `
+                <div class="flex items-center">
+                    <div class="flex-grow pr-1 min-w-0">
+                        <p class="text-xs font-medium text-gray-800 dark:text-white truncate mb-0">${displayName}${badgeHtml}</p>
+                        <span class="text-2xs text-gray-500 dark:text-gray-400 truncate">${item.hasLot ? item.productName : (item.productCode ? '[' + item.productCode + ']' : '')}</span>
+                    </div>
+                    <div class="flex items-center gap-1 flex-shrink-0">
+                        <div class="inline-flex border border-gray-300 dark:border-gray-600 rounded-sm overflow-hidden h-5">
+                            <button class="px-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 lot-decrease">
+                                <i class="fas fa-minus text-2xs"></i>
+                            </button>
+                            <input type="text" value="${item.quantity}" class="w-6 px-0 py-0 text-center border-none focus:ring-0 lot-quantity bg-white dark:bg-gray-800 text-2xs"/>
+                            <button class="px-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 lot-increase">
+                                <i class="fas fa-plus text-2xs"></i>
+                            </button>
+                        </div>
+                        <button class="text-red-500 hover:text-red-700 lot-remove h-5 w-5 flex items-center justify-center">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            selectedLotsList.appendChild(lotItem);
+
+            // Add event listeners for this item
+            const removeBtn = lotItem.querySelector('.lot-remove');
+            const decreaseBtn = lotItem.querySelector('.lot-decrease');
+            const increaseBtn = lotItem.querySelector('.lot-increase');
+            const qtyInput = lotItem.querySelector('.lot-quantity');
+
+            removeBtn?.addEventListener('click', () => {
+                removeLotFromSelection(itemKey);
+            });
+
+            decreaseBtn?.addEventListener('click', () => {
+                let qty = parseInt(qtyInput.value);
+                if (qty > 1) {
+                    qty--;
+                    qtyInput.value = qty;
+                    const regItem = selectedLotsRegistry.get(itemKey);
+                    if (regItem) {
+                        regItem.quantity = qty;
+                        selectedLotsRegistry.set(itemKey, regItem);
+                    }
+                    updateCatalogCardQuantity(itemKey, qty);
+                }
+            });
+
+            increaseBtn?.addEventListener('click', () => {
+                let qty = parseInt(qtyInput.value);
+                const regItem = selectedLotsRegistry.get(itemKey);
+                const itemMaxQty = regItem?.maxQty || Infinity;
+                if (qty < itemMaxQty) {
+                    qty++;
+                    qtyInput.value = qty;
+                    if (regItem) {
+                        regItem.quantity = qty;
+                        selectedLotsRegistry.set(itemKey, regItem);
+                    }
+                    updateCatalogCardQuantity(itemKey, qty);
+                }
+            });
+
+            qtyInput?.addEventListener('change', () => {
+                let qty = parseInt(qtyInput.value);
+                const regItem = selectedLotsRegistry.get(itemKey);
+                const itemMaxQty = regItem?.maxQty || Infinity;
+                if (isNaN(qty) || qty < 1) {
+                    qty = 1;
+                } else if (qty > itemMaxQty) {
+                    qty = Math.floor(itemMaxQty);
+                }
+                qtyInput.value = qty;
+                if (regItem) {
+                    regItem.quantity = qty;
+                    selectedLotsRegistry.set(itemKey, regItem);
+                }
+                updateCatalogCardQuantity(itemKey, qty);
+            });
+        });
+
+        if (selectedCount) selectedCount.textContent = selectedLotsRegistry.size;
+    } else {
+        selectedLotsList.classList.add('hidden');
+        if (noLotsMessage) noLotsMessage.classList.remove('hidden');
+        if (selectedCount) selectedCount.textContent = '0';
+    }
+
+    console.log('Rebuilt selected lots list:', selectedLotsRegistry.size, 'items');
+}
+
+// Create a separate function to set up the lot search functionality
+function setupLotSearchListener() {
+    const pageName = "expedition";
+    const searchInput = document.getElementById(`page-${pageName}-lot-catalog-select-search`);
 
     if (searchInput) {
-        // Remove any existing listeners first to prevent duplicates
-        searchInput.removeEventListener('input', debouncedSearch);
-
-        // Add the new listener
-        searchInput.addEventListener('input', debouncedSearch);
+        searchInput.removeEventListener('input', debouncedLotSearch);
+        searchInput.addEventListener('input', debouncedLotSearch);
     } else {
-        console.error(`Search input not found with ID: page-${pageName}-product-catalog-select-search`);
+        console.error(`Lot search input not found with ID: page-${pageName}-lot-catalog-select-search`);
     }
 }
 
-// Make sure loadProductCatalog logs any errors
+// Load lot catalog
+async function loadLotCatalog() {
+    const pageName = "expedition";
+    const lotGrid = document.getElementById(`page-${pageName}-lot-catalog-select-lots-grid`);
+    const paginationContainer = document.getElementById(`page-${pageName}-lot-catalog-select-pagination`);
+
+    console.log("Loading lot catalog:", {
+        page: currentLotCatalogPage,
+        search: lotCatalogSearchQuery,
+        grid: lotGrid,
+        pagination: paginationContainer
+    });
+
+    if (!lotGrid || !paginationContainer) {
+        console.error("Required lot elements not found", { lotGrid, paginationContainer });
+        return;
+    }
+
+    try {
+        lotGrid.innerHTML = '<div class="col-span-full text-center py-8"><i class="fas fa-spinner fa-spin fa-2x text-gray-400"></i><p class="mt-2 text-gray-500">Loading lots...</p></div>';
+
+        const result = await rpc('/catalog/lot-catalog', {
+            page: currentLotCatalogPage,
+            search: lotCatalogSearchQuery
+        });
+
+        console.log("Lot catalog response received");
+
+        if (result.status === 'success') {
+            lotGrid.innerHTML = result.lots_html;
+            paginationContainer.innerHTML = result.pagination_html;
+
+            setupLotPaginationEvents();
+            setupLotCardEvents();
+        } else {
+            console.error("Failed to load lots", result);
+            lotGrid.innerHTML = '<div class="col-span-full text-center py-8"><i class="fas fa-exclamation-triangle text-red-500 fa-2x"></i><p class="mt-2 text-gray-700">Failed to load lots</p></div>';
+        }
+    } catch (error) {
+        console.error("Error loading lot catalog:", error);
+        lotGrid.innerHTML = '<div class="col-span-full text-center py-8"><i class="fas fa-exclamation-triangle text-red-500 fa-2x"></i><p class="mt-2 text-gray-700">Error loading lots</p></div>';
+    }
+}
+
+function setupLotPaginationEvents() {
+    const pageName = "expedition";
+    const paginationContainer = document.getElementById(`page-${pageName}-lot-catalog-select-pagination`);
+    if (!paginationContainer) return;
+
+    const pageButtons = paginationContainer.querySelectorAll('.lot-catalog-page-btn');
+    pageButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            if (this.disabled) return;
+            const page = parseInt(this.dataset.page);
+            if (page > 0) {
+                currentLotCatalogPage = page;
+                loadLotCatalog();
+            }
+        });
+    });
+}
+
+function setupLotCardEvents() {
+    const pageName = "expedition";
+    const lotGrid = document.getElementById(`page-${pageName}-lot-catalog-select-lots-grid`);
+    if (!lotGrid) return;
+
+    const lotCards = lotGrid.querySelectorAll('.lot-card');
+    lotCards.forEach(card => {
+        // Use quant-id as unique identifier (works for both with and without lot)
+        const quantId = card.dataset.quantId;
+        const lotId = card.dataset.lotId || '';
+        const hasLot = card.dataset.hasLot === 'true';
+        // Unique key for registry: quant-{id} or lot-{id} for backwards compatibility
+        const itemKey = quantId ? `quant-${quantId}` : (lotId ? `lot-${lotId}` : null);
+        
+        if (!itemKey) return;
+        
+        // Restore state if already selected
+        if (selectedLotsRegistry.has(itemKey)) {
+            const initialAdd = card.querySelector('.lot-initial-add');
+            const quantityControls = card.querySelector('.lot-quantity-controls');
+            const quantityInput = card.querySelector('.lot-quantity');
+            
+            if (initialAdd) initialAdd.classList.add('hidden');
+            if (quantityControls) quantityControls.classList.remove('hidden');
+            if (quantityInput) quantityInput.value = selectedLotsRegistry.get(itemKey).quantity;
+        }
+
+        // Add button click
+        const addBtn = card.querySelector('.lot-add-btn');
+        if (addBtn) {
+            addBtn.addEventListener('click', () => {
+                const lotName = card.dataset.lotName || card.querySelector('h3')?.textContent.trim() || '';
+                const productId = card.dataset.productId || '';
+                const productName = card.dataset.productName || '';
+                const productCode = card.dataset.productCode || '';
+                const maxQty = parseFloat(card.dataset.productQty) || Infinity;
+
+                addLotToSelection(itemKey, lotId, lotName, hasLot, productId, productName, productCode, 1, maxQty);
+
+                const initialAdd = card.querySelector('.lot-initial-add');
+                const quantityControls = card.querySelector('.lot-quantity-controls');
+                if (initialAdd) initialAdd.classList.add('hidden');
+                if (quantityControls) quantityControls.classList.remove('hidden');
+            });
+        }
+
+        // Decrease button
+        const decreaseBtn = card.querySelector('.lot-decrease');
+        if (decreaseBtn) {
+            decreaseBtn.addEventListener('click', () => {
+                const quantityInput = card.querySelector('.lot-quantity');
+                let quantity = parseInt(quantityInput.value);
+                if (quantity > 1) {
+                    quantity--;
+                    quantityInput.value = quantity;
+                    if (selectedLotsRegistry.has(itemKey)) {
+                        selectedLotsRegistry.get(itemKey).quantity = quantity;
+                        updateSelectedLotQuantity(itemKey, quantity);
+                    }
+                }
+            });
+        }
+
+        // Increase button
+        const increaseBtn = card.querySelector('.lot-increase');
+        if (increaseBtn) {
+            increaseBtn.addEventListener('click', () => {
+                const quantityInput = card.querySelector('.lot-quantity');
+                const maxQty = parseFloat(card.dataset.productQty) || Infinity;
+                let quantity = parseInt(quantityInput.value);
+                if (quantity < maxQty) {
+                    quantity++;
+                    quantityInput.value = quantity;
+                    if (selectedLotsRegistry.has(itemKey)) {
+                        selectedLotsRegistry.get(itemKey).quantity = quantity;
+                        updateSelectedLotQuantity(itemKey, quantity);
+                    }
+                }
+            });
+        }
+
+        // Quantity input change
+        const quantityInput = card.querySelector('.lot-quantity');
+        if (quantityInput) {
+            quantityInput.addEventListener('change', () => {
+                const maxQty = parseFloat(card.dataset.productQty) || Infinity;
+                let qty = parseInt(quantityInput.value);
+                if (isNaN(qty) || qty < 1) {
+                    qty = 1;
+                } else if (qty > maxQty) {
+                    qty = Math.floor(maxQty);
+                }
+                quantityInput.value = qty;
+                if (selectedLotsRegistry.has(itemKey)) {
+                    selectedLotsRegistry.get(itemKey).quantity = qty;
+                    updateSelectedLotQuantity(itemKey, qty);
+                }
+            });
+        }
+
+        // Remove button
+        const removeBtn = card.querySelector('.lot-remove');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+                removeLotFromSelection(itemKey);
+                
+                const quantityInput = card.querySelector('.lot-quantity');
+                if (quantityInput) quantityInput.value = 1;
+            });
+        }
+    });
+}
+
+function addLotToSelection(itemKey, lotId, lotName, hasLot, productId, productName, productCode, qty = 1, maxQty = Infinity) {
+    const pageName = "expedition";
+    const selectedLotsList = document.getElementById(`page-${pageName}-lot-catalog-select-selected-lots-list`);
+    const noLotsMessage = document.getElementById(`page-${pageName}-lot-catalog-select-no-lots-message`);
+    const selectedCount = document.getElementById(`page-${pageName}-lot-catalog-selected-count`);
+
+    const itemExists = selectedLotsRegistry.has(itemKey);
+    let newQty = qty;
+
+    // Display name: lot name if has lot, otherwise product name
+    const displayName = hasLot ? lotName : productName;
+
+    if (itemExists) {
+        const item = selectedLotsRegistry.get(itemKey);
+        newQty = Math.min(item.quantity + 1, item.maxQty || Infinity);
+        item.quantity = newQty;
+        selectedLotsRegistry.set(itemKey, item);
+    } else {
+        selectedLotsRegistry.set(itemKey, { 
+            id: itemKey, 
+            lotId: lotId,
+            lotName: lotName,
+            hasLot: hasLot,
+            name: displayName,
+            productId, 
+            productName, 
+            productCode, 
+            quantity: newQty, 
+            maxQty 
+        });
+    }
+
+    // Update count
+    if (selectedCount) {
+        selectedCount.textContent = selectedLotsRegistry.size;
+    }
+
+    // Check if item already exists in UI
+    const existingItem = selectedLotsList?.querySelector(`[data-item-key="${itemKey}"]`);
+    if (existingItem) {
+        const qtyInput = existingItem.querySelector('.lot-quantity');
+        if (qtyInput) qtyInput.value = newQty;
+        return;
+    }
+
+    // Badge HTML: show "No Lot" for products without lot
+    const badgeHtml = hasLot 
+        ? '' 
+        : '<span class="ml-1 text-2xs px-1 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">No Lot</span>';
+
+    // Create item element
+    const lotItem = document.createElement('div');
+    lotItem.className = 'bg-white dark:bg-gray-700 rounded p-2 flex flex-col justify-between h-full';
+    lotItem.dataset.itemKey = itemKey;
+
+    lotItem.innerHTML = `
+        <div class="flex items-center">
+            <div class="flex-grow pr-1 min-w-0">
+                <p class="text-xs font-medium text-gray-800 dark:text-white truncate mb-0">${displayName}${badgeHtml}</p>
+                <span class="text-2xs text-gray-500 dark:text-gray-400 truncate">${hasLot ? productName : (productCode ? '[' + productCode + ']' : '')}</span>
+            </div>
+            <div class="flex items-center gap-1 flex-shrink-0">
+                <div class="inline-flex border border-gray-300 dark:border-gray-600 rounded-sm overflow-hidden h-5">
+                    <button class="px-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 lot-decrease">
+                        <i class="fas fa-minus text-2xs"></i>
+                    </button>
+                    <input type="text" value="${newQty}" class="w-6 px-0 py-0 text-center border-none focus:ring-0 lot-quantity bg-white dark:bg-gray-800 text-2xs"/>
+                    <button class="px-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 lot-increase">
+                        <i class="fas fa-plus text-2xs"></i>
+                    </button>
+                </div>
+                <button class="text-red-500 hover:text-red-700 lot-remove h-5 w-5 flex items-center justify-center">
+                    <i class="fas fa-times text-xs"></i>
+                </button>
+            </div>
+        </div>
+    `;
+
+    if (selectedLotsList) {
+        selectedLotsList.appendChild(lotItem);
+        selectedLotsList.classList.remove('hidden');
+        if (noLotsMessage) noLotsMessage.classList.add('hidden');
+    }
+
+    // Add event listeners for this item
+    const removeBtn = lotItem.querySelector('.lot-remove');
+    const decreaseBtn = lotItem.querySelector('.lot-decrease');
+    const increaseBtn = lotItem.querySelector('.lot-increase');
+    const qtyInput = lotItem.querySelector('.lot-quantity');
+
+    removeBtn?.addEventListener('click', () => {
+        removeLotFromSelection(itemKey);
+    });
+
+    decreaseBtn?.addEventListener('click', () => {
+        let qty = parseInt(qtyInput.value);
+        if (qty > 1) {
+            qty--;
+            qtyInput.value = qty;
+            const item = selectedLotsRegistry.get(itemKey);
+            if (item) {
+                item.quantity = qty;
+                selectedLotsRegistry.set(itemKey, item);
+            }
+            // Sync with catalog card
+            updateCatalogCardQuantity(itemKey, qty);
+        }
+    });
+
+    increaseBtn?.addEventListener('click', () => {
+        let qty = parseInt(qtyInput.value);
+        const item = selectedLotsRegistry.get(itemKey);
+        const itemMaxQty = item?.maxQty || Infinity;
+        if (qty < itemMaxQty) {
+            qty++;
+            qtyInput.value = qty;
+            if (item) {
+                item.quantity = qty;
+                selectedLotsRegistry.set(itemKey, item);
+            }
+            // Sync with catalog card
+            updateCatalogCardQuantity(itemKey, qty);
+        }
+    });
+
+    qtyInput?.addEventListener('change', () => {
+        let qty = parseInt(qtyInput.value);
+        const item = selectedLotsRegistry.get(itemKey);
+        const itemMaxQty = item?.maxQty || Infinity;
+        if (isNaN(qty) || qty < 1) {
+            qty = 1;
+        } else if (qty > itemMaxQty) {
+            qty = Math.floor(itemMaxQty);
+        }
+        qtyInput.value = qty;
+        if (item) {
+            item.quantity = qty;
+            selectedLotsRegistry.set(itemKey, item);
+        }
+        // Sync with catalog card
+        updateCatalogCardQuantity(itemKey, qty);
+    });
+}
+
+function updateSelectedLotQuantity(itemKey, quantity) {
+    const pageName = "expedition";
+    const selectedLotsList = document.getElementById(`page-${pageName}-lot-catalog-select-selected-lots-list`);
+
+    // Update the selected list input
+    if (selectedLotsList) {
+        const lotItem = selectedLotsList.querySelector(`[data-item-key="${itemKey}"]`);
+        if (lotItem) {
+            const qtyInput = lotItem.querySelector('.lot-quantity');
+            if (qtyInput) qtyInput.value = quantity;
+        }
+    }
+
+    // Also update the catalog card input (bidirectional sync)
+    updateCatalogCardQuantity(itemKey, quantity);
+}
+
+function updateCatalogCardQuantity(itemKey, quantity) {
+    // Find the catalog card by quant-id or lot-id
+    let lotCard = null;
+    if (itemKey.startsWith('quant-')) {
+        const quantId = itemKey.replace('quant-', '');
+        lotCard = document.querySelector(`.lot-card[data-quant-id="${quantId}"]`);
+    } else if (itemKey.startsWith('lot-')) {
+        const lotId = itemKey.replace('lot-', '');
+        lotCard = document.querySelector(`.lot-card[data-lot-id="${lotId}"]`);
+    }
+    
+    if (lotCard) {
+        const qtyInput = lotCard.querySelector('.lot-quantity');
+        if (qtyInput) qtyInput.value = quantity;
+    }
+}
+
+function removeLotFromSelection(itemKey) {
+    const pageName = "expedition";
+    const selectedLotsList = document.getElementById(`page-${pageName}-lot-catalog-select-selected-lots-list`);
+    const noLotsMessage = document.getElementById(`page-${pageName}-lot-catalog-select-no-lots-message`);
+    const selectedCount = document.getElementById(`page-${pageName}-lot-catalog-selected-count`);
+
+    selectedLotsRegistry.delete(itemKey);
+
+    if (selectedLotsList) {
+        const lotItem = selectedLotsList.querySelector(`[data-item-key="${itemKey}"]`);
+        if (lotItem) {
+            selectedLotsList.removeChild(lotItem);
+
+            if (selectedLotsList.children.length === 0) {
+                selectedLotsList.classList.add('hidden');
+                if (noLotsMessage) noLotsMessage.classList.remove('hidden');
+            }
+        }
+    }
+
+    if (selectedCount) {
+        selectedCount.textContent = selectedLotsRegistry.size;
+    }
+
+    // Reset card UI - try to find by quant-id first, then by lot-id for backwards compatibility
+    let lotCard = null;
+    if (itemKey.startsWith('quant-')) {
+        const quantId = itemKey.replace('quant-', '');
+        lotCard = document.querySelector(`.lot-card[data-quant-id="${quantId}"]`);
+    } else if (itemKey.startsWith('lot-')) {
+        const lotId = itemKey.replace('lot-', '');
+        lotCard = document.querySelector(`.lot-card[data-lot-id="${lotId}"]`);
+    }
+    
+    if (lotCard) {
+        const initialAddDiv = lotCard.querySelector('.lot-initial-add');
+        const quantityControls = lotCard.querySelector('.lot-quantity-controls');
+        if (initialAddDiv) initialAddDiv.classList.remove('hidden');
+        if (quantityControls) quantityControls.classList.add('hidden');
+    }
+}
+
+function clearLotSelection() {
+    const pageName = "expedition";
+    
+    // Reset all card UIs before clearing
+    selectedLotsRegistry.forEach((item, itemKey) => {
+        let lotCard = null;
+        if (itemKey.startsWith('quant-')) {
+            const quantId = itemKey.replace('quant-', '');
+            lotCard = document.querySelector(`.lot-card[data-quant-id="${quantId}"]`);
+        } else if (itemKey.startsWith('lot-')) {
+            const lotId = itemKey.replace('lot-', '');
+            lotCard = document.querySelector(`.lot-card[data-lot-id="${lotId}"]`);
+        }
+        
+        if (lotCard) {
+            const initialAddDiv = lotCard.querySelector('.lot-initial-add');
+            const quantityControls = lotCard.querySelector('.lot-quantity-controls');
+            const qtyInput = lotCard.querySelector('.lot-quantity');
+            if (initialAddDiv) initialAddDiv.classList.remove('hidden');
+            if (quantityControls) quantityControls.classList.add('hidden');
+            if (qtyInput) qtyInput.value = 1;
+        }
+    });
+
+    // Clear the registry
+    selectedLotsRegistry.clear();
+
+    // Clear the selected lots list UI
+    const selectedLotsList = document.getElementById(`page-${pageName}-lot-catalog-select-selected-lots-list`);
+    const noLotsMessage = document.getElementById(`page-${pageName}-lot-catalog-select-no-lots-message`);
+    const selectedCount = document.getElementById(`page-${pageName}-lot-catalog-selected-count`);
+    
+    if (selectedLotsList) {
+        selectedLotsList.innerHTML = '';
+        selectedLotsList.classList.add('hidden');
+    }
+    if (noLotsMessage) noLotsMessage.classList.remove('hidden');
+    if (selectedCount) selectedCount.textContent = '0';
+}
+
+function closeLotCatalog() {
+    try {
+        const pageName = "expedition";
+        const pageMainContainer = document.querySelector('#page-expedition-main-container');
+        const lotCatalogSelectContainer = document.querySelector(`#page-${pageName}-lot-catalog-select`);
+        const createModal = document.getElementById('page-expedition-list-create-modal');
+        const paginationContainerMain = document.getElementById('page-expedition-list-pagination-container-main');
+        const skipStickyHeader = document.getElementById('skip-list-page-sticky-header');
+
+        if(skipStickyHeader) skipStickyHeader.value = '';
+
+        if (lotCatalogSelectContainer) {
+            lotCatalogSelectContainer.classList.add('hidden');
+        }
+
+        if (pageMainContainer) {
+            pageMainContainer.classList.remove('hidden');
+        }
+
+        if (paginationContainerMain) {
+            paginationContainerMain.classList.remove('hidden');
+        }
+
+        const expeditionListTable = document.getElementById('page-expedition-list-table');
+        if (expeditionListTable) {
+            expeditionListTable.style.display = '';
+        }
+
+        // Re-open the create modal
+        Modal.open('page-expedition-list-create-modal');
+
+        // Transfer selected lots to form
+        transferSelectedLotsToForm();
+    } catch (error) {
+        console.error("Error closing lot catalog:", error);
+    }
+}
+
+function transferSelectedLotsToForm() {
+    const pageName = "expedition";
+    const productsContainer = document.getElementById(`page-${pageName}-list-create-form-products-line-items-container`);
+    const modal = document.getElementById(`page-${pageName}-list-create-modal`);
+
+    if (!productsContainer) {
+        console.error("Products container not found");
+        return;
+    }
+
+    // Get all existing line IDs from form that came from catalog
+    const existingCatalogLines = productsContainer.querySelectorAll('.line-item[data-line-id^="catalog-item-line-"]');
+    const existingLineIds = new Set();
+    existingCatalogLines.forEach(line => {
+        existingLineIds.add(line.dataset.lineId);
+    });
+
+    // Get all line IDs that should exist (from registry)
+    const registryLineIds = new Set();
+    selectedLotsRegistry.forEach((lot) => {
+        registryLineIds.add(`catalog-item-line-${lot.id}`);
+    });
+
+    // Remove lines that are no longer in the registry (user deleted them in catalog)
+    existingCatalogLines.forEach(line => {
+        const lineId = line.dataset.lineId;
+        if (!registryLineIds.has(lineId)) {
+            // This line was removed in the catalog, delete it from form
+            productsContainer.removeChild(line);
+            console.log('Removed line from form:', lineId);
+        }
+    });
+
+    // Update existing lines and add new ones from registry
+    selectedLotsRegistry.forEach((lot) => {
+        const lineId = `catalog-item-line-${lot.id}`;
+        const existingLine = productsContainer.querySelector(`[data-line-id="${lineId}"]`);
+        
+        if (existingLine) {
+            // Line exists - update quantity if changed
+            const qtyInput = existingLine.querySelector('.product-qty');
+            if (qtyInput && parseInt(qtyInput.value) !== lot.quantity) {
+                qtyInput.value = lot.quantity;
+                console.log('Updated quantity for line:', lineId, 'to', lot.quantity);
+            }
+        } else {
+            // Line doesn't exist - add it
+            addLotLineToForm(productsContainer, lot, modal);
+        }
+    });
+
+    // Clear lot registry after transfer
+    selectedLotsRegistry.clear();
+
+    // Clear the selected lots list UI
+    const selectedLotsList = document.getElementById(`page-${pageName}-lot-catalog-select-selected-lots-list`);
+    const noLotsMessage = document.getElementById(`page-${pageName}-lot-catalog-select-no-lots-message`);
+    const selectedCount = document.getElementById(`page-${pageName}-lot-catalog-selected-count`);
+    
+    if (selectedLotsList) selectedLotsList.innerHTML = '';
+    if (selectedLotsList) selectedLotsList.classList.add('hidden');
+    if (noLotsMessage) noLotsMessage.classList.remove('hidden');
+    if (selectedCount) selectedCount.textContent = '0';
+
+    // Update the products field
+    updateExpeditionsProductsField();
+}
+
+function addLotLineToForm(container, item, modal) {
+    const pageName = "expedition";
+    const lineId = `catalog-item-line-${item.id}`;
+    
+    // Check if item already exists
+    if (container.querySelector(`[data-line-id="${lineId}"]`)) {
+        return;
+    }
+
+    // Info display: show lot name if has lot, otherwise show "No Lot"
+    const infoHtml = item.hasLot 
+        ? `<i class="fas fa-barcode mr-1"></i> Lot: <span class="lot-name-display">${item.lotName}</span>`
+        : `<i class="fas fa-box mr-1"></i> <span class="px-1 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">No Lot</span>`;
+
+    const newRow = document.createElement('div');
+    newRow.className = 'line-item bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-2';
+    newRow.dataset.lineId = lineId;
+    newRow.dataset.hasLot = item.hasLot ? 'true' : 'false';
+    newRow.dataset.lotId = item.lotId || '';
+
+    newRow.innerHTML = `
+        <div class="flex items-center gap-3">
+            <div class="flex-shrink-0 w-16">
+                <input type="text" value="1" placeholder="Package #" class="product-package form-input-sm w-full text-xs rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500">
+            </div>
+            <div class="flex-grow">
+                <select class="product-select form-select-sm w-full rounded-md border border-gray-300
+                    focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500">
+                </select>
+            </div>
+            <div class="flex-shrink-0 w-20">
+                <input type="number" value="${item.quantity}" min="1"
+                    class="product-qty form-input-sm w-full text-center rounded-md border border-gray-300
+                    focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"/>
+            </div>
+            <div class="flex-shrink-0">
+                <button type="button" class="remove-line-btn text-red-500 hover:text-red-700 transition-colors p-1" data-line-id="${lineId}">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+        <div class="mt-1 text-xs text-gray-500">
+            ${infoHtml}
+        </div>
+    `;
+
+    container.appendChild(newRow);
+
+    const select = $(newRow).find('.product-select');
+    const qtyInput = newRow.querySelector('.product-qty');
+    const packageInput = newRow.querySelector('.product-package');
+
+    // Initialize product select with preselected product
+    select.select2({
+        placeholder: 'Search product...',
+        dropdownParent: $(modal),
+        data: [{
+            id: item.productId,
+            text: item.productName,
+            default_code: item.productCode,
+            lot_id: item.lotId || '',
+            lot_name: item.lotName || '',
+            has_lot: item.hasLot,
+            selected: true
+        }],
+        ajax: {
+            transport: function(params, success, failure) {
+                rpc('/account/expedition/product-search', { term: params.data.term })
+                .then(result => {
+                    success({ results: result.items });
+                })
+                .catch(error => { 
+                    console.error(error); 
+                    failure('Failed to load products'); 
+                });
+            },
+            processResults: data => data,
+            delay: 250
+        },
+        templateResult: formatProduct,
+        templateSelection: formatProductSelection
+    });
+
+    // Store lot info in the select element's data
+    select.data('lot_id', item.lotId || '');
+    select.data('lot_name', item.lotName || '');
+
+    $(select).on('change', updateExpeditionsProductsField);
+    qtyInput.addEventListener('change', updateExpeditionsProductsField);
+    packageInput.addEventListener('change', updateExpeditionsProductsField);
+
+    // Remove button
+    const removeBtn = newRow.querySelector('.remove-line-btn');
+    removeBtn?.addEventListener('click', () => {
+        container.removeChild(newRow);
+        updateExpeditionsProductsField();
+    });
+}
+
+// TODO: UNUSED - Product catalog function, kept for future use
 async function loadProductCatalog() {
     const pageName = "expedition";
     const productGrid = document.getElementById(`page-${pageName}-product-catalog-select-products-grid`);
@@ -389,7 +1243,7 @@ async function loadProductCatalog() {
     }
 }
 
-// Add function to set up pagination events
+// TODO: UNUSED - Product catalog pagination, kept for future use
 function setupPaginationEvents() {
     document.querySelectorAll('.product-catalog-page-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -402,14 +1256,17 @@ function setupPaginationEvents() {
     });
 }
 
-// Update setupProductCardEvents function
+// TODO: UNUSED - Product catalog card events, kept for future use
 function setupProductCardEvents() {
     const pageName = "expedition";
+    const productGrid = document.getElementById(`page-${pageName}-product-catalog-select-products-grid`);
+    if (!productGrid) return;
+    
     const selectedProductsList = document.getElementById(`page-${pageName}-product-catalog-select-selected-products-list`);
     const noProductsMessage = document.getElementById(`page-${pageName}-product-catalog-select-no-products-message`);
     const selectedCount = document.getElementById("selected-count");
 
-    document.querySelectorAll('.product-card').forEach(card => {
+    productGrid.querySelectorAll('.product-card').forEach(card => {
         const productId = card.dataset.productId;
         const initialAddDiv = card.querySelector('.product-initial-add');
         const addBtn = card.querySelector('.product-add-btn');
@@ -557,7 +1414,7 @@ function setupProductCardEvents() {
     });
 }
 
-// Update the addProductToSelection function to add to registry and update UI
+// TODO: UNUSED - Product catalog selection, kept for future use
 function addProductToSelection(id, name, sku, qty = 1, price = '', stockInfo = '', inStock = true, imgSrc = '', attributeTags = [], attributes = []) {
     const pageName = "expedition";
     const selectedProductsList = document.getElementById(`page-${pageName}-product-catalog-select-selected-products-list`);
@@ -820,19 +1677,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     // Reset all product cards in the catalog
-                    document.querySelectorAll('.product-card').forEach(card => {
-                        const addBtn = card.querySelector('.product-add-btn');
-                        if (addBtn) {
-                            addBtn.innerHTML = '<i class="fas fa-plus mr-1"></i> Add';
-                            addBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
-                            addBtn.classList.add('bg-gradient-to-r', 'from-purple-600', 'to-purple-700', 'hover:from-purple-700', 'hover:to-purple-800');
-                        }
+                    const productGrid = document.getElementById('page-expedition-product-catalog-select-products-grid');
+                    if (productGrid) {
+                        productGrid.querySelectorAll('.product-card').forEach(card => {
+                            const addBtn = card.querySelector('.product-add-btn');
+                            if (addBtn) {
+                                addBtn.innerHTML = '<i class="fas fa-plus mr-1"></i> Add';
+                                addBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                                addBtn.classList.add('bg-gradient-to-r', 'from-purple-600', 'to-purple-700', 'hover:from-purple-700', 'hover:to-purple-800');
+                            }
 
-                        const addedQtyDisplay = card.querySelector('.product-added-qty');
-                        if (addedQtyDisplay) {
-                            addedQtyDisplay.classList.add('hidden');
-                        }
-                    });
+                            const addedQtyDisplay = card.querySelector('.product-added-qty');
+                            if (addedQtyDisplay) {
+                                addedQtyDisplay.classList.add('hidden');
+                            }
+                        });
+                    }
                 } catch (error) {
                     console.error("Error clearing product selection:", error);
                 }
@@ -847,7 +1707,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Modify closeProductCatalog to use Select2 for added products
+// TODO: UNUSED - Product catalog close, kept for future use
 function closeProductCatalog() {
     try {
         const pageName = "expedition";
@@ -889,6 +1749,7 @@ function closeProductCatalog() {
     }
 }
 
+// TODO: UNUSED - Product catalog transfer, kept for future use
 function transferSelectedProductsToForm() {
     const pageName = "expedition";
     const productsContainer = document.getElementById(`page-${pageName}-list-create-form-products-line-items-container`);
@@ -920,6 +1781,7 @@ function transferSelectedProductsToForm() {
     }
 }
 
+// TODO: UNUSED - Product catalog line to form, kept for future use
 function addProductLineToForm(container, product) {
     const pageName = "expedition";
     const lineItem = document.createElement('div');
@@ -983,7 +1845,7 @@ function addProductLineToForm(container, product) {
     });
 }
 
-// Format function for product dropdown items - with attributes support
+// TODO: UNUSED - Product format, kept for future use
 function formatProduct(product) {
     if (!product.id) return product.text;
 
@@ -1021,7 +1883,7 @@ function formatProduct(product) {
     return $(html);
 }
 
-// Format function for selected product with attributes
+// TODO: UNUSED - Product format selection, kept for future use
 function formatProductSelection(product) {
     if (!product.id) return product.text;
 
@@ -1033,12 +1895,12 @@ function formatProductSelection(product) {
     return text;
 }
 
-// Format function for product dropdown items - with attributes support
+// TODO: UNUSED - Product format with attributes, kept for future use
 function formatProductWithAttributes(product) {
     return formatProduct(product);
 }
 
-// Format function for selected product with attributes
+// TODO: UNUSED - Product format selection with attributes, kept for future use
 function formatProductSelectionWithAttributes(product) {
     if (!product.id) return product.text;
 
@@ -1062,121 +1924,7 @@ function formatProductSelectionWithAttributes(product) {
     return text;
 }
 
-// Add isManualProductAddInitialized flag to track initialization state
-let isManualProductAddInitialized = false;
-
-export function initManualProductAdd() {
-    const pageName = "expedition";
-    const addLineBtn = document.getElementById(`page-${pageName}-list-create-form-products-add-line-btn`);
-    const productsContainer = document.getElementById(`page-${pageName}-list-create-form-products-line-items-container`);
-    const modal = document.getElementById(`page-${pageName}-list-create-modal`);
-
-    if (!addLineBtn || !productsContainer || !modal) {
-        console.error('Required elements not found for manual product add initialization');
-        return;
-    }
-
-    // Prevent double initialization
-    if (isManualProductAddInitialized) {
-        console.log("Manual product add already initialized, skipping");
-        return;
-    }
-
-    isManualProductAddInitialized = true;
-    console.log("Initializing manual product add");
-
-    // Set up event delegation for dynamically added elements
-    productsContainer.addEventListener('click', function(e) {
-        const target = e.target;
-
-        // Handle remove button clicks
-        if (target.closest('.remove-product-btn')) {
-            const lineItem = target.closest('.line-item');
-            if (lineItem && lineItem.parentNode === productsContainer) {
-                productsContainer.removeChild(lineItem);
-                updateExpeditionsProductsField();
-            }
-        }
-    });
-
-    // Handle add line button clicks
-    addLineBtn.addEventListener('click', function() {
-        try {
-            // Create new line item
-            const newLineItem = document.createElement('div');
-            newLineItem.className = 'line-item mb-2 pb-2 border-b border-gray-200 dark:border-gray-700';
-
-            const lineIndex = productsContainer.querySelectorAll('.line-item').length + 1;
-
-            newLineItem.innerHTML = `
-                <div class="flex flex-wrap items-end gap-2">
-                    <div class="flex-1 min-w-[120px]">
-                        <input type="text" value="${lineIndex}" placeholder="Package #" class="product-package form-input-sm w-full text-xs rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500">
-                    </div>
-                    <div class="flex-grow">
-                        <select class="product-select form-input-sm w-full text-xs rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500"></select>
-                    </div>
-                    <div class="flex-1 min-w-[100px]">
-                        <input type="number" min="1" step="1" value="1" placeholder="Quantity" class="product-qty form-input-sm w-full text-xs rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500">
-                    </div>
-                    <div>
-                        <button type="button" class="remove-product-btn px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-xs">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            productsContainer.appendChild(newLineItem);
-
-            // Initialize Select2 for the new product
-            const select = newLineItem.querySelector('.product-select');
-            $(select).select2({
-                placeholder: 'Select Product',
-                dropdownParent: $(modal),
-                ajax: {
-                    transport: function(params, success, failure) {
-                        rpc('/account/expedition/product-search', {
-                            term: params.data.term || ''
-                        })
-                        .then(function(result) {
-                            success({ results: result.items || [] });
-                        })
-                        .catch(function(error) {
-                            console.error('Error fetching products:', error);
-                            failure('Failed to load products');
-                        });
-                    },
-                    processResults: function(data) {
-                        return data;
-                    },
-                    delay: 250
-                },
-                templateResult: formatProduct,
-                templateSelection: formatProductSelection
-            });
-
-            // Handle quantity input changes
-            const qtyInput = newLineItem.querySelector('.product-qty');
-            qtyInput.addEventListener('change', function() {
-                // Ensure minimum value of 1
-                if (isNaN(this.value) || parseInt(this.value) < 1) {
-                    this.value = 1;
-                }
-                updateExpeditionsProductsField();
-            });
-
-            // Update the hidden products field when product selection changes
-            $(select).on('select2:select', function() {
-                updateExpeditionsProductsField();
-            });
-        } catch (error) {
-            console.error("Error adding product line:", error);
-        }
-    });
-}
-
-// Update quantity of a product in the selected products list
+// TODO: UNUSED - Product update quantity, kept for future use
 function updateSelectedProductQuantity(productId, quantity) {
     const pageName = "expedition";
     const selectedProductsList = document.getElementById(`page-${pageName}-product-catalog-select-selected-products-list`);
@@ -1192,7 +1940,7 @@ function updateSelectedProductQuantity(productId, quantity) {
     }
 }
 
-// Remove a product from the selection
+// TODO: UNUSED - Product remove from selection, kept for future use
 function removeProductFromSelection(productId) {
     const pageName = "expedition";
     const selectedProductsList = document.getElementById(`page-${pageName}-product-catalog-select-selected-products-list`);

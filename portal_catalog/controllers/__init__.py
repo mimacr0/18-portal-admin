@@ -5,4 +5,6 @@
 #
 ##############################################################################
 
-from . import controllers
+from . import quant_catalog
+from . import product_catalog
+

@@ -7,6 +7,7 @@
 import math
 import json
 import pytz
+import logging
 from datetime import datetime
 from functools import lru_cache
 
@@ -14,6 +15,8 @@ from odoo import fields, http, _
 from odoo.addons.portal_admin_theme.controllers.admin import PortalAdminController
 from odoo.http import request
 from odoo.osv import expression
+
+_logger = logging.getLogger(__name__)
 
 
 class PortalRepairController(PortalAdminController):
@@ -30,6 +33,22 @@ class PortalRepairController(PortalAdminController):
             base_domain = expression.AND([base_domain, domain])
         return base_domain
         
+    @http.route('/account/repair-alert/product-catalog', type='json', auth='user')
+    def account_repair_alert_product_catalog(self, page=1, search='', **post):
+        """Get the product catalog - delegates to centralized catalog with repair-specific domain"""
+        from odoo.addons.portal_catalog.controllers.product_catalog import ProductCatalogController
+        
+        # Build repair-specific domain: account partner + tracking filter
+        base_domain = self._get_account_partner_domain()
+        extra_domain = expression.AND([
+            base_domain,
+            [('tracking', 'in', ('serial', 'none'))]
+        ])
+        
+        return ProductCatalogController().catalog_product_catalog(
+            page, search, extra_domain=extra_domain, **post
+        )
+
     @http.route('/account/repair-alert/product-search', type='json', auth='user')
     def account_report_product_search(self, term='', **kw):
         ProductProduct = self._sudo_with_lang('product.product')

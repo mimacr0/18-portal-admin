@@ -188,138 +188,15 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
 
     @http.route('/account/reception/product-catalog', type='json', auth='user')
     def account_reception_product_catalog(self, page=1, search='', **post):
-        """Get the product catalog with pagination"""
-        self._ensure_user_lang_context()
-        ProductProduct = request.env['product.product'].sudo()
-
-        limit = 20
-        page = int(page)
-        offset = (page - 1) * limit
-
-        user_partner = request.env.user.partner_id
-        commercial_partner = user_partner.commercial_partner_id
-        account_partner_id = commercial_partner.account_id.id if commercial_partner.account_id else False
-
-        # Solo productos con stock disponible en ubicaciones hijas de Stock (excepto Reparaciones)
-        StockQuant = request.env['stock.quant'].sudo()
-        stock_location = request.env.ref('stock.stock_location_stock')
-        repairs_location = request.env.ref('repair_module.stock_location_repairs', raise_if_not_found=False)
-        
-        quant_domain = [
-            ('quantity', '>', 0),
-            ('location_id', 'child_of', stock_location.id),
-        ]
-        if repairs_location:
-            quant_domain.append(('location_id', '!=', repairs_location.id))
-        
-        product_ids_with_stock = StockQuant.search(quant_domain).mapped('product_id').ids
-
-        domain = [
-            # ('is_storable', '=', True),
-            ('id', 'in', product_ids_with_stock)
-        ]
-        
-        if account_partner_id:
-            domain = expression.AND([
-                domain,
-                [('account_partner_id', '=', account_partner_id)]
-            ])
-        
-        if search:
-            domain = expression.AND([
-                domain,
-                expression.OR([
-                    [('name', 'ilike', search)],
-                    [('default_code', 'ilike', search)],
-                    [('barcode', 'ilike', search)]
-                ])
-            ])
-
-        products = ProductProduct.search(domain, limit=limit, offset=offset)
-        total_count = ProductProduct.search_count(domain)
-        total_pages = math.ceil(total_count / limit)
-
-        pages = []
-        for i in range(max(1, page - 2), min(total_pages + 1, page + 3)):
-            pages.append({
-                'page': i,
-                'active': i == page
-            })
-
-        qweb = request.env['ir.qweb']
-        return {
-            'status': 'success',
-            'products_html': qweb._render('portal_reception.portal_product_catalog_items', {
-                'products': products
-            }),
-            'pagination_html': qweb._render('portal_reception.portal_product_catalog_pagination', {
-                'page': page,
-                'pages': pages,
-                'total_pages': total_pages,
-                'total_count': total_count,
-                'has_next': page < total_pages,
-                'has_previous': page > 1
-            })
-        }
+        """Get the product catalog - delegates to centralized catalog (no stock filter)"""
+        from odoo.addons.portal_catalog.controllers.product_catalog import ProductCatalogController
+        return ProductCatalogController().catalog_product_catalog(page, search, **post)
 
     @http.route('/account/reception/product-search', type='json', auth='user')
     def account_reception_product_search(self, term='', **kw):
-        """Search products based on term for select2 with product attributes"""
-        self._ensure_user_lang_context()
-        ProductProduct = request.env['product.product'].sudo()
-        domain = [('is_storable', '=', True)]
-
-        user_partner = request.env.user.partner_id
-        commercial_partner = user_partner.commercial_partner_id
-        account_partner_id = commercial_partner.account_id.id if commercial_partner.account_id else False
-
-        if account_partner_id:
-            domain = expression.AND([
-                domain,
-                [('account_partner_id', '=', account_partner_id)]
-            ])
-
-        if term:
-            domain = expression.AND([
-                domain,
-                expression.OR([
-                    [('name', 'ilike', term)],
-                    [('default_code', 'ilike', term)],
-                    [('barcode', 'ilike', term)],
-                    [('product_template_attribute_value_ids.name', 'ilike', term)],
-                    [('product_template_attribute_value_ids.attribute_id.name', 'ilike', term)]
-                ])
-            ])
-
-        products = ProductProduct.search(domain, limit=10)
-
-        result_items = []
-        for product in products:
-            attributes = []
-            for attr_value in product.product_template_attribute_value_ids:
-                attributes.append({
-                    'id': attr_value.id,
-                    'name': attr_value.name,
-                    'attribute_name': attr_value.attribute_id.name,
-                    'value': attr_value.name,
-                    'display_name': f"{attr_value.attribute_id.name}: {attr_value.name}"
-                })
-
-            result_items.append({
-                'id': product.id,
-                'text': product.name,
-                'default_code': product.default_code or '',
-                'barcode': product.barcode or '',
-                'price': product.list_price,
-                'currency': product.currency_id.symbol,
-                'attributes': attributes,
-                'image': product.image_128 and f"data:image/png;base64,{product.image_128.decode('utf-8')}" or False
-            })
-
-        return {
-            'status': 'success',
-            'items': result_items
-        }
+        """Search products - delegates to centralized catalog endpoint"""
+        from odoo.addons.portal_catalog.controllers.product_catalog import ProductCatalogController
+        return ProductCatalogController().catalog_product_search(term, **kw)
 
     @http.route('/account/reception/carrier-search', type='json', auth='user')
     def account_reception_carrier_search(self, term='', **kw):

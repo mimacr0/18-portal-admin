@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+t\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-20 12:57+0000\n"
-"PO-Revision-Date: 2025-11-20 12:57+0000\n"
+"POT-Creation-Date: 2025-12-18 08:32+0000\n"
+"PO-Revision-Date: 2025-12-18 08:32+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -32,19 +32,19 @@ msgstr "<i class=\"fas fa-arrow-left mr-1.5\"/> Volver"
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
 msgid ""
-"<i class=\"fas fa-box mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-box mr-2 text-primary-theme \"/>\n"
 "                            Products by Package"
 msgstr ""
-"<i class=\"fas fa-box mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-box mr-2 text-primary-theme \"/>\n"
 "                            Productos por paquete"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
 msgid ""
-"<i class=\"fas fa-comments mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-comments mr-2 text-primary-theme \"/>\n"
 "                                Communication history"
 msgstr ""
-"<i class=\"fas fa-comments mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-comments mr-2 text-primary-theme \"/>\n"
 "                                Historial de comunicación"
 
 #. module: portal_reception
@@ -55,10 +55,10 @@ msgstr "<i class=\"fas fa-info-circle mr-1\"/> No hay productos en este paquete"
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
 msgid ""
-"<i class=\"fas fa-info-circle mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-info-circle mr-2 text-primary-theme \"/>\n"
 "                            Reception Info"
 msgstr ""
-"<i class=\"fas fa-info-circle mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-info-circle mr-2 text-primary-theme \"/>\n"
 "                            Información de la recepción"
 
 #. module: portal_reception
@@ -140,10 +140,10 @@ msgstr ""
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
 msgid ""
-"<i class=\"fas fa-user mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-user mr-2 text-primary-theme \"/>\n"
 "                            Partner"
 msgstr ""
-"<i class=\"fas fa-user mr-2 text-[#696900] dark:text-[#A0A000]\"/>\n"
+"<i class=\"fas fa-user mr-2 text-primary-theme \"/>\n"
 "                            Contacto"
 
 #. module: portal_reception
@@ -161,6 +161,8 @@ msgid ""
 "<option value=\"all\" selected=\"selected\">All</option>\n"
 "                                            <option value=\"any\">Any</option>"
 msgstr ""
+"<option value=\"all\" selected=\"selected\">Todos</option>\n"
+"                                            <option value=\"any\">Cualquiera</option>"
 "<option value=\"all\" selected=\"selected\">Todos</option>\n"
 "                                            <option value=\"any\">Cualquiera</option>"
 
@@ -204,7 +206,7 @@ msgstr "<span class=\"font-medium\">Peso:</span>"
 msgid ""
 "<span class=\"help-text\">Enter package number, product and quantity "
 "respectively.</span>"
-msgstr ""
+msgstr "<span class=\"help-text\">Ingrese el número de paquete, producto y cantidad respectivamente.</span>"
 "<span class=\"help-text\">Ingrese el número de paquete, el producto y la "
 "cantidad respectivamente.</span>"
 
@@ -221,12 +223,12 @@ msgstr ""
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
-msgid "<span class=\"mx-1 text-sm\">cm</span>"
+msgid "<span class=\"mx-1 text-sm\">kg</span>"
 msgstr ""
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
-msgid "<span class=\"mx-1 text-sm\">kg</span>"
+msgid "<span class=\"mx-1 text-sm\">mm</span>"
 msgstr ""
 
 #. module: portal_reception
@@ -242,6 +244,8 @@ msgid ""
 msgstr ""
 "<span class=\"sr-only\">Siguiente</span>\n"
 "                    <i class=\"fas fa-chevron-right\"/>"
+"<span class=\"sr-only\">Siguiente</span>\n"
+"                    <i class=\"fas fa-chevron-right\"/>"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
@@ -249,6 +253,8 @@ msgid ""
 "<span class=\"sr-only\">Previous</span>\n"
 "                    <i class=\"fas fa-chevron-left\"/>"
 msgstr ""
+"<span class=\"sr-only\">Anterior</span>\n"
+"                    <i class=\"fas fa-chevron-left\"/>"
 "<span class=\"sr-only\">Anterior</span>\n"
 "                    <i class=\"fas fa-chevron-left\"/>"
 
@@ -260,9 +266,8 @@ msgstr ""
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid ""
-"<span id=\"selected-count\" class=\"ml-2 bg-white text-[#696900] dark:bg-"
-"gray-700 dark:text-[#A0A000] text-xs font-bold px-2 py-0.5 rounded-"
-"full\">0</span>"
+"<span id=\"selected-count\" class=\"ml-2 bg-white text-primary-theme "
+"dark:bg-gray-700  text-xs font-bold px-2 py-0.5 rounded-full\">0</span>"
 msgstr ""
 
 #. module: portal_reception
@@ -271,6 +276,8 @@ msgid ""
 "<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
 "dark:text-gray-300 mr-3\">0 selected</span>"
 msgstr ""
+"<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
+"dark:text-gray-300 mr-3\">0 seleccionados</span>"
 "<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
 "dark:text-gray-300 mr-3\">0 seleccionados</span>"
 
@@ -286,9 +293,14 @@ msgstr "Advertencia de acceso"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
 msgid "Actions"
 msgstr "Acciones"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_list
+msgid "Add note..."
+msgstr "Agregar nota..."
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
@@ -302,7 +314,7 @@ msgstr "Búsqueda avanzada"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
 msgid "All"
 msgstr "Todos"
 
@@ -312,14 +324,8 @@ msgid "Apply Filters"
 msgstr "Aplicar filtros"
 
 #. module: portal_reception
-#. odoo-javascript
-#: code:addons/portal_reception/static/src/frontend/js/reception_main.js:0
-msgid "Are you sure you want to cancel these receptions?"
-msgstr "¿Está seguro de que desea cancelar estas recepciones?"
-
-#. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -330,7 +336,7 @@ msgstr "Cancelado"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_details.py:0
 msgid "Cannot update a completed or cancelled reception"
 msgstr "No se puede actualizar una recepción completada o cancelada"
 
@@ -371,15 +377,27 @@ msgstr "URL del portal del cliente"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
 msgid "Date"
 msgstr "Fecha"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
 msgid "Done"
 msgstr "Hecho"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Excel export not available. Please install xlsxwriter."
+msgstr "Exportación de Excel no disponible. Por favor, instale xlsxwriter."
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Export Excel"
+msgstr "Exportar Excel"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
@@ -393,31 +411,37 @@ msgstr "Altura"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Import Excel"
+msgstr "Importar Excel"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
 msgid "Invalid carrier"
 msgstr "Transportista no válido"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_modal.py:0
 msgid "Invalid product ID"
 msgstr "ID de producto no válido"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_modal.py:0
 msgid "Invalid quantity"
 msgstr "Cantidad no válida"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_details.py:0
 msgid "Invalid reception ID"
 msgstr "ID de recepción no válido"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_details.py:0
 msgid "Invalid scheduled date"
 msgstr "Fecha programada no válida"
 
@@ -433,13 +457,19 @@ msgstr "Medidas (cm)"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
 msgid "Name"
 msgstr "Nombre"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/models/stock_picking.py:0
+msgid "New message in reception"
+msgstr "Nuevo mensaje en recepción"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
 msgid "No packages selected"
 msgstr "No hay paquetes seleccionados"
 
@@ -450,31 +480,32 @@ msgstr "No se encontraron productos"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_modal.py:0
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "No products selected"
 msgstr "No hay productos seleccionados"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
 msgid "No valid receptions to cancel"
 msgstr "No hay recepciones válidas para cancelar"
 
 #. module: portal_reception
-#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_list
-msgid "PACKAGES:"
-msgstr "PAQUETES:"
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Note"
+msgstr "Nota"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
 msgid "Package"
 msgstr "Paquete"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "Package Type"
 msgstr "Tipo de paquete"
@@ -496,7 +527,7 @@ msgstr "Paginación"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
 msgid "Pending"
 msgstr "Pendiente"
@@ -513,7 +544,7 @@ msgstr "Producto"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_modal.py:0
 msgid "Product not found"
 msgstr "Producto no encontrado"
 
@@ -538,10 +569,15 @@ msgid "RECEPTION"
 msgstr "RECEPCIÓN"
 
 #. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_list
+msgid "REF:"
+msgstr "REF:"
+
+#. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
 msgid "RMA"
-msgstr ""
+msgstr "RMA"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
@@ -555,39 +591,51 @@ msgstr "Crear recepción"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_details.py:0
 msgid "Reception Details"
 msgstr "Detalles de la recepción"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_modal.py:0
 msgid "Reception created successfully"
 msgstr "Recepción creada correctamente"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_details.py:0
 msgid "Reception not found"
 msgstr "Recepción no encontrada"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_details.py:0
 msgid "Reception not found or access denied"
 msgstr "Recepción no encontrada o acceso denegado"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_details.py:0
 msgid "Reception not found or cannot be cancelled"
 msgstr "Recepción no encontrada o no se puede cancelar"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_details.py:0
 msgid "Reception updated successfully"
 msgstr "Recepción actualizada correctamente"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Receptions"
+msgstr "Recepciones"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Reference"
+msgstr "Referencia"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
@@ -596,7 +644,7 @@ msgstr "Restablecer"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "Scheduled Date"
 msgstr "Fecha programada"
@@ -623,7 +671,7 @@ msgstr "Productos seleccionados"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
 msgid "Shipping Weight"
 msgstr "Peso de envío"
 
@@ -634,7 +682,13 @@ msgstr "Mostrando 1-"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "State"
+msgstr "Estado"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
 msgid "Status"
 msgstr "Estado"
@@ -671,7 +725,7 @@ msgstr "UdM"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "Weight"
 msgstr "Peso"
@@ -693,14 +747,14 @@ msgstr "Escriba un mensaje..."
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_details.py:0
 msgid "You are not allowed to upload an attachment here."
 msgstr "No tiene permiso para cargar un adjunto aquí."
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
 msgid "kg"
-msgstr ""
+msgstr "kg"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_product_catalog_pagination
@@ -715,7 +769,7 @@ msgstr "de las siguientes condiciones:"
 
 #. module: portal_reception
 #. odoo-python
-#: code:addons/portal_reception/controllers/package.py:0
+#: code:addons/portal_reception/controllers/reception_list.py:0
 msgid "packages"
 msgstr "paquetes"
 
@@ -723,21 +777,3 @@ msgstr "paquetes"
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_product_catalog_pagination
 msgid "products)"
 msgstr "productos)"
-
-#. module: portal_reception
-#. odoo-python
-#: code:addons/portal_reception/models/stock_picking.py:0
-msgid "New message in reception"
-msgstr "Nuevo mensaje en recepción"
-
-#. module: portal_reception
-#. odoo-python
-#: code:addons/portal_reception/controllers/reception_modal.py:0
-msgid "Reception '%s' created"
-msgstr "Recepción '%s' creada"
-
-#. module: portal_reception
-#. odoo-python
-#: code:addons/portal_reception/controllers/reception_modal.py:0
-msgid "New reception"
-msgstr "Nueva recepción"
