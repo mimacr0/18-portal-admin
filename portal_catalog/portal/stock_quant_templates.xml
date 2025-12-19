@@ -280,7 +280,7 @@
                      t-att-data-product-id="quant.product_id.id"
                      t-att-data-product-name="quant.product_id.name"
                      t-att-data-product-code="quant.product_id.default_code or ''"
-                     t-att-data-product-qty="quant.quantity"
+                     t-att-data-product-qty="quant.quantity - quant.reserved_quantity"
                      t-att-data-has-lot="'true' if quant.lot_id else 'false'"
                      t-att-data-location-id="quant.location_id.id"
                      t-att-data-location-name="quant.location_id.name">
@@ -332,11 +332,12 @@
 
                         <div class="flex items-center justify-between mb-2">
                             <div>
-                                <!-- Quantity available -->
+                                <!-- Quantity available (quantity - reserved) -->
+                                <t t-set="available_qty" t-value="quant.quantity - quant.reserved_quantity"/>
                                 <div class="flex items-center">
-                                    <t t-if="quant.quantity &gt; 0">
+                                    <t t-if="available_qty &gt; 0">
                                         <i class="fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs"></i>
-                                        <span class="text-xs text-green-600 dark:text-green-400">Qty: <t t-out="int(quant.quantity)"/></span>
+                                        <span class="text-xs text-green-600 dark:text-green-400">Qty: <t t-out="int(available_qty)"/></span>
                                     </t>
                                     <t t-else="">
                                         <i class="fas fa-times-circle text-red-600 dark:text-red-400 mr-1 text-xs"></i>

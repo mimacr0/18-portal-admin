@@ -142,9 +142,11 @@ export const initRepairAlertCreateForm = () => {
         resetRepairAlertForm();
     });
 
-    createButton.addEventListener('click', () => {
-        Modal.open('page-repair-alert-list-create-modal');
-    });
+    if (createButton) {
+        createButton.addEventListener('click', () => {
+            Modal.open('page-repair-alert-list-create-modal');
+        });
+    }
 
     // Lot Catalog button handler
     if (lotCatalogButton) {
@@ -237,6 +239,10 @@ export const initRepairAlertCreateForm = () => {
     }
 
     // Manejar envío del formulario
+    if (!submitButton) {
+        console.error('Submit button not found: page-repair-alert-list-create-product-form-submit');
+        return;
+    }
     submitButton.addEventListener('click', async () => {
         const res = sysFormValidate('#page-repair-alert-list-create-form');
         if(!res) return;

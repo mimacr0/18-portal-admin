@@ -46,7 +46,8 @@ class StockCatalogController(http.Controller):
         stock_location = request.env.ref('stock.stock_location_stock')
         repairs_location = request.env.ref('repair_module.stock_location_repairs', raise_if_not_found=False)
 
-        # Build quant domain: stock children excluding repairs, with positive quantity
+        # Build quant domain: stock children excluding repairs, with positive available quantity
+        # Note: We filter quantity > 0 first, then filter by available (qty - reserved) in Python
         domain = [
             ('quantity', '>', 0),
             ('location_id', 'child_of', stock_location.id),
@@ -92,14 +93,18 @@ class StockCatalogController(http.Controller):
         # Get user language, default to Spanish
         user_lang = request.env.user.sudo().lang or 'es_ES'
 
-        # Get quants with pagination, ordered by product name then lot name
-        quants = StockQuant.with_context(lang=user_lang).search(
+        # Get all matching quants first (we need to filter by available quantity in Python)
+        all_quants = StockQuant.with_context(lang=user_lang).search(
             domain, 
-            limit=limit, 
-            offset=offset, 
             order='product_id, lot_id'
         )
-        total_count = StockQuant.search_count(domain)
+        
+        # Filter quants with positive available quantity (quantity - reserved_quantity > 0)
+        available_quants = all_quants.filtered(lambda q: (q.quantity - q.reserved_quantity) > 0)
+        
+        # Apply pagination manually
+        total_count = len(available_quants)
+        quants = available_quants[offset:offset + limit]
         total_pages = math.ceil(total_count / limit) if total_count > 0 else 1
 
         # Create pages for pagination template
