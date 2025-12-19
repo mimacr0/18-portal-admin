@@ -7,6 +7,7 @@
 import math
 import json
 import pytz
+import logging
 from datetime import datetime
 from functools import lru_cache
 
@@ -14,6 +15,9 @@ from odoo import fields, http, _
 from odoo.addons.portal_admin_theme.controllers.admin import PortalAdminController
 from odoo.http import request
 from odoo.osv import expression
+from odoo.exceptions import ValidationError
+
+_logger = logging.getLogger(__name__)
 
 
 class PortalRepairController(PortalAdminController):
@@ -30,6 +34,22 @@ class PortalRepairController(PortalAdminController):
             base_domain = expression.AND([base_domain, domain])
         return base_domain
         
+    @http.route('/account/repair-alert/product-catalog', type='json', auth='user')
+    def account_repair_alert_product_catalog(self, page=1, search='', **post):
+        """Get the product catalog - delegates to centralized catalog with repair-specific domain"""
+        from odoo.addons.portal_catalog.controllers.product_catalog import ProductCatalogController
+        
+        # Build repair-specific domain: account partner + tracking filter
+        base_domain = self._get_account_partner_domain()
+        extra_domain = expression.AND([
+            base_domain,
+            [('tracking', 'in', ('serial', 'none'))]
+        ])
+        
+        return ProductCatalogController().catalog_product_catalog(
+            page, search, extra_domain=extra_domain, **post
+        )
+
     @http.route('/account/repair-alert/product-search', type='json', auth='user')
     def account_report_product_search(self, term='', **kw):
         ProductProduct = self._sudo_with_lang('product.product')
@@ -191,7 +211,7 @@ class PortalRepairController(PortalAdminController):
             try:
                 products = json.loads(products_raw)
             except json.JSONDecodeError:
-                _logger.error('❌ Error decodificando JSON en products: %s', products_raw)
+                _logger.error('Error decodificando JSON en products: %s', products_raw)
                 products = []
         else:
             products = products_raw
@@ -200,15 +220,12 @@ class PortalRepairController(PortalAdminController):
             return {'status': 'error', 'message': _('No products selected for the repair alert.')}
 
         # 2º. Asignación de datos genéricos
-
         partner_id = request.env.user.partner_id
         QualityAlert = request.env['quality.alert'].sudo()
         ProductProduct = request.env['product.product'].sudo()
         AccountPartner = request.env['account.partner'].sudo()
-        StockLocation = request.env['stock.location'].sudo()
 
         partner_ids = list({request.env.user.partner_id.id, request.env.user.partner_id.commercial_partner_id.id})
-
         account_partner = AccountPartner.search([('partner_id', 'in', partner_ids)], limit=1)
 
         alerts_created = []
@@ -246,13 +263,21 @@ class PortalRepairController(PortalAdminController):
             alert = QualityAlert.sudo().create(alert_vals)
 
             # Crear el stock.picking usando la ubicación si no hay tracking
-            if tracking == 'none':
-                location_id = product.get('location')
-                alert.action_create_move_to_repair(location_id=location_id)
-            else:
-                alert.action_create_move_to_repair()
+            try:
+                if tracking == 'none':
+                    location_id = product.get('location')
+                    alert.action_create_move_to_repair(location_id=location_id)
+                else:
+                    alert.action_create_move_to_repair()
 
-            alerts_created.append(alert)
+                alerts_created.append(alert)
+            except ValidationError as e:
+                # Eliminar la alerta creada si falló el movimiento
+                alert.sudo().unlink()
+                return {
+                    'status': 'error',
+                    'message': str(e.args[0]) if e.args else _('Error creating stock movement.')
+                }
 
         if not alerts_created:
             return {'status': 'error', 'message': _('No valid lots or locations to create alerts.')}

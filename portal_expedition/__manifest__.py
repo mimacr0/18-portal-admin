@@ -33,7 +33,7 @@
         - Export data to Excel
         - Bulk import of sales orders
     """,
-    'depends': ['base', 'portal_admin_theme', 'portal_account', 'stock_reception'],
+    'depends': ['base', 'portal_admin_theme', 'portal_account', 'stock_reception', 'portal_catalog'],
     'license': 'AGPL-3',
     'website': "https://www.dafe.es",
     'data': [

@@ -393,4 +393,112 @@
 
     </template>
 
+    <!-- Template for product catalog items (used by expedition, reception, repair) -->
+    <template id="portal_product_catalog_items" name="Product Catalog Items">
+        <t t-if="products">
+            <t t-foreach="products" t-as="product">
+                <div class="bg-white dark:bg-gray-800 rounded-md shadow-sms overflow-hidden product-card hover:shadow transition-all duration-300 text-xs relative" t-att-data-product-id="product.id">
+                    <div class="p-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-gray-800 dark:text-white truncate"><t t-out="product.name"/></h3>
+                        </div>
+
+                        <div t-if="product.default_code" class="text-xs text-gray-500 dark:text-gray-400 mb-2">[<t t-out="product.default_code"/>]</div>
+
+                        <div class="flex items-center justify-between mb-2">
+                            <div>
+                                <div class="font-medium text-xs text-gray-700 dark:text-gray-300">
+                                    <span t-field="product.list_price"/>
+                                    <span t-field="product.currency_id.symbol"/>
+                                </div>
+                                <div class="flex items-center">
+                                    <t t-if="product.qty_available &gt; 0">
+                                        <i class="fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs"></i>
+                                        <span class="text-xs text-green-600 dark:text-green-400">Stock: <t t-out="product.qty_available"/></span>
+                                    </t>
+                                    <t t-else="">
+                                        <i class="fas fa-times-circle text-red-600 dark:text-red-400 mr-1 text-xs"></i>
+                                        <span class="text-xs text-red-600 dark:text-red-400">Out of Stock</span>
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="w-14 h-14 flex items-center justify-center">
+                                <t t-if="product.image_128">
+                                    <img t-att-src="'data:image/png;base64,' + product.image_128.decode('utf-8')" t-att-alt="product.name" class="max-h-full max-w-full"/>
+                                </t>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap mb-2 gap-1" t-if="product.product_template_attribute_value_ids">
+                            <t t-foreach="product.product_template_attribute_value_ids" t-as="attribute_value">
+                                <span class="bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">
+                                    <t t-out="attribute_value.name"/>
+                                </span>
+                            </t>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <!-- Initial Add button (shown when product is not added) -->
+                            <div class="product-initial-add flex">
+                                <button class="product-add-btn px-3 py-1 btn-primary text-white rounded transition-colors shadow-sm text-xs">
+                                    <i class="fas fa-plus mr-1"></i> Add
+                                </button>
+                            </div>
+
+                            <!-- Quantity selector (hidden by default, shown when product is added) -->
+                            <div class="product-quantity-controls hidden flex items-center">
+                                <div class="flex items-center border border-gray-200 dark:border-gray-600 rounded-md shadow-sm overflow-hidden bg-white dark:bg-gray-800">
+                                    <button class="px-2 py-1 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 product-decrease transition-colors text-xs border-r border-gray-200 dark:border-gray-600">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="text" value="1" class="w-8 px-1 py-1 text-center border-none focus:ring-0 product-quantity bg-white dark:bg-gray-800 text-sm font-medium"/>
+                                    <button class="px-2 py-1 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 product-increase transition-colors text-xs border-l border-gray-200 dark:border-gray-600">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <button class="product-remove px-2 py-1 text-gray-500 hover:text-red-600 transition-colors text-xs ml-2">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+        <t t-else="">
+            <div class="col-span-full p-6 text-center">
+                <i class="fas fa-search text-gray-400 text-4xl mb-3"></i>
+                <p class="text-lg text-gray-500 dark:text-gray-400">No products found</p>
+                <p class="text-sm text-gray-400 dark:text-gray-500">Try changing your search criteria</p>
+            </div>
+        </t>
+    </template>
+
+    <!-- Template for product catalog pagination -->
+    <template id="portal_product_catalog_pagination" name="Product Catalog Pagination">
+        <div class="flex items-center justify-between px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg">
+            <div class="flex items-center">
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                    <span class="font-medium">Page <t t-out="page"/></span> of <span class="font-medium"><t t-out="total_pages"/></span>
+                    <span class="text-xs text-gray-500 ml-2">(<t t-out="total_count"/> products)</span>
+                </p>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button t-att-class="'product-catalog-page-btn px-2 py-1 rounded ' + ('' if has_previous else 'opacity-50 cursor-not-allowed')" t-att-data-page="page - 1" t-att-disabled="not has_previous">
+                    <i class="fas fa-chevron-left text-gray-600 dark:text-gray-400"></i>
+                </button>
+
+                <t t-foreach="pages" t-as="p">
+                    <button t-att-class="'product-catalog-page-btn px-3 py-1 rounded ' + ('bg-light-active text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300' if p['active'] else 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700')" t-att-data-page="p['page']">
+                        <t t-out="p['page']"/>
+                    </button>
+                </t>
+
+                <button t-att-class="'product-catalog-page-btn px-2 py-1 rounded ' + ('' if has_next else 'opacity-50 cursor-not-allowed')" t-att-data-page="page + 1" t-att-disabled="not has_next">
+                    <i class="fas fa-chevron-right text-gray-600 dark:text-gray-400"></i>
+                </button>
+            </div>
+        </div>
+    </template>
+
 </odoo>

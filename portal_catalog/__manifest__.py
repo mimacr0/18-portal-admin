@@ -15,17 +15,19 @@
     'summary': """
         Modulo para administrar catálogos de selección en el portal
     """,
-    'depends': ['portal_admin_theme'],
+    'depends': ['portal_admin_theme', 'stock'],
     'license': 'AGPL-3',
     'website': "https://www.dafe.es",
     'data': [
-        'portal/products_template.xml'
+        'portal/product_product_templates.xml',
+        'portal/stock_quant_templates.xml',
     ],
-    # 'assets': {
-    #     'portal_admin_theme.admin_assets_frontend': [
-    #         'portal_catalog/static/src/frontend/js/products_catalog.js'
-    #     ], 
-    # },
+    'assets': {
+        'portal_admin_theme.admin_assets_frontend': [
+            'portal_catalog/static/src/frontend/js/products_catalog.js',
+            'portal_catalog/static/src/frontend/js/quants_catalog.js',
+        ],
+    },
     'images': ['static/description/icon.png'],
     'installable': True,
     'auto_install': False,

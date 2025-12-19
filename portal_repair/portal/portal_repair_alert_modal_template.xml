@@ -90,12 +90,13 @@
                                         class="products-line-items-container">
                                     </div>
                                     <div class="mt-3 flex items-center gap-2">
-                                        <button t-attf-id="page-#{page_name}-list-create-form-products-add-line-btn" type="button"
+                                        <button t-attf-id="page-#{page_name}-list-create-form-lots-add-catalog-btn" type="button"
                                                 class="btn-primary px-2 py-0.5 text-white rounded-md transition-colors text-xs flex items-center">
-                                            <i class="fas fa-plus mr-1.5"></i> Add Product
+                                                <i class="fas fa-plus mr-1.5"></i> Catalog
+
                                         </button>
                                         <span class="ml-2 text-xs text-gray-500 italic">
-                                            <i class="fas fa-info-circle"></i> Add products manually
+                                            <i class="fas fa-info-circle"></i> Select products from catalog
                                         </span>
                                     </div>
                                 </div>
