@@ -327,16 +327,30 @@
                                     </div>
                                 </div>
 
-                                <!-- Weight field -->
+                                <!-- Package Weight field -->
                                 <div class="form-group">
                                     <div class="flex items-center">
-                                        <label t-attf-for="page-#{page_name}-list-create-form-weight" class="form-label-sm font-sm">Weight (kg)</label>
+                                        <label t-attf-for="page-#{page_name}-list-create-form-package-weight" class="form-label-sm font-sm">Package Weight (kg)</label>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" step="0.01" min="0" name="package_weight" value="0" t-attf-id="page-#{page_name}-list-create-form-package-weight"
+                                                class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 bg-gray-100 focus:outline-none"
+                                                placeholder="Package Weight" readonly="readonly"/>
+                                        <span class="mx-1 text-sm">kg</span>
+                                    </div>
+                                    <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-package-weight-error"/>
+                                </div>
+
+                                <!-- Product Weight field -->
+                                <div class="form-group">
+                                    <div class="flex items-center">
+                                        <label t-attf-for="page-#{page_name}-list-create-form-weight" class="form-label-sm font-sm">Product Weight (kg)</label>
                                         <span class="text-red-500 ml-1">*</span>
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <input type="number" step="0.01" min="0" name="weight" required="required" t-attf-id="page-#{page_name}-list-create-form-weight"
                                                 class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme "
-                                                placeholder="Weight"/>
+                                                placeholder="Product Weight"/>
                                         <span class="mx-1 text-sm">kg</span>
                                     </div>
                                     <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-weight-error"/>
@@ -745,7 +759,10 @@
                                 <span class="font-medium">Completed:</span> <t t-out="picking.date_done"/>
                             </p>
                             <p t-if="picking.weight" class="text-gray-700 dark:text-gray-200">
-                                <span class="font-medium">Weight:</span> <t t-out="picking.weight"/> kg
+                                <span class="font-medium">Product Weight:</span> <t t-out="picking.weight"/> kg
+                            </p>
+                            <p t-if="picking.shipping_weight" class="text-gray-700 dark:text-gray-200">
+                                <span class="font-medium">Shipping Weight:</span> <t t-out="picking.shipping_weight"/> kg
                             </p>
                             <p t-if="picking.carrier_id" class="text-gray-700 dark:text-gray-200">
                                 <span class="font-medium">Shipping Method:</span> <t t-out="picking.carrier_id.name"/>

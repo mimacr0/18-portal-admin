@@ -40,7 +40,8 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
         width = post.get('width')
         height = post.get('height')
         length = post.get('length')
-        weight = post.get('weight')
+        weight = post.get('weight')  # Product weight
+        package_weight = post.get('package_weight')  # Package/container weight
         products = json.loads(post.get('products') or '[]')
 
         if len(products) == 0:
@@ -107,7 +108,7 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
                     'carrier_name': carrier_name or '',
                     'carrier_id': carrier_id or False,
                     'optional_tracking_ref': optional_tracking_ref or '',
-                    'shipping_weight': float(weight) if weight else package_type.base_weight,
+                    'shipping_weight': (float(weight) if weight else 0) + (float(package_weight) if package_weight else package_type.base_weight),
                 }
 
                 package = StockQuantPackage.create(package_values)
