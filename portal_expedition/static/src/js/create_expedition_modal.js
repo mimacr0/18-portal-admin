@@ -1073,7 +1073,7 @@ function transferSelectedLotsToForm() {
             }
         } else {
             // Line doesn't exist - add it
-            addLotLineToForm(productsContainer, lot, modal);
+        addLotLineToForm(productsContainer, lot, modal);
         }
     });
 

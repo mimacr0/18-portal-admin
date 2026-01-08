@@ -143,9 +143,9 @@ export const initRepairAlertCreateForm = () => {
     });
 
     if (createButton) {
-        createButton.addEventListener('click', () => {
-            Modal.open('page-repair-alert-list-create-modal');
-        });
+    createButton.addEventListener('click', () => {
+        Modal.open('page-repair-alert-list-create-modal');
+    });
     }
 
     // Lot Catalog button handler
