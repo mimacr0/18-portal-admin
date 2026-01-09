@@ -206,10 +206,10 @@ export const initReceptionCreateForm = () => {
                 lengthField.value = data.packaging_length;
             }
 
-            // Update weight field
-            const weightField = document.getElementById('page-reception-list-create-form-weight');
-            if (weightField && data.base_weight) {
-                weightField.value = data.base_weight;
+            // Update package weight field (weight of the empty package)
+            const packageWeightField = document.getElementById('page-reception-list-create-form-package-weight');
+            if (packageWeightField && data.base_weight) {
+                packageWeightField.value = data.base_weight;
             }
         }
     });

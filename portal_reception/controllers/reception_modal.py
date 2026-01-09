@@ -40,7 +40,8 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
         width = post.get('width')
         height = post.get('height')
         length = post.get('length')
-        weight = post.get('weight')
+        weight = post.get('weight')  # Product weight
+        package_weight = post.get('package_weight')  # Package/container weight
         products = json.loads(post.get('products') or '[]')
 
         if len(products) == 0:
@@ -107,11 +108,17 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
                     'carrier_name': carrier_name or '',
                     'carrier_id': carrier_id or False,
                     'optional_tracking_ref': optional_tracking_ref or '',
-                    'shipping_weight': float(weight) if weight else package_type.base_weight,
+                    'shipping_weight': (float(weight) if weight else 0) + (float(package_weight) if package_weight else package_type.base_weight),
                 }
 
                 package = StockQuantPackage.create(package_values)
                 package_map[package_num] = package
+
+        # Create unique procurement group for this reception (prevents merging with other receptions)
+        procurement_group = request.env['procurement.group'].sudo().create({
+            'name': tracking_number,
+            'partner_id': partner.commercial_partner_id.id,
+        })
 
         # Create the reception
         picking = StockPicking.create({
@@ -126,6 +133,7 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
             'location_dest_id': reception_type.default_location_dest_id.id,
             'move_type': 'direct',
             'scheduled_date': scheduled_date,
+            'group_id': procurement_group.id,
         })
 
         # Create moves with detailed move lines for each package
@@ -146,6 +154,7 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
                     'picking_id': picking.id,
                     'location_id': picking.location_id.id,
                     'location_dest_id': picking.location_dest_id.id,
+                    'group_id': procurement_group.id,
                     'state': 'draft',
                 }
                 move = request.env['stock.move'].sudo().create(move_vals)

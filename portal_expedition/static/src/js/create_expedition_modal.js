@@ -298,6 +298,18 @@ export const initExpeditionCreateForm = () => {
 
         console.log(resp.message)
 
+        // Limpiar el formulario antes de cerrar
+        document.querySelector('#page-expedition-list-create-form').reset();
+        // Limpiar campos select2
+        $('#page-expedition-list-create-form select').val(null).trigger('change');
+        // Limpiar contenedor de productos
+        const productsContainer = document.getElementById('page-expedition-list-create-form-products-line-items-container');
+        if (productsContainer) {
+            productsContainer.innerHTML = '';
+        }
+        // Limpiar registro de lotes seleccionados
+        selectedLotsRegistry.clear();
+
         Modal.close('page-expedition-list-create-modal');
 
         reloadExpeditionListPage();
@@ -1073,7 +1085,7 @@ function transferSelectedLotsToForm() {
             }
         } else {
             // Line doesn't exist - add it
-            addLotLineToForm(productsContainer, lot, modal);
+        addLotLineToForm(productsContainer, lot, modal);
         }
     });
 
