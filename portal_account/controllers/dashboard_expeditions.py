@@ -19,6 +19,8 @@ from odoo import http, _, fields
 from odoo.http import request
 from odoo.addons.portal_account.controllers.dashboard import PortalDashboardController
 
+_logger = logging.getLogger(__name__)
+
 
 class PortalDashboardExpeditionsController(PortalDashboardController):
     """Controller for expedition-related dashboard endpoints"""
@@ -293,8 +295,14 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
             workbook = openpyxl.load_workbook(file, data_only=True)
             sheet = workbook.active
             
-            # Get headers from first row
-            headers = [cell.value.lower().strip() if cell.value else '' for cell in sheet[1]]
+            # Get headers from first row (remove asterisks and extra spaces)
+            def clean_header(value):
+                if not value:
+                    return ''
+                # Remove asterisks and extra whitespace
+                return value.lower().replace('*', '').strip()
+            
+            headers = [clean_header(cell.value) for cell in sheet[1]]
             
             # Required columns
             required_cols = ['reference', 'scheduled_date', 'product', 'quantity']
@@ -359,15 +367,27 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
                     continue
                 
                 
-                # Get product
+                # Get product (replace non-breaking spaces and other unicode spaces)
                 product_ref = str(row[col_idx['product']] or '').strip()
+                # Replace non-breaking space (\xa0) with regular space
+                product_ref = product_ref.replace('\xa0', ' ').replace('\u00a0', ' ')
+                _logger.info("=== IMPORT EXPEDITIONS === Row %d: product_ref = '%s' (repr: %r)", row_num, product_ref, product_ref)
                 if not product_ref:
                     errors.append(_('Row %d: Missing product') % row_num)
                     continue
                 
+                # Search by default_code (exact) or name (ilike)
                 product = ProductProduct.search([
                     '|', ('default_code', '=', product_ref), ('name', 'ilike', product_ref)
                 ], limit=1)
+                _logger.info("=== IMPORT EXPEDITIONS === Row %d: search domain = ['|', ('default_code', '=', '%s'), ('name', 'ilike', '%s')]", row_num, product_ref, product_ref)
+                _logger.info("=== IMPORT EXPEDITIONS === Row %d: product found = %s (id=%s, name=%s)", row_num, bool(product), product.id if product else None, product.display_name if product else None)
+                if not product:
+                    # Try additional search methods
+                    _logger.info("=== IMPORT EXPEDITIONS === Row %d: Trying alternative searches...", row_num)
+                    # Try exact name match
+                    product = ProductProduct.search([('name', '=', product_ref)], limit=1)
+                    _logger.info("=== IMPORT EXPEDITIONS === Row %d: Exact name search result = %s", row_num, product.display_name if product else None)
                 if not product:
                     errors.append(_('Row %d: Product "%s" not found') % (row_num, product_ref))
                     continue
@@ -539,13 +559,13 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
                 'status': 'success',
                 'message': result_message,
                 'created': created_count,
-                'errors': errors[:10] if errors else []  # Return first 10 warnings
+                'errors': errors[:10] if errors else [],  # Return first 10 warnings
+                'reload': True  # Signal frontend to reload page
             })
             
         except Exception as e:
             import traceback
             error_traceback = traceback.format_exc()
-            _logger = logging.getLogger(__name__)
             _logger.error('Import expeditions error: %s\n%s', str(e), error_traceback)
             return request.make_json_response({
                 'status': 'error',

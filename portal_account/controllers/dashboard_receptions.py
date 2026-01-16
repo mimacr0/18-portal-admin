@@ -183,8 +183,14 @@ class PortalDashboardReceptionsController(PortalDashboardController):
             workbook = openpyxl.load_workbook(file, data_only=True)
             sheet = workbook.active
             
-            # Get headers from first row
-            headers = [cell.value.lower().strip() if cell.value else '' for cell in sheet[1]]
+            # Get headers from first row (remove asterisks and extra spaces)
+            def clean_header(value):
+                if not value:
+                    return ''
+                # Remove asterisks and extra whitespace
+                return value.lower().replace('*', '').strip()
+            
+            headers = [clean_header(cell.value) for cell in sheet[1]]
             
             # Required columns
             required_cols = ['tracking_number', 'scheduled_date', 'package_type', 'product', 'quantity']
@@ -260,8 +266,10 @@ class PortalDashboardReceptionsController(PortalDashboardController):
                     errors.append(_('Row %d: Package type "%s" not found') % (row_num, package_type_name))
                     continue
                 
-                # Get product
+                # Get product (replace non-breaking spaces and other unicode spaces)
                 product_ref = str(row[col_idx['product']] or '').strip()
+                # Replace non-breaking space (\xa0) with regular space
+                product_ref = product_ref.replace('\xa0', ' ').replace('\u00a0', ' ')
                 if not product_ref:
                     errors.append(_('Row %d: Missing product') % row_num)
                     continue
@@ -269,6 +277,7 @@ class PortalDashboardReceptionsController(PortalDashboardController):
                 product = ProductProduct.search([
                     '|', ('default_code', '=', product_ref), ('name', 'ilike', product_ref)
                 ], limit=1)
+                
                 if not product:
                     errors.append(_('Row %d: Product "%s" not found') % (row_num, product_ref))
                     continue
@@ -428,7 +437,8 @@ class PortalDashboardReceptionsController(PortalDashboardController):
                 'status': 'success',
                 'message': result_message,
                 'created': created_count,
-                'errors': errors[:10] if errors else []  # Return first 10 warnings
+                'errors': errors[:10] if errors else [],  # Return first 10 warnings
+                'reload': True  # Signal frontend to reload page
             })
             
         except Exception as e:

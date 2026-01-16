@@ -308,8 +308,14 @@ class ProductModalController(PortalAdminController):
             workbook = openpyxl.load_workbook(file, data_only=True)
             sheet = workbook.active
             
-            # Get headers from first row
-            headers = [cell.value.lower().strip() if cell.value else '' for cell in sheet[1]]
+            # Get headers from first row (remove asterisks and extra spaces)
+            def clean_header(value):
+                if not value:
+                    return ''
+                # Remove asterisks and extra whitespace
+                return value.lower().replace('*', '').strip()
+            
+            headers = [clean_header(cell.value) for cell in sheet[1]]
             
             # Required columns
             required_cols = ['name', 'tracking', 'width', 'height', 'length', 'weight']
@@ -452,7 +458,8 @@ class ProductModalController(PortalAdminController):
                 'status': 'success',
                 'message': result_message,
                 'created': created_count,
-                'errors': all_messages[:10] if all_messages else []
+                'errors': all_messages[:10] if all_messages else [],
+                'reload': True  # Signal frontend to reload page
             })
             
         except Exception as e:

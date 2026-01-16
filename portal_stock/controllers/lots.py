@@ -673,10 +673,6 @@ class PortalLotsController(PortalAdminController):
                     'product_qty': lot.product_qty,
                     'location_id': lot.location_id.id if lot.location_id else None,
                     'location_name': lot.location_id.complete_name if lot.location_id else '',
-                    'expiration_date': lot.expiration_date.strftime('%Y-%m-%d') if lot.expiration_date else None,
-                    'use_date': lot.use_date.strftime('%Y-%m-%d') if lot.use_date else None,
-                    'removal_date': lot.removal_date.strftime('%Y-%m-%d') if lot.removal_date else None,
-                    'alert_date': lot.alert_date.strftime('%Y-%m-%d') if lot.alert_date else None,
                 }
             }
         except Exception as e:
