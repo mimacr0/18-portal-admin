@@ -160,18 +160,35 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
                 move = request.env['stock.move'].sudo().create(move_vals)
 
                 if package:
-                    move_line_vals = {
-                        'move_id': move.id,
-                        'product_id': product.id,
-                        'product_uom_id': product.uom_id.id,
-                        'location_id': picking.location_id.id,
-                        'location_dest_id': picking.location_dest_id.id,
-                        'qty_done': qty,
-                        'result_package_id': package.id,
-                        'owner_id': partner.commercial_partner_id.id,
-                        'picking_id': picking.id,
-                    }
-                    request.env['stock.move.line'].sudo().create(move_line_vals)
+                    if product.tracking == 'serial':
+                        # For serial tracking: create one line per unit
+                        for i in range(int(qty)):
+                            move_line_vals = {
+                                'move_id': move.id,
+                                'product_id': product.id,
+                                'product_uom_id': product.uom_id.id,
+                                'location_id': picking.location_id.id,
+                                'location_dest_id': picking.location_dest_id.id,
+                                'quantity': 1,  # Odoo 18 uses 'quantity' instead of 'qty_done'
+                                'result_package_id': package.id,
+                                'owner_id': partner.commercial_partner_id.id,
+                                'picking_id': picking.id,
+                            }
+                            request.env['stock.move.line'].sudo().create(move_line_vals)
+                    else:
+                        # For lot or no tracking: create single line with full qty
+                        move_line_vals = {
+                            'move_id': move.id,
+                            'product_id': product.id,
+                            'product_uom_id': product.uom_id.id,
+                            'location_id': picking.location_id.id,
+                            'location_dest_id': picking.location_dest_id.id,
+                            'quantity': qty,  # Odoo 18 uses 'quantity' instead of 'qty_done'
+                            'result_package_id': package.id,
+                            'owner_id': partner.commercial_partner_id.id,
+                            'picking_id': picking.id,
+                        }
+                        request.env['stock.move.line'].sudo().create(move_line_vals)
 
                 total_weight += product.weight * qty
 
