@@ -371,23 +371,13 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
                 product_ref = str(row[col_idx['product']] or '').strip()
                 # Replace non-breaking space (\xa0) with regular space
                 product_ref = product_ref.replace('\xa0', ' ').replace('\u00a0', ' ')
-                _logger.info("=== IMPORT EXPEDITIONS === Row %d: product_ref = '%s' (repr: %r)", row_num, product_ref, product_ref)
                 if not product_ref:
                     errors.append(_('Row %d: Missing product') % row_num)
                     continue
                 
-                # Search by default_code (exact) or name (ilike)
                 product = ProductProduct.search([
                     '|', ('default_code', '=', product_ref), ('name', 'ilike', product_ref)
                 ], limit=1)
-                _logger.info("=== IMPORT EXPEDITIONS === Row %d: search domain = ['|', ('default_code', '=', '%s'), ('name', 'ilike', '%s')]", row_num, product_ref, product_ref)
-                _logger.info("=== IMPORT EXPEDITIONS === Row %d: product found = %s (id=%s, name=%s)", row_num, bool(product), product.id if product else None, product.display_name if product else None)
-                if not product:
-                    # Try additional search methods
-                    _logger.info("=== IMPORT EXPEDITIONS === Row %d: Trying alternative searches...", row_num)
-                    # Try exact name match
-                    product = ProductProduct.search([('name', '=', product_ref)], limit=1)
-                    _logger.info("=== IMPORT EXPEDITIONS === Row %d: Exact name search result = %s", row_num, product.display_name if product else None)
                 if not product:
                     errors.append(_('Row %d: Product "%s" not found') % (row_num, product_ref))
                     continue
