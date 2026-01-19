@@ -444,11 +444,159 @@ class PortalDashboardReceptionsController(PortalDashboardController):
         except Exception as e:
             import traceback
             error_traceback = traceback.format_exc()
-            _logger = logging.getLogger(__name__)
             _logger.error('Import receptions error: %s\n%s', str(e), error_traceback)
             return request.make_json_response({
                 'status': 'error',
                 'message': _('Import failed: %s') % str(e),
                 'traceback': error_traceback
             })
+
+    @http.route('/account/dashboard/download_receptions_template', type='http', auth='user', methods=['GET'])
+    def download_receptions_template(self, **kw):
+        """Generate and download receptions import template with package types sheet."""
+        import io
+        
+        try:
+            import openpyxl
+            from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+        except ImportError:
+            return request.make_response(
+                'Excel generation not available. Please install openpyxl.',
+                headers=[('Content-Type', 'text/plain')]
+            )
+        
+        try:
+            workbook = openpyxl.Workbook()
+            
+            # ============================================
+            # Sheet 1: Receptions Template
+            # ============================================
+            sheet1 = workbook.active
+            sheet1.title = 'Receptions'
+            
+            # Define headers
+            headers = ['tracking_number*', 'scheduled_date*', 'package_type*', 'package_number', 'product*', 'quantity*', 'carrier_name', 'weight']
+            
+            # Header styles
+            header_font = Font(bold=True, color='FFFFFF')
+            required_fill = PatternFill(start_color='4472C4', end_color='4472C4', fill_type='solid')
+            optional_fill = PatternFill(start_color='70AD47', end_color='70AD47', fill_type='solid')
+            thin_border = Border(
+                left=Side(style='thin'),
+                right=Side(style='thin'),
+                top=Side(style='thin'),
+                bottom=Side(style='thin')
+            )
+            
+            # Write headers
+            for col, header in enumerate(headers, 1):
+                cell = sheet1.cell(row=1, column=col, value=header)
+                cell.font = header_font
+                cell.border = thin_border
+                cell.alignment = Alignment(horizontal='center')
+                cell.fill = required_fill if header.endswith('*') else optional_fill
+            
+            # Add example rows
+            example_data = [
+                ['TRACK001', '20/01/2026 10:00', 'Box', 1, 'Product A', 5, 'DHL', 2.5],
+                ['TRACK001', '20/01/2026 10:00', 'Box', 1, 'Product B', 3, 'DHL', 2.5],
+                ['TRACK001', '20/01/2026 10:00', 'Box', 2, 'Product C', 10, 'DHL', 1.2],
+            ]
+            
+            for row_idx, row_data in enumerate(example_data, 2):
+                for col_idx, value in enumerate(row_data, 1):
+                    cell = sheet1.cell(row=row_idx, column=col_idx, value=value)
+                    cell.border = thin_border
+            
+            # Set column widths
+            for col in range(1, len(headers) + 1):
+                sheet1.column_dimensions[openpyxl.utils.get_column_letter(col)].width = 18
+            
+            # ============================================
+            # Sheet 2: Instructions
+            # ============================================
+            sheet2 = workbook.create_sheet('Instructions')
+            
+            instructions = [
+                ['RECEPTIONS IMPORT TEMPLATE INSTRUCTIONS'],
+                [''],
+                ['REQUIRED COLUMNS (Blue):'],
+                ['tracking_number*', 'Tracking number for the shipment'],
+                ['scheduled_date*', 'Expected date in format DD/MM/YYYY HH:MM'],
+                ['package_type*', 'Package type (see "Package Types" sheet)'],
+                ['product*', 'Product name or SKU'],
+                ['quantity*', 'Quantity of product'],
+                [''],
+                ['OPTIONAL COLUMNS (Green):'],
+                ['package_number', 'Package number within shipment (1, 2, 3...)'],
+                ['carrier_name', 'Carrier/courier name'],
+                ['weight', 'Package weight in kg'],
+                [''],
+                ['NOTES:'],
+                ['- Rows with same tracking_number are grouped into one reception'],
+                ['- Rows with same package_number within a tracking go into the same package'],
+            ]
+            
+            for row_idx, row_data in enumerate(instructions, 1):
+                for col_idx, value in enumerate(row_data, 1):
+                    cell = sheet2.cell(row=row_idx, column=col_idx, value=value)
+                    if row_idx == 1:
+                        cell.font = Font(bold=True, size=14)
+                    elif value and value.endswith(':'):
+                        cell.font = Font(bold=True)
+            
+            sheet2.column_dimensions['A'].width = 20
+            sheet2.column_dimensions['B'].width = 50
+            
+            # ============================================
+            # Sheet 3: Package Types
+            # ============================================
+            sheet3 = workbook.create_sheet('Package Types')
+            
+            StockPackageType = request.env['stock.package.type'].sudo()
+            package_types = StockPackageType.search([], order='name')
+            
+            # Headers
+            pt_headers = ['Name', 'Barcode', 'Length (mm)', 'Width (mm)', 'Height (mm)', 'Base Weight (kg)', 'Max Weight (kg)']
+            for col, header in enumerate(pt_headers, 1):
+                cell = sheet3.cell(row=1, column=col, value=header)
+                cell.font = Font(bold=True, color='FFFFFF')
+                cell.fill = PatternFill(start_color='ED7D31', end_color='ED7D31', fill_type='solid')
+                cell.border = thin_border
+                cell.alignment = Alignment(horizontal='center')
+            
+            # Data
+            for row_idx, pt in enumerate(package_types, 2):
+                sheet3.cell(row=row_idx, column=1, value=pt.name).border = thin_border
+                sheet3.cell(row=row_idx, column=2, value=pt.barcode or '').border = thin_border
+                sheet3.cell(row=row_idx, column=3, value=pt.packaging_length or 0).border = thin_border
+                sheet3.cell(row=row_idx, column=4, value=pt.width or 0).border = thin_border
+                sheet3.cell(row=row_idx, column=5, value=pt.height or 0).border = thin_border
+                sheet3.cell(row=row_idx, column=6, value=pt.base_weight or 0).border = thin_border
+                sheet3.cell(row=row_idx, column=7, value=pt.max_weight or 0).border = thin_border
+            
+            # Set column widths
+            for col in range(1, len(pt_headers) + 1):
+                sheet3.column_dimensions[openpyxl.utils.get_column_letter(col)].width = 15
+            
+            # Save to bytes
+            output = io.BytesIO()
+            workbook.save(output)
+            output.seek(0)
+            
+            return request.make_response(
+                output.read(),
+                headers=[
+                    ('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
+                    ('Content-Disposition', 'attachment; filename=receptions_template.xlsx')
+                ]
+            )
+            
+        except Exception as e:
+            import traceback
+            error_msg = f'Error generating template: {str(e)}\n{traceback.format_exc()}'
+            return request.make_response(
+                error_msg,
+                headers=[('Content-Type', 'text/plain')]
+            )
 

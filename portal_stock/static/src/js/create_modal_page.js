@@ -24,21 +24,41 @@ const computeTotalVolume = (widthEl, heightEl, lengthEl, volumeEl) => {
     volumeEl.value = volume > 0 ? volume.toFixed(2) : '';
 };
 
-// Recolecta datos de atributos de producto
+// Recolecta datos de atributos de producto (agrupa valores por atributo para evitar duplicados)
 const collectProductAttributes = (selector) => {
-    const attributes = [];
+    const attributeMap = new Map(); // Agrupar valores por attribute_id
     const attributeLines = document.querySelectorAll(selector);
 
     for (const line of attributeLines) {
         const attributeId = jQuery(line.querySelector('.page-stock-list-create-form-attribute-select')).val();
-        const attributeValueId = jQuery(line.querySelector('.page-stock-list-create-form-attribute-value-select')).val();
+        const attributeValueIds = jQuery(line.querySelector('.page-stock-list-create-form-attribute-value-select')).val();
 
-        if (attributeId && attributeValueId) {
-            attributes.push({
-                attribute_id: attributeId,
-                attribute_value_id: attributeValueId
-            });
+        if (attributeId && attributeValueIds) {
+            // Convertir a array si no lo es
+            const valueArray = Array.isArray(attributeValueIds) ? attributeValueIds : [attributeValueIds];
+            
+            // Agrupar valores por atributo
+            if (attributeMap.has(attributeId)) {
+                // Añadir valores al atributo existente (sin duplicados)
+                const existingValues = attributeMap.get(attributeId);
+                valueArray.forEach(v => {
+                    if (!existingValues.includes(v)) {
+                        existingValues.push(v);
+                    }
+                });
+            } else {
+                attributeMap.set(attributeId, [...valueArray]);
+            }
         }
+    }
+
+    // Convertir Map a array de objetos
+    const attributes = [];
+    for (const [attributeId, valueIds] of attributeMap) {
+        attributes.push({
+            attribute_id: attributeId,
+            attribute_value_id: valueIds
+        });
     }
 
     return attributes;
@@ -164,22 +184,26 @@ const toggleFormsVisibility = (showAttributes = false) => {
         // Mostrar formulario de atributos
         attributesForm.classList.remove('hidden');
         attributesForm.classList.add('block');
-        attributesFooter.classList.remove('d-none');
+        attributesFooter.classList.remove('hidden');
+        attributesFooter.classList.add('flex');
 
         // Ocultar formulario de producto
         productForm.classList.add('hidden');
         productForm.classList.remove('block');
-        productFooter.classList.add('d-none');
+        productFooter.classList.add('hidden');
+        productFooter.classList.remove('flex');
     } else {
         // Mostrar formulario de producto
         productForm.classList.remove('hidden');
         productForm.classList.add('block');
-        productFooter.classList.remove('d-none');
+        productFooter.classList.remove('hidden');
+        productFooter.classList.add('flex');
 
         // Ocultar formulario de atributos
         attributesForm.classList.add('hidden');
         attributesForm.classList.remove('block');
-        attributesFooter.classList.add('d-none');
+        attributesFooter.classList.add('hidden');
+        attributesFooter.classList.remove('flex');
     }
 };
 
@@ -480,6 +504,17 @@ const ProductAttributesUpdate = async () => {
         const variantData = collectVariantData();
 
         if (variantData.length > 0) {
+            // Validar que cada variante tenga al menos SKU o barcode
+            const invalidVariants = variantData.filter(v => !v.sku.trim() && !v.barcode.trim());
+            if (invalidVariants.length > 0) {
+                hideLoadingScreen();
+                systemShowNotification(_t('Cada variante debe tener al menos SKU o código de barras'), {
+                    type: 'error',
+                    duration: 5000
+                });
+                return;
+            }
+
             const response = await rpc('/account/stock/update/product/variants', {
                 variants: JSON.stringify(variantData)
             });
