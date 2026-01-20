@@ -786,7 +786,7 @@
                     <t t-foreach="products_by_package.keys()" t-as="package">
                         <div class="mb-6">
                             <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-t-lg flex items-center">
-                                <t t-if="package != 'no_package'">
+                                <t t-if="package and package != 'no_package'">
                                     <i class="fas fa-box-open text-primary-theme  mr-2"></i>
                                     <h4 class="text-md font-medium text-gray-800 dark:text-gray-100">
                                         Package: <span t-out="package.name"/>
