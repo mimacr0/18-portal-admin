@@ -237,6 +237,11 @@ function setupFileUploadModal(config) {
                         alert(successMsg);
                     }
                     if (onSuccess) onSuccess(result);
+                    
+                    // Reload page if requested by backend
+                    if (result.reload) {
+                        setTimeout(() => window.location.reload(), 1000);
+                    }
                 } else {
                     let errorMsg = result.message || 'Error importing file';
                     if (result.errors && result.errors.length > 0) {

@@ -153,6 +153,11 @@ export const initFileUploadModal = (options = {}) => {
                     if (options.onSuccess && typeof options.onSuccess === 'function') {
                         options.onSuccess(result);
                     }
+                    
+                    // Reload page if requested by backend
+                    if (result.reload) {
+                        setTimeout(() => window.location.reload(), 1000);
+                    }
                 } else {
                     // Show error
                     if (errorDiv) {

@@ -109,13 +109,17 @@ class PortalExpeditionController(PortalAdminController):
         attachment_ids = [attachment_id] if attachment_id else []
 
         try:
-            message = expedition.sudo().with_user(request.env.user).message_post(
+            message = expedition.sudo().with_user(request.env.user).with_context(
+                skip_portal_follower_notify=True,
+                portal_author_partner_id=request.env.user.partner_id.id,
+            ).message_post(
                 body=message_content,
                 message_type='comment',
                 subtype_xmlid='mail.mt_comment',
                 attachment_ids=attachment_ids,
                 author_id=request.env.user.partner_id.id
             )
+            expedition.sudo().notify_portal_followers(author_partner_id=request.env.user.partner_id.id)
             return json.dumps({
                 'status': 'success',
                 'message_id': message.id

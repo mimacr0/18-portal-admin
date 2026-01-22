@@ -77,33 +77,6 @@
                             <p><span class="font-medium">Quantity:</span> <t t-esc="lot.product_qty"/></p>
                         </div>
                     </div>
-                    <!-- <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
-                            <i class="fas fa-calendar-alt mr-2 text-primary-theme "></i>
-                            Dates
-                        </h3>
-                        <div class="text-sm space-y-2 dark:text-gray-300">
-                            <p t-if="lot.expiration_date">
-                                <span class="font-medium">Expiration Date:</span> 
-                                <t t-out="lot.expiration_date"/>
-                            </p>
-                            <p t-if="lot.use_date">
-                                <span class="font-medium">Use Date:</span> 
-                                <t t-out="lot.use_date"/>
-                            </p>
-                            <p t-if="lot.removal_date">
-                                <span class="font-medium">Removal Date:</span> 
-                                <t t-out="lot.removal_date"/>
-                            </p>
-                            <p t-if="lot.alert_date">
-                                <span class="font-medium">Alert Date:</span> 
-                                <t t-out="lot.alert_date"/>
-                            </p>
-                            <t t-if="not lot.expiration_date and not lot.use_date and not lot.removal_date and not lot.alert_date">
-                                <p><span class="text-gray-400">-</span></p>
-                            </t>
-                        </div>
-                    </div> -->
                 </div>
                 <!-- Repair/Review History -->
                 <div class="p-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">

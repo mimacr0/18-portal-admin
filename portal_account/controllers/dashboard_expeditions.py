@@ -19,6 +19,8 @@ from odoo import http, _, fields
 from odoo.http import request
 from odoo.addons.portal_account.controllers.dashboard import PortalDashboardController
 
+_logger = logging.getLogger(__name__)
+
 
 class PortalDashboardExpeditionsController(PortalDashboardController):
     """Controller for expedition-related dashboard endpoints"""
@@ -262,16 +264,18 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
         """Import expeditions as Sale Orders from Excel (XLSX) file.
         
         Expected columns:
-        - reference: Client reference (required)
+        - reference: Supplier/Client purchase order reference (required)
         - scheduled_date: Commitment date in format DD/MM/YYYY HH:MM (required)
         - product: Product reference or name (required)
         - quantity: Quantity (required)
-        - price: Unit price (optional, uses product price if not provided)
         - destination_name: Delivery contact name (optional)
+        - destination_phone: Delivery contact phone (optional)
+        - destination_email: Delivery contact email (optional)
         - destination_street: Delivery street address (optional)
         - destination_city: Delivery city (optional)
         - destination_zip: Delivery ZIP code (optional)
         - destination_country: Delivery country code (optional, e.g. ES, FR)
+        - transport_insurance: Transport insurance YES/NO (optional)
         """
         
         self._ensure_user_lang_context()
@@ -293,8 +297,14 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
             workbook = openpyxl.load_workbook(file, data_only=True)
             sheet = workbook.active
             
-            # Get headers from first row
-            headers = [cell.value.lower().strip() if cell.value else '' for cell in sheet[1]]
+            # Get headers from first row (remove asterisks and extra spaces)
+            def clean_header(value):
+                if not value:
+                    return ''
+                # Remove asterisks and extra whitespace
+                return value.lower().replace('*', '').strip()
+            
+            headers = [clean_header(cell.value) for cell in sheet[1]]
             
             # Required columns
             required_cols = ['reference', 'scheduled_date', 'product', 'quantity']
@@ -359,8 +369,10 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
                     continue
                 
                 
-                # Get product
+                # Get product (replace non-breaking spaces and other unicode spaces)
                 product_ref = str(row[col_idx['product']] or '').strip()
+                # Replace non-breaking space (\xa0) with regular space
+                product_ref = product_ref.replace('\xa0', ' ').replace('\u00a0', ' ')
                 if not product_ref:
                     errors.append(_('Row %d: Missing product') % row_num)
                     continue
@@ -392,11 +404,16 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
                 
                 # Destination address fields (optional)
                 dest_name = str(row[col_idx.get('destination_name', -1)] or '').strip() if 'destination_name' in col_idx else ''
+                dest_phone = str(row[col_idx.get('destination_phone', -1)] or '').strip() if 'destination_phone' in col_idx else ''
+                dest_email = str(row[col_idx.get('destination_email', -1)] or '').strip() if 'destination_email' in col_idx else ''
                 dest_street = str(row[col_idx.get('destination_street', -1)] or '').strip() if 'destination_street' in col_idx else ''
                 dest_city = str(row[col_idx.get('destination_city', -1)] or '').strip() if 'destination_city' in col_idx else ''
                 dest_zip = str(row[col_idx.get('destination_zip', -1)] or '').strip() if 'destination_zip' in col_idx else ''
                 dest_country_code = str(row[col_idx.get('destination_country', -1)] or '').strip() if 'destination_country' in col_idx else ''
                 
+                # Transport insurance (boolean)
+                transport_insurance_str = str(row[col_idx.get('transport_insurance', -1)] or '').strip().upper() if 'transport_insurance' in col_idx else ''
+                transport_insurance = transport_insurance_str in ['YES', 'SI', 'TRUE', '1', 'Y', 'S']
                 
                 # Group by reference
                 if reference not in orders_data:
@@ -404,11 +421,14 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
                         'scheduled_date': scheduled_date,
                         'destination': {
                             'name': dest_name,
+                            'phone': dest_phone,
+                            'email': dest_email,
                             'street': dest_street,
                             'city': dest_city,
                             'zip': dest_zip,
                             'country_code': dest_country_code,
                         },
+                        'transport_insurance': transport_insurance,
                         'lines': []
                     }
                 
@@ -462,6 +482,14 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
                     
                     if existing_delivery:
                         delivery_partner_id = existing_delivery.id
+                        # Update phone/email if provided and not set
+                        update_vals = {}
+                        if dest['phone'] and not existing_delivery.phone:
+                            update_vals['phone'] = dest['phone']
+                        if dest['email'] and not existing_delivery.email:
+                            update_vals['email'] = dest['email']
+                        if update_vals:
+                            existing_delivery.write(update_vals)
                     else:
                         # Create new delivery address
                         country_id = False
@@ -473,6 +501,8 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
                             'parent_id': partner.commercial_partner_id.id,
                             'type': 'delivery',
                             'name': dest['name'] or _('Delivery Address'),
+                            'phone': dest['phone'],
+                            'email': dest['email'],
                             'street': dest['street'],
                             'city': dest['city'],
                             'zip': dest['zip'],
@@ -489,6 +519,10 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
                     'commitment_date': commitment_date_str,
                     'origin': f'Import: {reference}',
                 }
+                
+                # Add transport insurance if requested
+                if data.get('transport_insurance'):
+                    order_vals['transport_insurance'] = True
                 
                 order = SaleOrder.create(order_vals)
                 
@@ -539,16 +573,185 @@ class PortalDashboardExpeditionsController(PortalDashboardController):
                 'status': 'success',
                 'message': result_message,
                 'created': created_count,
-                'errors': errors[:10] if errors else []  # Return first 10 warnings
+                'errors': errors[:10] if errors else [],  # Return first 10 warnings
+                'reload': True  # Signal frontend to reload page
             })
             
         except Exception as e:
             import traceback
             error_traceback = traceback.format_exc()
-            _logger = logging.getLogger(__name__)
             _logger.error('Import expeditions error: %s\n%s', str(e), error_traceback)
             return request.make_json_response({
                 'status': 'error',
                 'message': _('Import failed: %s') % str(e),
                 'traceback': error_traceback
             })
+
+    @http.route('/account/dashboard/download_expeditions_template', type='http', auth='user', methods=['GET'])
+    def download_expeditions_template(self, **kw):
+        """Generate and download expeditions import template with products sheet."""
+        import io
+        
+        try:
+            import openpyxl
+            from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+        except ImportError:
+            return request.make_response(
+                'Excel generation not available. Please install openpyxl.',
+                headers=[('Content-Type', 'text/plain')]
+            )
+        
+        try:
+            workbook = openpyxl.Workbook()
+            
+            # ============================================
+            # Sheet 1: Expeditions Template
+            # ============================================
+            sheet1 = workbook.active
+            sheet1.title = 'Expeditions'
+            
+            # Define headers
+            headers = [
+                'reference*', 'scheduled_date*', 'product*', 'quantity*',
+                'destination_name', 'destination_phone', 'destination_email',
+                'destination_street', 'destination_city', 'destination_zip', 'destination_country',
+                'transport_insurance'
+            ]
+            
+            # Header styles
+            header_font = Font(bold=True, color='FFFFFF')
+            required_fill = PatternFill(start_color='4472C4', end_color='4472C4', fill_type='solid')
+            optional_fill = PatternFill(start_color='70AD47', end_color='70AD47', fill_type='solid')
+            thin_border = Border(
+                left=Side(style='thin'),
+                right=Side(style='thin'),
+                top=Side(style='thin'),
+                bottom=Side(style='thin')
+            )
+            
+            # Write headers
+            for col, header in enumerate(headers, 1):
+                cell = sheet1.cell(row=1, column=col, value=header)
+                cell.font = header_font
+                cell.border = thin_border
+                cell.alignment = Alignment(horizontal='center')
+                cell.fill = required_fill if header.endswith('*') else optional_fill
+            
+            # Add example rows
+            example_data = [
+                ['PO-2024-001', '20/01/2026 10:00', 'Product A', 5, 'Juan García', '+34612345678', 'juan@example.com', 'Calle Mayor 15', 'Madrid', '28001', 'ES', 'YES'],
+                ['PO-2024-001', '20/01/2026 10:00', 'Product B', 3, 'Juan García', '+34612345678', 'juan@example.com', 'Calle Mayor 15', 'Madrid', '28001', 'ES', 'YES'],
+                ['PO-2024-002', '21/01/2026 14:30', 'Product C', 10, 'María López', '+34698765432', 'maria@example.com', 'Av. Diagonal 450', 'Barcelona', '08006', 'ES', 'NO'],
+            ]
+            
+            for row_idx, row_data in enumerate(example_data, 2):
+                for col_idx, value in enumerate(row_data, 1):
+                    cell = sheet1.cell(row=row_idx, column=col_idx, value=value)
+                    cell.border = thin_border
+            
+            # Set column widths
+            for col in range(1, len(headers) + 1):
+                sheet1.column_dimensions[openpyxl.utils.get_column_letter(col)].width = 18
+            
+            # ============================================
+            # Sheet 2: Instructions
+            # ============================================
+            sheet2 = workbook.create_sheet('Instructions')
+            
+            instructions = [
+                ['EXPEDITIONS IMPORT TEMPLATE INSTRUCTIONS'],
+                [''],
+                ['REQUIRED COLUMNS (Blue):'],
+                ['reference*', 'Supplier/Client purchase order reference (PO number)'],
+                ['scheduled_date*', 'Delivery commitment date in format DD/MM/YYYY HH:MM'],
+                ['product*', 'Product name or SKU (must exist in the system)'],
+                ['quantity*', 'Quantity of product to ship'],
+                [''],
+                ['OPTIONAL COLUMNS - Delivery Address (Green):'],
+                ['destination_name', 'Contact name at delivery address'],
+                ['destination_phone', 'Contact phone number'],
+                ['destination_email', 'Contact email address'],
+                ['destination_street', 'Street address for delivery'],
+                ['destination_city', 'City for delivery'],
+                ['destination_zip', 'ZIP/Postal code for delivery'],
+                ['destination_country', 'Country code (ES, FR, DE, IT, PT, etc.)'],
+                [''],
+                ['OPTIONAL COLUMNS - Other (Green):'],
+                ['transport_insurance', 'Transport insurance: YES/NO (or 1/0, TRUE/FALSE)'],
+                [''],
+                ['NOTES:'],
+                ['- Rows with same reference are grouped into one sale order'],
+                ['- Products with same reference will have the same delivery address'],
+                ['- See "Products" sheet for available products'],
+            ]
+            
+            for row_idx, row_data in enumerate(instructions, 1):
+                for col_idx, value in enumerate(row_data, 1):
+                    cell = sheet2.cell(row=row_idx, column=col_idx, value=value)
+                    if row_idx == 1:
+                        cell.font = Font(bold=True, size=14)
+                    elif value and value.endswith(':'):
+                        cell.font = Font(bold=True)
+            
+            sheet2.column_dimensions['A'].width = 25
+            sheet2.column_dimensions['B'].width = 55
+            
+            # ============================================
+            # Sheet 3: Products
+            # ============================================
+            sheet3 = workbook.create_sheet('Products')
+            
+            # Get products from account partner
+            partner = request.env.user.partner_id
+            account_partner = request.env['account.partner'].sudo().search([
+                ('partner_id', '=', partner.commercial_partner_id.id)
+            ], limit=1)
+            
+            ProductProduct = request.env['product.product'].sudo()
+            if account_partner:
+                products = ProductProduct.search([
+                    ('product_tmpl_id.account_partner_id', '=', account_partner.id)
+                ], order='name', limit=500)
+            else:
+                products = ProductProduct.search([], order='name', limit=100)
+            
+            # Headers
+            prod_headers = ['Name', 'SKU', 'Barcode']
+            for col, header in enumerate(prod_headers, 1):
+                cell = sheet3.cell(row=1, column=col, value=header)
+                cell.font = Font(bold=True, color='FFFFFF')
+                cell.fill = PatternFill(start_color='ED7D31', end_color='ED7D31', fill_type='solid')
+                cell.border = thin_border
+                cell.alignment = Alignment(horizontal='center')
+            
+            # Data
+            for row_idx, product in enumerate(products, 2):
+                sheet3.cell(row=row_idx, column=1, value=product.display_name).border = thin_border
+                sheet3.cell(row=row_idx, column=2, value=product.default_code or '').border = thin_border
+                sheet3.cell(row=row_idx, column=3, value=product.barcode or '').border = thin_border
+            
+            # Set column widths
+            sheet3.column_dimensions['A'].width = 40
+            sheet3.column_dimensions['B'].width = 15
+            sheet3.column_dimensions['C'].width = 15
+            
+            # Save to bytes
+            output = io.BytesIO()
+            workbook.save(output)
+            output.seek(0)
+            
+            return request.make_response(
+                output.read(),
+                headers=[
+                    ('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
+                    ('Content-Disposition', 'attachment; filename=expeditions_template.xlsx')
+                ]
+            )
+            
+        except Exception as e:
+            import traceback
+            error_msg = f'Error generating template: {str(e)}\n{traceback.format_exc()}'
+            return request.make_response(
+                error_msg,
+                headers=[('Content-Type', 'text/plain')]
+            )

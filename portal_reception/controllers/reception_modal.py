@@ -171,6 +171,7 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
                                 'location_dest_id': picking.location_dest_id.id,
                                 'quantity': 1,  # Odoo 18 uses 'quantity' instead of 'qty_done'
                                 'result_package_id': package.id,
+                                'origin_package_id': package.id,
                                 'owner_id': partner.commercial_partner_id.id,
                                 'picking_id': picking.id,
                             }
@@ -185,6 +186,7 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
                             'location_dest_id': picking.location_dest_id.id,
                             'quantity': qty,  # Odoo 18 uses 'quantity' instead of 'qty_done'
                             'result_package_id': package.id,
+                            'origin_package_id': package.id,
                             'owner_id': partner.commercial_partner_id.id,
                             'picking_id': picking.id,
                         }

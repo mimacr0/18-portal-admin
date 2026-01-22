@@ -101,16 +101,6 @@
                                 </span>
                             </div>
 
-                            <!-- Expiration date if available -->
-                            <t t-if="lot.expiration_date">
-                                <div class="flex justify-center mb-2">
-                                    <span class="text-xs text-gray-400 flex items-center">
-                                        <i class="fas fa-calendar-alt mr-1"></i>
-                                        Exp: <span class="ml-1" t-field="lot.expiration_date" t-options="{'widget': 'date'}"/>
-                                    </span>
-                                </div>
-                            </t>
-
                             <!-- Location if available -->
                             <t t-if="lot.location_id">
                                 <div class="flex justify-center mb-2">
@@ -180,13 +170,6 @@
                                         <span class="text-xs text-red-600 dark:text-red-400">No Stock</span>
                                     </t>
                                 </div>
-                                <!-- Expiration date if available -->
-                                <t t-if="lot.expiration_date">
-                                    <div class="flex items-center mt-1">
-                                        <i class="fas fa-calendar-alt text-gray-400 mr-1 text-xs"></i>
-                                        <span class="text-xs text-gray-500 dark:text-gray-400">Exp: <span t-field="lot.expiration_date" t-options="{'widget': 'date'}"/></span>
-                                    </div>
-                                </t>
                                 <!-- Location if available -->
                                 <t t-if="lot.location_id">
                                     <div class="flex items-center mt-1">
@@ -344,13 +327,6 @@
                                         <span class="text-xs text-red-600 dark:text-red-400">No Stock</span>
                                     </t>
                                 </div>
-                                <!-- Expiration date if lot exists and has expiration (requires product_expiry module) -->
-                                <t t-if="quant.lot_id and 'expiration_date' in quant.lot_id._fields and quant.lot_id.expiration_date">
-                                    <div class="flex items-center mt-1">
-                                        <i class="fas fa-calendar-alt text-gray-400 mr-1 text-xs"></i>
-                                        <span class="text-xs text-gray-500 dark:text-gray-400">Exp: <span t-field="quant.lot_id.expiration_date" t-options="{'widget': 'date'}"/></span>
-                                    </div>
-                                </t>
                                 <!-- Location -->
                                 <div class="flex items-center mt-1">
                                     <i class="fas fa-map-marker-alt text-gray-400 mr-1 text-xs"></i>

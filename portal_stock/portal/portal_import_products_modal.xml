@@ -33,9 +33,9 @@
                                 Required columns: <strong>name</strong>, <strong>tracking</strong>, <strong>width</strong>, <strong>height</strong>, <strong>length</strong>, <strong>weight</strong>
                             </p>
                             <p class="text-xs text-gray-500 dark:text-gray-500 mb-2">
-                                Optional: <strong>sku</strong>, <strong>barcode</strong>
+                                Optional: <strong>sku</strong>, <strong>barcode</strong>, + attribute columns (Color, RAM, ROM...)
                             </p>
-                            <a href="/portal_stock/static/templates/products.xlsx" class="text-xs text-primary-theme hover:underline" download="products_template.xlsx">
+                            <a href="/account/stock/download_products_template" class="text-xs text-primary-theme hover:underline">
                                 <i class="fas fa-download mr-1"/>Download template
                             </a>
                         </div>

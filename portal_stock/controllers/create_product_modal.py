@@ -124,7 +124,8 @@ class ProductModalController(PortalAdminController):
             if post.get('attributes'):
                 attributes_data = json.loads(post.get('attributes') or '[]')
 
-                # Crear líneas de atributos
+                # Agrupar valores por atributo para evitar duplicados
+                attribute_map = {}
                 for attr_data in attributes_data:
                     attribute_id = attr_data.get('attribute_id')
                     value_ids = attr_data.get('attribute_value_id')
@@ -133,14 +134,22 @@ class ProductModalController(PortalAdminController):
                         # Convertir un valor en una lista si es necesario
                         if not isinstance(value_ids, list):
                             value_ids = [value_ids]
+                        
+                        # Agrupar valores por atributo
+                        attr_key = int(attribute_id)
+                        if attr_key not in attribute_map:
+                            attribute_map[attr_key] = set()
+                        attribute_map[attr_key].update(int(v) for v in value_ids if v)
 
-                        # Crear línea de atributos
-                        template.write({
-                            'attribute_line_ids': [(0, 0, {
-                                'attribute_id': int(attribute_id),
-                                'value_ids': [(6, 0, [int(v) for v in value_ids if v])]
-                            })]
-                        })
+                # Crear todas las líneas de atributos de una vez
+                if attribute_map:
+                    attribute_lines = []
+                    for attribute_id, value_ids in attribute_map.items():
+                        attribute_lines.append((0, 0, {
+                            'attribute_id': attribute_id,
+                            'value_ids': [(6, 0, list(value_ids))]
+                        }))
+                    template.write({'attribute_line_ids': attribute_lines})
 
             # Asegurarse de que todas las variantes tengan los mismos valores de volumen y peso
             for variant in template.product_variant_ids:
@@ -273,21 +282,198 @@ class ProductModalController(PortalAdminController):
         except Exception as e:
             return {'status': 'error', 'message': str(e)}
 
+    # ==========================================
+    # Product Import Helper Methods
+    # ==========================================
+    
+    def _clean_header(self, value):
+        """Clean header value: remove asterisks and extra whitespace."""
+        if not value:
+            return ''
+        return value.lower().replace('*', '').strip()
+    
+    def _get_attribute_columns(self, headers, col_idx):
+        """Detect columns that match product.attribute names.
+        
+        Returns: dict {header_name: (column_index, attribute_record)}
+        """
+        ProductAttribute = request.env['product.attribute'].sudo()
+        all_attributes = ProductAttribute.search([])
+        
+        attribute_columns = {}
+        for attr in all_attributes:
+            attr_name_lower = attr.name.lower().strip()
+            if attr_name_lower in col_idx:
+                attribute_columns[attr_name_lower] = (col_idx[attr_name_lower], attr)
+        
+        return attribute_columns
+    
+    def _validate_product_row(self, row, col_idx, row_num):
+        """Validate a single product row from Excel.
+        
+        Returns: (is_valid, data_dict, error_message)
+        """
+        # Get name (required)
+        name = str(row[col_idx['name']] or '').strip()
+        if not name:
+            return False, None, _('Row %d: Missing product name') % row_num
+        
+        # Get tracking (required)
+        tracking = str(row[col_idx['tracking']] or '').strip().lower()
+        if tracking not in ['serial', 'none']:
+            return False, None, _('Row %d: Invalid tracking value "%s" (must be "serial" or "none")') % (row_num, tracking)
+        
+        # Get dimensions (required)
+        try:
+            width = float(row[col_idx['width']] or 0)
+            height = float(row[col_idx['height']] or 0)
+            length = float(row[col_idx['length']] or 0)
+            weight = float(row[col_idx['weight']] or 0)
+            
+            if width <= 0 or height <= 0 or length <= 0:
+                return False, None, _('Row %d: Dimensions must be greater than 0') % row_num
+            if weight < 0:
+                return False, None, _('Row %d: Weight cannot be negative') % row_num
+        except (ValueError, TypeError):
+            return False, None, _('Row %d: Invalid numeric values for dimensions or weight') % row_num
+        
+        # Optional fields
+        sku = str(row[col_idx.get('sku', -1)] or '').strip() if 'sku' in col_idx else ''
+        barcode = str(row[col_idx.get('barcode', -1)] or '').strip() if 'barcode' in col_idx else ''
+        
+        return True, {
+            'name': name,
+            'tracking': tracking,
+            'width': width,
+            'height': height,
+            'length': length,
+            'weight': weight,
+            'volume': width * height * length,
+            'sku': sku,
+            'barcode': barcode,
+        }, None
+    
+    def _check_duplicates(self, ProductTemplate, sku, barcode, row_num):
+        """Check for duplicate SKU or barcode.
+        
+        Returns: (is_duplicate, warning_message)
+        """
+        if barcode:
+            existing = ProductTemplate.search([('barcode', '=', barcode)], limit=1)
+            if existing:
+                return True, _('Row %d: Barcode "%s" already exists, skipping') % (row_num, barcode)
+        
+        if sku:
+            existing = ProductTemplate.search([('default_code', '=', sku)], limit=1)
+            if existing:
+                return True, _('Row %d: SKU "%s" already exists, skipping') % (row_num, sku)
+        
+        return False, None
+    
+    def _create_product_from_data(self, data, account_partner):
+        """Create product template from validated data dict.
+        
+        Returns: product.template record
+        """
+        ProductTemplate = request.env['product.template'].sudo()
+        
+        values = {
+            'account_partner_id': account_partner.id if account_partner else False,
+            'name': data['name'],
+            'sale_ok': False,
+            'purchase_ok': False,
+            'type': 'consu',
+            'list_price': 0.0,
+            'standard_price': 0.0,
+            'volume': data['volume'] / 1000000,  # Convert cm³ to m³
+            'weight': data['weight'],
+            'barcode': data['barcode'] or False,
+            'default_code': data['sku'] or False,
+            'is_storable': True,
+            'tracking': data['tracking'],
+        }
+        
+        return ProductTemplate.create(values)
+    
+    def _process_product_attributes(self, template, row, attribute_columns, row_num):
+        """Process and create attribute lines for a product.
+        
+        Supports multiple values per attribute separated by comma.
+        Example: "Black, White, Blue" will create 3 attribute values for Color.
+        
+        Returns: list of warning messages
+        """
+        warnings = []
+        ProductAttributeValue = request.env['product.attribute.value'].sudo()
+        
+        attribute_line_vals = []
+        for attr_header, (attr_col_idx, attribute) in attribute_columns.items():
+            attr_value_str = str(row[attr_col_idx] or '').strip()
+            if attr_value_str:
+                # Split by comma to support multiple values
+                # Also replace non-breaking spaces and clean whitespace
+                value_names = [
+                    v.strip().replace('\xa0', ' ').replace('\u00a0', ' ').strip()
+                    for v in attr_value_str.replace('\xa0', ' ').replace('\u00a0', ' ').split(',')
+                    if v.strip()
+                ]
+                
+                found_value_ids = []
+                for value_name in value_names:
+                    attr_value = ProductAttributeValue.search([
+                        ('attribute_id', '=', attribute.id),
+                        ('name', '=ilike', value_name)
+                    ], limit=1)
+                    
+                    if attr_value:
+                        found_value_ids.append(attr_value.id)
+                    else:
+                        warnings.append(_('Row %d: Attribute value "%s" not found for "%s"') % (row_num, value_name, attribute.name))
+                
+                if found_value_ids:
+                    attribute_line_vals.append({
+                        'product_tmpl_id': template.id,
+                        'attribute_id': attribute.id,
+                        'value_ids': [(6, 0, found_value_ids)]
+                    })
+        
+        if attribute_line_vals:
+            request.env['product.template.attribute.line'].sudo().create(attribute_line_vals)
+        
+        return warnings
+    
+    def _update_variant_dimensions(self, template, volume, weight):
+        """Update all variants with the same volume and weight."""
+        for variant in template.product_variant_ids:
+            variant.write({
+                'volume': volume / 1000000,
+                'weight': weight
+            })
+    
+    def _send_import_notification(self, created_count):
+        """Send notification about imported products."""
+        if created_count > 0:
+            user = request.env.user
+            user.send_portal_user_recent_activity(
+                "%d product(s) imported from Excel",
+                "Products imported",
+                "fas fa-file-import",
+                "success",
+                message_args=[created_count]
+            )
+
+    # ==========================================
+    # Product Import Endpoint
+    # ==========================================
+
     @http.route('/account/stock/import_products', type='http', auth='user', methods=['POST'], csrf=False)
     def account_stock_import_products(self, file=None, **kw):
         """Import products from Excel (XLSX) file.
         
-        Required columns:
-        - name: Product name (required)
-        - tracking: 'serial' or 'none' (required)
-        - width: Width in cm (required)
-        - height: Height in cm (required)
-        - length: Length in cm (required)
-        - weight: Weight in kg (required)
-        
-        Optional columns:
-        - sku: Internal code (default_code)
-        - barcode: Product barcode
+        Required columns: name, tracking, width, height, length, weight
+        Optional columns: sku, barcode
+        Attribute columns: Any column matching a product.attribute name (e.g., Color, RAM, ROM)
+                          Multiple values separated by comma: "Black, White, Blue"
         """
         self._ensure_user_lang_context()
         
@@ -308,28 +494,26 @@ class ProductModalController(PortalAdminController):
             workbook = openpyxl.load_workbook(file, data_only=True)
             sheet = workbook.active
             
-            # Get headers from first row
-            headers = [cell.value.lower().strip() if cell.value else '' for cell in sheet[1]]
+            # Get headers
+            headers = [self._clean_header(cell.value) for cell in sheet[1]]
             
-            # Required columns
+            # Validate required columns
             required_cols = ['name', 'tracking', 'width', 'height', 'length', 'weight']
             missing_cols = [col for col in required_cols if col not in headers]
-            
             if missing_cols:
                 return request.make_json_response({
                     'status': 'error',
                     'message': _('Missing required columns: %s') % ', '.join(missing_cols)
                 })
             
-            # Get column indices
+            # Setup
             col_idx = {header: idx for idx, header in enumerate(headers)}
+            attribute_columns = self._get_attribute_columns(headers, col_idx)
             
-            # Get models
             partner = request.env.user.partner_id
             account_partner = request.env['account.partner'].sudo().search([
                 ('partner_id', '=', partner.commercial_partner_id.id)
             ], limit=1)
-            
             ProductTemplate = request.env['product.template'].sudo()
             
             errors = []
@@ -337,95 +521,42 @@ class ProductModalController(PortalAdminController):
             created_count = 0
             row_num = 1
             
+            # Process rows
             for row in sheet.iter_rows(min_row=2, values_only=True):
                 row_num += 1
                 
-                # Skip empty rows
                 if not any(row):
                     continue
                 
-                # Get name (required)
-                name = str(row[col_idx['name']] or '').strip()
-                if not name:
-                    errors.append(_('Row %d: Missing product name') % row_num)
+                # Validate row
+                is_valid, data, error = self._validate_product_row(row, col_idx, row_num)
+                if not is_valid:
+                    errors.append(error)
                     continue
                 
-                # Get tracking (required)
-                tracking = str(row[col_idx['tracking']] or '').strip().lower()
-                if tracking not in ['serial', 'none']:
-                    errors.append(_('Row %d: Invalid tracking value "%s" (must be "serial" or "none")') % (row_num, tracking))
+                # Check duplicates
+                is_dup, dup_warning = self._check_duplicates(ProductTemplate, data['sku'], data['barcode'], row_num)
+                if is_dup:
+                    warnings.append(dup_warning)
                     continue
                 
-                # Get dimensions (required)
+                # Create product
                 try:
-                    width = float(row[col_idx['width']] or 0)
-                    height = float(row[col_idx['height']] or 0)
-                    length = float(row[col_idx['length']] or 0)
-                    weight = float(row[col_idx['weight']] or 0)
+                    template = self._create_product_from_data(data, account_partner)
                     
-                    if width <= 0 or height <= 0 or length <= 0:
-                        errors.append(_('Row %d: Dimensions must be greater than 0') % row_num)
-                        continue
-                    if weight < 0:
-                        errors.append(_('Row %d: Weight cannot be negative') % row_num)
-                        continue
-                except (ValueError, TypeError):
-                    errors.append(_('Row %d: Invalid numeric values for dimensions or weight') % row_num)
-                    continue
-                
-                # Calculate volume (cm³)
-                volume = width * height * length
-                
-                # Optional fields
-                sku = str(row[col_idx.get('sku', -1)] or '').strip() if 'sku' in col_idx else ''
-                barcode = str(row[col_idx.get('barcode', -1)] or '').strip() if 'barcode' in col_idx else ''
-                
-                # Check for duplicate barcode
-                if barcode:
-                    existing = ProductTemplate.search([('barcode', '=', barcode)], limit=1)
-                    if existing:
-                        warnings.append(_('Row %d: Barcode "%s" already exists, skipping') % (row_num, barcode))
-                        continue
-                
-                # Check for duplicate SKU
-                if sku:
-                    existing = ProductTemplate.search([('default_code', '=', sku)], limit=1)
-                    if existing:
-                        warnings.append(_('Row %d: SKU "%s" already exists, skipping') % (row_num, sku))
-                        continue
-                
-                # Create product template
-                values = {
-                    'account_partner_id': account_partner.id if account_partner else False,
-                    'name': name,
-                    'sale_ok': False,
-                    'purchase_ok': False,
-                    'type': 'consu',
-                    'list_price': 0.0,
-                    'standard_price': 0.0,
-                    'volume': volume / 1000000,  # Convert cm³ to m³ for Odoo
-                    'weight': weight,
-                    'barcode': barcode or False,
-                    'default_code': sku or False,
-                    'is_storable': True,
-                    'tracking': tracking,
-                }
-                
-                try:
-                    template = ProductTemplate.create(values)
+                    # Process attributes
+                    attr_warnings = self._process_product_attributes(template, row, attribute_columns, row_num)
+                    warnings.extend(attr_warnings)
                     
-                    # Update variants with same weight/volume
-                    for variant in template.product_variant_ids:
-                        variant.write({
-                            'volume': volume / 1000000,
-                            'weight': weight
-                        })
+                    # Update variants
+                    self._update_variant_dimensions(template, data['volume'], data['weight'])
                     
                     created_count += 1
                 except Exception as e:
                     errors.append(_('Row %d: Error creating product - %s') % (row_num, str(e)))
                     continue
             
+            # Handle results
             if errors and created_count == 0:
                 return request.make_json_response({
                     'status': 'error',
@@ -434,31 +565,172 @@ class ProductModalController(PortalAdminController):
                     'traceback': ''
                 })
             
-            result_message = _('%d product(s) created successfully.') % created_count
-            all_messages = warnings + errors
-            
-            # Send recent activity notification for imported products
-            if created_count > 0:
-                user = request.env.user
-                user.send_portal_user_recent_activity(
-                    "%d product(s) imported from Excel",
-                    "Products imported",
-                    "fas fa-file-import",
-                    "success",
-                    message_args=[created_count]
-                )
+            self._send_import_notification(created_count)
             
             return request.make_json_response({
                 'status': 'success',
-                'message': result_message,
+                'message': _('%d product(s) created successfully.') % created_count,
                 'created': created_count,
-                'errors': all_messages[:10] if all_messages else []
+                'errors': (warnings + errors)[:10] if (warnings or errors) else [],
+                'reload': True
             })
             
         except Exception as e:
-            error_traceback = traceback.format_exc()
             return request.make_json_response({
                 'status': 'error',
                 'message': _('Import failed: %s') % str(e),
-                'traceback': error_traceback
+                'traceback': traceback.format_exc()
             })
+
+    @http.route('/account/stock/download_products_template', type='http', auth='user', methods=['GET'])
+    def download_products_template(self, **kw):
+        """Generate and download products import template with attribute values sheet."""
+        import io
+        
+        if not openpyxl:
+            return request.make_response(
+                'Excel generation not available. Please install openpyxl.',
+                headers=[('Content-Type', 'text/plain')]
+            )
+        
+        try:
+            from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+            
+            workbook = openpyxl.Workbook()
+            
+            # ============================================
+            # Sheet 1: Products Template
+            # ============================================
+            sheet1 = workbook.active
+            sheet1.title = 'Products'
+            
+            # Get all attributes
+            ProductAttribute = request.env['product.attribute'].sudo()
+            all_attributes = ProductAttribute.search([], order='name')
+            
+            # Define headers
+            base_headers = ['name*', 'tracking*', 'width*', 'height*', 'length*', 'weight*', 'sku', 'barcode']
+            attribute_headers = [attr.name for attr in all_attributes]
+            all_headers = base_headers + attribute_headers
+            
+            # Header styles
+            header_font = Font(bold=True, color='FFFFFF')
+            required_fill = PatternFill(start_color='4472C4', end_color='4472C4', fill_type='solid')
+            optional_fill = PatternFill(start_color='70AD47', end_color='70AD47', fill_type='solid')
+            attribute_fill = PatternFill(start_color='ED7D31', end_color='ED7D31', fill_type='solid')
+            thin_border = Border(
+                left=Side(style='thin'),
+                right=Side(style='thin'),
+                top=Side(style='thin'),
+                bottom=Side(style='thin')
+            )
+            
+            # Write headers
+            for col, header in enumerate(all_headers, 1):
+                cell = sheet1.cell(row=1, column=col, value=header)
+                cell.font = header_font
+                cell.border = thin_border
+                cell.alignment = Alignment(horizontal='center')
+                
+                if header.endswith('*'):
+                    cell.fill = required_fill
+                elif header in ['sku', 'barcode']:
+                    cell.fill = optional_fill
+                else:
+                    cell.fill = attribute_fill
+            
+            # Add example row
+            example_row = ['Product Example', 'serial', 10, 5, 2, 0.5, 'SKU001', '1234567890123']
+            # Add empty values for attribute columns
+            example_row.extend([''] * len(attribute_headers))
+            
+            for col, value in enumerate(example_row, 1):
+                cell = sheet1.cell(row=2, column=col, value=value)
+                cell.border = thin_border
+            
+            # Set column widths
+            for col in range(1, len(all_headers) + 1):
+                sheet1.column_dimensions[openpyxl.utils.get_column_letter(col)].width = 15
+            
+            # ============================================
+            # Sheet 2: Instructions
+            # ============================================
+            sheet2 = workbook.create_sheet('Instructions')
+            
+            instructions = [
+                ['PRODUCT IMPORT TEMPLATE INSTRUCTIONS'],
+                [''],
+                ['REQUIRED COLUMNS (Blue):'],
+                ['name*', 'Product name'],
+                ['tracking*', 'Tracking type: "serial" or "none"'],
+                ['width*', 'Width in centimeters (cm)'],
+                ['height*', 'Height in centimeters (cm)'],
+                ['length*', 'Length in centimeters (cm)'],
+                ['weight*', 'Weight in kilograms (kg)'],
+                [''],
+                ['OPTIONAL COLUMNS (Green):'],
+                ['sku', 'Internal reference code'],
+                ['barcode', 'Product barcode (EAN13, etc.)'],
+                [''],
+                ['ATTRIBUTE COLUMNS (Orange):'],
+                ['Use values from the "Attribute Values" sheet'],
+                ['Leave empty if product does not have that attribute'],
+            ]
+            
+            for row_idx, row_data in enumerate(instructions, 1):
+                for col_idx, value in enumerate(row_data, 1):
+                    cell = sheet2.cell(row=row_idx, column=col_idx, value=value)
+                    if row_idx == 1:
+                        cell.font = Font(bold=True, size=14)
+                    elif value in ['REQUIRED COLUMNS (Blue):', 'OPTIONAL COLUMNS (Green):', 'ATTRIBUTE COLUMNS (Orange):']:
+                        cell.font = Font(bold=True)
+            
+            sheet2.column_dimensions['A'].width = 20
+            sheet2.column_dimensions['B'].width = 50
+            
+            # ============================================
+            # Sheet 3: Attribute Values
+            # ============================================
+            sheet3 = workbook.create_sheet('Attribute Values')
+            
+            ProductAttributeValue = request.env['product.attribute.value'].sudo()
+            
+            # Write attribute names as headers
+            for col, attr in enumerate(all_attributes, 1):
+                cell = sheet3.cell(row=1, column=col, value=attr.name)
+                cell.font = Font(bold=True, color='FFFFFF')
+                cell.fill = attribute_fill
+                cell.border = thin_border
+                cell.alignment = Alignment(horizontal='center')
+                sheet3.column_dimensions[openpyxl.utils.get_column_letter(col)].width = 15
+            
+            # Write attribute values
+            for col, attr in enumerate(all_attributes, 1):
+                values = ProductAttributeValue.search([
+                    ('attribute_id', '=', attr.id)
+                ], order='sequence, id')
+                
+                for row, value in enumerate(values, 2):
+                    cell = sheet3.cell(row=row, column=col, value=value.name)
+                    cell.border = thin_border
+            
+            # Save to bytes
+            output = io.BytesIO()
+            workbook.save(output)
+            output.seek(0)
+            
+            return request.make_response(
+                output.read(),
+                headers=[
+                    ('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
+                    ('Content-Disposition', 'attachment; filename=products_template.xlsx')
+                ]
+            )
+            
+        except Exception as e:
+            import traceback
+            error_msg = f'Error generating template: {str(e)}\n{traceback.format_exc()}'
+            return request.make_response(
+                error_msg,
+                headers=[('Content-Type', 'text/plain')]
+            )

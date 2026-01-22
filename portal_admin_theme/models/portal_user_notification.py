@@ -90,7 +90,7 @@ class PortalUserNotification(models.Model):
             'title': title,
             'message': message,
             'icon': icon,
-            'created_at': fields.Datetime.now()
+            'created_at': fields.Datetime.to_string(fields.Datetime.now()),
         }
 
         return self.create({

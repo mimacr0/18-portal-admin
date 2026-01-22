@@ -72,7 +72,7 @@
                                 <i class="fas fa-info-circle mr-1"/>
                                 Required columns: <strong>tracking_number</strong>, <strong>scheduled_date</strong>, <strong>package_type</strong>, <strong>product</strong>, <strong>quantity</strong>
                             </p>
-                            <a href="/portal_account/static/templates/receptions1.xlsx" class="text-xs text-primary-theme hover:underline" download="receptions_template.xlsx">
+                            <a href="/account/dashboard/download_receptions_template" class="text-xs text-primary-theme hover:underline">
                                 <i class="fas fa-download mr-1"/>Download template
                             </a>
                         </div>
@@ -122,7 +122,7 @@
                                 <i class="fas fa-info-circle mr-1"/>
                                 Required columns: <strong>reference</strong>, <strong>scheduled_date</strong>, <strong>product</strong>, <strong>quantity</strong>
                             </p>
-                            <a href="/portal_account/static/templates/expeditions.xlsx" class="text-xs text-primary-theme hover:underline" download="expeditions_template.xlsx">
+                            <a href="/account/dashboard/download_expeditions_template" class="text-xs text-primary-theme hover:underline">
                                 <i class="fas fa-download mr-1"/>Download template
                             </a>
                         </div>
