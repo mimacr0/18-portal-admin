@@ -824,9 +824,9 @@ function addCatalogProductLineToForm(container, product, modal) {
     newRow.dataset.lineId = lineId;
 
     newRow.innerHTML = `
-        <div class="flex-grow" style="max-width: 400px;">
+        <div class="flex-grow">
             <select class="product-select form-select-sm w-full rounded-md border border-gray-300
-                focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" style="width: auto; max-width: 100px;">
+                focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500">
             </select>
         </div>
         <div class="flex-grow">

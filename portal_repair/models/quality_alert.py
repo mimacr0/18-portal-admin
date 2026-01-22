@@ -11,6 +11,22 @@ class BaseModel(models.Model):
     _name = 'quality.alert'
     _inherit = ['quality.alert', 'portal.mixin']
     
+    def _get_reception_notification_label(self):
+        self.ensure_one()
+        reception = self.picking_ids.filtered(lambda p: p.picking_type_id.code == 'incoming')[:1]
+        picking = reception or self.picking_ids[:1]
+        reception_name = picking.name if picking else (self.title or self.display_name)
+        package = False
+        if picking:
+            package = (
+                picking.move_line_ids.mapped('result_package_id')
+                or picking.move_line_ids.mapped('package_id')
+                or picking.move_line_ids.mapped('origin_package_id')
+            )[:1]
+        if package and package.name:
+            return f"{reception_name} - {package.name}"
+        return reception_name
+
     def get_details_url(self):
         portal_url = self.get_portal_url()
         return portal_url.replace('#', f'/account/repair/details/{self.id}')
@@ -28,9 +44,10 @@ class BaseModel(models.Model):
         users = users.filtered(lambda u: u.active)
         for user in users:
             user._bus_send("portal_repair.portal_repair_details_reload_request", {'action': 'reload'})
+            reception_label = self._get_reception_notification_label()
             user.send_portal_user_notification(
-                _("New message in repair: %(alert)s", alert=self.title),
-                _("New message in repair: %(alert)s", alert=self.title),
+                _("New message in reception: %(ref)s", ref=reception_label),
+                _("New message in reception: %(ref)s", ref=reception_label),
                 "fas fa-bell",
                 "info",
             )
@@ -46,9 +63,10 @@ class BaseModel(models.Model):
         users = users.filtered(lambda u: u.active)
         for user in users:
             user._bus_send("portal_repair.portal_repair_details_reload_request", {'action': 'reload'})
+            reception_label = self._get_reception_notification_label()
             user.send_portal_user_notification(
-                _("New message in repair: %(alert)s", alert=self.title),
-                _("New message in repair: %(alert)s", alert=self.title),
+                _("New message in reception: %(ref)s", ref=reception_label),
+                _("New message in reception: %(ref)s", ref=reception_label),
                 "fas fa-bell",
                 "info",
             )

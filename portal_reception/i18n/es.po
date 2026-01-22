@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+t\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-18 08:32+0000\n"
-"PO-Revision-Date: 2025-12-18 08:32+0000\n"
+"POT-Creation-Date: 2026-01-22 11:29+0000\n"
+"PO-Revision-Date: 2026-01-22 11:29+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -49,6 +49,34 @@ msgstr ""
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-exchange-alt mr-2 text-primary-theme \"/>\n"
+"                            Movement Summary"
+msgstr ""
+"<i class=\"fas fa-exchange-alt mr-2 text-primary-theme \"/>\n"
+"                            Resumen de movimientos"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-exclamation-triangle mr-2 text-red-500\"/>\n"
+"                            Failed Quality Checks"
+msgstr ""
+"<i class=\"fas fa-exclamation-triangle mr-2 text-red-500\"/>\n"
+"                            Controles de calidad fallidos"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<i class=\"fas fa-info-circle mr-1\"/> No failed quality checks"
+msgstr "<i class=\"fas fa-info-circle mr-1\"/> No hay controles de calidad fallidos"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<i class=\"fas fa-info-circle mr-1\"/> No movements for this reception"
+msgstr "<i class=\"fas fa-info-circle mr-1\"/> No hay movimientos para esta recepción"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
 msgid "<i class=\"fas fa-info-circle mr-1\"/> No products in this package"
 msgstr "<i class=\"fas fa-info-circle mr-1\"/> No hay productos en este paquete"
 
@@ -62,11 +90,6 @@ msgstr ""
 "                            Información de la recepción"
 
 #. module: portal_reception
-#: model_terms:ir.ui.view,arch_db:portal_reception.portal_product_catalog_items
-msgid "<i class=\"fas fa-plus mr-1\"/> Add"
-msgstr "<i class=\"fas fa-plus mr-1\"/> Agregar"
-
-#. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid ""
 "<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden "
@@ -74,11 +97,6 @@ msgid ""
 msgstr ""
 "<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden "
 "sm:inline\">Crear</span>"
-
-#. module: portal_reception
-#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
-msgid "<i class=\"fas fa-plus mr-1.5\"/> Add Product"
-msgstr "<i class=\"fas fa-plus mr-1.5\"/> Agregar producto"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
@@ -113,15 +131,6 @@ msgstr "<i class=\"fas fa-times mr-1\"/> Limpiar selección"
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "<i class=\"fas fa-times\"/> Cancel"
 msgstr "<i class=\"fas fa-times\"/> Cancelar"
-
-#. module: portal_reception
-#: model_terms:ir.ui.view,arch_db:portal_reception.portal_product_catalog_items
-msgid ""
-"<i class=\"fas fa-times-circle text-red-600 dark:text-red-400 mr-1 text-xs\"/>\n"
-"                                        <span class=\"text-xs text-red-600 dark:text-red-400\">Out of Stock</span>"
-msgstr ""
-"<i class=\"fas fa-times-circle text-red-600 dark:text-red-400 mr-1 text-xs\"/>\n"
-"                                        <span class=\"text-xs text-red-600 dark:text-red-400\">Sin existencias</span>"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
@@ -163,8 +172,6 @@ msgid ""
 msgstr ""
 "<option value=\"all\" selected=\"selected\">Todos</option>\n"
 "                                            <option value=\"any\">Cualquiera</option>"
-"<option value=\"all\" selected=\"selected\">Todos</option>\n"
-"                                            <option value=\"any\">Cualquiera</option>"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
@@ -183,8 +190,18 @@ msgstr "<span class=\"font-medium\">No se encontraron resultados</span>"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<span class=\"font-medium\">Product Weight:</span>"
+msgstr "<span class=\"font-medium\">Peso del producto:</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
 msgid "<span class=\"font-medium\">Shipping Method:</span>"
 msgstr "<span class=\"font-medium\">Método de envío:</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<span class=\"font-medium\">Shipping Weight:</span>"
+msgstr "<span class=\"font-medium\">Peso de envío:</span>"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
@@ -197,44 +214,39 @@ msgid "<span class=\"font-medium\">Status:</span>"
 msgstr "<span class=\"font-medium\">Estado:</span>"
 
 #. module: portal_reception
-#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
-msgid "<span class=\"font-medium\">Weight:</span>"
-msgstr "<span class=\"font-medium\">Peso:</span>"
-
-#. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid ""
 "<span class=\"help-text\">Enter package number, product and quantity "
 "respectively.</span>"
-msgstr "<span class=\"help-text\">Ingrese el número de paquete, producto y cantidad respectivamente.</span>"
-"<span class=\"help-text\">Ingrese el número de paquete, el producto y la "
-"cantidad respectivamente.</span>"
+msgstr ""
+"<span class=\"help-text\">Ingrese el número de paquete, producto y cantidad "
+"respectivamente.</span>"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid ""
 "<span class=\"ml-2 text-xs text-gray-500 italic\">\n"
-"                                                <i class=\"fas fa-info-circle\"/> Add products manually or select from catalog\n"
+"                                                <i class=\"fas fa-info-circle\"/> Select products from catalog\n"
 "                                            </span>"
 msgstr ""
 "<span class=\"ml-2 text-xs text-gray-500 italic\">\n"
-"                                                <i class=\"fas fa-info-circle\"/> Agregue productos manualmente o seleccione del catálogo\n"
+"                                                <i class=\"fas fa-info-circle\"/> Seleccionar productos del catálogo\n"
 "                                            </span>"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "<span class=\"mx-1 text-sm\">kg</span>"
-msgstr ""
+msgstr "<span class=\"mx-1 text-sm\">kg</span>"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "<span class=\"mx-1 text-sm\">mm</span>"
-msgstr ""
+msgstr "<span class=\"mx-1 text-sm\">mm</span>"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "<span class=\"mx-1\">x</span>"
-msgstr ""
+msgstr "<span class=\"mx-1\">x</span>"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
@@ -242,8 +254,6 @@ msgid ""
 "<span class=\"sr-only\">Next</span>\n"
 "                    <i class=\"fas fa-chevron-right\"/>"
 msgstr ""
-"<span class=\"sr-only\">Siguiente</span>\n"
-"                    <i class=\"fas fa-chevron-right\"/>"
 "<span class=\"sr-only\">Siguiente</span>\n"
 "                    <i class=\"fas fa-chevron-right\"/>"
 
@@ -255,20 +265,11 @@ msgid ""
 msgstr ""
 "<span class=\"sr-only\">Anterior</span>\n"
 "                    <i class=\"fas fa-chevron-left\"/>"
-"<span class=\"sr-only\">Anterior</span>\n"
-"                    <i class=\"fas fa-chevron-left\"/>"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "<span class=\"text-red-500 ml-1\">*</span>"
-msgstr ""
-
-#. module: portal_reception
-#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
-msgid ""
-"<span id=\"selected-count\" class=\"ml-2 bg-white text-primary-theme "
-"dark:bg-gray-700  text-xs font-bold px-2 py-0.5 rounded-full\">0</span>"
-msgstr ""
+msgstr "<span class=\"text-red-500 ml-1\">*</span>"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
@@ -276,8 +277,6 @@ msgid ""
 "<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
 "dark:text-gray-300 mr-3\">0 selected</span>"
 msgstr ""
-"<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
-"dark:text-gray-300 mr-3\">0 seleccionados</span>"
 "<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
 "dark:text-gray-300 mr-3\">0 seleccionados</span>"
 
@@ -322,6 +321,11 @@ msgstr "Todos"
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "Apply Filters"
 msgstr "Aplicar filtros"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Approved"
+msgstr "Aprobado"
 
 #. module: portal_reception
 #. odoo-python
@@ -400,6 +404,23 @@ msgid "Export Excel"
 msgstr "Exportar Excel"
 
 #. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/models/stock_picking.py:0
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Failed"
+msgstr "Fallido"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Final Destination"
+msgstr "Destino final"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "From"
+msgstr "Desde"
+
+#. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
 msgid "Go back"
 msgstr "Volver"
@@ -474,11 +495,6 @@ msgid "No packages selected"
 msgstr "No hay paquetes seleccionados"
 
 #. module: portal_reception
-#: model_terms:ir.ui.view,arch_db:portal_reception.portal_product_catalog_items
-msgid "No products found"
-msgstr "No se encontraron productos"
-
-#. module: portal_reception
 #. odoo-python
 #: code:addons/portal_reception/controllers/reception_modal.py:0
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
@@ -498,6 +514,11 @@ msgid "Note"
 msgstr "Nota"
 
 #. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Operation"
+msgstr "Operación"
+
+#. module: portal_reception
 #. odoo-python
 #: code:addons/portal_reception/controllers/reception_list.py:0
 msgid "Package"
@@ -511,14 +532,19 @@ msgid "Package Type"
 msgstr "Tipo de paquete"
 
 #. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Package Weight"
+msgstr "Peso del paquete"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Package Weight (kg)"
+msgstr "Peso del paquete (kg)"
+
+#. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
 msgid "Package:"
 msgstr "Paquete:"
-
-#. module: portal_reception
-#: model_terms:ir.ui.view,arch_db:portal_reception.portal_product_catalog_pagination
-msgid "Page"
-msgstr "Página"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
@@ -543,6 +569,16 @@ msgid "Product"
 msgstr "Producto"
 
 #. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Product Weight"
+msgstr "Peso del producto"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Product Weight (kg)"
+msgstr "Peso del producto (kg)"
+
+#. module: portal_reception
 #. odoo-python
 #: code:addons/portal_reception/controllers/reception_modal.py:0
 msgid "Product not found"
@@ -557,6 +593,16 @@ msgstr "Productos"
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
 msgid "Products without package"
 msgstr "Productos sin paquete"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "QC"
+msgstr "QC"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "QC Location"
+msgstr "Ubicación QC"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
@@ -585,6 +631,11 @@ msgid "RMA (Return Merchandise Authorization)"
 msgstr "RMA (Autorización de Devolución de Mercancía)"
 
 #. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Reason"
+msgstr "Motivo"
+
+#. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "Reception Create"
 msgstr "Crear recepción"
@@ -594,6 +645,11 @@ msgstr "Crear recepción"
 #: code:addons/portal_reception/controllers/reception_details.py:0
 msgid "Reception Details"
 msgstr "Detalles de la recepción"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Reception Location"
+msgstr "Ubicación de recepción"
 
 #. module: portal_reception
 #. odoo-python
@@ -670,6 +726,11 @@ msgid "Selected Products"
 msgstr "Productos seleccionados"
 
 #. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Serial Number"
+msgstr "Número de serie"
+
+#. module: portal_reception
 #. odoo-python
 #: code:addons/portal_reception/controllers/reception_list.py:0
 msgid "Shipping Weight"
@@ -694,11 +755,6 @@ msgid "Status"
 msgstr "Estado"
 
 #. module: portal_reception
-#: model_terms:ir.ui.view,arch_db:portal_reception.portal_product_catalog_items
-msgid "Stock:"
-msgstr "Existencias:"
-
-#. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "Tracking Number"
 msgstr "Número de seguimiento"
@@ -714,11 +770,6 @@ msgid "Transfer"
 msgstr "Traslado"
 
 #. module: portal_reception
-#: model_terms:ir.ui.view,arch_db:portal_reception.portal_product_catalog_items
-msgid "Try changing your search criteria"
-msgstr "Intente cambiar sus criterios de búsqueda"
-
-#. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
 msgid "UoM"
 msgstr "UdM"
@@ -726,14 +777,8 @@ msgstr "UdM"
 #. module: portal_reception
 #. odoo-python
 #: code:addons/portal_reception/controllers/reception_list.py:0
-#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
 msgid "Weight"
 msgstr "Peso"
-
-#. module: portal_reception
-#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
-msgid "Weight (kg)"
-msgstr "Peso (kg)"
 
 #. module: portal_reception
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
@@ -757,7 +802,6 @@ msgid "kg"
 msgstr "kg"
 
 #. module: portal_reception
-#: model_terms:ir.ui.view,arch_db:portal_reception.portal_product_catalog_pagination
 #: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
 msgid "of"
 msgstr "de"
@@ -772,8 +816,3 @@ msgstr "de las siguientes condiciones:"
 #: code:addons/portal_reception/controllers/reception_list.py:0
 msgid "packages"
 msgstr "paquetes"
-
-#. module: portal_reception
-#: model_terms:ir.ui.view,arch_db:portal_reception.portal_product_catalog_pagination
-msgid "products)"
-msgstr "productos)"

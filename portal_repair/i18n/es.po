@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+t\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-19 11:47+0000\n"
-"PO-Revision-Date: 2025-12-19 11:47+0000\n"
+"POT-Creation-Date: 2026-01-22 10:53+0000\n"
+"PO-Revision-Date: 2026-01-22 10:53+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -175,7 +175,7 @@ msgstr ""
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "<span class=\"text-red-500 ml-1\">*</span>"
-msgstr ""
+msgstr "<span class=\"text-red-500 ml-1\">*</span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
@@ -184,6 +184,9 @@ msgid ""
 "gray-700 dark:text-cyan-300 text-xs font-bold px-2 py-0.5 rounded-"
 "full\">0</span>"
 msgstr ""
+"<span id=\"selected-count\" class=\"ml-2 bg-white text-cyan-700 dark:bg-"
+"gray-700 dark:text-cyan-300 text-xs font-bold px-2 py-0.5 rounded-"
+"full\">0</span>"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
@@ -378,6 +381,12 @@ msgstr "Fecha de Finalización"
 
 #. module: portal_repair
 #. odoo-python
+#: code:addons/portal_repair/controllers/repair_modal.py:0
+msgid "Error creating stock movement."
+msgstr "Error al crear el movimiento de stock."
+
+#. module: portal_repair
+#. odoo-python
 #: code:addons/portal_repair/controllers/repair_list.py:0
 msgid "Excel export not available. Please install xlsxwriter."
 msgstr "Exportación a Excel no disponible. Por favor, instale xlsxwriter."
@@ -435,6 +444,12 @@ msgstr "Tipo de Mantenimiento"
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
 msgid "Name"
 msgstr "Nombre"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/models/quality_alert.py:0
+msgid "New message in reception: %(ref)s"
+msgstr "Nuevo mensaje en recepción: %(ref)s"
 
 #. module: portal_repair
 #: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
