@@ -171,6 +171,7 @@ class PortalRepairController(PortalAdminController):
         """Construye el dominio de búsqueda para recepciones"""
         QualityAlert = request.env['quality.alert'].sudo()
         base_domain = self._get_account_partner_domain(domain)
+        base_domain.append(('is_repair', '=', True))
 
         stage_mapping = {
             "in_transit": "repair_module.quality_alert_stage_in_transit_reception",

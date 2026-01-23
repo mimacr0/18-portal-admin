@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+t\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-17 10:56+0000\n"
-"PO-Revision-Date: 2025-12-17 10:56+0000\n"
+"POT-Creation-Date: 2026-01-23 14:08+0000\n"
+"PO-Revision-Date: 2026-01-23 14:08+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -27,6 +27,8 @@ msgid ""
 "<i class=\"fas fa-arrow-left mr-1.5\"/> <span class=\"hidden "
 "sm:inline\">Volver</span>"
 msgstr ""
+"<i class=\"fas fa-arrow-left mr-1.5\"/> <span class=\"hidden "
+"sm:inline\">返回</span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
@@ -240,12 +242,12 @@ msgstr "<span class=\"mx-1 text-sm\">千克</span>"
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 msgid "<span class=\"mx-1\">x</span>"
-msgstr ""
+msgstr "<span class=\"mx-1\">x</span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lots_list
 msgid "<span class=\"mx-1\">·</span>"
-msgstr ""
+msgstr "<span class=\"mx-1\">·</span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
@@ -272,7 +274,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lots_list
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_products_list
 msgid "<span class=\"text-gray-400\">-</span>"
-msgstr ""
+msgstr "<span class=\"text-gray-400\">-</span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
@@ -292,7 +294,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "<span class=\"text-red-500 ml-1\">*</span>"
-msgstr ""
+msgstr "<span class=\"text-red-500 ml-1\">*</span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
@@ -439,6 +441,12 @@ msgid "Barcode"
 msgstr "条形码"
 
 #. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Cada variante debe tener al menos SKU o código de barras"
+msgstr "每个变体至少需要 SKU 或条形码"
+
+#. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
 msgid "Chat about"
 msgstr "关于...的聊天"
@@ -459,6 +467,11 @@ msgid "Delete"
 msgstr "删除"
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid "Delete image"
+msgstr "删除图片"
+
+#. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
 msgid ""
 "Drag and drop a file here, or <span class=\"text-primary-theme browse-"
@@ -472,14 +485,8 @@ msgid ""
 "browse-link cursor-pointer hover:underline\" id=\"stock-products-browse-"
 "link\">browse</span>"
 msgstr ""
-"将Excel文件拖放到此处，或 <span class=\"text-primary-theme "
-"browse-link cursor-pointer hover:underline\" id=\"stock-products-browse-"
-"link\">浏览</span>"
-
-#. module: portal_stock
-#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
-msgid "Eliminar imagen"
-msgstr "删除图片"
+"将Excel文件拖放到此处，或 <span class=\"text-primary-theme browse-link cursor-pointer "
+"hover:underline\" id=\"stock-products-browse-link\">浏览</span>"
 
 #. module: portal_stock
 #. odoo-javascript
@@ -811,8 +818,12 @@ msgstr "没有有效的产品可删除"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
-msgid "Optional: <strong>sku</strong>, <strong>barcode</strong>"
-msgstr "可选：<strong>sku</strong>、<strong>barcode</strong>"
+msgid ""
+"Optional: <strong>sku</strong>, <strong>barcode</strong>, + attribute "
+"columns (Color, RAM, ROM...)"
+msgstr ""
+"可选：<strong>sku</strong>、<strong>barcode</strong>，以及属性列（Color, RAM, "
+"ROM...）"
 
 #. module: portal_stock
 #. odoo-python
@@ -831,11 +842,6 @@ msgstr "出库"
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
 msgid "Pagination"
 msgstr "分页"
-
-#. module: portal_stock
-#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
-msgid "Peso"
-msgstr "重量"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
@@ -973,6 +979,12 @@ msgstr "已审核"
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Attribute value \"%s\" not found for \"%s\""
+msgstr "第 %d 行：属性值 \"%s\" 在 \"%s\" 中未找到"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Row %d: Barcode \"%s\" already exists, skipping"
 msgstr "第 %d 行：条形码 \"%s\" 已存在，跳过"
 
@@ -1024,7 +1036,7 @@ msgstr "第 %d 行：重量不能为负数"
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "SKU"
-msgstr ""
+msgstr "SKU"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
@@ -1051,11 +1063,6 @@ msgid "Stock"
 msgstr "库存"
 
 #. module: portal_stock
-#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
-msgid "Subir imagen"
-msgstr "上传图片"
-
-#. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Unavailable"
@@ -1072,17 +1079,19 @@ msgid "Upload File"
 msgstr "上传文件"
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "Upload image"
 msgstr "上传图片"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lots_list
-msgid "Ver detalles"
+msgid "View details"
 msgstr "查看详情"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "Volume"
 msgstr "体积"
 
@@ -1094,13 +1103,9 @@ msgid "Volume (cm³)"
 msgstr "体积（立方厘米）"
 
 #. module: portal_stock
-#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
-msgid "Volumen"
-msgstr "体积"
-
-#. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "Weight"
 msgstr "重量"
 

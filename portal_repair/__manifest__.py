@@ -33,6 +33,7 @@
             'portal_repair/static/src/js/frontend/repair_alert_main.js',
             'portal_repair/static/src/js/create_modal_page.js',
             'portal_repair/static/src/css/custom.css'
+            # 'portal_repair/static/src/css/modal-fix.css'
         ]
     },
     'images': ['static/description/icon.png'],
