@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+t\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-17 10:56+0000\n"
-"PO-Revision-Date: 2025-12-17 10:56+0000\n"
+"POT-Creation-Date: 2026-01-23 14:08+0000\n"
+"PO-Revision-Date: 2026-01-23 14:08+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -65,6 +65,7 @@ msgid ""
 msgstr ""
 "<i class=\"fas fa-comments mr-2 text-primary-theme \"/>\n"
 "                                Historial de Comunicación"
+
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
 msgid "<i class=\"fas fa-download mr-1\"/>Download template"
@@ -222,31 +223,31 @@ msgstr "<span class=\"font-medium\">Estado:</span>"
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 msgid "<span class=\"mx-1 text-sm\">cm</span>"
-msgstr ""
+msgstr "<span class=\"mx-1 text-sm\">cm</span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "<span class=\"mx-1 text-sm\">cm³</span>"
-msgstr ""
+msgstr "<span class=\"mx-1 text-sm\">cm³</span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "<span class=\"mx-1 text-sm\">kg</span>"
-msgstr ""
+msgstr "<span class=\"mx-1 text-sm\">kg</span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 msgid "<span class=\"mx-1\">x</span>"
-msgstr ""
+msgstr "<span class=\"mx-1\">x</span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lots_list
 msgid "<span class=\"mx-1\">·</span>"
-msgstr ""
+msgstr "<span class=\"mx-1\">·</span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
@@ -273,7 +274,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lots_list
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_products_list
 msgid "<span class=\"text-gray-400\">-</span>"
-msgstr ""
+msgstr "<span class=\"text-gray-400\">-</span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
@@ -293,7 +294,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "<span class=\"text-red-500 ml-1\">*</span>"
-msgstr ""
+msgstr "<span class=\"text-red-500 ml-1\">*</span>"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
@@ -440,6 +441,12 @@ msgid "Barcode"
 msgstr "Código de Barras"
 
 #. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Cada variante debe tener al menos SKU o código de barras"
+msgstr "Cada variante debe tener al menos SKU o código de barras"
+
+#. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
 msgid "Chat about"
 msgstr "Chat sobre"
@@ -460,13 +467,16 @@ msgid "Delete"
 msgstr "Eliminar"
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid "Delete image"
+msgstr "Eliminar imagen"
+
+#. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
 msgid ""
 "Drag and drop a file here, or <span class=\"text-primary-theme browse-"
 "link\">browse</span>"
 msgstr ""
-"Arrastre y suelte un archivo aquí, o <span class=\"text-primary-theme browse-"
-"link\">buscar</span>"
 "Arrastre y suelte un archivo aquí, o <span class=\"text-primary-theme "
 "browse-link\">buscar</span>"
 
@@ -480,11 +490,6 @@ msgstr ""
 "Arrastre y suelte un archivo Excel aquí, o <span class=\"text-primary-theme "
 "browse-link cursor-pointer hover:underline\" id=\"stock-products-browse-"
 "link\">buscar</span>"
-
-#. module: portal_stock
-#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
-msgid "Eliminar imagen"
-msgstr "Eliminar imagen"
 
 #. module: portal_stock
 #. odoo-javascript
@@ -800,7 +805,7 @@ msgstr "No hay historial de reparaciones o revisiones"
 #. odoo-javascript
 #: code:addons/portal_stock/static/src/js/create_modal_page.js:0
 msgid "No se encontraron variantes para actualizar"
-msgstr ""
+msgstr "No se encontraron variantes para actualizar"
 
 #. module: portal_stock
 #. odoo-python
@@ -816,8 +821,12 @@ msgstr "No hay productos válidos para eliminar"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
-msgid "Optional: <strong>sku</strong>, <strong>barcode</strong>"
-msgstr "Opcional: <strong>sku</strong>, <strong>barcode</strong>"
+msgid ""
+"Optional: <strong>sku</strong>, <strong>barcode</strong>, + attribute "
+"columns (Color, RAM, ROM...)"
+msgstr ""
+"Opcional: <strong>sku</strong>, <strong>barcode</strong>, + columnas de "
+"atributos (Color, RAM, ROM...)"
 
 #. module: portal_stock
 #. odoo-python
@@ -838,11 +847,6 @@ msgid "Pagination"
 msgstr "Paginación"
 
 #. module: portal_stock
-#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
-msgid "Peso"
-msgstr ""
-
-#. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
 msgid "Please select a file to upload."
@@ -852,7 +856,7 @@ msgstr "Por favor seleccione un archivo para subir."
 #. odoo-javascript
 #: code:addons/portal_stock/static/src/js/create_modal_page.js:0
 msgid "Por favor, seleccione un archivo de imagen válido"
-msgstr ""
+msgstr "Por favor, seleccione un archivo de imagen válido"
 
 #. module: portal_stock
 #. odoo-python
@@ -910,7 +914,7 @@ msgstr "Producto:"
 #. odoo-javascript
 #: code:addons/portal_stock/static/src/js/create_modal_page.js:0
 msgid "Producto actualizado correctamente"
-msgstr ""
+msgstr "Producto actualizado correctamente"
 
 #. module: portal_stock
 #. odoo-python
@@ -978,6 +982,12 @@ msgstr "Revisados"
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Attribute value \"%s\" not found for \"%s\""
+msgstr "Fila %d: Valor de atributo \"%s\" no encontrado para \"%s\""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Row %d: Barcode \"%s\" already exists, skipping"
 msgstr "Fila %d: El código de barras \"%s\" ya existe, omitiendo"
 
@@ -1029,7 +1039,7 @@ msgstr "Fila %d: El peso no puede ser negativo"
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "SKU"
-msgstr ""
+msgstr "SKU"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
@@ -1056,11 +1066,6 @@ msgid "Stock"
 msgstr "Stock"
 
 #. module: portal_stock
-#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
-msgid "Subir imagen"
-msgstr ""
-
-#. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Unavailable"
@@ -1077,17 +1082,19 @@ msgid "Upload File"
 msgstr "Subir Archivo"
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "Upload image"
 msgstr "Subir imagen"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lots_list
-msgid "Ver detalles"
-msgstr ""
+msgid "View details"
+msgstr "Ver detalles"
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "Volume"
 msgstr "Volumen"
 
@@ -1099,13 +1106,9 @@ msgid "Volume (cm³)"
 msgstr "Volumen (cm³)"
 
 #. module: portal_stock
-#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
-msgid "Volumen"
-msgstr ""
-
-#. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "Weight"
 msgstr "Peso"
 

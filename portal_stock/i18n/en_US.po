@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+t\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-17 11:03+0000\n"
-"PO-Revision-Date: 2025-12-17 11:03+0000\n"
+"POT-Creation-Date: 2026-01-23 14:08+0000\n"
+"PO-Revision-Date: 2026-01-23 14:08+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "%d product(s) created successfully."
-msgstr "%d product(s) created successfully."
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
@@ -379,7 +379,7 @@ msgstr ""
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
 msgid "Back"
-msgstr "Back"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
@@ -387,6 +387,12 @@ msgstr "Back"
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "Barcode"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Cada variante debe tener al menos SKU o código de barras"
 msgstr ""
 
 #. module: portal_stock
@@ -410,6 +416,11 @@ msgid "Delete"
 msgstr ""
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid "Delete image"
+msgstr ""
+
+#. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
 msgid ""
 "Drag and drop a file here, or <span class=\"text-primary-theme browse-"
@@ -423,11 +434,6 @@ msgid ""
 "browse-link cursor-pointer hover:underline\" id=\"stock-products-browse-"
 "link\">browse</span>"
 msgstr ""
-
-#. module: portal_stock
-#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
-msgid "Eliminar imagen"
-msgstr "Delete image"
 
 #. module: portal_stock
 #. odoo-javascript
@@ -499,12 +505,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Export Excel"
-msgstr "Export Excel"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
 msgid "File Upload"
-msgstr "File Upload"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-javascript
@@ -515,154 +521,154 @@ msgstr "An error occurred while creating the product"
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 msgid "Height"
-msgstr "Height"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Image"
-msgstr "Image"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Import Excel"
-msgstr "Import Excel"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
 msgid "Import Products from Excel"
-msgstr "Import Products from Excel"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Import failed with %d errors."
-msgstr "Import failed with %d errors."
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Import failed: %s"
-msgstr "Import failed: %s"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "In Repair"
-msgstr "In Repair"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "In Review"
-msgstr "In Review"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "In Stock"
-msgstr "In Stock"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Incoming"
-msgstr "Incoming"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Internal Reference"
-msgstr "Internal Reference"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Invalid lots payload"
-msgstr "Invalid lots payload"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Invalid products payload"
-msgstr "Invalid products payload"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 msgid "Length"
-msgstr "Length"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Location"
-msgstr "Location"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Lot Details"
-msgstr "Lot Details"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Lot deleted successfully"
-msgstr "Lot deleted successfully"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Lot not found"
-msgstr "Lot not found"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
 msgid "Lot/Serial"
-msgstr "Lot/Serial"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Lot/Serial Number"
-msgstr "Lot/Serial Number"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Lots/Serials"
-msgstr "Lots/Serials"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
 msgid "Maximum file size: 5MB"
-msgstr "Maximum file size: 5MB"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 msgid "Measures (cm)"
-msgstr "Measures (cm)"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Missing lot identifier"
-msgstr "Missing lot identifier"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Missing product identifier"
-msgstr "Missing product identifier"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Missing required columns: %s"
-msgstr "Missing required columns: %s"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
@@ -671,7 +677,7 @@ msgstr "Missing required columns: %s"
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "Name"
-msgstr "Name"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
@@ -689,53 +695,53 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "New"
-msgstr "New"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
 msgid "No additional information"
-msgstr "No additional information"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "No file provided"
-msgstr "No file provided"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "No lots selected"
-msgstr "No lots selected"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "No permitted lots found for deletion"
-msgstr "No permitted lots found for deletion"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "No permitted products found for deletion"
-msgstr "No permitted products found for deletion"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "No products found"
-msgstr "No products found"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "No products selected"
-msgstr "No products selected"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
 msgid "No repair or review history"
-msgstr "No repair or review history"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-javascript
@@ -747,47 +753,44 @@ msgstr "No variants found to update"
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "No valid lots to delete"
-msgstr "No valid lots to delete"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "No valid products to delete"
-msgstr "No valid products to delete"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
-msgid "Optional: <strong>sku</strong>, <strong>barcode</strong>"
+msgid ""
+"Optional: <strong>sku</strong>, <strong>barcode</strong>, + attribute "
+"columns (Color, RAM, ROM...)"
 msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Out of Stock"
-msgstr "Out of Stock"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Outgoing"
-msgstr "Outgoing"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
 msgid "Pagination"
-msgstr "Pagination"
-
-#. module: portal_stock
-#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
-msgid "Peso"
-msgstr "Weight"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
 msgid "Please select a file to upload."
-msgstr "Please select a file to upload."
+msgstr ""
 
 #. module: portal_stock
 #. odoo-javascript
@@ -799,53 +802,53 @@ msgstr "Please select a valid image file"
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Product"
-msgstr "Product"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 msgid "Product Create"
-msgstr "Product Create"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "Product Edit"
-msgstr "Product Edit"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Product created successfully"
-msgstr "Product created successfully"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Product deleted successfully"
-msgstr "Product deleted successfully"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Product not found"
-msgstr "Product not found"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Product updated successfully"
-msgstr "Product updated successfully"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Product variants updated successfully"
-msgstr "Product variants updated successfully"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
 msgid "Product:"
-msgstr "Product:"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-javascript
@@ -857,112 +860,118 @@ msgstr "Product updated successfully"
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Quantity"
-msgstr "Quantity"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
 msgid "Quantity:"
-msgstr "Quantity:"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Real Stock"
-msgstr "Real Stock"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "Remove image"
-msgstr "Remove image"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Repair"
-msgstr "Repair"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Repaired"
-msgstr "Repaired"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Repairs"
-msgstr "Repairs"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "Reset"
-msgstr "Reset"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "Return"
-msgstr "Return"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Review"
-msgstr "Review"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Reviewed"
-msgstr "Reviewed"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Attribute value \"%s\" not found for \"%s\""
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Row %d: Barcode \"%s\" already exists, skipping"
-msgstr "Row %d: Barcode \"%s\" already exists, skipping"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Row %d: Dimensions must be greater than 0"
-msgstr "Row %d: Dimensions must be greater than 0"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Row %d: Error creating product - %s"
-msgstr "Row %d: Error creating product - %s"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Row %d: Invalid numeric values for dimensions or weight"
-msgstr "Row %d: Invalid numeric values for dimensions or weight"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Row %d: Invalid tracking value \"%s\" (must be \"serial\" or \"none\")"
-msgstr "Row %d: Invalid tracking value \"%s\" (must be \"serial\" or \"none\")"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Row %d: Missing product name"
-msgstr "Row %d: Missing product name"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Row %d: SKU \"%s\" already exists, skipping"
-msgstr "Row %d: SKU \"%s\" already exists, skipping"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 msgid "Row %d: Weight cannot be negative"
-msgstr "Row %d: Weight cannot be negative"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
@@ -970,12 +979,12 @@ msgstr "Row %d: Weight cannot be negative"
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "SKU"
-msgstr "SKU"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "Search ..."
-msgstr "Search ..."
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
@@ -988,128 +997,121 @@ msgstr ""
 #: code:addons/portal_stock/controllers/lots.py:0
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Status"
-msgstr "Status"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "Stock"
-msgstr "Stock"
-
-#. module: portal_stock
-#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
-msgid "Subir imagen"
-msgstr "Upload image"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "Unavailable"
-msgstr "Unavailable"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
 msgid "Upload Excel File (.xlsx)"
-msgstr "Upload Excel File (.xlsx)"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
 msgid "Upload File"
-msgstr "Upload File"
+msgstr ""
 
 #. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "Upload image"
-msgstr "Upload image"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lots_list
-msgid "Ver detalles"
-msgstr "View details"
+msgid "View details"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "Volume"
-msgstr "Volume"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "Volume (cm³)"
-msgstr "Volume (cm³)"
-
-#. module: portal_stock
-#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
-msgid "Volumen"
-msgstr "Volume"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "Weight"
-msgstr "Weight"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
 msgid "Weight (kg)"
-msgstr "Weight (kg)"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 msgid "Width"
-msgstr "Width"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
 msgid "Width x Height x Length"
-msgstr "Width x Height x Length"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
 msgid "Write a message..."
-msgstr "Write a message..."
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "You are not allowed to upload an attachment here."
-msgstr "You are not allowed to upload an attachment here."
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "You do not have access to this lot"
-msgstr "You do not have access to this lot"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/create_product_modal.py:0
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "You do not have access to this product"
-msgstr "You do not have access to this product"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/lots.py:0
 msgid "lots"
-msgstr "lots"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
 msgid "of"
-msgstr "of"
+msgstr ""
 
 #. module: portal_stock
 #: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
 msgid "of the following conditions:"
-msgstr "of the following conditions:"
+msgstr ""
 
 #. module: portal_stock
 #. odoo-python
 #: code:addons/portal_stock/controllers/stocks.py:0
 msgid "products"
-msgstr "products"
+msgstr ""

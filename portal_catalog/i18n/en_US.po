@@ -1,0 +1,323 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* portal_catalog
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+t\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-23 14:15+0000\n"
+"PO-Revision-Date: 2026-01-23 14:15+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "179,68 €"
+msgstr "179,68 €"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "410,69 €"
+msgstr "410,69 €"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "962,55 €"
+msgstr "962,55 €"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_kanban
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "<i class=\"fas fa-check-circle mr-1\"/> Complete Budget"
+msgstr "<i class=\"fas fa-check-circle mr-1\"/> Complete Budget"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid ""
+"<i class=\"fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs\"/>\n"
+"                                        <span class=\"text-xs text-green-600 dark:text-green-400\">Stock: 33,00</span>"
+msgstr ""
+"<i class=\"fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs\"/>\n"
+"                                        <span class=\"text-xs text-green-600 dark:text-green-400\">Stock: 33,00</span>"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid ""
+"<i class=\"fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs\"/>\n"
+"                                        <span class=\"text-xs text-green-600 dark:text-green-400\">Stock: 500,00</span>"
+msgstr ""
+"<i class=\"fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs\"/>\n"
+"                                        <span class=\"text-xs text-green-600 dark:text-green-400\">Stock: 500,00</span>"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid ""
+"<i class=\"fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs\"/>\n"
+"                                        <span class=\"text-xs text-green-600 dark:text-green-400\">Stock: 65,00</span>"
+msgstr ""
+"<i class=\"fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs\"/>\n"
+"                                        <span class=\"text-xs text-green-600 dark:text-green-400\">Stock: 65,00</span>"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid ""
+"<i class=\"fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs\"/>\n"
+"                                        <span class=\"text-xs text-green-600 dark:text-green-400\">Stock: 70,00</span>"
+msgstr ""
+"<i class=\"fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs\"/>\n"
+"                                        <span class=\"text-xs text-green-600 dark:text-green-400\">Stock: 70,00</span>"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lot_catalog_items
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_product_catalog_items
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_stock_catalog_items
+msgid "<i class=\"fas fa-plus mr-1\"/> Add"
+msgstr "<i class=\"fas fa-plus mr-1\"/> Add"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "<i class=\"fas fa-plus mr-1\"/> Añadir"
+msgstr "<i class=\"fas fa-plus mr-1\"/> Add"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lots_catalog_kanban
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_kanban
+msgid "<i class=\"fas fa-plus mr-1.5\"/> Add"
+msgstr "<i class=\"fas fa-plus mr-1.5\"/> Add"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lot_catalog_items
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_stock_catalog_items
+msgid ""
+"<i class=\"fas fa-times-circle text-red-600 dark:text-red-400 mr-1 text-xs\"/>\n"
+"                                        <span class=\"text-xs text-red-600 dark:text-red-400\">No Stock</span>"
+msgstr ""
+"<i class=\"fas fa-times-circle text-red-600 dark:text-red-400 mr-1 text-xs\"/>\n"
+"                                        <span class=\"text-xs text-red-600 dark:text-red-400\">No Stock</span>"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_product_catalog_items
+msgid ""
+"<i class=\"fas fa-times-circle text-red-600 dark:text-red-400 mr-1 text-xs\"/>\n"
+"                                        <span class=\"text-xs text-red-600 dark:text-red-400\">Out of Stock</span>"
+msgstr ""
+"<i class=\"fas fa-times-circle text-red-600 dark:text-red-400 mr-1 text-xs\"/>\n"
+"                                        <span class=\"text-xs text-red-600 dark:text-red-400\">Out of Stock</span>"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lots_catalog_kanban
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_kanban
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "<i class=\"fas fa-trash-alt mr-1\"/> Clear"
+msgstr "<i class=\"fas fa-trash-alt mr-1\"/> Clear"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid ""
+"<span class=\"bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300\">Personalizado</span>\n"
+"                                <span class=\"bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300\">Blanco</span>"
+msgstr ""
+"<span class=\"bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300\">Personalizado</span>\n"
+"                                <span class=\"bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300\">Blanco</span>"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid ""
+"<span class=\"bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300\">Personalizado</span>\n"
+"                                <span class=\"bg-gray-800 text-white text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300\">Negro</span>"
+msgstr ""
+"<span class=\"bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300\">Personalizado</span>\n"
+"                                <span class=\"bg-gray-800 text-white text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300\">Negro</span>"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_kanban
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid ""
+"<span class=\"font-semibold text-gray-800 dark:text-white\">Total:</span>\n"
+"                        <span id=\"total\" class=\"font-bold text-primary-theme \">0,00 €</span>"
+msgstr ""
+"<span class=\"font-semibold text-gray-800 dark:text-white\">Total:</span>\n"
+"                        <span id=\"total\" class=\"font-bold text-primary-theme \">0,00 €</span>"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_kanban
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid ""
+"<span class=\"text-gray-600 dark:text-gray-300\">IVA (21%):</span>\n"
+"                        <span id=\"tax\" class=\"font-medium text-gray-800 dark:text-white\">0,00 €</span>"
+msgstr ""
+"<span class=\"text-gray-600 dark:text-gray-300\">IVA (21%):</span>\n"
+"                        <span id=\"tax\" class=\"font-medium text-gray-800 dark:text-white\">0,00 €</span>"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_kanban
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid ""
+"<span class=\"text-gray-600 dark:text-gray-300\">Subtotal:</span>\n"
+"                        <span id=\"subtotal\" class=\"font-medium text-gray-800 dark:text-white\">0,00 €</span>"
+msgstr ""
+"<span class=\"text-gray-600 dark:text-gray-300\">Subtotal:</span>\n"
+"                        <span id=\"subtotal\" class=\"font-medium text-gray-800 dark:text-white\">0,00 €</span>"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_stock_catalog_items
+msgid ""
+"<span class=\"text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300\">\n"
+"                                    No Lot\n"
+"                                </span>"
+msgstr ""
+"<span class=\"text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300\">\n"
+"                                    No Lot\n"
+"                                </span>"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_kanban
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid ""
+"<span id=\"selected-count\" class=\"ml-2 bg-white text-primary-theme "
+"dark:bg-gray-700  text-xs font-bold px-2 py-0.5 rounded-full\">0</span>"
+msgstr ""
+"<span id=\"selected-count\" class=\"ml-2 bg-white text-primary-theme "
+"dark:bg-gray-700  text-xs font-bold px-2 py-0.5 rounded-full\">0</span>"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lots_catalog_kanban
+msgid ""
+"<span id=\"selected-lot-count\" class=\"ml-2 bg-white text-primary-theme "
+"dark:bg-gray-700 text-xs font-bold px-2 py-0.5 rounded-full\">0</span>"
+msgstr ""
+"<span id=\"selected-lot-count\" class=\"ml-2 bg-white text-primary-theme "
+"dark:bg-gray-700 text-xs font-bold px-2 py-0.5 rounded-full\">0</span>"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_kanban
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "Add products using the \"Add\" button"
+msgstr "Add products using the \"Add\" button"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lots_catalog_kanban
+msgid "Add stock using the \"Add\" button"
+msgstr "Add stock using the \"Add\" button"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "Armario con puertas"
+msgstr "Armario con puertas"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "Escritorio personalizable"
+msgstr "Escritorio personalizable"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "Gabinete grande"
+msgstr "Gabinete grande"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lots_catalog_kanban
+msgid "Lots Selected"
+msgstr "Lots Selected"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lot_catalog_items
+msgid "No lots found"
+msgstr "No lots found"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_product_catalog_items
+msgid "No products found"
+msgstr "No products found"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_kanban
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "No products selected"
+msgstr "No products selected"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_stock_catalog_items
+msgid "No stock found"
+msgstr "No stock found"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lots_catalog_kanban
+msgid "No stock selected"
+msgstr "No stock selected"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lot_catalog_pagination
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_product_catalog_pagination
+msgid "Page"
+msgstr "Page"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_kanban
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "Products Selected"
+msgstr "Products Selected"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lot_catalog_items
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lots_catalog_kanban
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_stock_catalog_items
+msgid "Qty:"
+msgstr "Qty:"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lots_catalog_kanban
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_kanban
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "Search products..."
+msgstr "Search products..."
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_product_catalog_items
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_kanban
+msgid "Stock:"
+msgstr "Stock:"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lot_catalog_items
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_product_catalog_items
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_stock_catalog_items
+msgid "Try changing your search criteria"
+msgstr "Try changing your search criteria"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "[DESK0005]"
+msgstr "[DESK0005]"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "[DESK0006]"
+msgstr "[DESK0006]"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "[E-COM07]"
+msgstr "[E-COM07]"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_products_catalog_page
+msgid "[E-COM11]"
+msgstr "[E-COM11]"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lot_catalog_pagination
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_product_catalog_pagination
+msgid "of"
+msgstr "of"
+
+#. module: portal_catalog
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_lot_catalog_pagination
+#: model_terms:ir.ui.view,arch_db:portal_catalog.portal_product_catalog_pagination
+msgid "products)"
+msgstr "products)"
