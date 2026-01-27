@@ -641,8 +641,13 @@ class ProductModalController(PortalAdminController):
             
             # Add example row
             example_row = ['Product Example', 'serial', 10, 5, 2, 0.5, 'SKU001', '1234567890123']
-            # Add empty values for attribute columns
-            example_row.extend([''] * len(attribute_headers))
+            # Add example values for attribute columns (fake data)
+            example_attribute_values = [''] * len(attribute_headers)
+            if example_attribute_values:
+                example_attribute_values[0] = 'Red, Blue'
+            if len(example_attribute_values) > 1:
+                example_attribute_values[1] = '64GB, 128GB'
+            example_row.extend(example_attribute_values)
             
             for col, value in enumerate(example_row, 1):
                 cell = sheet1.cell(row=2, column=col, value=value)
@@ -674,7 +679,26 @@ class ProductModalController(PortalAdminController):
                 [''],
                 ['ATTRIBUTE COLUMNS (Orange):'],
                 ['Use values from the "Attribute Values" sheet'],
+                ['If a product has multiple values for an attribute, separate them with commas (e.g. "Red, Blue")'],
                 ['Leave empty if product does not have that attribute'],
+                [''],
+                ['中文说明:'],
+                ['必填列（蓝色）:'],
+                ['name*', '产品名称'],
+                ['tracking*', '跟踪类型: "serial" 或 "none"'],
+                ['width*', '宽度（厘米）'],
+                ['height*', '高度（厘米）'],
+                ['length*', '长度（厘米）'],
+                ['weight*', '重量（千克）'],
+                [''],
+                ['可选列（绿色）:'],
+                ['sku', '内部参考代码'],
+                ['barcode', '产品条码（EAN13 等）'],
+                [''],
+                ['属性列（橙色）:'],
+                ['使用“Attribute Values”表中的值'],
+                ['如需填写多个属性值，请用逗号分隔（例如 "Red, Blue"）'],
+                ['如果产品没有该属性，请留空'],
             ]
             
             for row_idx, row_data in enumerate(instructions, 1):
