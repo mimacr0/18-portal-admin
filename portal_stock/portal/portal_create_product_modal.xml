@@ -60,7 +60,7 @@
                                                class="w-4 h-4 text-primary-theme border-gray-300 focus-ring-theme"
                                         />
                                         <label for="tracking_serial" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                                            Return
+                                            Return (With Serial Number)
                                         </label>
                                     </div>
 
@@ -69,7 +69,7 @@
                                                class="w-4 h-4 text-primary-theme border-gray-300 focus-ring-theme"
                                         />
                                         <label for="tracking_none" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                                            New
+                                            New (No tracking)
                                         </label>
                                     </div>
                                 </div>
