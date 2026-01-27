@@ -445,7 +445,7 @@
                         <div class="ml-4">
                             <div class="text-sm font-medium text-gray-900 dark:text-gray-100">Date Order: <t t-esc="order.date_order.strftime('%d-%m-%Y %H:%M:%S')"/></div>
                             <t t-foreach="order.picking_ids" t-as="picking">
-                                <t t-if="picking.picking_type_id.barcode == 'WHPICK'">
+                                <t t-if="picking.picking_type_id.barcode == 'NV1PICK'">
                                     <t t-if="picking.state == 'done'">
                                         <div class="text-sm text-green-600 dark:text-green-400">
                                             Pick Date Done: <t t-esc="picking.date_done.strftime('%d-%m-%Y %H:%M:%S')"/>
@@ -457,7 +457,7 @@
                                         </div>
                                     </t>
                                 </t>
-                                <t t-if="picking.picking_type_id.barcode == 'WHPACK'">
+                                <t t-if="picking.picking_type_id.barcode == 'NV1PACK'">
                                     <t t-if="picking.state == 'done'">
                                         <div class="text-sm text-green-600 dark:text-green-400">
                                             Pack Date Done: <t t-esc="picking.date_done.strftime('%d-%m-%Y %H:%M:%S')"/>
@@ -469,7 +469,7 @@
                                         </div>
                                     </t>
                                 </t>
-                                <t t-if="picking.picking_type_id.barcode == 'WHOUT'">
+                                <t t-if="picking.picking_type_id.barcode == 'NV1OUT'">
                                     <t t-if="picking.state == 'done'">
                                         <div class="text-sm text-green-600 dark:text-green-400">
                                             Sent Date: <t t-esc="picking.date_done.strftime('%d-%m-%Y %H:%M:%S')"/>
@@ -490,17 +490,17 @@
 
                         <div class="text-sm text-gray-900 dark:text-gray-100">
                             <t t-foreach="order.picking_ids" t-as="picking">
-                                <t t-if="picking.picking_type_id.barcode == 'WHPICK'">
+                                <t t-if="picking.picking_type_id.barcode == 'NV1PICK'">
                                     <div class="flex mb-1">
                                         <div class="text-right pr-2 w-32"><strong>Picking State:</strong> <t t-esc="picking.state"/></div>
                                     </div>
                                 </t>
-                                <t t-if="picking.picking_type_id.barcode == 'WHPACK'">
+                                <t t-if="picking.picking_type_id.barcode == 'NV1PACK'">
                                     <div class="flex mb-1">
                                         <div class="text-right pr-2 w-32"><strong>Package State:</strong> <t t-esc="picking.state"/></div>
                                     </div>
                                 </t>
-                                <t t-if="picking.picking_type_id.barcode == 'WHOUT'">
+                                <t t-if="picking.picking_type_id.barcode == 'NV1OUT'">
                                     <div class="flex mb-1">
                                         <div class="text-right pr-2 w-32"><strong>Sent State:</strong> <t t-esc="picking.state"/></div>
                                     </div>
@@ -566,7 +566,7 @@
                             <div class="ml-4">
                                 <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words">Date Order: <t t-esc="order.date_order.strftime('%d-%m-%Y %H:%M:%S')"/></div>
                                 <t t-foreach="order.picking_ids" t-as="picking">
-                                    <t t-if="picking.picking_type_id.barcode == 'WHPICK'">
+                                    <t t-if="picking.picking_type_id.barcode == 'NV1PICK'">
                                         <t t-if="picking.state == 'done'">
                                             <div class="text-sm text-green-600 dark:text-green-400 break-words">
                                                 Pick Date Done: <t t-esc="picking.date_done.strftime('%d-%m-%Y %H:%M:%S')"/>
@@ -578,7 +578,7 @@
                                             </div>
                                         </t>
                                     </t>
-                                    <t t-if="picking.picking_type_id.barcode == 'WHPACK'">
+                                    <t t-if="picking.picking_type_id.barcode == 'NV1PACK'">
                                         <t t-if="picking.state == 'done'">
                                             <div class="text-sm text-green-600 dark:text-green-400 break-words">
                                                 Pack Date Done: <t t-esc="picking.date_done.strftime('%d-%m-%Y %H:%M:%S')"/>
@@ -590,7 +590,7 @@
                                             </div>
                                         </t>
                                     </t>
-                                    <t t-if="picking.picking_type_id.barcode == 'WHOUT'">
+                                    <t t-if="picking.picking_type_id.barcode == 'NV1OUT'">
                                         <t t-if="picking.state == 'done'">
                                             <div class="text-sm text-green-600 dark:text-green-400 break-words">
                                                 Sent Date: <t t-esc="picking.date_done.strftime('%d-%m-%Y %H:%M:%S')"/>
@@ -611,19 +611,19 @@
                     <div class="min-w-0">
                         <div class="text-sm text-gray-900 dark:text-gray-100 break-words">
                             <t t-foreach="order.picking_ids" t-as="picking">
-                                <t t-if="picking.picking_type_id.barcode == 'WHPICK'">
+                                <t t-if="picking.picking_type_id.barcode == 'NV1PICK'">
                                     <div class="flex mb-1">
                                         <div class="text-right pr-2 w-32"><strong>Picking State:</strong></div>
                                         <div><t t-esc="picking.state"/></div>
                                     </div>
                                 </t>
-                                <t t-if="picking.picking_type_id.barcode == 'WHPACK'">
+                                <t t-if="picking.picking_type_id.barcode == 'NV1PACK'">
                                     <div class="flex mb-1">
                                         <div class="text-right pr-2 w-32"><strong>Package State:</strong></div>
                                         <div><t t-esc="picking.state"/></div>
                                     </div>
                                 </t>
-                                <t t-if="picking.picking_type_id.barcode == 'WHOUT'">
+                                <t t-if="picking.picking_type_id.barcode == 'NV1OUT'">
                                     <div class="flex mb-1">
                                         <div class="text-right pr-2 w-32"><strong>Sent State:</strong></div>
                                         <div><t t-esc="picking.state"/></div>

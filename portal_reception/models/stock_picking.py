@@ -220,12 +220,12 @@ class StockPicking(models.Model):
         reception = pickings.filtered(lambda p: p.picking_type_id.code == 'incoming')
         reception = reception[:1] if reception else self
 
-        qc_picking = pickings.filtered(lambda p: p.picking_type_id.barcode == 'WHQC')
+        qc_picking = pickings.filtered(lambda p: p.picking_type_id.barcode == 'NV1QC')
         qc_picking = qc_picking[:1] if qc_picking else pickings.filtered(
             lambda p: p.picking_type_id.code == 'internal'
         )[:1]
 
-        storage_picking = pickings.filtered(lambda p: p.picking_type_id.barcode == 'WHSTOR')
+        storage_picking = pickings.filtered(lambda p: p.picking_type_id.barcode == 'NV1STOR')
         storage_picking = storage_picking[:1] if storage_picking else pickings.filtered(
             lambda p: p.picking_type_id.code == 'internal' and p != qc_picking
         )[:1]
