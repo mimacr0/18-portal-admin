@@ -605,7 +605,7 @@ class ProductModalController(PortalAdminController):
             sheet1.title = 'Products'
             
             # Get all attributes
-            ProductAttribute = request.env['product.attribute'].sudo()
+            ProductAttribute = request.env['product.attribute'].sudo().with_context(lang='en_US')
             all_attributes = ProductAttribute.search([], order='name')
             
             # Define headers
@@ -717,7 +717,7 @@ class ProductModalController(PortalAdminController):
             # ============================================
             sheet3 = workbook.create_sheet('Attribute Values')
             
-            ProductAttributeValue = request.env['product.attribute.value'].sudo()
+            ProductAttributeValue = request.env['product.attribute.value'].sudo().with_context(lang='en_US')
             
             # Write attribute names as headers
             for col, attr in enumerate(all_attributes, 1):
