@@ -11,7 +11,7 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <img class="size-10 rounded-full" t-attf-src="/account/stock/image/#{lot.product_id.id}/80x80" t-att-alt="lot.product_id.name"/>
+                            <img class="size-10 rounded-full" t-attf-src="data:image/png;base64,#{lot_images.get(lot.product_id.id) or ''}" t-att-alt="lot.product_id.name"/>
                         </div>
                     </div>
                 </td>

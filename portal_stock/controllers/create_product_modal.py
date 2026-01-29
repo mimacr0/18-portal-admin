@@ -32,20 +32,33 @@ class ProductModalController(PortalAdminController):
                 return {'status': 'error', 'message': _('You do not have access to this product')}
 
             template = product.product_tmpl_id.sudo()
-            image_url = f"/account/stock/image/{product.id}/256x256"
-
+            
+            # Obtener la imagen directamente de product.product (variante)
+            # Primero buscar image_variant_1920, luego image_1920 (que hace fallback al template)
+            image_base64 = None
+            if product.image_variant_1920:
+                image_base64 = product.image_variant_1920
+            elif product.image_1920:
+                image_base64 = product.image_1920
+            
+            # Obtener todos los datos directamente de product.product (variante)
+            # name puede venir de product.name (que es un campo computado que hace fallback al template)
+            # tracking es del template pero lo leemos desde ahí
+            # volume en Odoo se almacena en m³, pero el frontend espera cm³, así que convertimos
+            volume_cm3 = (product.volume or 0.0) * 1000000 if product.volume else 0.0
+            
             return {
                 'status': 'success',
                 'product': {
                     'id': product.id,
                     'template_id': template.id,
-                    'name': template.name,
-                    'sku': product.default_code or template.default_code,
-                    'barcode': product.barcode or template.barcode,
-                    'weight': product.weight or template.weight or 0.0,
-                    'volume': product.volume or template.volume or 0.0,
-                    'tracking': template.tracking or 'none',
-                    'image_url': image_url,
+                    'name': product.name or template.name,  # product.name es computado, hace fallback al template
+                    'sku': product.default_code or '',  # Solo de la variante
+                    'barcode': product.barcode or '',  # Solo de la variante
+                    'weight': product.weight or 0.0,  # Solo de la variante
+                    'volume': volume_cm3,  # Solo de la variante, convertido de m³ a cm³
+                    'tracking': template.tracking or 'none',  # tracking es del template
+                    'image_base64': image_base64,  # Imagen en base64 de product.product
                 }
             }
         except Exception as e:
@@ -222,7 +235,11 @@ class ProductModalController(PortalAdminController):
 
     @http.route('/account/stock/update/product', type='json', auth='user')
     def account_stock_update_product(self, **post):
-        """Update a single product with provided fields"""
+        """Update a single product with provided fields
+        
+        Si el producto tiene tracking='serial', solo actualiza la variante específica.
+        Si no tiene tracking='serial', actualiza tanto el template como la variante.
+        """
         try:
             product_id = int(post.get('product_id'))
             name = post.get('name')
@@ -247,33 +264,37 @@ class ProductModalController(PortalAdminController):
                 return {'status': 'error', 'message': _('You do not have access to this product')}
 
             template = product.product_tmpl_id.sudo()
-
-            # Update template-level fields
+            
+            # Actualizar siempre en product.product (variante), independientemente del tracking
+            # Convertir volumen de cm³ a m³ (como en _create_product_from_data)
+            volume_m3 = volume / 1000000 if volume > 0 else 0
+            
+            # Campos que se actualizan en la variante (product.product)
+            prod_vals = {}
+            if sku is not None:
+                prod_vals['default_code'] = sku
+            if barcode is not None:
+                prod_vals['barcode'] = barcode
+            if weight is not None:
+                prod_vals['weight'] = weight
+            if volume is not None:
+                prod_vals['volume'] = volume_m3
+            if image_base64:
+                # Usar image_variant_1920 para guardar en la variante
+                prod_vals['image_variant_1920'] = image_base64
+            
+            if prod_vals:
+                product.write(prod_vals)
+            
+            # Campos que solo existen en el template (name y tracking)
             tmpl_vals = {}
             if name is not None:
                 tmpl_vals['name'] = name
-            tmpl_vals.update({
-                'weight': weight,
-                'volume': volume,
-                'tracking': tracking or 'none',
-            })
-            if barcode is not None:
-                tmpl_vals['barcode'] = barcode
-            if sku is not None:
-                tmpl_vals['default_code'] = sku
-            if image_base64:
-                tmpl_vals['image_1920'] = image_base64
+            if tracking is not None:
+                tmpl_vals['tracking'] = tracking or 'none'
+            
             if tmpl_vals:
                 template.write(tmpl_vals)
-
-            # Update variant-level fields for the selected product only
-            prod_vals = {
-                'default_code': sku,
-                'barcode': barcode,
-                'weight': weight,
-                'volume': volume,
-            }
-            product.write(prod_vals)
 
             return {
                 'status': 'success',

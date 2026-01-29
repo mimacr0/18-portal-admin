@@ -1,6 +1,8 @@
 import io
 import math
 import json
+import base64
+import os
 from functools import lru_cache
 from datetime import datetime
 
@@ -261,7 +263,7 @@ class PortalStockController(PortalAdminController):
         # Definir las columnas de la lista basadas en PRODUCT_FIELDS_MAPPING
         list_columns = [
             {'id': 'name', 'label': _('Name'), 'sortable': True, 'responsive': ['sm', 'md', 'lg']},
-            {'id': 'sku', 'label': _('SKU'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
+            # {'id': 'sku', 'label': _('SKU'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
             {'id': 'barcode', 'label': _('Barcode'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
             {'id': 'stock', 'label': _('Stock'), 'sortable': True, 'md': True, 'responsive': ['lg']},
             {'id': 'repairs', 'label': _('Repairs'), 'sortable': False, 'lg': True, 'responsive': ['lg']},
@@ -287,6 +289,28 @@ class PortalStockController(PortalAdminController):
         # Pre-cargar información de lotes y estadísticas de reparación para productos
         products_has_lots, products_repair_stats = self._get_products_repair_data(products, account_partner)
         
+        # Obtener imágenes de productos directamente
+        # Cargar placeholder una vez
+        placeholder_path = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)),
+            'static', 'img', 'placeholder.png'
+        )
+        placeholder_base64 = None
+        if os.path.exists(placeholder_path):
+            with open(placeholder_path, 'rb') as f:
+                placeholder_base64 = base64.b64encode(f.read()).decode('utf-8')
+        
+        product_images = {}
+        for product in products:
+            # Obtener la imagen del producto (image_1920 hace fallback al template)
+            if product.image_1920:
+                product_images[product.id] = product.image_1920
+            elif product.product_tmpl_id and product.product_tmpl_id.image_1920:
+                product_images[product.id] = product.product_tmpl_id.image_1920
+            elif placeholder_base64:
+                # Usar placeholder si no hay imagen
+                product_images[product.id] = placeholder_base64
+        
         # Renderizar la lista de productos (el contexto ya tiene el idioma establecido)
         qweb = request.env['ir.qweb']
         products_list_html = qweb._render('portal_stock.portal_products_list', {
@@ -294,6 +318,7 @@ class PortalStockController(PortalAdminController):
             'batch_actions': True,
             'products_has_lots': products_has_lots,
             'products_repair_stats': products_repair_stats,
+            'product_images': product_images,
             'label_in_stock': _('In Stock'),
             'label_out_of_stock': _('Out of Stock'),
             'label_in_repair': _('In Repair'),
@@ -345,13 +370,19 @@ class PortalStockController(PortalAdminController):
         account_partner = request.env['account.partner'].sudo().search([('partner_id', '=', partner_id.commercial_partner_id.id)], limit=1)
         base_domain = [('is_storable', '=', True), ('account_partner_id', '=', account_partner.id)]
 
-        # Se aplica el filtro de búsqueda por nombre, SKU o código de barras
+        # Se aplica el filtro de búsqueda por nombre, SKU, código de barras, display_name o atributos
         if search:
-            term = f"%{search}%"
+            # ilike ya maneja los comodines automáticamente, no necesitamos agregar %
+            term = search.strip()
             base_domain.extend(expression.OR([
                 [('name', 'ilike', term)],
                 [('default_code', 'ilike', term)],
-                [('barcode', 'ilike', term)]
+                [('barcode', 'ilike', term)],
+                [('display_name', 'ilike', term)],
+                # Buscar en valores de atributos del producto
+                [('product_template_attribute_value_ids.name', 'ilike', term)],
+                # Buscar en nombres de atributos
+                [('product_template_attribute_value_ids.attribute_id.name', 'ilike', term)]
             ]))
         # Aplicar dominio de búsqueda avanzada
         if domain and isinstance(domain, list) and domain:
@@ -486,6 +517,28 @@ class PortalStockController(PortalAdminController):
         # Pre-cargar información de lotes y estadísticas de reparación para productos
         products_has_lots, products_repair_stats = self._get_products_repair_data(products, account_partner)
 
+        # Obtener imágenes de productos directamente
+        # Cargar placeholder una vez
+        placeholder_path = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)),
+            'static', 'img', 'placeholder.png'
+        )
+        placeholder_base64 = None
+        if os.path.exists(placeholder_path):
+            with open(placeholder_path, 'rb') as f:
+                placeholder_base64 = base64.b64encode(f.read()).decode('utf-8')
+        
+        product_images = {}
+        for product in products:
+            # Obtener la imagen del producto (image_1920 hace fallback al template)
+            if product.image_1920:
+                product_images[product.id] = product.image_1920
+            elif product.product_tmpl_id and product.product_tmpl_id.image_1920:
+                product_images[product.id] = product.product_tmpl_id.image_1920
+            elif placeholder_base64:
+                # Usar placeholder si no hay imagen
+                product_images[product.id] = placeholder_base64
+
         # Preparar datos de paginación
         pagination_data = self._get_pagination_data(page, items_total, limit)
         pagination_data.update({'items_total': items_total, 'items_count': items_count})
@@ -499,6 +552,7 @@ class PortalStockController(PortalAdminController):
                 'batch_actions': True,
                 'products_has_lots': products_has_lots,
                 'products_repair_stats': products_repair_stats,
+                'product_images': product_images,
                 'label_in_stock': _('In Stock'),
                 'label_out_of_stock': _('Out of Stock'),
                 'label_in_repair': _('In Repair'),
@@ -521,9 +575,27 @@ class PortalStockController(PortalAdminController):
             'filters': json.dumps(self._get_stock_advanced_search_fields())
         }
 
-    @http.route('/account/stock/image/<int:pid>/<int:width>x<int:height>', type='http', auth='user')
+    @http.route('/account/stock/image/<int:pid>/<int:width>x<int:height>', type='http', auth='user', methods=['GET'], csrf=False)
     def account_stock_image_action(self, pid, width, height, **kw):
-        field = 'image_128'
+        """Obtiene y sirve la imagen del producto con el tamaño especificado.
+        
+        Usa image_1920 (imagen de mayor resolución) y la redimensiona según width/height.
+        Si el producto no tiene imagen, muestra un placeholder.
+        """
+        import logging
+        _logger = logging.getLogger(__name__)
+        
+        # Forzar que se ejecute el logging
+        print("=" * 50)
+        print(f"[DEBUG] account_stock_image_action CALLED!")
+        print(f"[DEBUG] pid={pid}, width={width}, height={height}")
+        print(f"[DEBUG] Request URL: {request.httprequest.url if request else 'NO REQUEST'}")
+        print(f"[DEBUG] Request path: {request.httprequest.path if request else 'NO REQUEST'}")
+        print("=" * 50)
+        
+        _logger.info(f"account_stock_image_action called: pid={pid}, width={width}, height={height}")
+        
+        field = 'image_1920'  # Usar la imagen de mayor resolución
         crop = True
         download = False
         unique = True
@@ -532,15 +604,48 @@ class PortalStockController(PortalAdminController):
         try:
             ProductProducts = request.env['product.product'].sudo()
             product = ProductProducts.browse(pid)
+            
+            _logger.info(f"Product browsed: {product.id if product.exists() else 'NOT FOUND'}")
+            print(f"[DEBUG] Product browsed: {product.id if product.exists() else 'NOT FOUND'}")
+            
+            # Verificar que el producto existe
+            if not product.exists():
+                raise ValueError("Product not found")
+            
+            # Verificar si el producto tiene imagen (verificar tanto en variante como en template)
+            has_image = False
+            if product.image_variant_1920:
+                has_image = True
+                print(f"[DEBUG] Product has variant image")
+            elif product.product_tmpl_id and product.product_tmpl_id.image_1920:
+                has_image = True
+                print(f"[DEBUG] Product has template image")
+            else:
+                print(f"[DEBUG] Product has NO image (variant: {bool(product.image_variant_1920)}, template: {bool(product.product_tmpl_id.image_1920 if product.product_tmpl_id else False)})")
+            
+            # Obtener la imagen del producto (usa image_1920 que hace fallback al template si no hay variante)
+            print(f"[DEBUG] Getting image stream for product {pid}, field={field}, size={width}x{height}")
             stream = request.env['ir.binary']._get_image_stream_from(
                 product, field, width=int(width), height=int(height), crop=crop
             )
+            print(f"[DEBUG] Image stream obtained: type={stream.type if stream else 'None'}, size={stream.size if stream else 'None'}")
+            
+            # Si el stream está vacío o no tiene datos, usar placeholder
+            if not stream or stream.size == 0:
+                print(f"[DEBUG] Stream is empty, using placeholder")
+                raise ValueError("Image stream is empty")
+            
             if request.httprequest.args.get('access_token'):
                 stream.public = True
         except Exception as exc:
+            _logger.error(f"Error getting product image: {exc}", exc_info=True)
+            print(f"[DEBUG] Error getting product image: {exc}")
+            import traceback
+            print(f"[DEBUG] Traceback: {traceback.format_exc()}")
             if download:
                 raise request.not_found() from exc
             # Fallback to placeholder
+            print(f"[DEBUG] Using placeholder image")
             record = request.env.ref('web.image_placeholder').sudo()
             stream = request.env['ir.binary']._get_image_stream_from(
                 record, 'raw', width=int(width), height=int(height), crop=crop
@@ -554,13 +659,15 @@ class PortalStockController(PortalAdminController):
         if nocache:
             send_file_kwargs['max_age'] = None
 
+        print(f"[DEBUG] Returning stream response: {stream}")
         return stream.get_response(**send_file_kwargs)
 
     @http.route('/account/stock/delete/product', type='json', auth='user')
     def account_stock_delete_product(self, product_id=None, **kw):
-        """Delete a single product variant owned by the current account partner.
+        """Archive a single product variant owned by the current account partner.
 
         Uses sudo but enforces ownership by checking `account_partner_id`.
+        Archives the product instead of deleting it (sets active=False).
         """
         try:
             if not product_id:
@@ -580,15 +687,18 @@ class PortalStockController(PortalAdminController):
             if account_partner and product.account_partner_id.id != account_partner.id:
                 return {'status': 'error', 'message': _('You do not have access to this product')}
 
-            # Attempt unlink
-            product.unlink()
-            return {'status': 'success', 'message': _('Product deleted successfully')}
+            # Archive product instead of deleting (set active=False)
+            product.write({'active': False})
+            return {'status': 'success', 'message': _('Product archived successfully')}
         except Exception as e:
             return {'status': 'error', 'message': str(e)}
 
     @http.route('/account/stock/delete/products', type='json', auth='user')
     def account_stock_delete_products(self, product_ids=None, **kw):
-        """Batch delete multiple product variants owned by the current account partner."""
+        """Batch archive multiple product variants owned by the current account partner.
+        
+        Archives the products instead of deleting them (sets active=False).
+        """
         try:
             ids_param = product_ids or kw.get('ids') or kw.get('products')
             if not ids_param:
@@ -617,14 +727,15 @@ class PortalStockController(PortalAdminController):
             ])
 
             if not products:
-                return {'status': 'error', 'message': _('No permitted products found for deletion')}
+                return {'status': 'error', 'message': _('No permitted products found for archiving')}
 
             count = len(products)
-            products.unlink()
+            # Archive products instead of deleting (set active=False)
+            products.write({'active': False})
             return {
                 'status': 'success',
-                'message': _(f'{count} product(s) deleted successfully'),
-                'deleted_count': count,
+                'message': _(f'{count} product(s) archived successfully'),
+                'archived_count': count,
             }
         except Exception as e:
             return {'status': 'error', 'message': str(e)}

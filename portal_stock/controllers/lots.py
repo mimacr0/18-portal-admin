@@ -1,5 +1,7 @@
 import math
 import json
+import base64
+import os
 from functools import lru_cache
 
 from odoo import http, _
@@ -323,9 +325,34 @@ class PortalLotsController(PortalAdminController):
         # Obtener estados de reparación de los lotes
         lots_repair_status = self._get_lots_repair_status(lots, account_partner)
         
+        # Obtener imágenes de productos para cada lote
+        # Cargar placeholder una vez
+        placeholder_path = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)),
+            'static', 'img', 'placeholder.png'
+        )
+        placeholder_base64 = None
+        if os.path.exists(placeholder_path):
+            with open(placeholder_path, 'rb') as f:
+                placeholder_base64 = base64.b64encode(f.read()).decode('utf-8')
+        
+        lot_images = {}
+        for lot in lots:
+            if lot.product_id:
+                # Obtener la imagen del producto (image_1920 hace fallback al template)
+                product = lot.product_id
+                if product.image_1920:
+                    lot_images[product.id] = product.image_1920
+                elif product.product_tmpl_id and product.product_tmpl_id.image_1920:
+                    lot_images[product.id] = product.product_tmpl_id.image_1920
+                elif placeholder_base64:
+                    # Usar placeholder si no hay imagen
+                    lot_images[product.id] = placeholder_base64
+        
         # Renderizar la lista de lotes
         qweb = request.env['ir.qweb']
         lots_list_html = qweb._render('portal_stock.portal_lots_list', {
+            'lot_images': lot_images,
             'lots': lots,
             'batch_actions': True,
             'lots_repair_status': lots_repair_status,
@@ -400,6 +427,30 @@ class PortalLotsController(PortalAdminController):
         # Obtener estados de reparación de los lotes
         lots_repair_status = self._get_lots_repair_status(lots, account_partner)
 
+        # Obtener imágenes de productos para cada lote
+        # Cargar placeholder una vez
+        placeholder_path = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)),
+            'static', 'img', 'placeholder.png'
+        )
+        placeholder_base64 = None
+        if os.path.exists(placeholder_path):
+            with open(placeholder_path, 'rb') as f:
+                placeholder_base64 = base64.b64encode(f.read()).decode('utf-8')
+        
+        lot_images = {}
+        for lot in lots:
+            if lot.product_id:
+                # Obtener la imagen del producto (image_1920 hace fallback al template)
+                product = lot.product_id
+                if product.image_1920:
+                    lot_images[product.id] = product.image_1920
+                elif product.product_tmpl_id and product.product_tmpl_id.image_1920:
+                    lot_images[product.id] = product.product_tmpl_id.image_1920
+                elif placeholder_base64:
+                    # Usar placeholder si no hay imagen
+                    lot_images[product.id] = placeholder_base64
+
         # Preparar datos de paginación
         pagination_data = self._get_pagination_data(page, items_total, limit)
         pagination_data.update({'items_total': items_total, 'items_count': items_count})
@@ -411,6 +462,7 @@ class PortalLotsController(PortalAdminController):
                 'lots': lots,
                 'batch_actions': True,
                 'lots_repair_status': lots_repair_status,
+                'lot_images': lot_images,
                 'label_repair': _('Repair'),
                 'label_review': _('Review'),
             }),
