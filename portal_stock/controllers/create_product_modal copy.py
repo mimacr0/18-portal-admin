@@ -32,33 +32,20 @@ class ProductModalController(PortalAdminController):
                 return {'status': 'error', 'message': _('You do not have access to this product')}
 
             template = product.product_tmpl_id.sudo()
-            
-            # Obtener la imagen directamente de product.product (variante)
-            # Primero buscar image_variant_1920, luego image_1920 (que hace fallback al template)
-            image_base64 = None
-            if product.image_variant_1920:
-                image_base64 = product.image_variant_1920
-            elif product.image_1920:
-                image_base64 = product.image_1920
-            
-            # Obtener todos los datos directamente de product.product (variante)
-            # name puede venir de product.name (que es un campo computado que hace fallback al template)
-            # tracking es del template pero lo leemos desde ahí
-            # volume en Odoo se almacena en m³, pero el frontend espera cm³, así que convertimos
-            volume_cm3 = (product.volume or 0.0) * 1000000 if product.volume else 0.0
-            
+            image_url = f"/account/stock/image/{product.id}/256x256"
+
             return {
                 'status': 'success',
                 'product': {
                     'id': product.id,
                     'template_id': template.id,
-                    'name': product.name or template.name,  # product.name es computado, hace fallback al template
-                    'sku': product.default_code or '',  # Solo de la variante
-                    'barcode': product.barcode or '',  # Solo de la variante
-                    'weight': product.weight or 0.0,  # Solo de la variante
-                    'volume': volume_cm3,  # Solo de la variante, convertido de m³ a cm³
-                    'tracking': template.tracking or 'none',  # tracking es del template
-                    'image_base64': image_base64,  # Imagen en base64 de product.product
+                    'name': template.name,
+                    'sku': product.default_code or template.default_code,
+                    'barcode': product.barcode or template.barcode,
+                    'weight': product.weight or template.weight or 0.0,
+                    'volume': product.volume or template.volume or 0.0,
+                    'tracking': template.tracking or 'none',
+                    'image_url': image_url,
                 }
             }
         except Exception as e:
@@ -235,11 +222,7 @@ class ProductModalController(PortalAdminController):
 
     @http.route('/account/stock/update/product', type='json', auth='user')
     def account_stock_update_product(self, **post):
-        """Update a single product with provided fields
-        
-        Si el producto tiene tracking='serial', solo actualiza la variante específica.
-        Si no tiene tracking='serial', actualiza tanto el template como la variante.
-        """
+        """Update a single product with provided fields"""
         try:
             product_id = int(post.get('product_id'))
             name = post.get('name')
@@ -264,37 +247,33 @@ class ProductModalController(PortalAdminController):
                 return {'status': 'error', 'message': _('You do not have access to this product')}
 
             template = product.product_tmpl_id.sudo()
-            
-            # Actualizar siempre en product.product (variante), independientemente del tracking
-            # Convertir volumen de cm³ a m³ (como en _create_product_from_data)
-            volume_m3 = volume / 1000000 if volume > 0 else 0
-            
-            # Campos que se actualizan en la variante (product.product)
-            prod_vals = {}
-            if sku is not None:
-                prod_vals['default_code'] = sku
-            if barcode is not None:
-                prod_vals['barcode'] = barcode
-            if weight is not None:
-                prod_vals['weight'] = weight
-            if volume is not None:
-                prod_vals['volume'] = volume_m3
-            if image_base64:
-                # Usar image_variant_1920 para guardar en la variante
-                prod_vals['image_variant_1920'] = image_base64
-            
-            if prod_vals:
-                product.write(prod_vals)
-            
-            # Campos que solo existen en el template (name y tracking)
+
+            # Update template-level fields
             tmpl_vals = {}
             if name is not None:
                 tmpl_vals['name'] = name
-            if tracking is not None:
-                tmpl_vals['tracking'] = tracking or 'none'
-            
+            tmpl_vals.update({
+                'weight': weight,
+                'volume': volume,
+                'tracking': tracking or 'none',
+            })
+            if barcode is not None:
+                tmpl_vals['barcode'] = barcode
+            if sku is not None:
+                tmpl_vals['default_code'] = sku
+            if image_base64:
+                tmpl_vals['image_1920'] = image_base64
             if tmpl_vals:
                 template.write(tmpl_vals)
+
+            # Update variant-level fields for the selected product only
+            prod_vals = {
+                'default_code': sku,
+                'barcode': barcode,
+                'weight': weight,
+                'volume': volume,
+            }
+            product.write(prod_vals)
 
             return {
                 'status': 'success',
@@ -315,41 +294,42 @@ class ProductModalController(PortalAdminController):
     
     def _get_attribute_columns(self, headers, col_idx):
         """Detect columns that match product.attribute names.
-        
-        Busca atributos en todos los idiomas instalados para encontrar coincidencias.
+        Considers translations of attribute names in all installed languages.
         
         Returns: dict {header_name: (column_index, attribute_record)}
         """
         ProductAttribute = request.env['product.attribute'].sudo()
         all_attributes = ProductAttribute.search([])
         
-        # Obtener todos los idiomas instalados
+        # Get all installed languages
         installed_langs = request.env['res.lang'].get_installed()
-        lang_codes = [lang_code for lang_code, _ in installed_langs]
+        lang_codes = [lang[0] for lang in installed_langs]
         
-        attribute_columns = {}
+        # Build a map of all translated names (lowercase) -> attribute
+        # This allows matching headers in any language
+        name_to_attribute = {}
         for attr in all_attributes:
-            # Buscar el nombre del atributo en todos los idiomas
-            attr_names = set()
-            attr_names.add(attr.name.lower().strip())  # Nombre en idioma actual
-            
-            # Buscar en todos los idiomas instalados
+            # Add the name in all languages
             for lang_code in lang_codes:
                 attr_with_lang = attr.with_context(lang=lang_code)
-                attr_name_lang = attr_with_lang.name.lower().strip()
-                if attr_name_lang:
-                    attr_names.add(attr_name_lang)
-            
-            # Buscar coincidencia con cualquier header
-            for header, idx in col_idx.items():
-                header_lower = header.lower().strip()
-                if header_lower in attr_names:
-                    attribute_columns[header_lower] = (idx, attr)
-                    break
+                translated_name = attr_with_lang.name.lower().strip()
+                if translated_name:
+                    name_to_attribute[translated_name] = attr
+            # Also add the original name (base language)
+            original_name = attr.name.lower().strip()
+            if original_name:
+                name_to_attribute[original_name] = attr
+        
+        # Match headers with attribute names (considering translations)
+        attribute_columns = {}
+        for header_name, header_idx in col_idx.items():
+            header_lower = header_name.lower().strip()
+            if header_lower in name_to_attribute:
+                attribute_columns[header_lower] = (header_idx, name_to_attribute[header_lower])
         
         return attribute_columns
     
-    def _validate_product_row(self, row, col_idx, row_num, attribute_columns=None):
+    def _validate_product_row(self, row, col_idx, row_num):
         """Validate a single product row from Excel.
         
         Returns: (is_valid, data_dict, error_message)
@@ -382,54 +362,6 @@ class ProductModalController(PortalAdminController):
         sku = str(row[col_idx.get('sku', -1)] or '').strip() if 'sku' in col_idx else ''
         barcode = str(row[col_idx.get('barcode', -1)] or '').strip() if 'barcode' in col_idx else ''
         
-        # Extraer atributos: {attribute_id: [value_ids]}
-        attributes_data = {}
-        if attribute_columns:
-            ProductAttributeValue = request.env['product.attribute.value'].sudo()
-            for attr_header, (attr_col_idx, attribute) in attribute_columns.items():
-                attr_value_str = str(row[attr_col_idx] or '').strip()
-                if attr_value_str:
-                    # Split por coma para múltiples valores
-                    value_names = [
-                        v.strip().replace('\xa0', ' ').replace('\u00a0', ' ').strip()
-                        for v in attr_value_str.replace('\xa0', ' ').replace('\u00a0', ' ').split(',')
-                        if v.strip()
-                    ]
-                    
-                    value_data = []  # Lista de tuplas (value_id, value_name_en)
-                    # Obtener todos los idiomas instalados
-                    installed_langs = request.env['res.lang'].get_installed()
-                    lang_codes = [lang_code for lang_code, _ in installed_langs]
-                    
-                    for value_name in value_names:
-                        attr_value = None
-                        # Primero buscar en inglés (ya que el usuario escribe en inglés)
-                        if 'en_US' in lang_codes:
-                            attr_value = ProductAttributeValue.with_context(lang='en_US').search([
-                                ('attribute_id', '=', attribute.id),
-                                ('name', '=ilike', value_name)
-                            ], limit=1)
-                        
-                        # Si no encuentra en inglés, buscar en todos los idiomas instalados
-                        if not attr_value:
-                            for lang_code in lang_codes:
-                                if lang_code != 'en_US':  # Ya buscamos en inglés
-                                    attr_value = ProductAttributeValue.with_context(lang=lang_code).search([
-                                        ('attribute_id', '=', attribute.id),
-                                        ('name', '=ilike', value_name)
-                                    ], limit=1)
-                                    if attr_value:
-                                        break
-                        
-                        if attr_value:
-                            # Obtener nombre en inglés para el SKU
-                            attr_value_en = attr_value.with_context(lang='en_US')
-                            value_data.append((attr_value.id, attr_value_en.name))
-                    if value_data:
-                        # Ordenar por value_id de menor a mayor
-                        value_data.sort(key=lambda x: x[0])
-                        attributes_data[attribute.id] = value_data
-
         return True, {
             'name': name,
             'tracking': tracking,
@@ -440,19 +372,126 @@ class ProductModalController(PortalAdminController):
             'volume': width * height * length,
             'sku': sku,
             'barcode': barcode,
-            'attributes': attributes_data,  # {attribute_id: [value_ids]}
         }, None
     
-    def _clean_text_for_sku(self, text, max_length=None):
-        """Limpia texto para usar en SKU: solo alfanuméricos, sin espacios, mayúsculas.
-        
-        El método equivalente está disponible en product.product._clean_text_for_sku()
+    def _extract_attribute_values_from_excel(self, row, attribute_columns):
         """
-        if not text:
-            return ''
-        cleaned = ''.join(c for c in text if c.isalnum() or c.isspace()).replace(' ', '').upper()
-        return cleaned[:max_length] if max_length else cleaned
+        Extrae los valores de atributos del Excel sin crear el producto.
+        
+        :param row: Fila del Excel
+        :param attribute_columns: Dict con las columnas de atributos
+        :return: Lista de nombres de valores de atributos (en inglés)
+        """
+        ProductAttributeValue = request.env['product.attribute.value'].sudo()
+        installed_langs = request.env['res.lang'].get_installed()
+        lang_codes = [lang[0] for lang in installed_langs]
+        
+        attribute_value_names = []
+        
+        for attr_header, (attr_col_idx, attribute) in attribute_columns.items():
+            attr_value_str = str(row[attr_col_idx] or '').strip()
+            if attr_value_str:
+                # Split por coma para múltiples valores
+                value_names = [
+                    v.strip().replace('\xa0', ' ').replace('\u00a0', ' ').strip()
+                    for v in attr_value_str.replace('\xa0', ' ').replace('\u00a0', ' ').split(',')
+                    if v.strip()
+                ]
+                
+                for value_name in value_names:
+                    # Buscar el valor del atributo (en cualquier idioma)
+                    attr_value = None
+                    for lang_code in lang_codes:
+                        attr_value_with_lang = ProductAttributeValue.with_context(lang=lang_code)
+                        attr_value = attr_value_with_lang.search([
+                            ('attribute_id', '=', attribute.id),
+                            ('name', '=ilike', value_name)
+                        ], limit=1)
+                        if attr_value:
+                            # Obtener el nombre en inglés
+                            attr_value_en = attr_value.with_context(lang='en_US')
+                            if attr_value_en.name:
+                                attribute_value_names.append(attr_value_en.name)
+                            break
+        
+        return attribute_value_names
 
+    def _generate_complete_sku_from_excel(self, product_name, account_partner=None, attribute_value_names=None):
+        """
+        Genera un SKU completo basado en partner + nombre + valores de atributos.
+        Usa los mismos criterios que generate_default_code del modelo.
+        
+        :param product_name: Nombre del producto
+        :param account_partner: account.partner record
+        :param attribute_value_names: Lista de nombres de valores de atributos (en inglés)
+        :return: SKU completo (string)
+        """
+        sku_parts = []
+        
+        # Parte 1: Nombre del account_partner (máximo 10 caracteres)
+        if account_partner and account_partner.name:
+            partner_name = ''.join(c for c in account_partner.name if c.isalnum() or c.isspace())
+            partner_name = partner_name.replace(' ', '')[:10].upper()
+            if partner_name:
+                sku_parts.append(partner_name)
+        
+        # Parte 2: Primeras 4 letras del nombre del producto
+        if product_name:
+            product_name_clean = ''.join(c for c in product_name if c.isalnum() or c.isspace())
+            first_4_letters = product_name_clean.replace(' ', '')[:4].upper()
+            if first_4_letters:
+                sku_parts.append(first_4_letters)
+        
+        # Parte 3: Valores de atributos (en inglés, ya procesados)
+        if attribute_value_names:
+            for value_name in attribute_value_names:
+                value_clean = ''.join(c for c in value_name if c.isalnum() or c.isspace())
+                value_code = value_clean.replace(' ', '').upper()
+                if value_code:
+                    sku_parts.append(value_code)
+        
+        return '-'.join(sku_parts) if sku_parts else None
+
+    def _check_duplicates(self, ProductTemplate, sku, barcode, row_num, account_partner=None, 
+                          product_name=None, complete_sku=None):
+        """Check for duplicate SKU or barcode using the model method.
+        If product exists and doesn't have SKU, it will be assigned automatically.
+        Uses complete_sku (with attributes) if provided for more accurate search.
+        
+        Returns: (is_duplicate, warning_message, existing_product, sku_used)
+        """
+        ProductProduct = request.env['product.product'].sudo()
+        
+        # Prioridad: 1) SKU del Excel, 2) SKU completo generado (con atributos), 3) barcode
+        search_sku = sku or complete_sku
+        
+        # Buscar producto existente por barcode o SKU
+        existing_product = ProductProduct.find_by_barcode_or_sku(barcode=barcode, sku=search_sku)
+        if existing_product:
+            # Check if it had SKU before
+            had_sku_before = bool(existing_product.default_code)
+            
+            # Now ensure SKU is assigned (will assign if missing)
+            final_sku = existing_product.ensure_default_code(account_partner=account_partner)
+            
+            # Build warning message
+            if not had_sku_before and final_sku:
+                warning_msg = _('Row %d: Product already exists (barcode: %s), SKU assigned: %s') % (
+                    row_num,
+                    barcode or 'N/A',
+                    final_sku
+                )
+            else:
+                warning_msg = _('Row %d: Product already exists (barcode: %s, SKU: %s), skipping') % (
+                    row_num,
+                    barcode or 'N/A',
+                    sku or final_sku or 'N/A'
+                )
+            
+            return True, warning_msg, existing_product, search_sku
+        
+        return False, None, None, search_sku
+    
     def _create_product_from_data(self, data, account_partner):
         """Create product template from validated data dict.
         
@@ -460,11 +499,6 @@ class ProductModalController(PortalAdminController):
         """
         ProductTemplate = request.env['product.template'].sudo()
         
-        if not data['sku']:
-            sku = account_partner.name[:10] + data['name'][:4]
-        else:
-            sku = data['sku']
-
         values = {
             'account_partner_id': account_partner.id if account_partner else False,
             'name': data['name'],
@@ -476,7 +510,7 @@ class ProductModalController(PortalAdminController):
             'volume': data['volume'] / 1000000,  # Convert cm³ to m³
             'weight': data['weight'],
             'barcode': data['barcode'] or False,
-            'internal_reference': sku or False,
+            'default_code': data['sku'] or False,
             'is_storable': True,
             'tracking': data['tracking'],
         }
@@ -488,18 +522,18 @@ class ProductModalController(PortalAdminController):
         
         Supports multiple values per attribute separated by comma.
         Example: "Black, White, Blue" will create 3 attribute values for Color.
-        If attribute line already exists, adds new values to existing ones instead of replacing.
+        Considers translations of attribute values in all installed languages.
         
         Returns: list of warning messages
         """
         warnings = []
         ProductAttributeValue = request.env['product.attribute.value'].sudo()
-        AttributeLine = request.env['product.template.attribute.line'].sudo()
         
-        # Obtener todos los idiomas instalados para buscar valores
+        # Get all installed languages for translation search
         installed_langs = request.env['res.lang'].get_installed()
-        lang_codes = [lang_code for lang_code, _ in installed_langs]
+        lang_codes = [lang[0] for lang in installed_langs]
         
+        attribute_line_vals = []
         for attr_header, (attr_col_idx, attribute) in attribute_columns.items():
             attr_value_str = str(row[attr_col_idx] or '').strip()
             if attr_value_str:
@@ -514,56 +548,43 @@ class ProductModalController(PortalAdminController):
                 found_value_ids = []
                 for value_name in value_names:
                     attr_value = None
-                    # Primero buscar en inglés (ya que el usuario escribe en inglés)
-                    if 'en_US' in lang_codes:
-                        attr_value = ProductAttributeValue.with_context(lang='en_US').search([
-                            ('attribute_id', '=', attribute.id),
-                            ('name', '=ilike', value_name)
-                        ], limit=1)
                     
-                    # Si no encuentra en inglés, buscar en todos los idiomas instalados
+                    # First try exact match in current language context
+                    attr_value = ProductAttributeValue.search([
+                        ('attribute_id', '=', attribute.id),
+                        ('name', '=ilike', value_name)
+                    ], limit=1)
+                    
+                    # If not found, try searching in all languages
                     if not attr_value:
                         for lang_code in lang_codes:
-                            if lang_code != 'en_US':  # Ya buscamos en inglés
-                                attr_value = ProductAttributeValue.with_context(lang=lang_code).search([
-                                    ('attribute_id', '=', attribute.id),
-                                    ('name', '=ilike', value_name)
-                                ], limit=1)
-                                if attr_value:
-                                    break
+                            attr_value_with_lang = ProductAttributeValue.with_context(lang=lang_code)
+                            attr_value = attr_value_with_lang.search([
+                                ('attribute_id', '=', attribute.id),
+                                ('name', '=ilike', value_name)
+                            ], limit=1)
+                            if attr_value:
+                                break
                     
                     if attr_value:
                         found_value_ids.append(attr_value.id)
                     else:
-                        warnings.append(_('Row %d: Attribute value "%s" not found for "%s"') % (row_num, value_name, attribute.name))
+                        # Get attribute name in user's language for error message
+                        user_lang = request.env.user.lang or 'en_US'
+                        attr_name = attribute.with_context(lang=user_lang).name
+                        warnings.append(_('Row %d: Attribute value "%s" not found for "%s"') % (row_num, value_name, attr_name))
                 
                 if found_value_ids:
-                    # Buscar si ya existe una línea de atributo para este atributo
-                    existing_line = AttributeLine.search([
-                        ('product_tmpl_id', '=', template.id),
-                        ('attribute_id', '=', attribute.id)
-                    ], limit=1)
-                    
-                    if existing_line:
-                        # Si existe, obtener los value_ids actuales y agregar los nuevos (sin duplicados)
-                        current_value_ids = existing_line.value_ids.ids
-                        # Actualizar agregando solo los nuevos valores
-                        new_value_ids = [vid for vid in found_value_ids if vid not in current_value_ids]
-                        if new_value_ids:
-                            existing_line.write({
-                                'value_ids': [(4, vid) for vid in new_value_ids]
-                            })
-                            existing_line.invalidate_recordset(['value_ids'])
-                    else:
-                        # Si no existe, crear una nueva línea
-                        AttributeLine.create({
-                            'product_tmpl_id': template.id,
-                            'attribute_id': attribute.id,
-                            'value_ids': [(6, 0, found_value_ids)]
-                        })
+                    attribute_line_vals.append({
+                        'product_tmpl_id': template.id,
+                        'attribute_id': attribute.id,
+                        'value_ids': [(6, 0, found_value_ids)]
+                    })
+        
+        if attribute_line_vals:
+            request.env['product.template.attribute.line'].sudo().create(attribute_line_vals)
         
         return warnings
-    
     
     def _update_variant_dimensions(self, template, volume, weight):
         """Update all variants with the same volume and weight."""
@@ -638,13 +659,11 @@ class ProductModalController(PortalAdminController):
                 ('partner_id', '=', partner.commercial_partner_id.id)
             ], limit=1)
             ProductTemplate = request.env['product.template'].sudo()
-            ProductProduct = request.env['product.product'].sudo()
             
             errors = []
             warnings = []
             created_count = 0
-            created_templates = []
-            created_variants = []
+            created_products = []  # Lista para almacenar información de productos creados
             row_num = 1
             
             # Process rows
@@ -654,88 +673,77 @@ class ProductModalController(PortalAdminController):
                 if not any(row):
                     continue
                 
-                # Validate row and extract data (including attributes)
-                is_valid, data, error = self._validate_product_row(row, col_idx, row_num, attribute_columns)
+                # Validate row
+                is_valid, data, error = self._validate_product_row(row, col_idx, row_num)
                 if not is_valid:
                     errors.append(error)
                     continue
                 
-                # Agregar account_partner a data
-                data['account_partner'] = account_partner
+                # Extract attribute values from Excel BEFORE checking duplicates
+                # This allows us to generate a complete SKU with attributes for accurate search
+                attribute_value_names = self._extract_attribute_values_from_excel(row, attribute_columns)
+                
+                # Generate complete SKU with attributes if no SKU provided in Excel
+                complete_sku = None
+                if not data['sku']:
+                    complete_sku = self._generate_complete_sku_from_excel(
+                        product_name=data['name'],
+                        account_partner=account_partner,
+                        attribute_value_names=attribute_value_names
+                    )
+                
+                # Check duplicates using complete SKU (with attributes) for accurate search
+                is_dup, dup_warning, existing_product, sku_used = self._check_duplicates(
+                    ProductTemplate, 
+                    data['sku'], 
+                    data['barcode'], 
+                    row_num,
+                    account_partner=account_partner,
+                    product_name=data['name'],
+                    complete_sku=complete_sku
+                )
+                if is_dup:
+                    warnings.append(dup_warning)
+                    # Product exists, skip creation but count as processed
+                    continue
 
-                # Buscar si el producto ya existe (por nombre, internal_reference, barcode)
-                existing_template = None
-                skip_row = False
-                
-                # Buscar por nombre del producto
-                if data['name']:
-                    existing_template = ProductTemplate.search([
-                        ('name', '=', data['name']),
-                        ('account_partner_id', '=', account_partner.id if account_partner else False)
-                    ], limit=1)
-                
-                # Si no se encontró por nombre, buscar por internal_reference (default_code)
-                if not existing_template and data.get('sku'):
-                    existing_template = ProductTemplate.search([
-                        ('default_code', '=', data['sku']),
-                        ('account_partner_id', '=', account_partner.id if account_partner else False)
-                    ], limit=1)
-                
-                # Si no se encontró por nombre ni internal_reference, buscar por barcode
-                if not existing_template and data.get('barcode'):
-                    existing_template = ProductTemplate.search([
-                        ('barcode', '=', data['barcode']),
-                        ('account_partner_id', '=', account_partner.id if account_partner else False)
-                    ], limit=1)
-                    if not existing_template:
-                        # Buscar también en variantes
-                        existing_product = ProductProduct.search([
-                            ('barcode', '=', data['barcode'])
-                        ], limit=1)
-                        if existing_product:
-                            existing_template = existing_product.product_tmpl_id
-                            # Si el producto existe pero no tiene SKU, asignarle uno
-                            if existing_product and not existing_product.default_code:
-                                existing_product.ensure_default_code(account_partner=account_partner)
-                
-                # Si el producto existe, actualizar atributos; si no, crear nuevo
+                # Create product (only if it doesn't exist)
                 try:
-                    if existing_template:
-                        # Producto existe: actualizar atributos
-                        template = existing_template
-                    else:
-                        # Producto no existe: crear nuevo
-                        template = self._create_product_from_data(data, account_partner)
+                    # Use complete_sku if no SKU was provided in Excel
+                    sku_to_use = data['sku'] or sku_used
+                    data_with_sku = data.copy()
+                    data_with_sku['sku'] = sku_to_use
+                    
+                    template = self._create_product_from_data(data_with_sku, account_partner)
                     
                     # Process attributes
                     attr_warnings = self._process_product_attributes(template, row, attribute_columns, row_num)
                     warnings.extend(attr_warnings)
                     
-                    # Verificar que se crearon todas las líneas de atributos
-                    attribute_lines_count = len(template.attribute_line_ids)
-                    expected_lines = len(attribute_columns) if attribute_columns else 0
-                    if attribute_lines_count < expected_lines:
-                        warnings.append(_('Row %d: Expected %d attribute lines but only %d were created') % (
-                            row_num, expected_lines, attribute_lines_count
-                        ))
-                    
-                    # Forzar regeneración de variantes para asegurar que se crean todas las combinaciones
-                    template._create_variant_ids()
-                    
                     # Update variants
                     self._update_variant_dimensions(template, data['volume'], data['weight'])
                     
-                    # Obtener las variantes creadas (se generan automáticamente después de procesar atributos)
-                    variants = template.product_variant_ids
-                    
-                    # Generar y asignar SKUs a cada variante usando el método del modelo
-                    for variant in variants:
-                        if not variant.default_code:
+                    # Generate complete SKU with attributes for all variants
+                    # This ensures the SKU matches the one used for search
+                    for variant in template.product_variant_ids:
+                        if not variant.default_code or (complete_sku and variant.default_code != complete_sku):
                             variant.ensure_default_code(account_partner=account_partner)
                     
+                    # Guardar información del producto creado
+                    # Obtener SKU y barcode de la primera variante (o template si no hay variantes)
+                    first_variant = template.product_variant_ids[0] if template.product_variant_ids else None
+                    product_sku = first_variant.default_code if first_variant and first_variant.default_code else template.default_code
+                    product_barcode = first_variant.barcode if first_variant and first_variant.barcode else template.barcode
+                    
+                    created_products.append({
+                        'id': template.id,
+                        'name': template.name,
+                        'sku': product_sku,
+                        'barcode': product_barcode,
+                        'variants_count': len(template.product_variant_ids),
+                    })
+                    
                     created_count += 1
-                    created_templates.append(template)
-                    created_variants.extend(variants)
                 except Exception as e:
                     errors.append(_('Row %d: Error creating product - %s') % (row_num, str(e)))
                     continue
@@ -751,14 +759,11 @@ class ProductModalController(PortalAdminController):
             
             self._send_import_notification(created_count)
             
-            variant_count = len(created_variants)
             return request.make_json_response({
                 'status': 'success',
-                'message': _('%d product template(s) and %d variant(s) created successfully.') % (created_count, variant_count),
+                'message': _('%d product(s) created successfully.') % created_count,
                 'created': created_count,
-                'created_variants': variant_count,
-                'templates': [{'id': t.id, 'name': t.name} for t in created_templates],
-                'variants': [{'id': v.id, 'name': v.name, 'default_code': v.default_code} for v in created_variants],
+                'created_products': created_products,  # Lista de productos creados con detalles
                 'errors': (warnings + errors)[:10] if (warnings or errors) else [],
                 'reload': True
             })

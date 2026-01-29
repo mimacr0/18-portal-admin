@@ -138,7 +138,7 @@ export const initProductsManagementListPage = () => {
                     // Confirm and delete
                     const confirmed = typeof sysConfirmModal === 'function'
                         ? await sysConfirmModal('Delete product?', 'This action cannot be undone.')
-                        : window.confirm('Delete product? This action cannot be undone.');
+                        : window.confirm('Archive product? This action cannot be undone.');
                     if (!confirmed) return;
                     const delRes = await rpc('/account/stock/delete/product', { product_id: productId });
                     systemShowNotification(delRes.message || 'Delete', { type: delRes.status === 'success' ? 'success' : 'error', duration: 4000 });
@@ -159,9 +159,19 @@ export const initProductsManagementListPage = () => {
                     document.getElementById('page-stock-edit-form-barcode').value = product.barcode || '';
                     document.getElementById('page-stock-edit-form-weight').value = String(product.weight || '');
                     document.getElementById('page-stock-edit-form-volume').value = String(product.volume || '');
-                    document.getElementById('page-stock-edit-form-image-base64').value = '';
+                    // Establecer la imagen directamente desde product.product (variante)
                     const preview = document.getElementById('page-stock-edit-form-image-preview');
-                    if (preview) preview.src = product.image_url;
+                    if (preview) {
+                        if (product.image_base64) {
+                            // Usar la imagen base64 de product.product
+                            preview.src = `data:image/png;base64,${product.image_base64}`;
+                            document.getElementById('page-stock-edit-form-image-base64').value = product.image_base64;
+                        } else {
+                            // Usar placeholder si no hay imagen
+                            preview.src = '/portal_stock/static/img/placeholder.png';
+                            document.getElementById('page-stock-edit-form-image-base64').value = '';
+                        }
+                    }
                     const tNone = document.getElementById('page-stock-edit-tracking-none');
                     const tSerial = document.getElementById('page-stock-edit-tracking-serial');
                     if (tNone && tSerial) {
