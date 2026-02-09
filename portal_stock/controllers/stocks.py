@@ -254,6 +254,16 @@ class PortalStockController(PortalAdminController):
                 'id': 'out_stock',
                 'label': _('Out of Stock'),
                 'icon': 'fas fa-cubes'
+            },
+            {
+                'id': 'in_stock_spare_parts',
+                'label': _('In Stock Spare Parts'),
+                'icon': 'fas fa-boxes',
+            },
+            {
+                'id': 'out_stock_spare_parts',
+                'label': _('Out of Stock Spare Parts'),
+                'icon': 'fas fa-cubes'
             }
         ]
 
@@ -311,6 +321,16 @@ class PortalStockController(PortalAdminController):
                 # Usar placeholder si no hay imagen
                 product_images[product.id] = placeholder_base64
         
+        # Obtener la categoría de repuestos para identificar productos
+        spare_parts_category = request.env.ref('product_menu.product_category_spare_parts', raise_if_not_found=False)
+        products_is_spare_parts = {}
+        if spare_parts_category:
+            for product in products:
+                products_is_spare_parts[product.id] = product.categ_id.id == spare_parts_category.id
+        else:
+            for product in products:
+                products_is_spare_parts[product.id] = False
+        
         # Renderizar la lista de productos (el contexto ya tiene el idioma establecido)
         qweb = request.env['ir.qweb']
         products_list_html = qweb._render('portal_stock.portal_products_list', {
@@ -319,6 +339,7 @@ class PortalStockController(PortalAdminController):
             'products_has_lots': products_has_lots,
             'products_repair_stats': products_repair_stats,
             'product_images': product_images,
+            'products_is_spare_parts': products_is_spare_parts,
             'label_in_stock': _('In Stock'),
             'label_out_of_stock': _('Out of Stock'),
             'label_in_repair': _('In Repair'),
@@ -474,6 +495,43 @@ class PortalStockController(PortalAdminController):
             'pages': pages
         }
 
+    def _apply_quick_filter(self, base_domain, quick_filter):
+        """Aplica filtros rápidos al dominio de búsqueda
+        
+        Args:
+            base_domain: Dominio base de búsqueda
+            quick_filter: ID del filtro rápido a aplicar
+            
+        Returns:
+            Dominio modificado con las condiciones del filtro aplicadas
+        """
+        if not quick_filter or quick_filter == 'all':
+            return base_domain
+        
+        # Obtener la categoría de repuestos usando el ID externo
+        spare_parts_category = request.env.ref('product_menu.product_category_spare_parts', raise_if_not_found=False)
+        
+        if quick_filter == 'in_stock':
+            base_domain.append(('qty_available', '>', 0))
+            # Excluir productos de la categoría de repuestos
+            if spare_parts_category:
+                base_domain.append(('categ_id', '!=', spare_parts_category.id))
+        elif quick_filter == 'out_stock':
+            base_domain.append(('qty_available', '<=', 0))
+            # Excluir productos de la categoría de repuestos
+            if spare_parts_category:
+                base_domain.append(('categ_id', '!=', spare_parts_category.id))
+        elif quick_filter == 'in_stock_spare_parts':
+            if spare_parts_category:
+                base_domain.append(('categ_id', '=', spare_parts_category.id))
+                base_domain.append(('qty_available', '>', 0))
+        elif quick_filter == 'out_stock_spare_parts':
+            if spare_parts_category:
+                base_domain.append(('categ_id', '=', spare_parts_category.id))
+                base_domain.append(('qty_available', '<=', 0))
+        
+        return base_domain
+
     @http.route('/account/stock/list/reload', type='json', auth='user')
     def account_stock_list_reload(self, page=1, search='', domain=None, match_type='all', sort=None, order='desc', quick_filter=None, **kw):
         SysParams = request.env['ir.config_parameter'].sudo()
@@ -487,12 +545,8 @@ class PortalStockController(PortalAdminController):
 
         # Construir dominio de búsqueda
         base_domain = self._build_product_domain(search, domain, match_type)
-        # Apply quick filters
-        if quick_filter and quick_filter != 'all':
-            if quick_filter == 'in_stock':
-                base_domain.append(('qty_available', '>', 0))
-            elif quick_filter == 'out_stock':
-                base_domain.append(('qty_available', '<=', 0))
+        # Aplicar filtros rápidos
+        base_domain = self._apply_quick_filter(base_domain, quick_filter)
 
         # Configurar ordenamiento
         order_by = 'id desc'
@@ -543,6 +597,16 @@ class PortalStockController(PortalAdminController):
         pagination_data = self._get_pagination_data(page, items_total, limit)
         pagination_data.update({'items_total': items_total, 'items_count': items_count})
 
+        # Obtener la categoría de repuestos para identificar productos
+        spare_parts_category = request.env.ref('product_menu.product_category_spare_parts', raise_if_not_found=False)
+        products_is_spare_parts = {}
+        if spare_parts_category:
+            for product in products:
+                products_is_spare_parts[product.id] = product.categ_id.id == spare_parts_category.id
+        else:
+            for product in products:
+                products_is_spare_parts[product.id] = False
+
         # El contexto ya tiene el idioma establecido por _ensure_user_lang_context()
         qweb = request.env['ir.qweb']
         return {
@@ -553,6 +617,7 @@ class PortalStockController(PortalAdminController):
                 'products_has_lots': products_has_lots,
                 'products_repair_stats': products_repair_stats,
                 'product_images': product_images,
+                'products_is_spare_parts': products_is_spare_parts,
                 'label_in_stock': _('In Stock'),
                 'label_out_of_stock': _('Out of Stock'),
                 'label_in_repair': _('In Repair'),

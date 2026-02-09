@@ -349,6 +349,17 @@ class PortalLotsController(PortalAdminController):
                     # Usar placeholder si no hay imagen
                     lot_images[product.id] = placeholder_base64
         
+        # Obtener la categoría de repuestos para identificar productos
+        spare_parts_category = request.env.ref('product_menu.product_category_spare_parts', raise_if_not_found=False)
+        products_is_spare_parts = {}
+        if spare_parts_category:
+            for lot in lots:
+                product = lot.product_id
+                products_is_spare_parts[product.id] = product.categ_id.id == spare_parts_category.id
+        else:
+            for lot in lots:
+                products_is_spare_parts[lot.product_id.id] = False
+        
         # Renderizar la lista de lotes
         qweb = request.env['ir.qweb']
         lots_list_html = qweb._render('portal_stock.portal_lots_list', {
@@ -356,6 +367,7 @@ class PortalLotsController(PortalAdminController):
             'lots': lots,
             'batch_actions': True,
             'lots_repair_status': lots_repair_status,
+            'products_is_spare_parts': products_is_spare_parts,
             'label_repair': _('Repair'),
             'label_review': _('Review'),
         })
@@ -455,6 +467,17 @@ class PortalLotsController(PortalAdminController):
         pagination_data = self._get_pagination_data(page, items_total, limit)
         pagination_data.update({'items_total': items_total, 'items_count': items_count})
 
+        # Obtener la categoría de repuestos para identificar productos
+        spare_parts_category = request.env.ref('product_menu.product_category_spare_parts', raise_if_not_found=False)
+        products_is_spare_parts = {}
+        if spare_parts_category:
+            for lot in lots:
+                product = lot.product_id
+                products_is_spare_parts[product.id] = product.categ_id.id == spare_parts_category.id
+        else:
+            for lot in lots:
+                products_is_spare_parts[lot.product_id.id] = False
+        
         qweb = request.env['ir.qweb']
         return {
             'status': 'success',
@@ -463,6 +486,7 @@ class PortalLotsController(PortalAdminController):
                 'batch_actions': True,
                 'lots_repair_status': lots_repair_status,
                 'lot_images': lot_images,
+                'products_is_spare_parts': products_is_spare_parts,
                 'label_repair': _('Repair'),
                 'label_review': _('Review'),
             }),
