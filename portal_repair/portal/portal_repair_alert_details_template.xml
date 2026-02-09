@@ -56,9 +56,9 @@
                             <t t-set="lot" t-value="alert.lot_id"/>
                             <p class="font-medium text-base text-gray-800 dark:text-white"><span>Lot name:</span> <t t-out="lot.name"/></p>
                             <p class="text-gray-700 dark:text-gray-200"><span>Product Name:</span> <t t-esc="lot.product_id.display_name"/></p>
-                            <p class="text-gray-700 dark:text-gray-200"><span>Lot Quantity:</span> <t t-esc="lot.product_qty"/></p>
-                            <p class="text-gray-700 dark:text-gray-200"><span>REF:</span> <t t-esc="lot.ref"/></p>
-                            <p class="text-gray-700 dark:text-gray-200"><span>Lifecycle State:</span> <t t-esc="lot.lifecycle_state"/></p>
+                            <p class="text-gray-700 dark:!text-gray-200"><span>Lot Quantity:</span> <t t-esc="lot.product_qty"/></p>
+                            <p class="text-gray-700 dark:!text-gray-200"><span>REF:</span> <t t-esc="lot.ref"/></p>
+                            <p class="text-gray-700 dark:!text-gray-200"><span>Lifecycle State:</span> <t t-esc="lot.lifecycle_state"/></p>
                         </div>
                     </div>
                 </div>

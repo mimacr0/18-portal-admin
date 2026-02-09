@@ -16,7 +16,12 @@
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="lot.product_id.name"/>
+                    <div class="flex flex-row gap-2 items-center flex-wrap">
+                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-esc="lot.product_id.name"/>
+                        <t t-call="portal_stock.product_type_badge">
+                            <t t-set="product_id" t-value="lot.product_id.id"/>
+                        </t>
+                    </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="lot.name"/>
@@ -82,7 +87,12 @@
                 </td>
                 <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="min-w-0">
-                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words" t-esc="lot.product_id.name"/>
+                        <div class="flex flex-row gap-2 items-center flex-wrap mb-1">
+                            <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words" t-esc="lot.product_id.name"/>
+                            <t t-call="portal_stock.product_type_badge">
+                                <t t-set="product_id" t-value="lot.product_id.id"/>
+                            </t>
+                        </div>
                         <div class="text-xs text-gray-500 dark:text-gray-400 break-words" t-esc="lot.name"/>
                     </div>
                 </td>
@@ -120,7 +130,12 @@
                 </td>
                 <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="min-w-0">
-                        <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words" t-esc="lot.product_id.name"/>
+                        <div class="flex flex-row gap-2 items-center flex-wrap mb-1">
+                            <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words" t-esc="lot.product_id.name"/>
+                            <t t-call="portal_stock.product_type_badge">
+                                <t t-set="product_id" t-value="lot.product_id.id"/>
+                            </t>
+                        </div>
                         <div class="text-xs text-gray-500 dark:text-gray-400 break-words" t-esc="lot.name"/>
                     </div>
                 </td>
