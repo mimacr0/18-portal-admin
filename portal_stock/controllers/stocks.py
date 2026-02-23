@@ -381,6 +381,7 @@ class PortalStockController(PortalAdminController):
             ],
             'products_list_html': products_list_html,
             'products_pager_html': products_pager_html,
+            'products_is_spare_parts': products_is_spare_parts,  # Asegurar que esté disponible en el contexto principal
         })
 
         return request.render("portal_stock.portal_stock_page", values)
