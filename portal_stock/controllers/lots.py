@@ -387,6 +387,7 @@ class PortalLotsController(PortalAdminController):
         values.update({
             'lots_list_html': lots_list_html,
             'lots_pager_html': lots_pager_html,
+            'products_is_spare_parts': products_is_spare_parts,  # Asegurar que esté disponible en el contexto principal
         })
         
         # Usar el mismo template de stock pero adaptado para lotes
