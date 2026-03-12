@@ -28,13 +28,14 @@ class PortalReceptionListController(PortalAdminController):
     # Constantes de configuración
     RECEPTION_FIELDS_MAPPING = {
         'name': 'name',
-        'origin': 'origin',
-        'partner': 'partner_id',
-        'date': 'scheduled_date',
-        'scheduled_date': 'scheduled_date',
-        'state': 'state',
-        'package': 'package_name_virtual',
-        'package_type': 'package_type_virtual',
+        'partner': 'owner_id',
+        'date': 'pack_date',
+        'pack_date': 'pack_date',
+        'state': 'rma_state',
+        'package_type': 'package_type_id',
+        'carrier': 'carrier_id',
+        'weight': 'weight',
+        'shipping_weight': 'shipping_weight',
     }
 
     DEFAULT_LIMIT_PARAM = 'portal_reception.page_list_default_limit'
@@ -73,15 +74,14 @@ class PortalReceptionListController(PortalAdminController):
 
         return [
             {'id': 'name', 'label': _('Name'), 'type': 'text'},
-            {'id': 'package', 'label': _('Package'), 'type': 'text'},
             {'id': 'weight', 'label': _('Weight'), 'type': 'number'},
             {'id': 'shipping_weight', 'label': _('Shipping Weight'), 'type': 'number'},
             {'id': 'package_type', 'label': _('Package Type'), 'type': 'select', 'options': package_type_options},
-            {'id': 'scheduled_date', 'label': _('Scheduled Date'), 'type': 'date'},
+            {'id': 'pack_date', 'label': _('Date'), 'type': 'date'},
             {'id': 'state', 'label': _('Status'), 'type': 'select', 'options': [
-                {'id': 'pending', 'label': _('Pending')},
-                {'id': 'done', 'label': _('Done')},
-                {'id': 'cancel', 'label': _('Cancel')}
+                {'id': 'draft', 'label': _('Received')},
+                {'id': 'opened', 'label': _('Opened & Inspected')},
+                {'id': 'done', 'label': _('Empty / Done')}
             ]}
         ]
 
@@ -89,17 +89,31 @@ class PortalReceptionListController(PortalAdminController):
     def account_reception_action(self, **post):
         # Ensure translations render with user's language
         self._ensure_user_lang_context()
-        StockPicking = request.env['stock.picking'].sudo()
-        reception_type = request.env.ref('stock.picking_type_in')
+        StockPackage = request.env['stock.quant.package'].sudo()
         partner_id = request.env.user.partner_id
         partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
-        packages = StockPicking.search([('picking_type_id', '=', reception_type.id), ('partner_id', 'in', partner_ids)])
+        # packages = StockPackage.search([('type', '=', 'return'), ('owner_id', 'in', partner_ids)])
+        packages = StockPackage.search([('type', '=', 'return')])
+        
+        # Data for the creation modal (rma_label style)
+        all_partners = request.env['res.partner'].sudo().search([
+            ('id', 'child_of', partner_id.commercial_partner_id.id),
+        ])
+        sender_addresses = all_partners.filtered(lambda p: p.type == 'sender')
+        shipping_addresses = all_partners.filtered(lambda p: p.type in ['delivery'])
+        countries = request.env['res.country'].sudo().search([])
+        package_types = request.env['stock.package.type'].sudo().search([])
+
         values = self._get_admin_layout_values()
 
         # Configuración de la interfaz
         values.update({
             'page_name': 'reception',
             'packages': packages,
+            'sender_addresses': sender_addresses,
+            'shipping_addresses': shipping_addresses,
+            'countries': countries,
+            'package_types': package_types,
             'page_title': _('RMA'),
             'page_url': '/account/reception',
             'flatpickr': True,
@@ -107,15 +121,18 @@ class PortalReceptionListController(PortalAdminController):
             'list_filters': [
                 {'id': 'all', 'label': _('All'), 'icon': 'fas fa-check-circle', 'active': True},
                 {'id': 'pending', 'label': _('Pending'), 'icon': 'fas fa-clock'},
-                {'id': 'done', 'label': _('Done'), 'icon': 'fas fa-check'}
+                {'id': 'done', 'label': _('Done'), 'icon': 'fas fa-check'},
+                {'id': 'return', 'label': _('Return'), 'icon': 'fas fa-check'},
+                {'id': 'new', 'label': _('New'), 'icon': 'fas fa-check'}
             ],
             'list_columns': [
-                {'id': 'name', 'label': _('Name'), 'sortable': True, 'responsive': ['sm', 'md', 'lg']},
+                {'id': 'name', 'label': _('Tracking/Name'), 'sortable': True, 'responsive': ['sm', 'md', 'lg']},
+                # {'id': 'carrier', 'label': _('Carrier'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
                 {'id': 'weight', 'label': _('Weight'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
-                {'id': 'type', 'label': _('Package Type'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
+                # {'id': 'type', 'label': _('Package Type'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
                 {'id': 'date', 'label': _('Date'), 'sortable': True, 'md': True, 'responsive': ['md', 'lg']},
                 {'id': 'state', 'label': _('Status'), 'sortable': True, 'md': True, 'responsive': ['md', 'lg']},
-                {'id': 'note', 'label': _('Note'), 'sortable': False, 'responsive': ['lg']},
+                # {'id': 'note', 'label': _('Note'), 'sortable': False, 'responsive': ['lg']},
                 {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True, 'responsive': ['sm', 'md', 'lg']}
             ],
             'tools_actions': [
@@ -170,31 +187,31 @@ class PortalReceptionListController(PortalAdminController):
 
     def _build_reception_domain(self, search='', domain=None, match_type='all', quick_filter=None):
         """Construye el dominio de búsqueda para recepciones"""
-        StockPicking = request.env['stock.picking'].sudo()
-        StockMoveLine = request.env['stock.move.line'].sudo()
-        reception_type = request.env.ref('stock.picking_type_in')
+        # DEFINITIONS
         partner_id = request.env.user.partner_id
         partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
 
         base_domain = [
-            ('picking_type_id', '=', reception_type.id),
-            ('partner_id', 'in', partner_ids),
-            ('state', '!=', 'draft')
+            # ('owner_id', 'in', partner_ids)
         ]
 
         # Apply quick filters
-        if quick_filter and quick_filter != 'all':
-            if quick_filter == 'pending':
-                base_domain.append(('state', 'not in', ['done', 'cancel']))
-            elif quick_filter == 'done':
-                base_domain.append(('state', '=', 'done'))
+        if quick_filter == 'new':
+            base_domain.append(('type', '=', 'new'))
+        elif quick_filter == 'return':
+            base_domain.append(('type', '=', 'return'))
+        elif quick_filter == 'pending':
+            base_domain.extend([('type', '=', 'return'), ('rma_state', '=', 'draft')])
+        elif quick_filter == 'done':
+            base_domain.extend([('type', '=', 'return'), ('rma_state', '=', 'done')])
+
 
         # Aplicar búsqueda de texto
         if search:
             base_domain.extend(expression.OR([
                 [('name', 'ilike', search)],
-                [('origin', 'ilike', search)],
-                [('partner_id.name', 'ilike', search)]
+                [('carrier_id.name', 'ilike', search)],
+                # [('owner_id.name', 'ilike', search)]
             ]))
 
         # Aplicar dominio de búsqueda avanzada
@@ -230,106 +247,36 @@ class PortalReceptionListController(PortalAdminController):
 
                 field_key, operator, raw_value = condition
 
-                # Special handling for weight on picking (computed, non-stored)
-                if field_key in ['weight', 'shipping_weight']:
-                    operator = operator or '='
-                    if operator == 'ilike':
-                        operator = '='
-                    try:
-                        target_value = float(raw_value)
-                    except Exception:
-                        continue
-
-                    candidates = StockPicking.search(base_domain)
-
-                    def _matches_weight(picking):
-                        try:
-                            w = float(picking.shipping_weight or 0.0)
-                        except Exception:
-                            w = 0.0
-                        if operator == '=':
-                            return abs(w - target_value) < 1e-6
-                        if operator == '!=':
-                            return abs(w - target_value) >= 1e-6
-                        if operator == '>=':
-                            return w >= target_value
-                        if operator == '<=':
-                            return w <= target_value
-                        if operator == '>':
-                            return w > target_value
-                        if operator == '<':
-                            return w < target_value
-                        return abs(w - target_value) < 1e-6
-
-                    matched_ids = [p.id for p in candidates if _matches_weight(p)]
-
-                    if operator == '!=':
-                        cond = ('id', 'not in', matched_ids or [0])
-                    else:
-                        cond = ('id', 'in', matched_ids or [0])
-
-                    adv_conditions.append(cond)
-                    adv_condition_domains.append([cond])
-                    continue
-
-                if field_key not in self.RECEPTION_FIELDS_MAPPING:
-                    continue
-
-                model_field = self.RECEPTION_FIELDS_MAPPING[field_key]
-
-                # Manejo especial para filtros por paquete y tipo de paquete
+                # Advanced filtering by package name or type (direct fields)
                 if field_key in ['package', 'package_type']:
-                    ml_domain = [('picking_id', '!=', False)]
-                    if field_key == 'package':
-                        if operator not in ('ilike', '='):
-                            operator = 'ilike'
-                        ml_domain.append(('result_package_id.name', operator, str(raw_value)))
-                    else:
-                        try:
-                            value_int = int(raw_value)
-                        except Exception:
-                            continue
-                        if operator not in ('=', '!='):
-                            operator = '='
-                        if operator == '=':
-                            ml_domain.append(('result_package_id.package_type_id', '=', value_int))
-                        else:
-                            ml_domain.append(('result_package_id.package_type_id', '!=', value_int))
-
-                    picking_ids = StockMoveLine.search(ml_domain).mapped('picking_id').ids
-                    if operator in ('ilike', '=') and not picking_ids:
-                        cond = ('id', '=', 0)
-                    else:
-                        if operator == '!=':
-                            cond = ('id', 'not in', picking_ids or [0])
-                        else:
-                            cond = ('id', 'in', picking_ids)
-
+                    model_field = 'name' if field_key == 'package' else 'package_type_id'
+                    if field_key == 'package' and operator not in ('ilike', '='):
+                        operator = 'ilike'
+                    
+                    coerced_value = _coerce_value(field_key, raw_value)
+                    cond = (model_field, operator, coerced_value)
                     adv_conditions.append(cond)
                     adv_condition_domains.append([cond])
                     continue
 
                 # Manejo especial para el campo de estado
                 if field_key == 'state':
-                    val = (raw_value or '').lower()
-                    if val in ['pending', 'draft', 'waiting']:
-                        cond = ('state', 'not in', ['done', 'cancel'])
-                        adv_conditions.append(cond)
-                        adv_condition_domains.append([cond])
-                        continue
-                    elif val in ['done', 'completed', 'finished']:
-                        cond = ('state', '=', 'done')
-                        adv_conditions.append(cond)
-                        adv_condition_domains.append([cond])
-                        continue
-                    elif val in ['cancel', 'cancelled']:
-                        cond = ('state', '=', 'cancel')
-                        adv_conditions.append(cond)
-                        adv_condition_domains.append([cond])
-                        continue
+                    val = str(raw_value or '').lower()
+                    domain_val = 'draft'
+                    if val in ['draft', 'received', 'pending']:
+                        domain_val = 'draft'
+                    elif val in ['opened', 'inspected']:
+                        domain_val = 'opened'
+                    elif val in ['done', 'empty']:
+                        domain_val = 'done'
+                    
+                    cond = ('rma_state', '=', domain_val)
+                    adv_conditions.append(cond)
+                    adv_condition_domains.append([cond])
+                    continue
 
                 # Manejo especial para fechas
-                if field_key in ['scheduled_date', 'date']:
+                if field_key in ['pack_date', 'date']:
                     if operator == '=':
                         start_utc, end_utc = _date_bounds_utc(str(raw_value))
                         conds = [
@@ -373,21 +320,15 @@ class PortalReceptionListController(PortalAdminController):
         offset = (page - 1) * limit
 
         base_domain = self._build_reception_domain(search, domain, match_type, quick_filter)
-        
-        if quick_filter and quick_filter == 'pending':
-            base_domain.append(('state', '=', 'assigned'))
-
-        if quick_filter and quick_filter == 'done':
-            base_domain.append(('state', '=', 'done'))
 
         order_by = 'id desc'
         if sort and sort in self.RECEPTION_FIELDS_MAPPING:
             order_by = f"{self.RECEPTION_FIELDS_MAPPING[sort]} {order}"
 
-        StockPicking = request.env['stock.picking'].sudo()
-        pickings = StockPicking.search(base_domain, limit=limit, offset=offset, order=order_by)
-        items_total = StockPicking.search_count(base_domain)
-        items_count = len(pickings)
+        StockPackage = request.env['stock.quant.package'].sudo()
+        packages = StockPackage.search(base_domain, limit=limit, offset=offset, order=order_by)
+        items_total = StockPackage.search_count(base_domain)
+        items_count = len(packages)
 
         pagination_data = self._get_pagination_data(page, items_total, limit)
         pagination_data.update({'items_total': items_total, 'items_count': items_count})
@@ -396,7 +337,7 @@ class PortalReceptionListController(PortalAdminController):
         return {
             'status': 'success',
             'list': qweb._render('portal_reception.portal_reception_list', {
-                'packages': pickings,
+                'packages': packages,
                 'batch_actions': True
             }),
             'pager': qweb._render('portal_reception.portal_reception_pager', {
@@ -414,22 +355,21 @@ class PortalReceptionListController(PortalAdminController):
             return {'status': 'error', 'message': _('No packages selected')}
 
         try:
-            StockPicking = request.env['stock.picking'].sudo()
-            reception_type = request.env.ref('stock.picking_type_in')
+            StockPackage = request.env['stock.quant.package'].sudo()
             partner_id = request.env.user.partner_id
             partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
 
-            pickings = StockPicking.search([
+            packages = StockPackage.search([
                 ('id', 'in', ids),
-                ('picking_type_id', '=', reception_type.id),
-                ('partner_id', 'in', partner_ids),
-                ('state', 'not in', ['done', 'cancel'])
+                ('type', '=', 'return'),
+                # ('owner_id', 'in', partner_ids),
+                ('rma_state', '=', 'draft')
             ])
 
-            if not pickings:
-                return {'status': 'error', 'message': _('No valid receptions to cancel')}
+            if not packages:
+                return {'status': 'error', 'message': _('No valid packages to cancel')}
 
-            pickings.action_cancel()
+            packages.unlink() # For packages, we might just delete if draft or mark as cancelled if supported
 
             return {'status': 'success'}
         except Exception as e:
@@ -446,14 +386,13 @@ class PortalReceptionListController(PortalAdminController):
                 headers=[('Content-Type', 'text/plain')]
             )
         
-        StockPicking = request.env['stock.picking'].sudo()
-        reception_type = request.env.ref('stock.picking_type_in')
+        StockPackage = request.env['stock.quant.package'].sudo()
         partner_id = request.env.user.partner_id
         partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
         
         domain = [
-            ('picking_type_id', '=', reception_type.id),
-            ('partner_id', 'in', partner_ids)
+            ('type', '=', 'return'),
+            ('owner_id', 'in', partner_ids)
         ]
         
         if ids:
@@ -464,7 +403,7 @@ class PortalReceptionListController(PortalAdminController):
             except ValueError:
                 pass
         
-        pickings = StockPicking.search(domain, order='scheduled_date desc')
+        packages = StockPackage.search(domain, order='pack_date desc')
 
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
@@ -500,30 +439,28 @@ class PortalReceptionListController(PortalAdminController):
             _('Name'),
             _('Reference'),
             _('Scheduled Date'),
-            _('Weight'),
-            _('Package Type'),
+            # _('Weight'),
+            # _('Package Type'),
             _('State'),
-            _('Note'),
+            # _('Note'),
         ]
         for col, header in enumerate(headers):
             worksheet.write(0, col, header, header_format)
         
-        for row, picking in enumerate(pickings, start=1):
-            packages = picking.get_packages()
-            package_types = ', '.join(packages.mapped('package_type_id.name')) or ''
-            package_refs = ', '.join(packages.mapped('name')) or ''
-            state_label = dict(picking._fields['state'].selection).get(picking.state, picking.state)
+        for row, package in enumerate(packages, start=1):
+            package_type = package.package_type_id.name or ''
+            state_label = dict(package._fields['rma_state'].selection).get(package.rma_state, package.rma_state)
             
-            worksheet.write(row, 0, picking.name or '', cell_format)
-            worksheet.write(row, 1, package_refs, cell_format)
-            if picking.scheduled_date:
-                worksheet.write_datetime(row, 2, picking.scheduled_date.replace(tzinfo=None), date_format)
+            worksheet.write(row, 0, package.name or '', cell_format)
+            worksheet.write(row, 1, package.name, cell_format)
+            if package.pack_date:
+                worksheet.write(row, 2, str(package.pack_date), cell_format)
             else:
                 worksheet.write(row, 2, '', cell_format)
-            worksheet.write(row, 3, picking.shipping_weight or 0, cell_format)
-            worksheet.write(row, 4, package_types, cell_format)
+            worksheet.write(row, 3, package.shipping_weight or 0, cell_format)
+            worksheet.write(row, 4, package_type, cell_format)
             worksheet.write(row, 5, state_label, cell_format)
-            worksheet.write(row, 6, picking.get_note_text() or '', cell_format)
+            worksheet.write(row, 6, package.notes or '', cell_format)
         
         workbook.close()
         
@@ -539,4 +476,34 @@ class PortalReceptionListController(PortalAdminController):
                 ('Content-Disposition', f'attachment; filename="{filename}"'),
             ]
         )
+
+    @http.route('/account/reception/product_maps', type='json', auth='user')
+    def account_reception_product_maps(self, search='', **kw):
+        """Fetch account.product.map records for the Kanban selector"""
+        self._ensure_user_lang_context()
+        partner_id = request.env.user.partner_id
+        
+        domain = [
+            ('account_id.partner_id', '=', partner_id.commercial_partner_id.id),
+            ('active', '=', True)
+        ]
+        
+        if search:
+            domain += [
+                '|', ('name', 'ilike', search),
+                ('account_sku', 'ilike', search)
+            ]
+            
+        product_maps = request.env['account.product.map'].sudo().search(domain, order='name asc')
+        
+        return {
+            'status': 'success',
+            'product_maps': [{
+                'id': pm.id,
+                'name': pm.name,
+                'account_sku': pm.account_sku,
+                'internal_product_name': pm.product_id.name,
+                'image_url': f'/web/image/product.product/{pm.product_id.id}/image_128' if pm.product_id.image_128 else '/web/static/img/placeholder.png'
+            } for pm in product_maps]
+        }
 

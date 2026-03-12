@@ -24,207 +24,212 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
         self._ensure_user_lang_context()
         partner = request.env.user.partner_id
 
-        StockPicking = request.env['stock.picking'].sudo()
-        ProductProduct = request.env['product.product'].sudo()
-        AccountPartner = request.env['account.partner'].sudo()
-        StockPackageType = request.env['stock.package.type'].sudo()
         StockQuantPackage = request.env['stock.quant.package'].sudo()
+        AccountPartner = request.env['account.partner'].sudo()
 
-        reception_type = request.env.ref('stock.picking_type_in').sudo()
-        tracking_number = post.get('tracking_number')
-        optional_tracking_ref = post.get('tracking_number_optional')
-        scheduled_date_value = post.get('scheduled_date')
-        carrier_id = post.get('carrier_id')
-        carrier_name = post.get('carrier_name')
+        sender_id = post.get('sender_id')
+        shipping_address_id = post.get('shipping_address_id')
+        customer_reference = post.get('customer_reference')
+        number_of_packages = post.get('number_of_packages')
         package_type_id = post.get('package_type_id')
-        width = post.get('width')
-        height = post.get('height')
-        length = post.get('length')
-        weight = post.get('weight')  # Product weight
-        package_weight = post.get('package_weight')  # Package/container weight
+        weight = post.get('weight')
+        notes = post.get('notes')
         products = json.loads(post.get('products') or '[]')
 
         if len(products) == 0:
-            return {'status': 'error', 'message': _('No products selected'), 'errors': [['products', [_('No products selected')]]]}
+            return {'status': 'error', 'message': _('No products selected')}
 
         account_partner = AccountPartner.search([('partner_id', '=', partner.commercial_partner_id.id)], limit=1)
-        scheduled_date_dt = datetime.strptime(scheduled_date_value, '%d-%m-%Y %H:%M')
-
-        user_tz = pytz.timezone(request.env.user.tz or 'UTC')
-        local_dt = user_tz.localize(scheduled_date_dt)
-        utc_dt = local_dt.astimezone(pytz.UTC)
-        scheduled_date = utc_dt.strftime('%Y-%m-%d %H:%M:%S')
-
-        # Group products by package number
-        packages = {}
-        for product in products:
-            pid = product.get('product_id')
-            qty = product.get('quantity')
-            package_num = product.get('package') or '1'
-
-            if not pid:
-                return {'status': 'error', 'message': _('Product not found')}
-
-            if not pid.isdigit():
-                return {'status': 'error', 'message': _('Invalid product ID')}
-
-            product_obj = ProductProduct.browse(int(pid))
-
-            if not product_obj:
-                return {'status': 'error', 'message': _('Product not found')}
-
-            if '.' in qty and not qty.replace('.', '').isdigit():
-                return {'status': 'error', 'message': _('Invalid quantity')}
-
-            if '.' not in qty and not qty.isdigit():
-                return {'status': 'error', 'message': _('Invalid quantity')}
-
-            if package_num not in packages:
-                packages[package_num] = []
-
-            packages[package_num].append({
-                'product': product_obj,
-                'qty': float(qty)
-            })
-
-        # Create packages first
-        package_names = []
-        package_map = {}
-        package_type = StockPackageType.browse(int(package_type_id)) if package_type_id else False
-
-        if package_type:
-            for package_num in packages.keys():
-                package_name = StockQuantPackage.set_name_based_on_account(account_partner)
-                package_names.append(package_name)
-
-                package_values = {
-                    'name': package_name,
-                    'package_type_id': package_type.id,
-                    'account_partner_id': account_partner.id,
-                    'owner_id': partner.commercial_partner_id.id,
-                    'location_id': reception_type.default_location_dest_id.id,
-                    'pack_date': fields.Date.today(),
-                    'global_tracking_ref': tracking_number,
-                    'carrier_name': carrier_name or '',
-                    'carrier_id': carrier_id or False,
-                    'optional_tracking_ref': optional_tracking_ref or '',
-                    'shipping_weight': (float(weight) if weight else 0) + (float(package_weight) if package_weight else package_type.base_weight),
-                }
-
-                package = StockQuantPackage.create(package_values)
-                package_map[package_num] = package
-
-        # Create unique procurement group for this reception (prevents merging with other receptions)
-        procurement_group = request.env['procurement.group'].sudo().create({
-            'name': tracking_number,
-            'partner_id': partner.commercial_partner_id.id,
-        })
-
-        # Create the reception
-        picking = StockPicking.create({
-            'picking_type_id': reception_type.id,
-            'account_partner_id': account_partner.id,
+        
+        # Determine carrier if needed, or just use weight
+        package_vals = {
+            'package_type_id': int(package_type_id) if package_type_id else False,
             'owner_id': partner.commercial_partner_id.id,
-            'partner_id': partner.commercial_partner_id.id,
-            'carrier_id': carrier_id,
-            'carrier_tracking_ref': tracking_number,
-            'origin': f'Portal: {tracking_number}',
-            'location_id': reception_type.default_location_src_id.id,
-            'location_dest_id': reception_type.default_location_dest_id.id,
-            'move_type': 'direct',
-            'scheduled_date': scheduled_date,
-            'group_id': procurement_group.id,
-        })
+            'sender_id': int(sender_id) if sender_id else False,
+            'shipping_address_id': int(shipping_address_id) if shipping_address_id else False,
+            'customer_reference': customer_reference or False,
+            'number_of_packages': int(number_of_packages) if number_of_packages else 1,
+            'type': 'return',
+            'notes': notes,
+            'shipping_weight': float(weight) if weight else 0.0,
+            'pack_date': fields.Date.today(),
+        }
 
-        # Create moves with detailed move lines for each package
-        total_weight = 0
+        # Use set_name_based_on_account if it exists and we want specific sequence
+        if hasattr(StockQuantPackage, 'set_name_based_on_account'):
+            package_vals['name'] = StockQuantPackage.set_name_based_on_account(account_partner)
 
-        for package_num, products_in_package in packages.items():
-            package = package_map.get(package_num)
+        try:
+            package = StockQuantPackage.create(package_vals)
 
-            for product_data in products_in_package:
-                product = product_data['product']
-                qty = product_data['qty']
+            # Add products to rma.package.line
+            for product in products:
+                request.env['rma.package.line'].sudo().create({
+                    'package_id': package.id,
+                    'product_map_id': int(product['product_id']),
+                    'quantity': int(product['quantity']),
+                })
 
-                move_vals = {
-                    'name': product.display_name,
-                    'product_id': product.id,
-                    'product_uom_qty': qty,
-                    'product_uom': product.uom_id.id,
-                    'picking_id': picking.id,
-                    'location_id': picking.location_id.id,
-                    'location_dest_id': picking.location_dest_id.id,
-                    'group_id': procurement_group.id,
-                    'state': 'draft',
-                }
-                move = request.env['stock.move'].sudo().create(move_vals)
+            # Send recent activity notification
+            user = request.env.user
+            if hasattr(user, 'send_portal_user_recent_activity'):
+                user.send_portal_user_recent_activity(
+                    "Package '%s' created",
+                    "New RMA package",
+                    "fas fa-box",
+                    "success",
+                    message_args=[package.name]
+                )
 
-                if package:
-                    if product.tracking == 'serial':
-                        # For serial tracking: create one line per unit
-                        for i in range(int(qty)):
-                            move_line_vals = {
-                                'move_id': move.id,
-                                'product_id': product.id,
-                                'product_uom_id': product.uom_id.id,
-                                'location_id': picking.location_id.id,
-                                'location_dest_id': picking.location_dest_id.id,
-                                'quantity': 1,  # Odoo 18 uses 'quantity' instead of 'qty_done'
-                                'result_package_id': package.id,
-                                'origin_package_id': package.id,
-                                'owner_id': partner.commercial_partner_id.id,
-                                'picking_id': picking.id,
-                            }
-                            request.env['stock.move.line'].sudo().create(move_line_vals)
-                    else:
-                        # For lot or no tracking: create single line with full qty
-                        move_line_vals = {
-                            'move_id': move.id,
-                            'product_id': product.id,
-                            'product_uom_id': product.uom_id.id,
-                            'location_id': picking.location_id.id,
-                            'location_dest_id': picking.location_dest_id.id,
-                            'quantity': qty,  # Odoo 18 uses 'quantity' instead of 'qty_done'
-                            'result_package_id': package.id,
-                            'origin_package_id': package.id,
-                            'owner_id': partner.commercial_partner_id.id,
-                            'picking_id': picking.id,
-                        }
-                        request.env['stock.move.line'].sudo().create(move_line_vals)
+            return {'status': 'success', 'message': _('Package created successfully'), 'id': package.id}
+        except Exception as e:
+            return {'status': 'error', 'message': str(e)}
 
-                total_weight += product.weight * qty
+    @http.route('/account/reception/address/create', type='json', auth='user')
+    def account_reception_partner_create(self, **post):
+        """Create a new res.partner as child of the user's commercial partner"""
+        self._ensure_user_lang_context()
+        partner = request.env.user.partner_id
+        name = post.get('name', '').strip()
+        if not name:
+            return {'status': 'error', 'message': _('Name is required')}
 
-        picking.write({
-            'shipping_weight': total_weight,
-            'origin': ', '.join(package_names) if package_names else f'Portal: {tracking_number}'
-        })
+        vals = {
+            'name': name,
+            'parent_id': partner.commercial_partner_id.id,
+            'type': post.get('type', 'contact'),
+        }
 
-        picking.action_confirm()
-        picking.action_assign()
+        if post.get('email'):
+            vals['email'] = post['email']
+        if post.get('phone'):
+            vals['phone'] = post['phone']
+        if post.get('street'):
+            vals['street'] = post['street']
+        if post.get('city'):
+            vals['city'] = post['city']
+        if post.get('zip'):
+            vals['zip'] = post['zip']
+        if post.get('country_id'):
+            vals['country_id'] = int(post['country_id'])
 
-        # Send recent activity notification
-        user = request.env.user
-        user.send_portal_user_recent_activity(
-            "Reception '%s' created",
-            "New reception",
-            "fas fa-plus-circle",
-            "success",
-            message_args=[picking.name]
-        )
-
-        return {'status': 'success', 'message': _('Reception created successfully')}
+        try:
+            new_partner = request.env['res.partner'].sudo().create(vals)
+            return {
+                'status': 'success',
+                'id': new_partner.id,
+                'name': new_partner.name,
+                'display_name': new_partner.display_name,
+            }
+        except Exception as e:
+            return {'status': 'error', 'message': str(e)}
 
     @http.route('/account/reception/product-catalog', type='json', auth='user')
     def account_reception_product_catalog(self, page=1, search='', **post):
-        """Get the product catalog - delegates to centralized catalog (no stock filter)"""
-        from odoo.addons.portal_catalog.controllers.product_catalog import ProductCatalogController
-        return ProductCatalogController().catalog_product_catalog(page, search, **post)
+        """Get the product catalog - locally implemented to avoid portal_catalog dependency"""
+        self._ensure_user_lang_context()
+        ProductProduct = request.env['product.product'].sudo()
+
+        # Set limit to 20 items per page
+        limit = 20
+        page = int(page)
+        offset = (page - 1) * limit
+
+        domain = []
+
+        if search:
+            domain = expression.AND([
+                domain,
+                expression.OR([
+                    [('name', 'ilike', search)],
+                    [('default_code', 'ilike', search)],
+                    [('barcode', 'ilike', search)]
+                ])
+            ])
+
+        # Get user language
+        user_lang = request.env.user.sudo().lang or 'es_ES'
+
+        # Get products with pagination
+        products = ProductProduct.with_context(lang=user_lang).search(domain, limit=limit, offset=offset)
+        total_count = ProductProduct.search_count(domain)
+        total_pages = math.ceil(total_count / limit) if total_count > 0 else 1
+
+        # Create pages for pagination template
+        pages = []
+        for i in range(max(1, page - 2), min(total_pages + 1, page + 3)):
+            pages.append({
+                'page': i,
+                'active': i == page
+            })
+
+        # Return both products and pagination data rendered with templates
+        qweb = request.env['ir.qweb'].with_context(lang=user_lang)
+        return {
+            'status': 'success',
+            'products_html': qweb._render('portal_catalog.portal_product_catalog_items', {
+                'products': products
+            }),
+            'pagination_html': qweb._render('portal_catalog.portal_product_catalog_pagination', {
+                'page': page,
+                'pages': pages,
+                'total_pages': total_pages,
+                'total_count': total_count,
+                'has_next': page < total_pages,
+                'has_previous': page > 1
+            })
+        }
 
     @http.route('/account/reception/product-search', type='json', auth='user')
     def account_reception_product_search(self, term='', **kw):
-        """Search products - delegates to centralized catalog endpoint"""
-        from odoo.addons.portal_catalog.controllers.product_catalog import ProductCatalogController
-        return ProductCatalogController().catalog_product_search(term, **kw)
+        """Search products - locally implemented to avoid portal_catalog dependency"""
+        self._ensure_user_lang_context()
+        user_lang = request.env.user.sudo().lang or 'es_ES'
+        ProductProduct = request.env['product.product'].sudo().with_context(lang=user_lang)
+        
+        domain = []
+
+        if term:
+            domain = expression.AND([
+                domain,
+                expression.OR([
+                    [('name', 'ilike', term)],
+                    [('default_code', 'ilike', term)],
+                    [('barcode', 'ilike', term)],
+                    [('product_template_attribute_value_ids.name', 'ilike', term)],
+                    [('product_template_attribute_value_ids.attribute_id.name', 'ilike', term)]
+                ])
+            ])
+
+        products = ProductProduct.search(domain, limit=10)
+
+        result_items = []
+        for product in products:
+            attributes = []
+            for attr_value in product.product_template_attribute_value_ids:
+                attributes.append({
+                    'id': attr_value.id,
+                    'name': attr_value.name,
+                    'attribute_name': attr_value.attribute_id.name,
+                    'value': attr_value.name,
+                    'display_name': f"{attr_value.attribute_id.name}: {attr_value.name}"
+                })
+
+            result_items.append({
+                'id': product.id,
+                'text': product.name,
+                'default_code': product.default_code or '',
+                'barcode': product.barcode or '',
+                'price': product.list_price,
+                'currency': product.currency_id.symbol,
+                'attributes': attributes,
+                'image': product.image_128 and f"data:image/png;base64,{product.image_128.decode('utf-8')}" or False
+            })
+
+        return {
+            'status': 'success',
+            'items': result_items
+        }
 
     @http.route('/account/reception/carrier-search', type='json', auth='user')
     def account_reception_carrier_search(self, term='', **kw):
@@ -293,4 +298,114 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
         return {
             'items': result_items
         }
+
+    @http.route('/account/reception/stock_quants', type='json', auth='user')
+    def account_reception_stock_quants(self, search='', **kw):
+        """Fetch all products with their stock info for the current client"""
+        self._ensure_user_lang_context()
+        partner_id = request.env.user.partner_id
+        
+        # Get user's account partner
+        AccountPartner = request.env['account.partner'].sudo()
+        account_partner = AccountPartner.search([('partner_id', '=', partner_id.commercial_partner_id.id)], limit=1)
+        if not account_partner:
+            return {'status': 'success', 'quants': []}
+
+        # Search products instead of quants to show everything
+        ProductProduct = request.env['product.product'].sudo()
+        domain = []
+        if search:
+            domain = [
+                '|', ('name', 'ilike', search),
+                ('default_code', 'ilike', search)
+            ]
+
+        # Use 18.0 search to get products
+        products = ProductProduct.search(domain, limit=500) # Increased limit to ensure "all" products are visible
+        
+        # Fetch actual quants to calculate available quantity
+        # Exclude repairs location
+        repairs_location = request.env.ref('repair_module.stock_location_repairs', raise_if_not_found=False)
+        stock_location = request.env.ref('stock.stock_location_stock', raise_if_not_found=False)
+        
+        if not stock_location:
+            # Fallback to any internal location if stock ref not found
+            stock_location_id = request.env['stock.location'].sudo().search([('usage', '=', 'internal')], limit=1).id
+        else:
+            stock_location_id = stock_location.id
+
+        quant_domain = [
+            ('product_id', 'in', products.ids),
+        ]
+        if stock_location_id:
+            quant_domain.append(('location_id', 'child_of', stock_location_id))
+        if repairs_location:
+            quant_domain.append(('location_id', '!=', repairs_location.id))
+            
+        quants = request.env['stock.quant'].sudo().search(quant_domain)
+        
+        # Group quants by product
+        qty_by_product = {}
+        for q in quants:
+            qty_by_product[q.product_id.id] = qty_by_product.get(q.product_id.id, 0.0) + (q.quantity - q.reserved_quantity)
+
+        # Find existing mappings for these products
+        mappings = request.env['account.product.map'].sudo().search([
+            ('product_id', 'in', products.ids),
+            ('account_id', '=', account_partner.id),
+            ('active', '=', True)
+        ])
+        mapping_by_product = {m.product_id.id: m for m in mappings}
+
+        result = []
+        for p in products:
+            mapping = mapping_by_product.get(p.id)
+            result.append({
+                'id': p.id, # Using product ID as the reference now
+                'product_id': p.id,
+                'product_name': p.name,
+                'product_code': p.default_code,
+                'available_quantity': qty_by_product.get(p.id, 0.0),
+                'mapping_id': mapping.id if mapping else False,
+                'mapping_name': mapping.name if mapping else False,
+                'mapping_sku': mapping.account_sku if mapping else False,
+                'image_url': f'/web/image/product.product/{p.id}/image_128' if p.image_128 else '/web/static/img/placeholder.png'
+            })
+
+        return {'status': 'success', 'quants': result}
+
+    @http.route('/account/reception/product/map/quick_create', type='json', auth='user')
+    def account_reception_product_map_quick_create(self, **post):
+        """Quickly create an account.product.map for a product"""
+        self._ensure_user_lang_context()
+        partner_id = request.env.user.partner_id
+        product_id = int(post.get('product_id') or 0)
+        if not product_id:
+            return {'status': 'error', 'message': _('Product ID is required')}
+        name = post.get('name')
+        account_sku = post.get('account_sku')
+
+        AccountPartner = request.env['account.partner'].sudo()
+        account_partner = AccountPartner.search([('partner_id', '=', partner_id.commercial_partner_id.id)], limit=1)
+        
+        if not account_partner:
+            return {'status': 'error', 'message': _('Account partner not found')}
+
+        try:
+            mapping = request.env['account.product.map'].sudo().create({
+                'product_id': int(product_id),
+                'name': name,
+                'account_sku': account_sku,
+                'account_id': account_partner.id,
+                'active': True
+            })
+            return {
+                'status': 'success',
+                'id': mapping.id,
+                'name': mapping.name,
+                'account_sku': mapping.account_sku,
+                'product_name': mapping.product_id.name
+            }
+        except Exception as e:
+            return {'status': 'error', 'message': str(e)}
 

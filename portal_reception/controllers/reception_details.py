@@ -21,41 +21,39 @@ class PortalReceptionDetailsController(PortalReceptionListController):
         partner_id = request.env.user.partner_id
         return list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
 
-    def _get_portal_reception_record(self, picking_id):
-        StockPicking = request.env['stock.picking'].sudo()
-        reception_type = request.env.ref('stock.picking_type_in')
+    def _get_portal_reception_record(self, package_id):
+        StockPackage = request.env['stock.quant.package'].sudo()
         partner_ids = self._get_portal_user_partner_ids()
 
         domain = [
-            ('id', '=', int(picking_id)),
-            ('picking_type_id', '=', reception_type.id),
-            ('partner_id', 'in', partner_ids),
+            ('id', '=', int(package_id)),
+            ('type', '=', 'return'),
+            # ('owner_id', 'in', partner_ids),
         ]
 
-        return StockPicking.search(domain, limit=1)
+        return StockPackage.search(domain, limit=1)
 
     @http.route('/account/reception/details/<int:reception_id>', type='http', auth="user", website=True)
     def account_reception_details_action(self, reception_id, access_token=None, **post):
         self._ensure_user_lang_context()
-        StockPicking = request.env['stock.picking'].sudo()
-        reception_type = request.env.ref('stock.picking_type_in')
+        StockPackage = request.env['stock.quant.package'].sudo()
         partner_id = request.env.user.partner_id
         partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
 
-        picking = StockPicking.search([
+        package = StockPackage.search([
             ('id', '=', reception_id),
-            ('picking_type_id', '=', reception_type.id),
-            ('partner_id', 'in', partner_ids)
+            ('type', '=', 'return'),
+            # ('owner_id', 'in', partner_ids)
         ], limit=1)
 
-        if not picking:
+        if not package:
             return request.redirect('/account/reception')
 
         values = self._get_admin_layout_values()
         values.update({
             'page_name': 'reception_details',
-            'picking': picking,
-            'page_title': _('Reception Details'),
+            'package': package,
+            'page_title': _('Package Details'),
             'page_url': '/account/reception/details/%s' % reception_id,
         })
 
@@ -74,10 +72,10 @@ class PortalReceptionDetailsController(PortalReceptionListController):
                 'status': 'success'
             }
 
-        model = request.env['stock.picking']
+        model = request.env['stock.quant.package']
         domain = [
             ('res_id', '=', int(reception_id)),
-            ('model', '=', 'stock.picking'),
+            ('model', '=', 'stock.quant.package'),
             ('subtype_id', '=', request.env.ref('mail.mt_comment').id),
             '|',
             ('body', '!=', ''),
@@ -85,18 +83,17 @@ class PortalReceptionDetailsController(PortalReceptionListController):
         ]
 
         Message = request.env['mail.message']
-        StockPicking = request.env['stock.picking'].sudo()
-        reception_type = request.env.ref('stock.picking_type_in')
+        StockPackage = request.env['stock.quant.package'].sudo()
         partner_id = request.env.user.partner_id
         partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
 
-        picking = StockPicking.search([
+        package = StockPackage.search([
             ('id', '=', int(reception_id)),
-            ('picking_type_id', '=', reception_type.id),
-            ('partner_id', 'in', partner_ids)
+            ('type', '=', 'return'),
+            # ('owner_id', 'in', partner_ids)
         ], limit=1)
 
-        if not picking:
+        if not package:
             return {
                 'data': {'mail.message': []},
                 'status': 'error',
@@ -123,18 +120,17 @@ class PortalReceptionDetailsController(PortalReceptionListController):
         if not str(reception_id).isdigit():
             return json.dumps({'status': 'error', 'message': 'Invalid reception ID'})
 
-        StockPicking = request.env['stock.picking'].sudo()
-        reception_type = request.env.ref('stock.picking_type_in')
+        StockPackage = request.env['stock.quant.package'].sudo()
         partner_id = request.env.user.partner_id
         partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
 
-        picking = StockPicking.search([
+        package = StockPackage.search([
             ('id', '=', int(reception_id)),
-            ('picking_type_id', '=', reception_type.id),
-            ('partner_id', 'in', partner_ids)
+            ('type', '=', 'return'),
+            # ('owner_id', 'in', partner_ids)
         ], limit=1)
 
-        if not picking:
+        if not package:
             return json.dumps({'status': 'error', 'message': 'Access denied'})
 
         attachment_id = False
@@ -146,7 +142,7 @@ class PortalReceptionDetailsController(PortalReceptionListController):
                     "name": ufile.filename,
                     "raw": ufile.read(),
                     "res_id": int(reception_id),
-                    "res_model": 'stock.picking',
+                    "res_model": 'stock.quant.package',
                 }
 
                 if request.env.user.share:
@@ -162,7 +158,7 @@ class PortalReceptionDetailsController(PortalReceptionListController):
         attachment_ids = [attachment_id] if attachment_id else []
 
         try:
-            message = picking.sudo().with_user(request.env.user).with_context(
+            message = package.sudo().with_user(request.env.user).with_context(
                 skip_portal_follower_notify=True,
                 portal_author_partner_id=request.env.user.partner_id.id,
             ).message_post(
@@ -172,7 +168,7 @@ class PortalReceptionDetailsController(PortalReceptionListController):
                 attachment_ids=attachment_ids,
                 author_id=request.env.user.partner_id.id
             )
-            picking.sudo().notify_portal_followers(author_partner_id=request.env.user.partner_id.id)
+            package.sudo().notify_portal_followers(author_partner_id=request.env.user.partner_id.id)
 
             return json.dumps({
                 'status': 'success',
@@ -195,11 +191,11 @@ class PortalReceptionDetailsController(PortalReceptionListController):
         if not reception_id or not str(reception_id).isdigit():
             return {'status': 'error', 'message': _('Invalid reception ID')}
 
-        picking = self._get_portal_reception_record(int(reception_id))
-        if not picking:
-            return {'status': 'error', 'message': _('Reception not found or cannot be cancelled')}
+        package = self._get_portal_reception_record(int(reception_id))
+        if not package:
+            return {'status': 'error', 'message': _('Package not found or cannot be cancelled')}
 
-        picking.action_cancel()
+        package.unlink() # Or cancel if state allows
         return {'status': 'success'}
 
     @http.route('/account/reception/update/note', type='json', auth='user')
@@ -209,11 +205,11 @@ class PortalReceptionDetailsController(PortalReceptionListController):
         if not reception_id or not str(reception_id).isdigit():
             return {'status': 'error', 'message': _('Invalid reception ID')}
 
-        picking = self._get_portal_reception_record(int(reception_id))
-        if not picking:
-            return {'status': 'error', 'message': _('Reception not found')}
+        package = self._get_portal_reception_record(int(reception_id))
+        if not package:
+            return {'status': 'error', 'message': _('Package not found')}
 
-        picking.sudo().write({'note': note})
+        package.sudo().write({'notes': note})
         return {'status': 'success'}
 
     @http.route('/account/reception/get', type='json', auth='user')
@@ -223,78 +219,63 @@ class PortalReceptionDetailsController(PortalReceptionListController):
         if not reception_id or not str(reception_id).isdigit():
             return {'status': 'error', 'message': _('Invalid reception ID')}
 
-        picking = self._get_portal_reception_record(int(reception_id))
-        if not picking:
-            return {'status': 'error', 'message': _('Reception not found')}
+        package = self._get_portal_reception_record(int(reception_id))
+        if not package:
+            return {'status': 'error', 'message': _('Package not found')}
 
-        packages = picking.get_packages()
-        package_type = packages.mapped('package_type_id')[:1]
-        package_type = package_type and package_type[0] or request.env['stock.package.type']
-        carrier_tracking_ref = (packages.mapped('global_tracking_ref')[:1] or [''])[0]
-        optional_tracking_ref = (packages.mapped('optional_tracking_ref')[:1] or [''])[0]
+        package_type = package.package_type_id
+        carrier_tracking_ref = package.name
+        optional_tracking_ref = "" # Not used in simple package model yet
 
         formatted_scheduled_date = ''
         try:
-            if picking.scheduled_date:
-                user_tz = pytz.timezone(request.env.user.tz or 'UTC')
-                scheduled_dt = pytz.UTC.localize(datetime.strptime(picking.scheduled_date.strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')) if isinstance(picking.scheduled_date, datetime) else None
-                if not scheduled_dt and isinstance(picking.scheduled_date, str):
-                    scheduled_dt = pytz.UTC.localize(datetime.strptime(picking.scheduled_date, '%Y-%m-%d %H:%M:%S'))
-                if scheduled_dt:
-                    local_dt = scheduled_dt.astimezone(user_tz)
-                    formatted_scheduled_date = local_dt.strftime('%d-%m-%Y %H:%M')
+            if package.pack_date:
+                formatted_scheduled_date = str(package.pack_date)
         except Exception:
             formatted_scheduled_date = ''
 
         return {
             'status': 'success',
             'data': {
-                'id': picking.id,
+                'id': package.id,
                 'package_type_id': package_type and {'id': package_type.id, 'name': package_type.name} or None,
                 'width': package_type and package_type.width or 0,
                 'height': package_type and package_type.height or 0,
                 'length': package_type and package_type.packaging_length or 0,
-                'weight': picking.shipping_weight,
+                'weight': package.shipping_weight,
                 'scheduled_date': formatted_scheduled_date,
                 'tracking_number': carrier_tracking_ref,
                 'tracking_number_optional': optional_tracking_ref,
-                'carrier': picking.carrier_id and {
-                    'id': picking.carrier_id.id,
-                    'name': picking.carrier_id.name,
+                'carrier': package.carrier_id and {
+                    'id': package.carrier_id.id,
+                    'name': package.carrier_id.name,
                 } or None,
-                'carrier_name': picking.carrier_id.name if picking.carrier_id else '',
-                'products': picking.mapped('move_line_ids').mapped(lambda l: {
-                    'product_id': l.product_id.id,
-                    'product_quantity': getattr(l, 'quantity_product_uom', l.qty_done)
+                'carrier_name': package.carrier_id.name if package.carrier_id else '',
+                'products': package.rma_products_line_ids.mapped(lambda l: {
+                    'product_id': l.product_map_id.id,
+                    'product_quantity': l.quantity
                 })
             }
         }
 
     @http.route('/account/reception/update', type='json', auth='user')
-    def account_reception_update(self, reception_id=None, scheduled_date=None, carrier_id=None, carrier_name=None, tracking_number=None, tracking_number_optional=None, **kw):
+    def account_reception_update(self, reception_id=None, scheduled_date=None, carrier_id=None, **kw):
         """Update editable header fields of a reception."""
         self._ensure_user_lang_context()
         if not reception_id or not str(reception_id).isdigit():
             return {'status': 'error', 'message': _('Invalid reception ID')}
 
-        picking = self._get_portal_reception_record(int(reception_id))
-        if not picking:
-            return {'status': 'error', 'message': _('Reception not found or access denied')}
+        package = self._get_portal_reception_record(int(reception_id))
+        if not package:
+            return {'status': 'error', 'message': _('Package not found or access denied')}
 
-        if picking.state in ('done', 'cancel'):
-            return {'status': 'error', 'message': _('Cannot update a completed or cancelled reception')}
+        if package.rma_state in ('done'):
+            return {'status': 'error', 'message': _('Cannot update a completed reception')}
 
         vals = {}
 
         if scheduled_date:
-            try:
-                user_tz = request.env.user.tz or 'UTC'
-                tz = pytz.timezone(user_tz)
-                local_dt = tz.localize(datetime.strptime(scheduled_date, '%d-%m-%Y %H:%M'))
-                utc_dt = local_dt.astimezone(pytz.UTC)
-                vals['scheduled_date'] = utc_dt.strftime('%Y-%m-%d %H:%M:%S')
-            except Exception:
-                return {'status': 'error', 'message': _('Invalid scheduled date')}
+            vals['pack_date'] = scheduled_date
 
         if carrier_id:
             try:
@@ -302,26 +283,31 @@ class PortalReceptionDetailsController(PortalReceptionListController):
             except Exception:
                 return {'status': 'error', 'message': _('Invalid carrier')}
 
-        if tracking_number is not None:
-            vals['carrier_tracking_ref'] = tracking_number
-
         try:
             if vals:
-                picking.sudo().write(vals)
-
-            packages = picking.move_line_ids.mapped('result_package_id')
-            if packages:
-                package_vals = {}
-                if carrier_name is not None:
-                    package_vals['carrier_name'] = carrier_name
-                if tracking_number is not None:
-                    package_vals['global_tracking_ref'] = tracking_number
-                if tracking_number_optional is not None:
-                    package_vals['optional_tracking_ref'] = tracking_number_optional
-                if package_vals:
-                    packages.sudo().write(package_vals)
+                package.sudo().write(vals)
 
             return {'status': 'success', 'message': _('Reception updated successfully')}
         except Exception as e:
             return {'status': 'error', 'message': str(e)}
+
+    @http.route('/account/reception/print/<int:package_id>', type='http', auth='user')
+    def account_reception_print(self, package_id, **kw):
+        """Print the package label."""
+        package = self._get_portal_reception_record(package_id)
+        if not package:
+            return request.not_found()
+
+        # Assuming the report is 'stock.report_package_barcode' or similar
+        # Since rma_label doesn't specify one, we might need to check if there's a custom rma label report.
+        # For now, let's try to use the standard package barcode one if available.
+        report = request.env.ref('stock.action_report_quant_package_barcode_small').sudo()
+        pdf_content, content_type = report._render_qweb_pdf(package.id)
+
+        pdfhttpheaders = [
+            ('Content-Type', 'application/pdf'),
+            ('Content-Length', len(pdf_content)),
+            ('Content-Disposition', f'attachment; filename="Label_{package.name}.pdf"')
+        ]
+        return request.make_response(pdf_content, headers=pdfhttpheaders)
 

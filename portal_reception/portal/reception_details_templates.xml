@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_reception_details_page" name="Portal Reception Details Page">
+        <t t-call="portal_admin_theme.portal_admin_layout">
+
+            <!-- Details Page -->
+            <div class="w-full md:w-4/5 mx-auto lg:max-w-7xl bg-white dark:bg-gray-800 rounded-xl shadow-lg print:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <!-- Document Action Bar -->
+                <div class="p-5 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    <a href="/account/reception" class="inline-flex items-center text-primary-theme hover:text-primary-theme transition-colors">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Go back
+                    </a>
+                    <div class="flex items-center space-x-4">
+                        <div class="reception-status-selector relative">
+                            <span t-attf-class="px-3 py-1.5 bg-#{package.rma_state == 'done' and 'green' or (package.rma_state == 'draft' and 'amber' or 'blue')}-100 text-#{package.rma_state == 'done' and 'green' or (package.rma_state == 'draft' and 'amber' or 'blue')}-800 dark:bg-#{package.rma_state == 'done' and 'green' or (package.rma_state == 'draft' and 'amber' or 'blue')}-900 dark:text-#{package.rma_state == 'done' and 'green' or (package.rma_state == 'draft' and 'amber' or 'blue')}-200 text-xs font-medium rounded-full flex items-center">
+                                <span t-attf-class="w-2 h-2 bg-#{package.rma_state == 'done' and 'green' or (package.rma_state == 'draft' and 'amber' or 'blue')}-500 dark:bg-#{package.rma_state == 'done' and 'green' or (package.rma_state == 'draft' and 'amber' or 'blue')}-400 rounded-full mr-1.5"></span>
+                                <t t-if="package.rma_state == 'done'">Completed</t>
+                                <t t-elif="package.rma_state == 'opened'">Opened &amp; Inspected</t>
+                                <t t-else="">Received</t>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reception Header -->
+                <div class="p-8 border-b border-gray-200 dark:border-gray-700 relative">
+                    <div class="flex flex-col md:flex-row justify-between items-start relative z-10">
+                        <div>
+                            <div class="flex items-center">
+                                <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">PACKAGE</h1>
+                                <span class="ml-4 text-xl font-medium text-primary-theme "><t t-out="package.name"/></span>
+                            </div>
+                            <div class="mt-4 space-y-1">
+                                <p class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                                    <i class="far fa-calendar-alt mr-2 text-gray-500"></i>
+                                    Date: <span class="ml-1 font-medium text-gray-800 dark:text-gray-200"><t t-out="package.pack_date"/></span>
+                                </p>
+                                <div t-if="package.package_type_id" class="mt-3">
+                                    <div class="inline-flex items-center px-2.5 py-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                                        <i class="fas fa-box mr-1.5 text-gray-500"></i>
+                                        <span class="text-xs text-gray-700 dark:text-gray-300">Type: <strong><t t-out="package.package_type_id.name"/></strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center"> <i class="fas fa-user mr-2 text-primary-theme "></i> Sender </h3>
+                        <div class="text-sm space-y-2">
+                            <t t-set="sender" t-value="package.sender_id"/>
+                            <p class="font-medium text-base text-gray-800 dark:text-white"><t t-out="sender.name"/></p>
+                            <p t-if="sender.street" class="text-gray-700 dark:text-gray-200"><t t-out="sender.street"/></p>
+                            <p t-if="sender.city" class="text-gray-700 dark:text-gray-200"><t t-out="sender.city"/></p>
+                            <p t-if="sender.zip" class="text-gray-700 dark:text-gray-200"><t t-out="sender.zip"/></p>
+                            <p t-if="sender.country_id" class="text-gray-700 dark:text-gray-200"><t t-out="sender.country_id.name"/></p>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center"> <i class="fas fa-info-circle mr-2 text-primary-theme "></i> Package Info </h3>
+                        <div class="text-sm space-y-2">
+                            <p class="text-gray-700 dark:text-gray-200 font-medium"> Status: 
+                                <span t-attf-class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-#{package.rma_state == 'done' and 'green' or (package.rma_state == 'draft' and 'amber' or 'blue')}-100">
+                                    <t t-if="package.rma_state == 'done'">Completed</t>
+                                    <t t-elif="package.rma_state == 'opened'">Opened &amp; Inspected</t>
+                                    <t t-else="">Received</t>
+                                </span>
+                            </p>
+                            <p class="text-gray-700 dark:text-gray-200"> <span class="font-medium">Created:</span> <t t-out="package.create_date"/> </p>
+                            <p t-if="package.weight" class="text-gray-700 dark:text-gray-200"> <span class="font-medium">Weight:</span> <t t-out="package.weight"/> kg </p>
+                            <p t-if="package.shipping_weight" class="text-gray-700 dark:text-gray-200"> <span class="font-medium">Shipping Weight:</span> <t t-out="package.shipping_weight"/> kg </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Table -->
+                <div class="p-8 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-6 flex items-center"> <i class="fas fa-box mr-2 text-primary-theme "></i> Products </h3>
+                    <div class="overflow-x-auto rounded-lg shadow">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                                    <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-100">Product</th>
+                                    <th class="px-6 py-3 text-right font-semibold text-gray-700 dark:text-gray-100">Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-800">
+                                <t t-if="package.rma_products_line_ids">
+                                    <tr t-foreach="package.rma_products_line_ids" t-as="line" class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                        <td class="px-6 py-4 text-gray-800 dark:text-gray-200"> <span t-out="line.product_map_id.product_id.display_name"/> </td>
+                                        <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200 font-medium"> <span t-out="line.quantity"/> </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Communication history -->
+                <div class="border-t border-gray-200 dark:border-gray-700">
+                    <div class="p-5" id="communication-toggle">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium dark:text-white flex items-center">
+                                <i class="fas fa-comments mr-2 text-primary-theme "></i>
+                                Communication history
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="communication-content" class="p-6 pt-0">
+                        <t t-set="partner" t-value="package.owner_id"/>
+                        <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+                            <div class="chat-header bg-gray-50 dark:bg-gray-700 border-b p-4 flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center"> <i class="fas fa-comments text-white text-xs"></i> </div>
+                                    <span class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-200">Chat with <span t-out="partner.name"/></span>
+                                </div>
+                            </div>
+                            <div class="space-y-4 h-[500px] overflow-y-auto p-4 messages-container bg-white dark:bg-gray-800" id="reception_details-details-chat-messages" t-att-data-package-id="package.id" t-att-data-partner-id="user.partner_id.id"></div>
+                            <div class="message-composer bg-white dark:bg-gray-800 border-t p-4">
+                                <div class="message-input-wrapper bg-white dark:bg-gray-700 border rounded-lg" id="message-input-container">
+                                    <div class="flex items-end p-2">
+                                        <div class="flex-grow">
+                                            <input type="hidden" id="page-details-reception_details-message-attachment-token" t-att-value="request.csrf_token()"/>
+                                            <input type="file" id="page-details-reception_details-message-attachment-input" class="hidden"/>
+                                            <textarea class="message-input bg-transparent border-0 w-full py-2 focus:outline-none" rows="1" placeholder="Write a message..."></textarea>
+                                        </div>
+                                        <button id="page-details-reception_details-send-message" class="message-send-button text-primary-theme p-2 rounded-full"> <i class="fas fa-paper-plane"></i> </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h-25"></div>
+                <t t-call="portal_reception.reception_details_add_sender_modal"/>
+            </div>
+        </t>
+    </template>
+
+</odoo>

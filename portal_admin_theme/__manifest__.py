@@ -10,8 +10,8 @@
     'website': 'https://www.dafe.es',
     'license': 'AGPL-3',
     'category': 'Extra Tools',
-    'summary': 'RPC Client API Module',
-    'depends': ['client_account'],
+    'summary': 'Portal Admin Theme Module',
+    'depends': ['account_partner'],
     'data': [
         'portal/layout.xml',
         'security/ir.model.access.csv'

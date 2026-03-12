@@ -334,11 +334,15 @@ class PortalDashboardController(PortalAdminController):
             ('partner_id', '=', partner.commercial_partner_id.id)
         ], limit=1)
         
-        # Base domain for customer's storable products
-        products_domain = [
-            ('account_partner_id', '=', account_partner.id),
-            ('is_storable', '=', True)
-        ] if account_partner else [('id', '=', False)]
+        # Base domain for customer's storable products via account.product.map
+        if account_partner:
+            product_map_ids = request.env['account.product.map'].sudo().search([
+                ('account_id', '=', account_partner.id)
+            ])
+            product_ids = product_map_ids.mapped('product_id').ids
+            products_domain = [('id', 'in', product_ids), ('is_storable', '=', True)]
+        else:
+            products_domain = [('id', '=', False)]
         
         # Total products of this customer
         products_total = ProductProduct.search_count(products_domain)

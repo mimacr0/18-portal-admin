@@ -11,31 +11,50 @@ export const initReceptionQuickSortFilters = () => {
     const allButton = document.getElementById('page-reception-list-filter-all');
     const pendingButton = document.getElementById('page-reception-list-filter-pending');
     const doneButton = document.getElementById('page-reception-list-filter-done');
+    const returnButton = document.getElementById('page-reception-list-filter-return');
+    const newButton = document.getElementById('page-reception-list-filter-new');
 
     // Input oculto para almacenar el filtro activo
     const activeFilterInput = document.getElementById('page-reception-list-quick-filter-active');
 
     if (!activeFilterInput) return;
-    if (!allButton && !pendingButton && !doneButton) return;
+    if (!allButton && !pendingButton && !doneButton && !returnButton && !newButton) return;
+
+    // Helper to get all buttons
+    const getButtons = () => [allButton, pendingButton, doneButton, returnButton, newButton];
 
     // Manejar click en botón "All"
     if (allButton) {
         allButton.addEventListener('click', () => {
-            setActiveFilter('all', allButton, [pendingButton, doneButton]);
+            setActiveFilter('all', allButton, getButtons().filter(b => b !== allButton));
         });
     }
 
     // Manejar click en botón "Pending"
     if (pendingButton) {
         pendingButton.addEventListener('click', () => {
-            setActiveFilter('pending', pendingButton, [allButton, doneButton]);
+            setActiveFilter('pending', pendingButton, getButtons().filter(b => b !== pendingButton));
         });
     }
 
     // Manejar click en botón "Done"
     if (doneButton) {
         doneButton.addEventListener('click', () => {
-            setActiveFilter('done', doneButton, [allButton, pendingButton]);
+            setActiveFilter('done', doneButton, getButtons().filter(b => b !== doneButton));
+        });
+    }
+
+    // Manejar click en botón "Return"
+    if (returnButton) {
+        returnButton.addEventListener('click', () => {
+            setActiveFilter('return', returnButton, getButtons().filter(b => b !== returnButton));
+        });
+    }
+
+    // Manejar click en botón "New"
+    if (newButton) {
+        newButton.addEventListener('click', () => {
+            setActiveFilter('new', newButton, getButtons().filter(b => b !== newButton));
         });
     }
 

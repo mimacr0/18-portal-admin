@@ -136,9 +136,15 @@ export const initReceptionsManagementListPage = () => {
     // Configurar botón para crear nuevos elementos
     const createButton = document.getElementById('launch-create-reception-form-button');
     if(createButton) createButton.addEventListener('click', () => {
-        // Open the modal
-        const modal = document.getElementById('page-reception-list-create-modal');
-        if (modal) modal.classList.remove('hidden');
+        // Open the modal using the theme's Modal system
+        const modalId = 'page-reception-list-create-modal';
+        if (window.Modal) {
+            window.Modal.open(modalId);
+        } else {
+            // Fallback: set data-open attribute directly
+            const modal = document.getElementById(modalId);
+            if (modal) modal.setAttribute('data-open', 'true');
+        }
     });
 
     // Configurar botón para importar archivos

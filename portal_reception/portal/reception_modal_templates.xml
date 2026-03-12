@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Package Create Modal -->
+    <template id="reception_create_modal">
+        <div t-attf-id="page-#{page_name}-list-create-modal" class="modal" data-outside-close="false">
+            <div class="modal-content max-w-2xl w-full mx-auto max-h-[90vh] flex flex-col">
+                    <div class="modal-header">
+                    <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100" t-attf-id="page-#{page_name}-list-create-modal-title">Package Create</h3>
+                    <button data-modal-close="true" class="close-modal" aria-label="Close modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body overflow-y-auto flex-1">
+                    <form t-attf-id="page-#{page_name}-list-create-form">
+                        <!-- Hidden field to switch create modal into edit mode when needed -->
+                        <input type="hidden" t-attf-id="page-#{page_name}-list-create-form-reception-id"/>
+                        
+                        <!-- Sender field -->
+                        <div class="form-group">
+                            <div class="flex items-center">
+                                <label t-attf-for="page-#{page_name}-list-create-form-sender-id" class="form-label-sm font-sm">Sender</label>
+                                <span class="text-red-500 ml-1">*</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <select name="sender_id" t-attf-id="page-#{page_name}-list-create-form-sender-id" class="form-input-sm flex-grow text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme ">
+                                    <option value="">— Select sender —</option>
+                                    <t t-foreach="sender_addresses" t-as="sender">
+                                        <option t-att-value="sender.id" t-esc="sender.display_name"/>
+                                    </t>
+                                </select>
+                                <button type="button"
+                                        class="add-address-btn flex-shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+                                        data-address-target="page-reception-list-create-form-sender-id"
+                                        title="Create new sender">
+                                    <i class="fas fa-plus text-xs"></i>
+                                </button>
+
+                            </div>
+                            <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-sender-id-error"></div>
+                        </div>
+
+                        <!-- Shipping Address field -->
+                        <div class="form-group">
+                            <div class="flex items-center">
+                                <label t-attf-for="page-#{page_name}-list-create-form-shipping-address-id" class="form-label-sm font-sm">Shipping Address</label>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <select name="shipping_address_id" t-attf-id="page-#{page_name}-list-create-form-shipping-address-id" class="form-input-sm flex-grow text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme ">
+                                    <option value="">— Select address —</option>
+                                    <t t-foreach="shipping_addresses" t-as="addr">
+                                        <option t-att-value="addr.id" t-esc="addr.display_name"/>
+                                    </t>
+                                </select>
+                                <button type="button"
+                                        class="add-address-btn flex-shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+                                        data-address-target="page-reception-list-create-form-shipping-address-id"
+                                        title="Create new address">
+                                    <i class="fas fa-plus text-xs"></i>
+                                </button>
+
+                            </div>
+                        </div>
+
+                        <!-- Customer Reference field -->
+                        <div class="form-group">
+                            <div class="flex items-center">
+                                <label t-attf-for="page-#{page_name}-list-create-form-customer-reference" class="form-label-sm font-sm">Customer Reference</label>
+                            </div>
+                            <div>
+                                <input type="text" name="customer_reference" t-attf-id="page-#{page_name}-list-create-form-customer-reference"
+                                       class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme "
+                                       placeholder="Your reference number..."/>
+                            </div>
+                        </div>
+
+                        <!-- Package type field -->
+                        <div class="form-group">
+                            <div class="flex items-center">
+                                <label t-attf-for="page-#{page_name}-list-create-form-package-type-id" class="form-label-sm font-sm">Package Type</label>
+                                <span class="text-red-500 ml-1">*</span>
+                            </div>
+                            <div>
+                                <select name="package_type_id" t-attf-id="page-#{page_name}-list-create-form-package-type-id" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme ">
+                                    <t t-foreach="package_types" t-as="pt">
+                                        <option t-att-value="pt.id" t-esc="pt.name"/>
+                                    </t>
+                                </select>
+                                <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-package-type-id-error"></div>
+                            </div>
+                        </div>
+
+                        <!-- Number of Packages field -->
+                        <div class="form-group">
+                            <div class="flex items-center">
+                                <label t-attf-for="page-#{page_name}-list-create-form-number-of-packages" class="form-label-sm font-sm">Number of Packages</label>
+                                <span class="text-red-500 ml-1">*</span>
+                            </div>
+                            <div>
+                                <input type="number" name="number_of_packages" t-attf-id="page-#{page_name}-list-create-form-number-of-packages"
+                                       class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme "
+                                       min="1" value="1" required="required"/>
+                                <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-number-of-packages-error"></div>
+                            </div>
+                        </div>
+
+
+                        <!-- Weight field -->
+                        <div class="form-group">
+                            <div class="flex items-center">
+                                <label t-attf-for="page-#{page_name}-list-create-form-weight" class="form-label-sm font-sm">Weight (kg)</label>
+                                <span class="text-red-500 ml-1">*</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="number" step="0.01" min="0" name="weight" required="required" t-attf-id="page-#{page_name}-list-create-form-weight"
+                                        class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme "
+                                        placeholder="Total Weight"/>
+                                <span class="mx-1 text-sm">kg</span>
+                            </div>
+                            <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-weight-error"/>
+                        </div>
+
+                        <!-- Notes field -->
+                        <div class="form-group">
+                            <div class="flex items-center">
+                                <label t-attf-for="page-#{page_name}-list-create-form-notes" class="form-label-sm font-sm">Internal Notes</label>
+                            </div>
+                            <div>
+                                <textarea name="notes" t-attf-id="page-#{page_name}-list-create-form-notes" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme " rows="3" placeholder="Additional information..."></textarea>
+                                <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-notes-error"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="flex items-center">
+                                <label t-attf-for="page-#{page_name}-list-create-form-products-list" class="form-label-sm font-sm">Products</label>
+                                <span class="text-red-500 ml-1">*</span>
+                            </div>
+
+                            <div class="field-help mb-2">
+                                <span class="help-text">Select products and set quantity.</span>
+                            </div>
+
+                            <input name="products" type="hidden" t-attf-id="page-#{page_name}-list-create-form-products-list" required="required"/>
+
+                            <div t-attf-id="page-#{page_name}-list-create-form-products-container">
+                                <div class="mt-3 flex flex-wrap items-center gap-2">
+                                    <button t-attf-id="page-#{page_name}-list-create-form-products-add-rma-product-btn" type="button"
+                                            class="px-2 py-0.5 bg-theme-light text-theme border border-theme rounded-md transition-colors text-xs flex items-center">
+                                        <i class="fas fa-search mr-1.5"></i> Add RMA Product
+                                    </button>
+                                    <button t-attf-id="page-#{page_name}-list-create-form-products-add-stock-btn" type="button"
+                                            class="px-2 py-0.5 bg-blue-50 text-blue-600 border border-blue-200 rounded-md transition-colors text-xs flex items-center">
+                                        <i class="fas fa-cubes mr-1.5"></i> From Stock
+                                    </button>
+                                    <button t-attf-id="page-#{page_name}-list-create-form-products-add-catalog-btn" type="button"
+                                            class="px-2 py-0.5 btn-primary text-white rounded-md transition-colors text-xs flex items-center">
+                                        <i class="fas fa-plus mr-1.5"></i> Catalog
+                                    </button>
+                                </div>
+                                
+                                 <div t-attf-id="page-#{page_name}-list-create-form-products-line-items-container"
+                                     class="products-line-items-container gap-2">
+                                </div>
+
+                             
+                            </div>
+
+                            <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-products-list-error"></div>
+                        </div>
+
+                        <!-- Shared modal for creating a new res.partner (used for both sender & shipping address) -->
+                        <div id="reception-add-address-modal" class="modal" data-outside-close="false">
+
+                            <div class="modal-content max-w-md w-full mx-auto">
+                                <div class="modal-header">
+                                    <h3 class="text-base font-semibold" id="reception-add-address-modal-title">New Address</h3>
+
+                                    <button type="button" class="close-modal" data-modal-close="true">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Hidden: which select to update after save, and what type to create -->
+                                    <input type="hidden" id="reception-add-address-target-select"/>
+                                    <input type="hidden" id="reception-add-address-type"/>
+
+
+                                    <div class="grid grid-cols-1 gap-3">
+                                        <div>
+                                            <label class="form-label-sm">Name *</label>
+                                            <input type="text" id="new-address-name" class="form-input-sm w-full" required="1"/>
+                                        </div>
+                                        <div>
+                                            <label class="form-label-sm">Email</label>
+                                            <input type="email" id="new-address-email" class="form-input-sm w-full"/>
+                                        </div>
+                                        <div>
+                                            <label class="form-label-sm">Phone</label>
+                                            <input type="text" id="new-address-phone" class="form-input-sm w-full"/>
+                                        </div>
+                                        <div>
+                                            <label class="form-label-sm">Street</label>
+                                            <input type="text" id="new-address-street" class="form-input-sm w-full"/>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <div>
+                                                <label class="form-label-sm">City</label>
+                                                <input type="text" id="new-address-city" class="form-input-sm w-full"/>
+                                            </div>
+                                            <div>
+                                                <label class="form-label-sm">ZIP</label>
+                                                <input type="text" id="new-address-zip" class="form-input-sm w-full"/>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="form-label-sm">Country</label>
+                                            <select id="new-address-country-id" class="form-input-sm w-full">
+                                                <option value="">— Select country —</option>
+                                                <t t-foreach="countries" t-as="country">
+                                                    <option t-att-value="country.id" t-esc="country.name"/>
+                                                </t>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer flex justify-end gap-2">
+                                    <button type="button" data-modal-close="true" class="modal-btn modal-btn-secondary">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                    <button type="button" id="reception-add-address-save-btn" class="modal-btn modal-btn-primary">
+
+                                        <i class="fas fa-save"></i> Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700">
+                    <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button t-attf-id="page-#{page_name}-list-create-product-form-submit" class="modal-btn modal-btn-primary">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Add Sender Modal -->
+    <template id="reception_add_sender_modal">
+        <div t-attf-id="page-#{page_name}-add-sender-modal" class="modal" data-outside-close="false">
+            <div class="modal-content max-w-md w-full mx-auto mt-20">
+                <div class="modal-header">
+                    <h3 class="text-lg font-sm">Add New Sender Address</h3>
+                    <button type="button" class="close-modal" data-modal-close="true">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="form-group mb-4">
+                        <label class="block text-sm font-medium mb-1">Name</label>
+                        <input type="text" id="new_sender_name" class="form-input-sm w-full border rounded p-2" required="1"/>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="block text-sm font-medium mb-1">Street</label>
+                        <input type="text" id="new_sender_street" class="form-input-sm w-full border rounded p-2"/>
+                    </div>
+                    <div class="form-group mb-4 flex gap-4">
+                        <div class="w-1/2">
+                            <label class="block text-sm font-medium mb-1">City</label>
+                            <input type="text" id="new_sender_city" class="form-input-sm w-full border rounded p-2"/>
+                        </div>
+                        <div class="w-1/2">
+                            <label class="block text-sm font-medium mb-1">Zip</label>
+                            <input type="text" id="new_sender_zip" class="form-input-sm w-full border rounded p-2"/>
+                        </div>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="block text-sm font-medium mb-1">Country</label>
+                        <select id="new_sender_country_id" class="form-input-sm w-full border rounded p-2">
+                            <option value="">Select Country...</option>
+                            <t t-foreach="countries" t-as="country">
+                                <option t-att-value="country.id" t-esc="country.name"/>
+                            </t>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer p-4 flex justify-end gap-2 bg-gray-50 border-t">
+                    <button type="button" class="px-3 py-1.5 border rounded" data-modal-close="true">Cancel</button>
+                    <button type="button" class="px-3 py-1.5 btn-primary text-white rounded" id="btn_save_new_sender">Save Address</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Details Add Sender Modal -->
+    <template id="reception_details_add_sender_modal">
+        <div id="new-sender-address-modal" class="hidden fixed inset-0 z-[60] overflow-y-auto">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                    <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                </div>
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                    <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">Add New Sender Address</h3>
+                        <form id="new-sender-address-form" class="space-y-4">
+                            <div class="grid grid-cols-1 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+                                    <input type="text" name="name" required="1" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-theme focus:border-primary-theme sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"/>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                                    <input type="email" name="email" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-theme focus:border-primary-theme sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"/>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Phone</label>
+                                    <input type="text" name="phone" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-theme focus:border-primary-theme sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"/>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Street</label>
+                                    <input type="text" name="street" required="1" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-theme focus:border-primary-theme sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"/>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">City</label>
+                                        <input type="text" name="city" required="1" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-theme focus:border-primary-theme sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"/>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Zip</label>
+                                        <input type="text" name="zip" required="1" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-theme focus:border-primary-theme sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"/>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Country</label>
+                                    <select name="country_id" required="1" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-theme focus:border-primary-theme sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                        <t t-foreach="countries" t-as="country">
+                                            <option t-att-value="country.id" t-esc="country.name"/>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="button" id="submit-new-sender-address" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-theme  text-base font-medium text-white hover:bg-theme-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-theme sm:ml-3 sm:w-auto sm:text-sm">Save Address</button>
+                        <button type="button" id="close-new-sender-address-modal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-theme sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- RMA Product Kanban Selector Modal -->
+    <template id="reception_product_map_selector_modal">
+        <div id="reception-product-map-selector-modal" class="modal" data-outside-close="false">
+            <div class="modal-content max-w-4xl w-full mx-auto max-h-[90vh] flex flex-col">
+                <div class="modal-header">
+                    <h3 class="text-lg font-semibold">Select RMA Product</h3>
+                    <button type="button" class="close-modal" data-modal-close="true">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body overflow-y-auto flex-1 p-4 bg-gray-50 dark:bg-gray-900 border-y border-gray-200 dark:border-gray-700">
+                    <div class="mb-4 sticky top-0 bg-gray-50 dark:bg-gray-900 z-10 pb-2">
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="reception-product-map-search" 
+                                   class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-theme focus:border-theme outline-none transition-all"
+                                   placeholder="Search by SKU or Name..."/>
+                        </div>
+                    </div>
+                    
+                    <div id="reception-product-map-kanban-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Kanban cards will be injected here via JS -->
+                        <div class="col-span-full py-20 text-center text-gray-500">
+                            <i class="fas fa-spinner fa-spin text-3xl mb-4"></i>
+                            <p>Loading products...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer flex justify-end p-4">
+                    <button type="button" data-modal-close="true" class="modal-btn modal-btn-secondary">
+                        <i class="fas fa-times mr-1.5"></i> Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Stock Selector Modal -->
+    <template id="reception_stock_selector_modal">
+        <div id="reception-stock-selector-modal" class="modal" data-outside-close="false">
+            <div class="modal-content max-w-4xl w-full mx-auto max-h-[90vh] flex flex-col">
+                <div class="modal-header">
+                    <h3 class="text-lg font-semibold">Select from Inventory</h3>
+                    <button type="button" class="close-modal" data-modal-close="true">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body overflow-y-auto flex-1 p-4 bg-gray-50 dark:bg-gray-900 border-y border-gray-200 dark:border-gray-700">
+                    <div class="mb-4 sticky top-0 bg-gray-50 dark:bg-gray-900 z-10 pb-2">
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="reception-stock-search" 
+                                   class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-theme focus:border-theme outline-none transition-all"
+                                   placeholder="Search by Product Name or Code..."/>
+                        </div>
+                    </div>
+                    
+                    <div id="reception-stock-kanban-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="col-span-full py-20 text-center text-gray-500">
+                            <i class="fas fa-spinner fa-spin text-3xl mb-4"></i>
+                            <p>Loading inventory...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer flex justify-end p-4">
+                    <button type="button" data-modal-close="true" class="modal-btn modal-btn-secondary">
+                        <i class="fas fa-times mr-1.5"></i> Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Product Mapping Creation Modal -->
+    <template id="reception_product_mapping_modal">
+        <div id="reception-product-mapping-modal" class="modal" data-outside-close="false">
+            <div class="modal-content max-w-md w-full mx-auto">
+                <div class="modal-header">
+                    <h3 class="text-lg font-semibold">Map Product to RMA</h3>
+                    <button type="button" class="close-modal" data-modal-close="true">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body p-6">
+                    <input type="hidden" id="mapping-product-id"/>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product</label>
+                            <input type="text" id="mapping-internal-name" readonly="readonly"
+                                   class="w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-500"/>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Your Product Name (for RMA)</label>
+                            <input type="text" id="mapping-client-name" 
+                                   class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-theme focus:border-theme outline-none"/>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Your SKU (optional)</label>
+                            <input type="text" id="mapping-client-sku" 
+                                   class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-theme focus:border-theme outline-none"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer flex justify-end gap-2 p-4 bg-gray-50 dark:bg-gray-800 rounded-b-xl border-t border-gray-200 dark:border-gray-700">
+                    <button type="button" data-modal-close="true" class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">Cancel</button>
+                    <button type="button" id="reception-product-mapping-save-btn" 
+                            class="px-4 py-2 text-sm font-medium text-white btn-primary rounded-md shadow-sm">Save &amp; Add</button>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>
