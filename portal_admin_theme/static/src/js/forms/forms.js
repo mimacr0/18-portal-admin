@@ -3,7 +3,7 @@ const sysFormValidate = (ref) => {
 
     // Check if form exists
     if (!form) {
-        showNotification('Form not found', { type: 'error' })
+        systemShowNotification('Form not found', { type: 'error' })
         console.error(`Form not found: ${ref}`)
         return false
     }
@@ -100,6 +100,7 @@ const sysCollectFormData = (formSelector) => {
     // Process file inputs
     form.querySelectorAll('input[type="file"]').forEach(fileInput => {
         specialFields.add(fileInput.name);
+        if(!fileInput.hasAttribute('name')) return;
 
         if (fileInput.files.length > 0) {
             // For multiple files
@@ -115,12 +116,14 @@ const sysCollectFormData = (formSelector) => {
     // Process select-multiple inputs
     form.querySelectorAll('select[multiple]').forEach(select => {
         specialFields.add(select.name);
+        if(!select.hasAttribute('name')) return;
         formData[select.name] = Array.from(select.selectedOptions).map(option => option.value);
     });
 
     // Process checkboxes
     form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         if (!checkbox.name) return;
+        if(!checkbox.hasAttribute('name')) return;
 
         // Skip if this is part of a checkbox group which we'll handle separately
         if (form.querySelectorAll(`input[type="checkbox"][name="${checkbox.name}"]`).length > 1) {
@@ -140,6 +143,7 @@ const sysCollectFormData = (formSelector) => {
     const radioGroups = new Set();
     form.querySelectorAll('input[type="radio"]').forEach(radio => {
         if (!radio.name || radioGroups.has(radio.name)) return;
+        if(!radio.hasAttribute('name')) return;
 
         radioGroups.add(radio.name);
         specialFields.add(radio.name);
@@ -150,7 +154,8 @@ const sysCollectFormData = (formSelector) => {
 
     // Process int fields
     form.querySelectorAll('input[type="number"]').forEach(input => {
-        if (specialFields.has(input.name)) return;
+        if(specialFields.has(input.name)) return;
+        if(!input.hasAttribute('name')) return;
 
         formData[input.name] = parseInt(input.value);
         specialFields.add(input.name);
@@ -161,6 +166,7 @@ const sysCollectFormData = (formSelector) => {
     basicInputs.forEach(input => {
         // Skip fields already processed
         if (specialFields.has(input.name)) return;
+        if (!input.hasAttribute('name')) return;
 
         // Add the standard field value
         formData[input.name] = input.value;
@@ -1206,7 +1212,7 @@ const sysInitClipboardFields = () => {
                         if (!isPassword) {
                             fallbackCopyMethod();
                         } else {
-                            showNotification('Copying password requires permission in this browser', 'warning');
+                            systemShowNotification('Copying password requires permission in this browser', { type: 'warning' });
                         }
                     });
             } else {
@@ -1406,12 +1412,12 @@ function initFormModal() {
             const isValid = validateForm();
             if (isValid) {
                 // Show success notification
-                showNotification('Form submitted successfully!', { type: 'success' });
+                systemShowNotification('Form submitted successfully!', { type: 'success' });
                 // Close the modal
                 Modal.close('formModal');
             } else {
                 // Show error notification
-                showNotification('Please fix the errors in the form', { type: 'error' });
+                systemShowNotification('Please fix the errors in the form', { type: 'error' });
 
                 // Scroll to the first error if possible
                 const firstError = document.querySelector('.form-error[style*="display: block"]');
@@ -1889,7 +1895,7 @@ function setupSaveButtonEvents(modal) {
         if (isValid) {
             // Show success notification
             if (typeof showNotification === 'function') {
-                showNotification('Form saved successfully!', 'success');
+                systemShowNotification('Form saved successfully!', 'success');
             }
 
             // Trigger confetti celebration
@@ -1902,7 +1908,7 @@ function setupSaveButtonEvents(modal) {
         } else {
             // Show error notification
             if (typeof showNotification === 'function') {
-                showNotification('Please fill in all required fields', 'error');
+                systemShowNotification('Please fill in all required fields', 'error');
             }
 
             // Find first error and scroll to it

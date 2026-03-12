@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_lots_catalog_kanban" name="Portal Lots Catalog Page">
+
+        <!-- Lots Page Header -->
+        <div class="flex justify-center items-center mb-8">
+            <div class="relative max-w-md w-full">
+                <input type="text" id="lot-search" class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-full shadow-md focus-ring-theme focus:border-primary-theme block w-full p-3.5 pl-12 pr-12" placeholder="Search products..."/>
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selected lots preview -->
+        <div id="selected-lots-container" class="mb-4 bg-white dark:bg-gray-800 rounded-md shadow overflow-hidden text-sm">
+            <div class="content-gradient px-3 py-2">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fas fa-barcode text-white text-xs mr-2"></i>
+                        <h2 class="text-sm font-semibold text-white">Lots Selected</h2>
+                        <span id="selected-lot-count" class="ml-2 bg-white text-primary-theme dark:bg-gray-700 text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                    </div>
+                    <div>
+                        <button id="clear-lot-selection" class="text-white hover:text-gray-200 transition-colors text-xs">
+                            <i class="fas fa-trash-alt mr-1"></i> Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="no-lots-message" class="p-3 text-center text-xs">
+                <i class="fas fa-box-open text-gray-400 dark:text-gray-500 text-lg mb-1"></i>
+                <p class="text-gray-500 dark:text-gray-400">No stock selected</p>
+                <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Add stock using the "Add" button</p>
+            </div>
+
+            <div id="selected-lots-list" class="hidden max-h-64 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 p-2">
+                <!-- Selected lots will be added here dynamically -->
+            </div>
+        </div>
+
+        <!-- Lots Content -->
+        <div class="flex flex-col md:flex-row">
+
+            <!-- Lots Grid -->
+            <div id="lots-grid" class="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+
+                <!-- Lot Card -->
+                <t t-foreach="lots" t-as="lot">
+                    <div class="bg-[#232f45] rounded-md shadow-sm overflow-hidden lot-card hover:shadow transition-all duration-300" t-att-data-lot-id="lot.id">
+                        <div class="p-3 relative">
+                            <!-- Lot lifecycle state badge -->
+                            <t t-if="lot.lifecycle_state">
+                                <span t-attf-class="absolute right-2 top-2 text-xs px-2 py-0.5 rounded-full #{
+                                    'bg-green-500 text-white' if lot.lifecycle_state == 'active' else
+                                    'bg-yellow-500 text-white' if lot.lifecycle_state == 'warning' else
+                                    'bg-red-500 text-white' if lot.lifecycle_state == 'expired' else
+                                    'bg-gray-500 text-white'
+                                }">
+                                    <t t-out="lot.lifecycle_state"/>
+                                </span>
+                            </t>
+
+                            <div class="text-center mb-2">
+                                <!-- Lot name/serial number -->
+                                <h3 class="text-sm font-medium text-white truncate" t-out="lot.name"/>
+                                <!-- Product name -->
+                                <div class="text-xs text-gray-400 mb-1 truncate" t-out="lot.product_id.name"/>
+                                <!-- Product code -->
+                                <div t-if="lot.product_id.default_code" class="text-xs text-gray-500 mb-2">[<t t-out="lot.product_id.default_code"/>]</div>
+                            </div>
+
+                            <!-- Product attributes -->
+                            <div class="flex flex-wrap justify-center mb-2 gap-1" t-if="lot.product_id.product_template_attribute_value_ids">
+                                <t t-foreach="lot.product_id.product_template_attribute_value_ids" t-as="attribute_value">
+                                    <span class="bg-gray-600 text-gray-200 text-xs font-medium px-1.5 py-0.5 rounded-full">
+                                        <t t-out="attribute_value.name"/>
+                                    </span>
+                                </t>
+                            </div>
+
+                            <!-- Product image -->
+                            <div class="flex justify-center mb-3">
+                                <div class="w-16 h-16 flex items-center justify-center bg-gray-700 rounded">
+                                    <t t-if="lot.product_id.image_128">
+                                        <img t-att-src="'data:image/png;base64,' + lot.product_id.image_128.decode('utf-8')" t-att-alt="lot.product_id.name" class="max-h-full max-w-full rounded"/>
+                                    </t>
+                                    <t t-else="">
+                                        <i class="fas fa-box text-gray-500 text-2xl"></i>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <!-- Quantity available -->
+                            <div class="flex justify-center mb-2">
+                                <span t-attf-class="text-xs #{'text-green-500' if lot.product_qty > 0 else 'text-red-500'} flex items-center">
+                                    <i t-attf-class="fas fa-circle mr-1 text-xs #{'text-green-500' if lot.product_qty > 0 else 'text-red-500'}"></i>
+                                    Qty: <span class="ml-1" t-out="lot.product_qty"/>
+                                </span>
+                            </div>
+
+                            <!-- Location if available -->
+                            <t t-if="lot.location_id">
+                                <div class="flex justify-center mb-2">
+                                    <span class="text-xs text-gray-400 flex items-center truncate">
+                                        <i class="fas fa-map-marker-alt mr-1"></i>
+                                        <t t-out="lot.location_id.name"/>
+                                    </span>
+                                </div>
+                            </t>
+
+                            <button t-attf-id="add-lot-#{lot.id}" class="w-full px-2 py-1.5 btn-primary text-white text-xs rounded flex items-center justify-center transition-colors add-lot-btn">
+                                <i class="fas fa-plus mr-1.5"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </t>
+
+            </div>
+        </div>
+
+    </template>
+
+    <!-- Template for lot catalog items (used by modules needing lot selection) -->
+    <template id="portal_lot_catalog_items" name="Lot Catalog Items">
+        <t t-if="lots">
+            <t t-foreach="lots" t-as="lot">
+                <div class="bg-white dark:bg-gray-800 rounded-md shadow-sm overflow-hidden lot-card hover:shadow transition-all duration-300 text-xs relative" t-att-data-lot-id="lot.id" t-att-data-product-id="lot.product_id.id" t-att-data-product-name="lot.product_id.name" t-att-data-product-code="lot.product_id.default_code or ''" t-att-data-product-qty="lot.product_qty">
+                    <div class="p-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-gray-800 dark:text-white truncate"><t t-out="lot.name"/></h3>
+                            <!-- Lot lifecycle state badge -->
+                            <t t-if="lot.lifecycle_state">
+                                <span t-attf-class="text-xs px-2 py-0.5 rounded-full #{
+                                    'bg-green-500 text-white' if lot.lifecycle_state == 'active' else
+                                    'bg-yellow-500 text-white' if lot.lifecycle_state == 'warning' else
+                                    'bg-red-500 text-white' if lot.lifecycle_state == 'expired' else
+                                    'bg-gray-500 text-white'
+                                }">
+                                    <t t-out="lot.lifecycle_state"/>
+                                </span>
+                            </t>
+                        </div>
+
+                        <!-- Product name -->
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mb-1 truncate"><t t-out="lot.product_id.name"/></div>
+                        <div t-if="lot.product_id.default_code" class="text-xs text-gray-500 dark:text-gray-400 mb-2">[<t t-out="lot.product_id.default_code"/>]</div>
+
+                        <!-- Product attributes -->
+                        <div class="flex flex-wrap mb-2 gap-1" t-if="lot.product_id.product_template_attribute_value_ids">
+                            <t t-foreach="lot.product_id.product_template_attribute_value_ids" t-as="attribute_value">
+                                <span class="bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">
+                                    <t t-out="attribute_value.name"/>
+                                </span>
+                            </t>
+                        </div>
+
+                        <div class="flex items-center justify-between mb-2">
+                            <div>
+                                <!-- Quantity available -->
+                                <div class="flex items-center">
+                                    <t t-if="lot.product_qty &gt; 0">
+                                        <i class="fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs"></i>
+                                        <span class="text-xs text-green-600 dark:text-green-400">Qty: <t t-out="lot.product_qty"/></span>
+                                    </t>
+                                    <t t-else="">
+                                        <i class="fas fa-times-circle text-red-600 dark:text-red-400 mr-1 text-xs"></i>
+                                        <span class="text-xs text-red-600 dark:text-red-400">No Stock</span>
+                                    </t>
+                                </div>
+                                <!-- Location if available -->
+                                <t t-if="lot.location_id">
+                                    <div class="flex items-center mt-1">
+                                        <i class="fas fa-map-marker-alt text-gray-400 mr-1 text-xs"></i>
+                                        <span class="text-xs text-gray-500 dark:text-gray-400 truncate"><t t-out="lot.location_id.name"/></span>
+                                    </div>
+                                </t>
+                            </div>
+                            <div class="w-14 h-14 flex items-center justify-center">
+                                <t t-if="lot.product_id.image_128">
+                                    <img t-att-src="'data:image/png;base64,' + lot.product_id.image_128.decode('utf-8')" t-att-alt="lot.product_id.name" class="max-h-full max-w-full rounded"/>
+                                </t>
+                                <t t-else="">
+                                    <i class="fas fa-box text-gray-400 text-2xl"></i>
+                                </t>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <!-- Initial Add button (shown when lot is not added) -->
+                            <div class="lot-initial-add flex">
+                                <button class="lot-add-btn px-3 py-1 btn-primary text-white rounded transition-colors shadow-sm text-xs">
+                                    <i class="fas fa-plus mr-1"></i> Add
+                                </button>
+                            </div>
+
+                            <!-- Quantity selector (hidden by default, shown when lot is added) -->
+                            <div class="lot-quantity-controls hidden flex items-center">
+                                <div class="flex items-center border border-gray-200 dark:border-gray-600 rounded-md shadow-sm overflow-hidden bg-white dark:bg-gray-800">
+                                    <button class="px-2 py-1 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 lot-decrease transition-colors text-xs border-r border-gray-200 dark:border-gray-600">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="text" value="1" class="w-8 px-1 py-1 text-center border-none focus:ring-0 lot-quantity bg-white dark:bg-gray-800 text-sm font-medium"/>
+                                    <button class="px-2 py-1 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 lot-increase transition-colors text-xs border-l border-gray-200 dark:border-gray-600">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <button class="lot-remove px-2 py-1 text-gray-500 hover:text-red-600 transition-colors text-xs ml-2">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+        <t t-else="">
+            <div class="col-span-full p-6 text-center">
+                <i class="fas fa-search text-gray-400 text-4xl mb-3"></i>
+                <p class="text-lg text-gray-500 dark:text-gray-400">No lots found</p>
+                <p class="text-sm text-gray-400 dark:text-gray-500">Try changing your search criteria</p>
+            </div>
+        </t>
+    </template>
+
+    <!-- Template for lot catalog pagination -->
+    <template id="portal_lot_catalog_pagination" name="Lot Catalog Pagination">
+        <div class="flex items-center justify-between px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg">
+            <div class="flex items-center">
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                    <span class="font-medium">Page <t t-out="page"/></span> of <span class="font-medium"><t t-out="total_pages"/></span>
+                    <span class="text-xs text-gray-500 ml-2">(<t t-out="total_count"/> products)</span>
+                </p>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button t-att-class="'lot-catalog-page-btn px-2 py-1 rounded ' + ('' if has_previous else 'opacity-50 cursor-not-allowed')" t-att-data-page="page - 1" t-att-disabled="not has_previous">
+                    <i class="fas fa-chevron-left text-gray-600 dark:text-gray-400"></i>
+                </button>
+
+                <t t-foreach="pages" t-as="p">
+                    <button t-att-class="'lot-catalog-page-btn px-3 py-1 rounded ' + ('bg-light-active text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300' if p['active'] else 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700')" t-att-data-page="p['page']">
+                        <t t-out="p['page']"/>
+                    </button>
+                </t>
+
+                <button t-att-class="'lot-catalog-page-btn px-2 py-1 rounded ' + ('' if has_next else 'opacity-50 cursor-not-allowed')" t-att-data-page="page + 1" t-att-disabled="not has_next">
+                    <i class="fas fa-chevron-right text-gray-600 dark:text-gray-400"></i>
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Template for stock catalog items based on quants (products with or without lots) -->
+    <template id="portal_stock_catalog_items" name="Stock Catalog Items (Quants)">
+        <t t-if="quants">
+            <t t-foreach="quants" t-as="quant">
+                <div class="bg-white dark:bg-gray-800 rounded-md shadow-sm overflow-hidden lot-card hover:shadow transition-all duration-300 text-xs relative"
+                     t-att-data-quant-id="quant.id"
+                     t-att-data-lot-id="quant.lot_id.id if quant.lot_id else ''"
+                     t-att-data-lot-name="quant.lot_id.name if quant.lot_id else ''"
+                     t-att-data-product-id="quant.product_id.id"
+                     t-att-data-product-name="quant.product_id.name"
+                     t-att-data-product-code="quant.product_id.default_code or ''"
+                     t-att-data-product-qty="quant.quantity - quant.reserved_quantity"
+                     t-att-data-has-lot="'true' if quant.lot_id else 'false'"
+                     t-att-data-location-id="quant.location_id.id"
+                     t-att-data-location-name="quant.location_id.name">
+                    <div class="p-3">
+                        <!-- Header: Lot name or "No Lot" badge -->
+                        <div class="flex items-center justify-between mb-2">
+                            <t t-if="quant.lot_id">
+                                <h3 class="text-sm font-medium text-gray-800 dark:text-white truncate">
+                                    <i class="fas fa-barcode mr-1 text-gray-400"></i>
+                                    <t t-out="quant.lot_id.name"/>
+                                </h3>
+                                <!-- Lot lifecycle state badge if available -->
+                                <t t-if="quant.lot_id.lifecycle_state">
+                                    <span t-attf-class="text-xs px-2 py-0.5 rounded-full #{
+                                        'bg-green-500 text-white' if quant.lot_id.lifecycle_state == 'active' else
+                                        'bg-yellow-500 text-white' if quant.lot_id.lifecycle_state == 'warning' else
+                                        'bg-red-500 text-white' if quant.lot_id.lifecycle_state == 'expired' else
+                                        'bg-gray-500 text-white'
+                                    }">
+                                        <t t-out="quant.lot_id.lifecycle_state"/>
+                                    </span>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <h3 class="text-sm font-medium text-gray-800 dark:text-white truncate">
+                                    <i class="fas fa-box mr-1 text-gray-400"></i>
+                                    <t t-out="quant.product_id.name"/>
+                                </h3>
+                                <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                    No Lot
+                                </span>
+                            </t>
+                        </div>
+
+                        <!-- Product name (shown below if lot exists) -->
+                        <t t-if="quant.lot_id">
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mb-1 truncate"><t t-out="quant.product_id.name"/></div>
+                        </t>
+                        <div t-if="quant.product_id.default_code" class="text-xs text-gray-500 dark:text-gray-400 mb-2">[<t t-out="quant.product_id.default_code"/>]</div>
+
+                        <!-- Product attributes -->
+                        <div class="flex flex-wrap mb-2 gap-1" t-if="quant.product_id.product_template_attribute_value_ids">
+                            <t t-foreach="quant.product_id.product_template_attribute_value_ids" t-as="attribute_value">
+                                <span class="bg-gray-100 text-gray-800 text-xs font-medium px-1.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">
+                                    <t t-out="attribute_value.name"/>
+                                </span>
+                            </t>
+                        </div>
+
+                        <div class="flex items-center justify-between mb-2">
+                            <div>
+                                <!-- Quantity available (quantity - reserved) -->
+                                <t t-set="available_qty" t-value="quant.quantity - quant.reserved_quantity"/>
+                                <div class="flex items-center">
+                                    <t t-if="available_qty &gt; 0">
+                                        <i class="fas fa-check-circle text-green-600 dark:text-green-400 mr-1 text-xs"></i>
+                                        <span class="text-xs text-green-600 dark:text-green-400">Qty: <t t-out="int(available_qty)"/></span>
+                                    </t>
+                                    <t t-else="">
+                                        <i class="fas fa-times-circle text-red-600 dark:text-red-400 mr-1 text-xs"></i>
+                                        <span class="text-xs text-red-600 dark:text-red-400">No Stock</span>
+                                    </t>
+                                </div>
+                                <!-- Location -->
+                                <div class="flex items-center mt-1">
+                                    <i class="fas fa-map-marker-alt text-gray-400 mr-1 text-xs"></i>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400 truncate"><t t-out="quant.location_id.name"/></span>
+                                </div>
+                            </div>
+                            <div class="w-14 h-14 flex items-center justify-center">
+                                <t t-if="quant.product_id.image_128">
+                                    <img t-att-src="'data:image/png;base64,' + quant.product_id.image_128.decode('utf-8')" t-att-alt="quant.product_id.name" class="max-h-full max-w-full rounded"/>
+                                </t>
+                                <t t-else="">
+                                    <i class="fas fa-box text-gray-400 text-2xl"></i>
+                                </t>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <!-- Initial Add button (shown when item is not added) -->
+                            <div class="lot-initial-add flex">
+                                <button class="lot-add-btn px-3 py-1 btn-primary text-white rounded transition-colors shadow-sm text-xs">
+                                    <i class="fas fa-plus mr-1"></i> Add
+                                </button>
+                            </div>
+
+                            <!-- Quantity selector (hidden by default, shown when item is added) -->
+                            <div class="lot-quantity-controls hidden flex items-center">
+                                <div class="flex items-center border border-gray-200 dark:border-gray-600 rounded-md shadow-sm overflow-hidden bg-white dark:bg-gray-800">
+                                    <button class="px-2 py-1 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 lot-decrease transition-colors text-xs border-r border-gray-200 dark:border-gray-600">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="text" value="1" class="w-8 px-1 py-1 text-center border-none focus:ring-0 lot-quantity bg-white dark:bg-gray-800 text-sm font-medium"/>
+                                    <button class="px-2 py-1 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 lot-increase transition-colors text-xs border-l border-gray-200 dark:border-gray-600">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <button class="lot-remove px-2 py-1 text-gray-500 hover:text-red-600 transition-colors text-xs ml-2">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+        <t t-else="">
+            <div class="col-span-full p-6 text-center">
+                <i class="fas fa-search text-gray-400 text-4xl mb-3"></i>
+                <p class="text-lg text-gray-500 dark:text-gray-400">No stock found</p>
+                <p class="text-sm text-gray-400 dark:text-gray-500">Try changing your search criteria</p>
+            </div>
+        </t>
+    </template>
+
+</odoo>

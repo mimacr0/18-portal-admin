@@ -1,0 +1,866 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* portal_expedition
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+t\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-22 11:46+0000\n"
+"PO-Revision-Date: 2026-01-22 11:46+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid ""
+"<i class=\"far fa-calendar-alt mr-2 text-gray-500 dark:text-gray-500\"/>\n"
+"                                    Date Order:"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "<i class=\"fas fa-arrow-left mr-1.5\"/> Go Back"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid ""
+"<i class=\"fas fa-check-circle mr-2 text-gray-500 dark:text-gray-500\"/>\n"
+"                                    Effective Date:"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid ""
+"<i class=\"fas fa-comments mr-2 icon-primary-theme\"/>\n"
+"                                    Communication history"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid ""
+"<i class=\"fas fa-exchange mr-2 icon-primary-theme\"/>\n"
+"                                Movement History"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid ""
+"<i class=\"fas fa-file-text mr-2 icon-primary-theme\"/>\n"
+"                                Bill To"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid ""
+"<i class=\"fas fa-hourglass-half mr-2 text-gray-500 dark:text-gray-500\"/>\n"
+"                                    Commitment Date:"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid ""
+"<i class=\"fas fa-location-arrow mr-2 icon-primary-theme\"/>\n"
+"                                Ship To"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid ""
+"<i class=\"fas fa-map-marker mr-2 icon-primary-theme\"/>\n"
+"                                Tracking Information"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid ""
+"<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden "
+"sm:inline\">Create</span>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "<i class=\"fas fa-plus mr-1.5\"/> Catalog"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "<i class=\"fas fa-plus-circle mr-1.5\"/> Add filter condition"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "<i class=\"fas fa-save\"/> Save"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_file_upload_modal
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "<i class=\"fas fa-save\"/> Upload"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid ""
+"<i class=\"fas fa-shipping-fast mr-2 text-gray-500 dark:text-gray-500\"/>\n"
+"                                    Delivery Status:"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid ""
+"<i class=\"fas fa-shopping-cart mr-2 icon-primary-theme\"/>\n"
+"                                Products Sold List"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid ""
+"<i class=\"fas fa-tag mr-2 text-gray-500 dark:text-gray-500\"/>\n"
+"                                    Reference:"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "<i class=\"fas fa-times mr-1\"/> Clear selection"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_file_upload_modal
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "<i class=\"fas fa-times\"/> Cancel"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "<i class=\"fas fa-trash-alt mr-1\"/> Clear"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid ""
+"<i class=\"fas fa-truck mr-2 text-gray-500 dark:text-gray-500\"/>\n"
+"                                    Tracking:"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid ""
+"<i class=\"fas fa-user-tag mr-2 icon-primary-theme\"/>\n"
+"                                        Customer ID:"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid ""
+"<option value=\"all\" selected=\"selected\">All</option>\n"
+"                                            <option value=\"any\">Any</option>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_pager
+msgid "<span class=\"font-medium\">No results found</span>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_pager
+msgid "<span class=\"font-medium\">Showing</span>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid ""
+"<span class=\"ml-2 text-xs text-gray-500 italic\">\n"
+"                                            <i class=\"fas fa-info-circle\"/> Select products from catalog\n"
+"                                        </span>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_pager
+msgid ""
+"<span class=\"sr-only\">Next</span>\n"
+"                    <i class=\"fas fa-chevron-right\"/>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_pager
+msgid ""
+"<span class=\"sr-only\">Previous</span>\n"
+"                    <i class=\"fas fa-chevron-left\"/>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "<span class=\"text-red-500 ml-1\">*</span>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid ""
+"<span id=\"selected-count\" class=\"ml-2 bg-white text-primary-theme "
+"dark:bg-gray-700  text-xs font-bold px-2 py-0.5 rounded-full\">0</span>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid ""
+"<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
+"dark:text-gray-300 mr-3\">0 selected</span>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_pager
+msgid "<span>of</span>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "<strong>Carrier:</strong>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "<strong>Current Location:</strong>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "<strong>Package State:</strong>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "<strong>Picking State:</strong>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "<strong>Sent State:</strong>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "<strong>Subtotal:</strong>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "<strong>Tax:</strong>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "<strong>Total:</strong>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "<strong>Tracking Ref:</strong>"
+msgstr ""
+
+#. module: portal_expedition
+#: model:ir.model.fields,field_description:portal_expedition.field_sale_order__access_warning
+msgid "Access warning"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Actions"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Actual Location"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "Add products using the \"Add\" button"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Additional Information"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Address Information"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "Advanced Search"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "All"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "Apply Filters"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Billing"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Cancelled"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Carrier"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Carrier:"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Chat with"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "City"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Client Reference"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_file_upload_modal
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "Close modal"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Commitment Date (Fecha de entrega)"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Completed"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Contact Information"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Contact Name"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Country"
+msgstr ""
+
+#. module: portal_expedition
+#: model:ir.model.fields,help:portal_expedition.field_sale_order__access_url
+msgid "Customer Portal URL"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Date Order"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "Date Order:"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Delete"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Delivery Status (Estado de entrega)s"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Destination Location"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Done Date"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Draft"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid ""
+"Drag and drop a file here, or <span class=\"text-primary-theme  browse-"
+"link\">browse</span>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_file_upload_modal
+msgid ""
+"Drag and drop a file here, or <span class=\"text-primary-theme browse-"
+"link\">browse</span>"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "EXPEDITION"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Effective Date (Fecha efectiva)"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Email"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Excel export not available. Please install xlsxwriter."
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Expedition Create"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Expedition Details"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order_modal.py:0
+msgid "Expedition created successfully"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "Expeditions"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Export Excel"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_file_upload_modal
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "File Upload"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Go back"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Import Excel"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order_modal.py:0
+msgid "Invalid product ID"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order_modal.py:0
+msgid "Invalid quantity"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_file_upload_modal
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "Maximum file size: 5MB"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Mobile"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Método de envío"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Name"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/models/sale_order.py:0
+msgid "New message in expedition"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "No products selected"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Order Date"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Origin Location"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "Pack Date Done:"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "Pack Scheduled Date:"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_pager
+msgid "Pagination"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Pending"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Phone"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "Pick Date Done:"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "Pick Scheduled Date:"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_file_upload_modal
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "Please select a file to upload."
+msgstr ""
+
+#. module: portal_expedition
+#: model:ir.model.fields,field_description:portal_expedition.field_sale_order__access_url
+msgid "Portal Access URL"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Preparing"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Price Unit"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order_modal.py:0
+msgid "Product not found"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Products"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Products Information"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Quantity"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Quotation"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Quotation Sent"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "REF:"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Reference"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "Reset"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Sale State"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+#: model:ir.model,name:portal_expedition.model_sale_order
+msgid "Sales Order"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Scheduled Date"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "Search ..."
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Search Address"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Search address"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "Search products..."
+msgstr ""
+
+#. module: portal_expedition
+#: model:ir.model.fields,field_description:portal_expedition.field_sale_order__access_token
+msgid "Security Token"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "Selected Products"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "Sent Date:"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_list
+msgid "Sent Scheduled Date:"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Shipped"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Shipping Weight"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_pager
+msgid "Showing 1-"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "State"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "States"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Street"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "Street 2"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Subtotal"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Tax"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "To be Shipped"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Total"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Total Information"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Total Price"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Traceability Information"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Tracking Information"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "Tracking Ref"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_file_upload_modal
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "Upload File"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_details_page
+msgid "Write a message..."
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order_details.py:0
+msgid "You are not allowed to upload an attachment here."
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_create_expedition_modal
+msgid "ZIP"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_pager
+msgid "of"
+msgstr ""
+
+#. module: portal_expedition
+#: model_terms:ir.ui.view,arch_db:portal_expedition.portal_expedition_page
+msgid "of the following conditions:"
+msgstr ""
+
+#. module: portal_expedition
+#. odoo-python
+#: code:addons/portal_expedition/controllers/sale_order.py:0
+msgid "orders"
+msgstr ""

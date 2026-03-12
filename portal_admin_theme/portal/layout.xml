@@ -3,10 +3,10 @@
 
     <template id="portal_user_notification_list" name="Portal User Notification List">
         <t t-foreach="notifications" t-as="notification">
-            <div class="px-4 py-3 border-l-4 border-cyan-500 notification-item">
+            <div class="px-4 py-3 border-l-4 border-primary-theme notification-item">
                 <div class="flex items-start">
                     <div class="flex-shrink-0 pt-0.5">
-                        <i t-attf-class="fas fa-#{notification.icon()} text-cyan-500 bg-cyan-100 p-2 rounded-full notification-icon info"></i>
+                        <i t-attf-class="fas fa-#{notification.icon()} text-primary-theme bg-light-active p-2 rounded-full notification-icon info"></i>
                     </div>
                     <div class="ml-3 w-0 flex-1">
                         <p class="text-sm font-sm text-gray-900 dark:text-white notification-title"><t t-out="notification.title()"/></p>
@@ -14,7 +14,7 @@
                         <p class="text-xs text-gray-400 dark:text-gray-500 mt-1 notification-time"><t t-out="notification.time_ago()"/></p>
                     </div>
                     <div class="ml-4 flex-shrink-0">
-                        <button class="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400">
+                        <button class="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 notification-remove-button" t-att-data-notification-id="notification.id">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
@@ -28,8 +28,20 @@
             <meta charset="UTF-8"/>
             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <title><t t-out="page_title"/></title>
+            <!-- Dynamic Theme CSS Variables (colors from backend) -->
+            <style>
+                :root {
+                    --base-color: <t t-out="base_color or '#696900'"/>;
+                    --hover-color: <t t-out="hover_color or '#8A8A00'"/>;
+                    --light-bg-color: <t t-out="light_bg_color or '#f0f0e0'"/>;
+                    --dark-base-color: <t t-out="dark_base_color or '#A0A000'"/>;
+                    --dark-hover-color: <t t-out="dark_hover_color or '#C0C000'"/>;
+                    --dark-light-bg-color: <t t-out="dark_light_bg_color or '#3a3a1a'"/>;
+                }
+            </style>
             <t t-call-assets="web._assets_core" t-css="false" defer_load="True"/>
             <t t-call-assets="portal_admin_theme.admin_assets_frontend" defer_load="True"/>
+            <t t-call-assets="portal_admin_theme.tools" t-css="false" defer_load="True"/>
             <script t-nocache="Session information should always be up to date." type="text/javascript">
                 document.addEventListener('DOMContentLoaded', () => {
                     odoo.__session_info__ = <t t-out="json.dumps(request.env['ir.http'].get_frontend_session_info())"/>;
@@ -45,12 +57,27 @@
             <t t-if="not page_type">
                 <t t-call-assets="portal_admin_theme.admin_page"/>
             </t>
+            <t t-if="select2">
+                <!-- Select2 for advanced select boxes -->
+                <link href="/portal_admin_theme/static/src/vendor/select2/css/select2.min.css" rel="stylesheet" />
+                <script src="/portal_admin_theme/static/src/vendor/jquery/js/jquery.min.js"></script>
+                <script src="/portal_admin_theme/static/src/vendor/select2/js/select2.min.js"></script>
+            </t>
+            <t t-if="flatpickr">
+                <!-- Flatpickr for date pickers -->
+                <link href="/portal_admin_theme/static/src/vendor/flatpickr/css/flatpickr.min.css" rel="stylesheet" />
+                <script src="/portal_admin_theme/static/src/vendor/flatpickr/js/flatpickr.min.js"></script>
+            </t>
+            <t t-if="apexcharts">
+                <!-- ApexCharts -->
+                <script src="/portal_admin_theme/static/src/vendor/apexcharts/apexcharts.min.js"></script>
+            </t>
         </head>
         <body class="bg-gray-100 dark:bg-gray-900">
-            <div class="page-container">
+            <div class="page-container min-h-screen">
                 <!-- Header -->
-                <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
-                    <div class="grid grid-cols-2 items-center px-4 py-3">
+                <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 min-h-[61px]">
+                    <div class="grid grid-cols-2 items-center px-4 py-3 min-h-[61px]">
                         <!-- Left section with sidebar toggle -->
                         <div class="flex items-center justify-start">
                             <button id="sidebar-toggle" class="size-10 rounded-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none relative" data-sidebar-state="full">
@@ -71,16 +98,15 @@
                         <!-- Right section with buttons -->
                         <div class="flex items-center gap-2 justify-end">
                             <!-- Theme toggle button -->
-                            <button id="theme-toggle-button" class="flex items-center justify-center size-10 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
-                                <!-- Light mode icon (default visible) -->
-                                <svg id="light-theme-icon" class="size-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-slot="icon">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"></path>
-                                </svg>
-                                <!-- Dark mode icon (hidden by default) -->
-                                <svg id="dark-theme-icon" class="size-5 text-gray-600 dark:text-gray-300 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-slot="icon">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"></path>
-                                </svg>
-                            </button>
+                             <div class="relative">
+                                <button id="theme-toggle-button" class="flex items-center justify-center size-10 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
+                                    <!-- Light mode icon (default visible) -->
+                                    <img id="light-theme-icon" src="/portal_admin_theme/static/img/icons/sun.svg" class="w-5 h-5" alt="Light mode"/>
+                                    <!-- Dark mode icon (hidden by default) -->
+                                    <img id="dark-theme-icon" src="/portal_admin_theme/static/img/icons/moon.svg" class="w-5 h-5 hidden" alt="Dark mode"/>
+                                </button>
+                             </div>
+                          
 
                             <!-- Language selector dropdown -->
                             <div class="relative">
@@ -99,18 +125,18 @@
                                         <a href="/account/user/update/lang/en_US" t-attf-class="language-item flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 #{user.lang == 'en_US' and 'bg-gray-50 dark:bg-gray-800'}">
                                             <img src="/portal_admin_theme/static/img/flags/en.svg" class="rounded-md w-5 mr-3" alt="English"/>
                                             <span>English</span>
-                                            <i t-if="user.lang == 'en_US'" class="fas fa-check ml-auto text-cyan-600 dark:text-cyan-400"></i>
+                                            <i t-if="user.lang == 'en_US'" class="fas fa-check ml-auto text-primary-theme"></i>
                                         </a>
                                         <!-- Other languages -->
                                         <a href="/account/user/update/lang/es_ES" t-attf-class="language-item flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 #{user.lang == 'es_ES' and 'bg-gray-50 dark:bg-gray-800'}">
                                             <img src="/portal_admin_theme/static/img/flags/es.svg" class="rounded-md w-5 mr-3" alt="Spanish"/>
                                             <span>Español</span>
-                                            <i t-if="user.lang == 'es_ES'" class="fas fa-check ml-auto text-cyan-600 dark:text-cyan-400"></i>
+                                            <i t-if="user.lang == 'es_ES'" class="fas fa-check ml-auto text-primary-theme"></i>
                                         </a>
                                         <a href="/account/user/update/lang/zh_CN" t-attf-class="language-item flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 #{user.lang == 'zh_CN' and 'bg-gray-50 dark:bg-gray-800'}">
                                             <img src="/portal_admin_theme/static/img/flags/zh.svg" class="rounded-md w-5 mr-3" alt="Chinese"/>
                                             <span>中文</span>
-                                            <i t-if="user.lang == 'zh_CN'" class="fas fa-check ml-auto text-cyan-600 dark:text-cyan-400"></i>
+                                            <i t-if="user.lang == 'zh_CN'" class="fas fa-check ml-auto text-primary-theme"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -132,8 +158,8 @@
                                         <span class="text-xs bg-red-500 text-white px-2 py-1 rounded-full hidden" id="layout-notifications-count-badge"></span>
                                     </div>
                                     <div class="max-h-96 overflow-y-auto" id="layout-notifications-list"></div>
-                                    <div class="border-t border-gray-100 dark:border-gray-700 p-2 hidden" id="layout-notifications-actions">
-                                        <button type="button" class="block text-center text-xs text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 font-sm" id="layout-clear-all-notifications-button">
+                                    <div class="border-t border-gray-100 dark:border-gray-700 p-2 hidden flex justify-center" id="layout-notifications-actions">
+                                        <button type="button" class="text-xs text-primary-theme font-sm" id="layout-clear-all-notifications-button">
                                             Clear all notifications
                                         </button>
                                     </div>
@@ -159,7 +185,7 @@
                                         <!-- History items will be populated here dynamically -->
                                     </div>
                                     <div class="border-t border-gray-100 dark:border-gray-700 p-2">
-                                        <a href="#" class="block text-center text-xs text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 font-medium">
+                                        <a href="#" class="block text-center text-xs text-primary-theme font-medium">
                                             View all history
                                         </a>
                                     </div>
@@ -185,9 +211,9 @@
                                         <i class="fas fa-cog mr-2 text-gray-500 dark:text-gray-400"></i> Account Settings
                                     </a>
                                     <div class="border-t border-gray-100 dark:border-gray-700">
-                                        <a href="/web/session/logout" class="block px-4 py-2 text-sm text-red-600 dark:text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                        <span id="layout-user-logout-button" class="block px-4 py-2 text-sm text-red-600 dark:text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700">
                                             <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                                        </a>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -197,11 +223,11 @@
 
                 <div class="content-container flex h-full overflow-hidden">
                     <!-- Sidebar -->
-                    <aside id="sidebar" class="fixed h-[calc(100vh-61px)] w-64 overflow-y-auto bg-gradient-to-br from-cyan-600 to-cyan-700 dark:from-gray-800 dark:to-gray-900 text-white transition-all duration-500 shadow-lg z-30 sidebar-collapsed-init">
+                    <aside id="sidebar" class="fixed h-[calc(100vh-61px)] w-64 overflow-y-auto sidebar-gradient text-white transition-all duration-500 shadow-lg z-30 sidebar-collapsed-init">
                         <div class="py-4">
                             <div class="px-4 mb-6 flex items-center bg-gradient-to-r from-black/10 to-transparent backdrop-blur-sm border-b border-white/10 py-4">
-                                <img src="src/img/logo.svg" alt="Logo" class="size-10 rounded"/>
-                                <span id="logo-text" class="ml-3 text-xl font-bold text-white">Company</span>
+                                <img src="/portal_admin_theme/static/img/logo.svg" alt="Logo" class="size-10 rounded"/>
+                                <span id="logo-text" class="ml-3 text-xl font-bold text-white" t-out="company.name"/>
                             </div>
 
                             <nav class="px-2">
@@ -210,7 +236,7 @@
                                         <a
                                             t-if="item.get('url') == page_url"
                                             t-att-href="item.get('url')"
-                                            class="menu-item-active relative font-semibold flex items-center px-4 py-3 mx-2 my-1 rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-700"
+                                            class="menu-item-active relative font-semibold flex items-center px-4 py-3 mx-2 my-1 rounded-lg menu-active-gradient"
                                             t-att-data-history-url="item.get('url')"
                                             t-att-data-history-title="item.get('name')"
                                             t-att-data-history-icon="item.get('icon')"
@@ -263,6 +289,7 @@
             <script src="/portal_admin_theme/static/src/js/layout/dropdown.js"></script>
             <script src="/portal_admin_theme/static/src/js/layout/loading.js"></script>
             <script src="/portal_admin_theme/static/src/js/layout/modals.js"></script>
+            <script src="/portal_admin_theme/static/src/js/layout/logout.js"></script>
             <script src="/portal_admin_theme/static/src/js/tools/actions.js"></script>
             <script src="/portal_admin_theme/static/src/js/tools/numbers.js"></script>
             <script src="/portal_admin_theme/static/src/js/forms/tooltip.js"></script>

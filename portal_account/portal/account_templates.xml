@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_user_profile_page" name="Portal User Profile Page">
+        <t t-call="portal_admin_theme.portal_admin_layout">
+
+            <div class="w-full max-w-7xl mx-auto">
+                <!-- Account Settings -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6 dark:bg-gray-800">
+                    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Account Settings</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Update your personal information and preferences</p>
+                    </div>
+
+                    <!-- Tab Content -->
+                    <div class="px-6 py-6">
+                        <!-- Personal Info Tab -->
+                        <div id="personal-info" class="tab-content transition-all duration-300 ease-in-out opacity-100 transform translate-y-0 animate-fadeIn">
+                            <form id="personal-form" class="space-y-6 dark:text-white">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="account-user-name" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Name</label>
+                                        <input type="text" id="account-user-name" name="user-name" class="form-input w-full rounded-md border-gray-300 shadow-sm focus-ring-theme focus:ring-opacity-50" t-att-value="user.name" required="required"/>
+                                        <div class="form-error invisible mt-1" id="account-user-name-error"></div>
+                                    </div>
+                                    <div>
+                                        <label for="account-user-email" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Email Address</label>
+                                        <input type="email" id="account-user-email" name="user-email" class="form-input w-full rounded-md border-gray-300 shadow-sm focus-ring-theme focus:ring-opacity-50" t-att-value="user.email" required="required"/>
+                                        <div class="form-error invisible mt-1" id="account-user-email-error"></div>
+                                    </div>
+                                    <div>
+                                        <label for="account-user-phone" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Phone Number</label>
+                                        <input type="tel" id="account-user-phone" name="user-phone" class="form-input w-full rounded-md border-gray-300 shadow-sm focus-ring-theme focus:ring-opacity-50" t-att-value="user.phone"/>
+                                        <div class="form-error invisible mt-1" id="account-user-phone-error"></div>
+                                    </div>
+                                    <div>
+                                        <label for="account-user-mobile" class="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Mobile Number</label>
+                                        <input type="tel" id="account-user-mobile" name="user-mobile" class="form-input w-full rounded-md border-gray-300 shadow-sm focus-ring-theme focus:ring-opacity-50" t-att-value="user.mobile"/>
+                                        <div class="form-error invisible mt-1" id="account-user-mobile-error"></div>
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-3 dark:text-white">Profile Picture</label>
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 mr-4 relative group">
+                                                <img id="profile-preview" t-if="user.partner_id.image_128" t-attf-src="/web/image/res.partner/#{user.partner_id.id}/image_128/150x150" alt="Profile picture" class="size-20 rounded-full border border-gray-200 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-md dark:border-gray-700 object-cover"/>
+                                                <img id="profile-preview" t-else="" src="/portal_admin_theme/static/img/placeholder.png" alt="Profile picture" class="size-20 rounded-full border border-gray-200 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-md dark:border-gray-700 object-cover"/>
+                                                <button type="button" id="profile-image-delete" class="absolute top-0 right-0 bg-white text-red-600 p-1 rounded-full shadow-md hover:bg-red-100 opacity-0 group-hover:opacity-100 transition-opacity duration-200 size-6 flex items-center justify-center" title="Remove image" t-if="user.partner_id.image_128">
+                                                    <i class="fa fa-trash text-xs"></i>
+                                                </button>
+                                            </div>
+                                            <div>
+                                                <label for="profile-upload" id="profile-upload-label" class="cursor-pointer inline-block text-sm font-medium px-4 py-2 btn-primary text-white rounded-md shadow-sm  transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md active:translate-y-0" style="color: #ffffff !important;">
+                                                    <i class="fas fa-upload mr-2"></i>Upload New Photo
+                                                </label>
+                                                <input id="profile-upload" type="file" class="hidden" accept="image/*"/>
+                                                <p class="mt-1 text-xs text-gray-500">JPG, GIF or PNG. 5MB max.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-6 flex items-center justify-end">
+                                    <button type="button" onclick="window.location.href='/my'" class="text-sm font-medium px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 mr-3 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:border-gray-600 transition-all duration-300 ease-in-out">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" id="account-user-submit" class="text-sm font-medium px-4 py-2 btn-primary text-white rounded-md shadow-sm  dark:btn-primary dark:text-white dark: transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md active:translate-y-0">
+                                        <span class="flex items-center">
+                                            <span id="account-user-submit-text">Save Changes</span>
+                                            <span id="account-user-submit-loader" class="ml-2 hidden">
+                                                <i class="fas fa-circle-notch fa-spin"></i>
+                                            </span>
+                                        </span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

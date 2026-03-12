@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Modal para crear atributos de productos -->
+    <template id="portal_update_product_modal" name="Update Variants Modal">
+        <div class="text-lg font-medium text-gray-900 dark:text-gray-100" t-esc="template.name"/>
+        <hr class="my-4 border-t border-gray-200 dark:border-gray-700"/>
+        <t t-foreach="products" t-as="product">
+            <div class="mb-2">
+                <t t-foreach="product.product_template_attribute_value_ids" t-as="attribute_value">
+                    <span class="px-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 mt-1">
+                        <t t-esc="attribute_value.attribute_line_id.attribute_id.name"/>: <t t-esc="attribute_value.name"/>
+                    </span>
+                </t>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-1 gap-4">
+                <div class="form-group" t-attf-id="page-#{page_name}-list-create-form-sku-container-#{product.id}">
+                    <div class="flex items-center">
+                        <label t-attf-for="page-#{page_name}-list-create-form-sku-#{product.id}" class="form-label-sm font-sm">SKU</label>
+                        <span class="text-red-500 ml-1">*</span>
+                    </div>
+                    <div>
+                        <input type="text" name="sku" t-attf-id="page-#{page_name}-list-create-form-sku-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="SKU" required="required"/>
+                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-sku-error-#{product.id}"/>
+                    </div>
+                </div>
+
+                <div class="form-group" t-attf-id="page-#{page_name}-list-create-form-barcode-container-#{product.id}">
+                    <div class="flex items-center">
+                        <label t-attf-for="page-#{page_name}-list-create-form-barcode-#{product.id}" class="form-label-sm font-sm">Barcode</label>
+                        <span class="text-red-500 ml-1">*</span>
+                    </div>
+                    <div>
+                        <input type="text" name="barcode" t-attf-id="page-#{page_name}-list-create-form-barcode-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Barcode" required="required"/>
+                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-barcode-error-#{product.id}"/>
+                    </div>
+                </div>
+
+                <div class="form-group" t-attf-id="page-#{page_name}-list-create-form-volume-container-#{product.id}">
+                    <div class="flex items-center">
+                        <label t-attf-for="page-#{page_name}-list-create-form-volume-#{product.id}" class="form-label-sm font-sm">Volume (cm³)</label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="text" name="volume" t-attf-id="page-#{page_name}-list-create-form-volume-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Volumen" t-att-value="product.volume"/>
+                        <span class="mx-1 text-sm">cm³</span>
+                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-volume-error-#{product.id}"/>
+                    </div>
+                </div>
+
+                <div class="form-group" t-attf-id="page-#{page_name}-list-create-form-weight-container-#{product.id}">
+                    <div class="flex items-center">
+                        <label t-attf-for="page-#{page_name}-list-create-form-weight-#{product.id}" class="form-label-sm font-sm">Weight (kg)</label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="text" name="weight" t-attf-id="page-#{page_name}-list-create-form-weight-#{product.id}" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Peso" t-att-value="product.weight"/>
+                        <span class="mx-1 text-sm">kg</span>
+                        <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-weight-error-#{product.id}"/>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

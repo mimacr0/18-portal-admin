@@ -225,7 +225,9 @@ const systemInitHistoryDropdown = () => {
     });
 }
 
-document.addEventListener('DOMContentLoaded', systemInitLanguageDropdown);
-document.addEventListener('DOMContentLoaded', systemInitUserDropdown);
-document.addEventListener('DOMContentLoaded', systemInitNotificationDropdown);
-document.addEventListener('DOMContentLoaded', systemInitHistoryDropdown);
+document.addEventListener('DOMContentLoaded', () => {
+    systemInitLanguageDropdown();
+    systemInitUserDropdown();
+    systemInitNotificationDropdown();
+    systemInitHistoryDropdown();
+});

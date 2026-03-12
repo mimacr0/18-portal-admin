@@ -1,0 +1,473 @@
+##############################################################################
+#
+# Copyright 2025 DaFe Solutions
+#
+##############################################################################
+
+import io
+import json
+from functools import lru_cache
+
+try:
+    import xlsxwriter
+except ImportError:
+    xlsxwriter = None
+
+from odoo import http, _
+from odoo.addons.portal_admin_theme.controllers.admin import PortalAdminController
+from odoo.http import request
+from odoo.osv import expression
+from datetime import datetime
+##############################################################################
+
+class PortalExpeditionController(PortalAdminController):
+    # Constantes de configuración
+    EXPEDITION_FIELDS_MAPPING = {               
+        'name': 'name',
+        'tracking_ref': 'picking_ids.carrier_tracking_ref',
+        'date_order': 'date_order',
+        'date_done': 'picking_ids.date_done',
+        'sale_state': 'state',
+    }
+
+    DEFAULT_LIMIT_PARAM = 'portal_expedition.page_list_default_limit'
+    DEFAULT_LIMIT_VALUE = '100'
+
+    def _get_admin_layout_menus(self):
+        menus = super()._get_admin_layout_menus()
+        menus.append({
+            'name': _('Expeditions'),
+            'url': '/account/expedition',
+            'icon': 'fas fa-truck',
+            'order': 40
+        })
+        return menus
+
+    @lru_cache(maxsize=1)
+    def _get_expedition_advanced_search_fields(self):
+        """Devuelve la configuración de campos para búsqueda avanzada"""
+        PackageType = request.env['stock.package.type'].sudo()
+        package_type_options = [
+            {'id': pt.id, 'label': pt.name}
+            for pt in PackageType.search([], limit=10)
+        ]
+
+        return [
+            {'id': 'name', 'label': _('Name'), 'type': 'text'},
+            {'id': 'tracking_ref', 'label': _('Tracking Ref'), 'type': 'text'},
+            {'id': 'date_order', 'label': _('Order Date'), 'type': 'date'},
+            {'id': 'date_done', 'label': _('Done Date'), 'type': 'date'},
+            {'id': 'sale_state', 'label': _('Sale State'), 'type': 'select', 'options': [
+                {'id': 'draft', 'label': _('Quotation')},
+                {'id': 'sent', 'label': _('Quotation Sent')},
+                {'id': 'sale', 'label': _('Sales Order')},
+                {'id': 'cancel', 'label': _('Cancelled')},
+            ]}
+        ]
+    @http.route('/account/expedition', type='http', auth="user", website=True)
+    def account_expedition_action(self, **post):
+        SaleOrder = request.env['sale.order'].sudo()
+
+        # Usamos el método auxiliar para obtener el dominio según account.partner
+        domain = self._get_account_partner_domain()
+
+        orders = SaleOrder.search(domain)
+
+        values = self._get_admin_layout_values()
+        # Configuración de la interfaz
+        values.update({
+            'page_name': 'expedition',
+            'orders': orders,
+            'page_title': _('Expeditions'),
+            'page_url': '/account/expedition',
+            'list_filters': [
+                {'id': 'all', 'label': _('All'), 'icon': 'fas fa-check-circle', 'active': True},
+                {'id': 'draft', 'label': _('Draft'), 'icon': 'fas fa-file'},
+                {'id': 'billing', 'label': _('Billing'), 'icon': 'fas fa-file-text'},
+                {'id': 'preparing', 'label': _('Preparing'), 'icon': 'fas fa-cart-arrow-down'},
+                {'id': 'to-be-shipped', 'label': _('To be Shipped'), 'icon': 'fas fa-inbox'},
+                {'id': 'shipped', 'label': _('Shipped'), 'icon': 'fas fa-truck'},
+                {'id': 'cancel', 'label': _('Cancelled'), 'icon': 'fas fa-stop-circle'},
+            ],
+
+            'list_columns': [
+                {'id': 'name', 'label': _('Name'), 'sortable': True, 'responsive': ['sm', 'md', 'lg']},
+                {'id': 'product_info', 'label': _('Products Information'), 'sortable': False, 'md': True, 'responsive': ['lg']},
+                {'id': 'total_info', 'label': _('Total Information'), 'sortable': False, 'md': True, 'responsive': ['lg']},
+                {'id': 'tracking_info', 'label': _('Tracking Information'), 'sortable': False, 'md': True, 'responsive': ['md', 'lg']},
+                {'id': 'traceability_info', 'label': _('Traceability Information'), 'sortable': False, 'md': True, 'responsive': ['md', 'lg']},
+                {'id': 'states_info', 'label': _('States'), 'sortable': False, 'md': True, 'responsive': ['md', 'lg']},
+                {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True, 'responsive': ['sm', 'md', 'lg']}
+            ],
+            'tools_actions': [
+                {'name': 'import', 'label': _('Import Excel'), 'icon': 'fas fa-file-import', 'color': 'btn-primary', 'modal_id': 'dashboard-page-import-expeditions-modal'},
+            ],
+            'batch_actions': [
+                {'name': 'export', 'label': _('Export Excel'), 'icon': 'fas fa-file-excel', 'color': 'btn-primary'},
+                {'name': 'delete', 'label': _('Delete'), 'icon': 'fas fa-trash-alt', 'color': 'bg-red-600 hover:bg-red-700'},
+            ],
+            'advanced_search': json.dumps(self._get_expedition_advanced_search_fields())
+        })
+        
+        # Procesar columnas para añadir flags de visibilidad según responsive
+        list_columns = values.get('list_columns', [])
+        for column in list_columns:
+            responsive = column.get('responsive', [])
+            column['show_in_sm'] = 'sm' in responsive
+            column['show_in_md'] = 'md' in responsive
+            column['show_in_lg'] = 'lg' in responsive
+        values['list_columns'] = list_columns
+
+        return request.render("portal_expedition.portal_expedition_page", values)
+
+
+    def _get_pagination_data(self, page, items_total, limit):
+        """Calcula datos de paginación"""
+        import math
+        first_page = 1
+        last_page = math.ceil(items_total / limit) if items_total > 0 else 1
+        pages = []
+
+        for i in range(max(1, page - 1), min(last_page + 1, page + 3)):
+            pages.append({
+                'page': i,
+                'active': i == page
+            })
+            if len(pages) >= 5:
+                break
+
+        return {
+            'first_page': first_page,
+            'last_page': last_page,
+            'pages': pages
+        }
+
+    def _get_account_partner_domain(self, domain=None):
+        """Construye el dominio base según el account.partner del usuario actual o su partner padre.
+        Devuelve un dominio vacío si no hay account.partner.
+        Se puede combinar con un dominio adicional opcional.
+        """
+        AccountPartner = request.env['account.partner'].sudo()
+        partner_ids = list({request.env.user.partner_id.id, request.env.user.partner_id.commercial_partner_id.id})
+        account_partner = AccountPartner.search([('partner_id', 'in', partner_ids)], limit=1)
+        base_domain = [('account_partner_id', '=', account_partner.id)] if account_partner else [('id', '=', 0)]
+        if domain:
+            base_domain = expression.AND([base_domain, domain])
+        return base_domain
+
+    def _build_sale_domain(self, search='', domain=None, match_type='all', quick_filter=None):
+        """Construye el dominio de búsqueda para productos"""
+        
+        base_domain = self._get_account_partner_domain(domain)
+        # Integrar el dominio pasado como argumento
+        if domain:
+            base_domain = expression.AND([base_domain, domain])
+
+        if quick_filter and quick_filter != 'all':
+            base_domain.extend(self.get_quick_filter_domain(quick_filter, request.env))
+        # Aplicar búsqueda de texto
+        if search:
+            base_domain.extend(expression.OR([
+                [('name', 'ilike', search)],
+                [('picking_ids.carrier_tracking_ref', 'ilike', search)],
+            ]))
+
+        # Aplicar dominio de búsqueda avanzada
+        if domain:
+            base_domain = self._apply_order_advanced_domain(base_domain, domain, match_type)
+    
+        return base_domain
+
+    def _apply_order_advanced_domain(self, base_domain, domain, match_type='all'):
+        """
+        Construye y combina condiciones avanzadas para el dominio.
+        """
+        adv_conditions = []
+        adv_condition_domains = []
+
+        def _date_bounds_utc(date_str):
+            try:
+                user_tz = pytz.timezone(request.env.user.tz or 'UTC')
+                day_local_start = user_tz.localize(datetime.strptime(date_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
+                day_local_end = user_tz.localize(datetime.strptime(date_str + ' 23:59:59', '%Y-%m-%d %H:%M:%S'))
+                return (
+                    day_local_start.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S'),
+                    day_local_end.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S'),
+                )
+            except Exception:
+                return (date_str, date_str)
+
+        for condition in domain:
+            if not isinstance(condition, (list, tuple)) or len(condition) != 3:
+                continue
+            field_key, operator, raw_value = condition
+            model_field = self.EXPEDITION_FIELDS_MAPPING[field_key]
+
+            if field_key in ['date_order', 'date_done']:
+                if operator == '=':
+                    start_utc, end_utc = _date_bounds_utc(str(raw_value))
+                    conds = [(model_field, '>=', start_utc), (model_field, '<=', end_utc)]
+                    adv_conditions.extend(conds)
+                    adv_condition_domains.append(conds)
+                    continue
+                elif operator in ('>=', '<='):
+                    bound_utc = _date_bounds_utc(str(raw_value))[0 if operator == '>=' else 1]
+                    cond = (model_field, operator, bound_utc)
+                    adv_conditions.append(cond)
+                    adv_condition_domains.append([cond])
+                    continue
+            
+
+            # Funciona como un default, si es nada de lo anterior, se usa este
+            cond = (model_field, operator, raw_value)
+            adv_conditions.append(cond)
+            adv_condition_domains.append([cond])
+
+        if adv_conditions:
+            if match_type == 'any':
+                return expression.AND([base_domain, expression.OR(adv_condition_domains)])
+            else:
+                base_domain.extend(adv_conditions)
+        return base_domain
+
+    def get_quick_filter_domain(self, quick_filter, env):
+        """
+        Retorna el dominio adicional según el filtro rápido (quick_filter).
+        
+        :param quick_filter: str, el nombre del filtro
+        :param env: el entorno Odoo para hacer búsquedas (request.env)
+        :return: lista con dominio o None
+        """
+        simple_states = {
+            'draft': [('state', 'in', ['draft', 'sent'])],  
+            'billing': [('state', '=', 'sale')],
+            'cancel': [('state', '=', 'cancel')],
+        }
+
+        picking_filters = {
+            'preparing': [
+                ('state', 'in', ['confirmed', 'assigned']),
+                ('picking_type_code', '!=', 'outgoing'),
+            ],
+            'to_be_shipped': [
+                ('state', 'in', ['confirmed', 'assigned']),
+                ('picking_type_code', '=', 'outgoing'),
+            ],
+            'shipped': [
+                ('picking_type_code', '=', 'outgoing'),
+                ('state', '=', 'done'),
+            ],
+        }
+        if quick_filter in simple_states:
+            return simple_states[quick_filter]
+
+        elif quick_filter in picking_filters:
+            picking_model = env['stock.picking'].sudo()
+            picking_ids = picking_model.search(picking_filters[quick_filter]).ids
+            if picking_ids:
+                return [('picking_ids', 'in', picking_ids)]
+            else:
+                # Retornar un dominio que nunca coincida si no hay pickings
+                return [('id', '=', 0)]
+
+
+    @http.route('/account/expedition/list/reload', type='json', auth='user')
+    def account_expedition_list_reload(self, page=1, search='', domain=None, match_type='all', sort=None, order='asc', quick_filter=None, **kw):
+        SysParams = request.env['ir.config_parameter'].sudo()
+        limit = int(SysParams.get_param(self.DEFAULT_LIMIT_PARAM, self.DEFAULT_LIMIT_VALUE))
+        offset = (page - 1) * limit
+
+        # Construir dominio de búsqueda
+        base_domain = self._build_sale_domain(search, domain, match_type, quick_filter)
+
+        # # Apply quick filters
+        # if quick_filter and quick_filter != 'all':
+        #     domain_addition = self.get_quick_filter_domain(quick_filter, request.env)
+        #     if domain_addition:
+        #         base_domain.extend(domain_addition)
+
+        # Configurar ordenamiento
+        order_by = 'id desc'
+        if sort and sort in self.EXPEDITION_FIELDS_MAPPING:
+            order_by = f"{self.EXPEDITION_FIELDS_MAPPING[sort]} {order}"
+        
+        SaleOrder = request.env['sale.order'].sudo()
+        # Obtener productos y contar
+        orders = SaleOrder.search(base_domain, limit=limit, offset=offset, order=order_by)
+        items_total = SaleOrder.search_count(base_domain)
+        items_count = len(orders)
+
+        # Preparar datos de paginación
+        pagination_data = self._get_pagination_data(page, items_total, limit)
+        pagination_data.update({'items_total': items_total, 'items_count': items_count})
+
+        qweb = request.env['ir.qweb']
+        return {
+            'status': 'success',
+            'list': qweb._render('portal_expedition.portal_expedition_list', {
+                'orders': orders,
+                'batch_actions': True
+            }),
+            'pager': qweb._render('portal_expedition.portal_expedition_pager', {
+                'orders': orders,
+                'items_label': _('orders'),
+                **pagination_data
+            }),
+            'last_page': pagination_data['last_page']
+        }
+
+    @http.route('/account/expedition/list/advanced_filters', type='json', auth='user')
+    def account_expedition_list_advanced_filters(self, **kw):
+        return {
+            'status': 'success',
+            'filters': json.dumps(self._get_expedition_advanced_search_fields())
+        }
+
+    @http.route('/account/expedition/details/<int:order_id>', type='http', auth='user', website=True)
+    def account_expedition_details(self, order_id, access_token=None, **kw):
+        self._ensure_user_lang_context()
+        SaleOrder = request.env['sale.order'].sudo()
+        partner_id = request.env.user.partner_id
+        partner_ids = list(set([partner_id.id] + partner_id.commercial_partner_id.ids))
+
+        order = SaleOrder.search([
+            ('id', '=', order_id),
+            ('partner_id', 'in', partner_ids)
+        ], limit=1)
+
+        if not order:
+            return request.redirect('/account/expedition')
+
+        values = self._get_admin_layout_values()
+        values.update({
+            'page_name': 'expedition_details',
+            'order': order,
+            'page_title': _('Expedition Details'),
+            'page_url': '/account/expedition/details/%s' % order_id,
+        })
+
+        return request.render('portal_expedition.portal_expedition_details_page', values)
+
+    @http.route('/account/expedition/export', type='http', auth='user', methods=['GET', 'POST'])
+    def account_expedition_export(self, ids=None, **kw):
+        """Export expeditions to Excel (XLSX) file."""
+        
+        if not xlsxwriter:
+            return request.make_response(
+                _('Excel export not available. Please install xlsxwriter.'),
+                headers=[('Content-Type', 'text/plain')]
+            )
+        
+        SaleOrder = request.env['sale.order'].sudo()
+        domain = self._get_account_partner_domain()
+        
+        if ids:
+            try:
+                id_list = [int(i) for i in ids.split(',') if i.strip()]
+                if id_list:
+                    domain.append(('id', 'in', id_list))
+            except ValueError:
+                pass
+        
+        orders = SaleOrder.search(domain, order='date_order desc')
+
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet(_('Expeditions'))
+        
+        # Formats
+        header_format = workbook.add_format({
+            'bold': True,
+            'bg_color': '#696900',
+            'font_color': 'white',
+            'border': 1,
+            'align': 'center',
+            'valign': 'vcenter'
+        })
+        cell_format = workbook.add_format({
+            'border': 1,
+            'valign': 'vcenter'
+        })
+        date_format = workbook.add_format({
+            'border': 1,
+            'valign': 'vcenter',
+            'num_format': 'dd/mm/yyyy hh:mm'
+        })
+        currency_format = workbook.add_format({
+            'border': 1,
+            'valign': 'vcenter',
+            'num_format': '#,##0.00'
+        })
+        
+        # Column widths
+        worksheet.set_column(0, 0, 18)  # Name
+        worksheet.set_column(1, 1, 18)  # Client Ref
+        worksheet.set_column(2, 2, 18)  # Date Order
+        worksheet.set_column(3, 3, 35)  # Products
+        worksheet.set_column(4, 4, 12)  # Subtotal
+        worksheet.set_column(5, 5, 12)  # Tax
+        worksheet.set_column(6, 6, 12)  # Total
+        worksheet.set_column(7, 7, 18)  # Carrier
+        worksheet.set_column(8, 8, 20)  # Tracking Ref
+        worksheet.set_column(9, 9, 12)  # State
+        
+        # Headers
+        headers = [
+            _('Name'),
+            _('Client Reference'),
+            _('Date Order'),
+            _('Products'),
+            _('Subtotal'),
+            _('Tax'),
+            _('Total'),
+            _('Carrier'),
+            _('Tracking Ref'),
+            _('State'),
+        ]
+        for col, header in enumerate(headers):
+            worksheet.write(0, col, header, header_format)
+        
+        # Data rows
+        for row, order in enumerate(orders, start=1):
+            # Products info
+            products_info = ', '.join([
+                f"{line.product_id.name} x {int(line.product_uom_qty)}"
+                for line in order.order_line
+            ])
+            
+            # Get last picking for carrier/tracking info
+            last_picking = order.picking_ids.sorted('scheduled_date')[-1] if order.picking_ids else None
+            carrier_name = last_picking.carrier_id.name if last_picking and last_picking.carrier_id else ''
+            tracking_ref = last_picking.carrier_tracking_ref if last_picking else ''
+            
+            # State label
+            state_label = dict(order._fields['state'].selection).get(order.state, order.state)
+            
+            worksheet.write(row, 0, order.name or '', cell_format)
+            worksheet.write(row, 1, order.client_order_ref or '', cell_format)
+            if order.date_order:
+                worksheet.write_datetime(row, 2, order.date_order.replace(tzinfo=None), date_format)
+            else:
+                worksheet.write(row, 2, '', cell_format)
+            worksheet.write(row, 3, products_info, cell_format)
+            worksheet.write(row, 4, order.amount_untaxed or 0, currency_format)
+            worksheet.write(row, 5, order.amount_tax or 0, currency_format)
+            worksheet.write(row, 6, order.amount_total or 0, currency_format)
+            worksheet.write(row, 7, carrier_name, cell_format)
+            worksheet.write(row, 8, tracking_ref or '', cell_format)
+            worksheet.write(row, 9, state_label, cell_format)
+        
+        workbook.close()
+        
+        output.seek(0)
+        content = output.getvalue()
+        
+        filename = f"expeditions_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        
+        return request.make_response(
+            content,
+            headers=[
+                ('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
+                ('Content-Disposition', f'attachment; filename="{filename}"'),
+            ]
+        )

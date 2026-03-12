@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo> 
+    <template id="portal_repair_details_page" name="Portal Repair Details Page">
+        <t t-call="portal_admin_theme.portal_admin_layout">
+            <!-- Details Page -->
+            <div class="w-full md:w-4/5 mx-auto lg:max-w-7xl bg-white dark:bg-gray-800 rounded-xl shadow-lg print:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <!-- Document Action Bar -->
+                <div class="p-5 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    <a href="/account/repair" class="inline-flex items-center text-primary-theme dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Go back
+                    </a>
+                    <div class="flex items-center space-x-4">
+                        <div class="alert-status-selector relative">
+                            <span t-attf-class="px-3 py-1.5 text-xs font-medium rounded-full flex items-center">
+                                <t t-esc="alert.stage_id.name"></t> 
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Alert Information -->
+                <div class="p-8 grid grid-cols-1 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    <div class="flex flex-col md:flex-row justify-between items-start relative z-10">
+                        <div>
+                            <div class="flex items-center p-8">
+                                <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Alert</h1>
+                                <span class="ml-4 text-xl font-medium text-blue-600 dark:text-blue-400"><t t-out="alert.name"/></span>
+                            </div>
+                            <div class="mt-4 space-y-1">
+                                <span class="text-gray-500 dark:text-gray-400"><span>Current Alarm Stage:</span><strong> <t t-esc="alert.stage_id.name"></t></strong></span><br/>
+                                <span class="text-gray-500 dark:text-gray-400"><span>Maintenance Operation:</span><strong> <t t-esc="alert.maintenance_type"></t></strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product Information -->
+                <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-box mr-2 icon-primary-theme"></i>
+                            Repair Information
+                        </h3>
+                        <div class="text-sm space-y-2 dark:text-gray-300">
+                            <p class="font-medium text-base text-gray-800 dark:text-white"><span>Description:</span> <t t-out="alert.description"/></p>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-box mr-2 icon-primary-theme"></i>
+                            Product Information
+                        </h3>
+                        <div class="text-sm space-y-2 dark:text-gray-300">
+                            <t t-set="lot" t-value="alert.lot_id"/>
+                            <p class="font-medium text-base text-gray-800 dark:text-white"><span>Lot name:</span> <t t-out="lot.name"/></p>
+                            <p class="text-gray-700 dark:text-gray-200"><span>Product Name:</span> <t t-esc="lot.product_id.display_name"/></p>
+                            <p class="text-gray-700 dark:!text-gray-200"><span>Lot Quantity:</span> <t t-esc="lot.product_qty"/></p>
+                            <p class="text-gray-700 dark:!text-gray-200"><span>REF:</span> <t t-esc="lot.ref"/></p>
+                            <p class="text-gray-700 dark:!text-gray-200"><span>Lifecycle State:</span> <t t-esc="lot.lifecycle_state"/></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Movement history -->
+                <div class="p-8 grid grid-cols-1 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                        <i class="fas fa-exchange mr-2 icon-primary-theme"></i>
+                        Movement History
+                    </h3>
+                    <div class="overflow-x-auto rounded-lg shadow">
+                        <table class="w-full text-sm" id="page-repair-alert-movement-list-table">
+                            <thead>
+                                <tr class="bg-gray-100 dark:bg-gray-600">
+                                    <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Reference</th>
+                                    <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Origin Location</th>
+                                    <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Destination Location</th>
+                                    <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Scheduled Date</th>
+                                    <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Done Date</th>
+                                    <!-- <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Previous Movement</th> -->
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="expedition-page-list-items">
+                                <t t-foreach="alert.picking_ids" t-as="picking">
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200" >
+                                            <t t-esc="picking.name"/>
+                                        </td>
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                            <t t-esc="picking.location_id.name"/>
+                                        </td>
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                            <t t-esc="picking.location_dest_id.name"/>
+                                        </td>
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                            <t t-esc="picking.scheduled_date.strftime('%d-%m-%Y %H:%M:%S')"/>
+                                        </td>
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                            <t t-if="picking.date_done">
+                                                <t t-esc="picking.date_done.strftime('%d-%m-%Y %H:%M:%S')"/>
+                                            </t>
+                                            <t t-else="">-</t>
+                                        </td>
+                                        <!-- <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200"> -->
+                                            <!-- Previous movement can be added here if needed -->
+                                        <!-- </td> -->
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Repair / Review Information -->
+                <t t-if="alert.repair_order_ids">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-screwdriver-wrench mr-2 icon-primary-theme"></i>
+                            Repair Information
+                        </h3>
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 overflow-x-auto">
+                            <table class="min-w-full border border-gray-200 dark:border-gray-700 rounded-lg">
+                                <thead class="bg-gray-100 dark:bg-gray-700">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Repair ID</th>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Description</th>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">State</th>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Scheduled Date</th>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Lifecycle State</th>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Diagnosis</th>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Results</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                    <t t-foreach="alert.repair_order_ids" t-as="repair">
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                                            <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-200"><t t-esc="repair.name"/></td>
+                                            <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-200"><t t-esc="repair.description"/></td>
+                                            <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-200"><t t-esc="repair.state"/></td>
+                                            <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-200"><t t-esc="repair.schedule_date"/></td>
+                                            <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-200"><t t-esc="repair.lifecycle_state"/></td>
+                                            <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-200"><t t-esc="', '.join(repair.diagnosis_ids.mapped('name'))"/></td>
+                                            <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-200"><t t-esc="', '.join(repair.result_ids.mapped('name'))"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+                <!-- Communication history -->
+                <div class="border-t border-gray-200 dark:border-gray-700">
+                    <div class="p-5" id="communication-toggle">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium dark:text-white flex items-center">
+                                <i class="fas fa-comments mr-2 icon-primary-theme"></i>
+                                Communication history
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="communication-content" class="p-6 pt-0">
+                        <t t-set="partner" t-value="alert.partner_id"/>
+                        <!-- Communication content wrapper -->
+                        <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+                            <!-- Chat header -->
+                            <div class="chat-header bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 p-4 flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-blue-500 dark:bg-blue-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
+                                            <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
+                                        </svg>
+                                    </div>
+                                    <span class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-200"><span>Chat with</span> <span t-out="user_id.name"/></span>
+                                </div>
+                            </div>
+                            <!-- Messages container with increased height -->
+                            <div class="space-y-4 h-[500px] overflow-y-auto p-4 messages-container bg-white dark:bg-gray-800" id="repair_alert_details-details-chat-messages" t-att-data-alert-id="alert.id" t-att-data-partner-id="user.partner_id.id"></div>
+                            <!-- Message input area in separate container -->
+                            <div class="message-composer bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 p-4">
+                                <div class="message-input-wrapper bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg shadow-sm dark:shadow-gray-900/50" id="message-input-container">
+                                    <div class="flex items-end p-2">
+                                        <div class="flex-shrink-0 mr-2">
+                                            <div class="w-8 h-8 rounded-full bg-gray-500 dark:bg-gray-600 flex items-center justify-center">
+                                                <img t-if="user.partner_id.image_128" class="w-5 h-5 rounded-full" t-attf-src="/web/image/res.partner/#{user.partner_id.id}/image_128/50x50"/>
+                                                <svg t-else="" class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow relative">
+                                            <div class="flex items-center">
+                                                <button class="message-attach-button text-gray-500 dark:text-gray-300 hover:text-primary-theme dark:hover:text-blue-400 p-2">
+                                                    <i class="fas fa-paperclip"></i>
+                                                </button>
+                                                <div class="flex-grow">
+                                                    <input type="hidden" id="page-details-repair_alert_details-message-attachment-token" t-att-value="request.csrf_token()"/>
+                                                    <input type="file" id="page-details-repair_alert_details-message-attachment-input" class="hidden"/>
+                                                    <textarea class="message-input bg-transparent border-0 rounded-md text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 w-full py-2 resize-none focus:outline-none focus:ring-1 focus:ring-cyan-500 dark:focus:ring-cyan-500" rows="1" placeholder="Write a message..."></textarea>
+                                                </div>
+                                                <button id="page-details-repair_alert_details-send-message" class="message-send-button text-primary-theme dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/30 p-2 rounded-full flex items-center justify-center ml-2">
+                                                    <i class="fas fa-paper-plane"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="h-25"></div>
+        </t>
+    </template>
+</odoo>

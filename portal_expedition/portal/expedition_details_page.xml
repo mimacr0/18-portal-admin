@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_expedition_details_page" name="Portal Sale Details Page">
+        <t t-call="portal_admin_theme.portal_admin_layout">
+
+            <div id="expedition-details-container" class="mt-6">
+                <div class="w-full md:w-4/5 mx-auto lg:max-w-7xl bg-white dark:bg-gray-800 rounded-xl shadow-lg print:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
+                    <!-- Document Action Bar -->
+                    <div class="p-5 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+
+                    <a href="/account/expedition" class="inline-flex items-center text-primary-theme hover:text-primary-theme   transition-colors">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Go back
+                    </a>
+                    <div class="flex items-center space-x-4">
+                        <div class="reception-status-selector relative">
+                            <span t-attf-class="px-3 py-1.5 bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or 'amber')}-100 text-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or 'amber')}-800 dark:bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or 'amber')}-900 dark:text-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or 'amber')}-200 text-xs font-medium rounded-full flex items-center">
+                                <span t-attf-class="w-2 h-2 bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or 'amber')}-500 dark:bg-#{order.state == 'done' and 'green' or (order.state == 'cancel' and 'red' or 'amber')}-400 rounded-full mr-1.5"></span>
+                                <t t-if="order.state == 'done'">Completed</t>
+                                <t t-elif="order.state == 'cancel'">Cancelled</t>
+                                <t t-else="">Pending</t>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-8 border-b border-gray-200 dark:border-gray-700 relative">
+                    <div class="flex flex-col md:flex-row justify-between items-start relative z-10">
+                        <div>
+                            <div class="flex items-center">
+                                <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">EXPEDITION</h1>
+                                <span class="ml-4 text-xl font-medium text-primary-theme "><t t-out="order.name"/></span>
+                            </div>
+                            <div class="mt-4 space-y-2">
+                                <p class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                                    <i class="far fa-calendar-alt mr-2 text-gray-500 dark:text-gray-500"></i>
+                                    Date Order: <span class="ml-1 font-medium text-gray-800 dark:text-gray-200"><t t-out="order.date_order"/></span>
+                                </p>
+                                <p t-if="order.client_order_ref" class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                                    <i class="fas fa-tag mr-2 text-gray-500 dark:text-gray-500"></i>
+                                    Reference: <span class="ml-1 font-medium text-gray-800 dark:text-gray-200"><t t-esc="order.client_order_ref"/></span>
+                                </p>
+                                <p t-if="order.commitment_date" class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                                    <i class="fas fa-hourglass-half mr-2 text-gray-500 dark:text-gray-500"></i>
+                                    Commitment Date: <span class="ml-1 font-medium text-gray-800 dark:text-gray-200"><t t-out="order.commitment_date"/></span>
+                                </p>
+                                <p t-if="order.effective_date" class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                                    <i class="fas fa-check-circle mr-2 text-gray-500 dark:text-gray-500"></i>
+                                    Effective Date: <span class="ml-1 font-medium text-gray-800 dark:text-gray-200"><t t-out="order.effective_date"/></span>
+                                </p>
+                                <p t-if="order.delivery_status" class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                                    <i class="fas fa-shipping-fast mr-2 text-gray-500 dark:text-gray-500"></i>
+                                    Delivery Status: <span class="ml-1 font-medium text-gray-800 dark:text-gray-200"><t t-out="order.delivery_status"/></span>
+                                </p>
+                                <t t-set="last_picking" t-value="order.picking_ids and order.picking_ids.sorted('scheduled_date')[-1]"/>
+                                <p t-if="last_picking and last_picking.carrier_tracking_ref" class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                                    <i class="fas fa-truck mr-2 text-gray-500 dark:text-gray-500"></i>
+                                    Tracking: <span class="ml-1 font-medium text-gray-800 dark:text-gray-200"><t t-out="last_picking.carrier_tracking_ref"/></span>
+                                </p>
+                                <div t-if="last_picking and last_picking.carrier_id" class="mt-3">
+                                    <div class="inline-flex items-center px-2.5 py-1 bg-gray-100 dark:bg-gray-700 rounded-md">
+                                        <i class="fas fa-shipping-fast mr-1.5 text-gray-500 dark:text-gray-500"></i>
+                                        <span class="text-xs text-gray-700 dark:text-gray-300">Carrier: <strong><t t-out="last_picking.carrier_id.name"/></strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        <!-- Shipping Address -->
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                                <i class="fas fa-location-arrow mr-2 icon-primary-theme"></i>
+                                Ship To
+                            </h3>
+                            <div class="text-sm space-y-2 dark:text-gray-300">
+                                <p class="font-medium text-base text-gray-800 dark:text-white"><t t-esc="order.partner_shipping_id.name"/></p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_shipping_id.street"/>, <t t-esc="order.partner_shipping_id.street2"/> </p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_shipping_id.city"/>, <t t-esc="order.partner_shipping_id.state_id.name"/></p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_shipping_id.zip"/></p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_shipping_id.country_id.name"/></p>
+                            </div>
+                        </div>
+                        <!-- Billing Address -->
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center">
+                                <i class="fas fa-file-text mr-2 icon-primary-theme"></i>
+                                Bill To
+                            </h3>
+                            <div class="text-sm space-y-2 dark:text-gray-300">
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_invoice_id.name"/></p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_invoice_id.street"/>, <t t-esc="order.partner_invoice_id.street2"/> </p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_invoice_id.city"/>, <t t-esc="order.partner_invoice_id.state_id.name"/></p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_invoice_id.zip"/></p>
+                                <p class="text-gray-700 dark:text-gray-200"><t t-esc="order.partner_invoice_id.country_id.name"/></p>
+                                <div class="mt-4 pt-3 border-t border-dashed border-gray-200 dark:border-gray-700">
+                                    <p class="font-medium flex items-center">
+                                        <i class="fas fa-user-tag mr-2 icon-primary-theme"></i>
+                                        Customer ID: <t t-esc="order.partner_invoice_id.account"/>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Products Sold List -->
+                    <div class="p-8 border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white flex items-center">
+                                <i class="fas fa-shopping-cart mr-2 icon-primary-theme"></i>
+                                Products Sold List
+                            </h3>
+                        </div>
+                        <div class="overflow-x-auto rounded-lg shadow dark:shadow-gray-900/70">
+                            <table  class="w-full text-sm" id="page-expedition-products-list-table">
+                                <thead>
+                                    <tr class="bg-gray-100 dark:bg-gray-600">
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Name</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Quantity</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Actual Location</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Price Unit</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Total Price</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="expedition-products-items">
+                                    <t t-foreach="order.order_line" t-as="line">
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                            <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200"><t t-esc="line.product_id.name"/></td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200"><t t-esc="line.product_uom_qty"/></td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200"><!-- <t t-esc="line.location_final_id.name"/> --></td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200"><t t-out="line.price_unit"/></td>
+                                            <td class="px-6 py-4 text-center text-gray-800 dark:text-gray-200"><t t-out="line.price_total"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Movement Table -->
+                    <div class="p-8 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white flex items-center">
+                                <i class="fas fa-exchange mr-2 icon-primary-theme"></i>
+                                Movement History
+                            </h3>
+                        </div>
+                        <div class="overflow-x-auto rounded-lg shadow">
+                            <table class="w-full text-sm" id="page-expedition-movement-list-table">
+                                <thead>
+                                    <tr class="bg-gray-100 dark:bg-gray-600">
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Reference</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Origin Location</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Destination Location</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Scheduled Date</th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Done Date</th>
+                                        <!-- <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">Previous Movement</th> -->
+                                    </tr>
+                                </thead>
+
+                                <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="expedition-movements-items">
+                                    <t t-foreach="order.picking_ids" t-as="picking">
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                            <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200" >
+                                                <t t-esc="picking.name"/>
+                                            </td>
+                                            <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                                <t t-esc="picking.location_id.name"/>
+                                            </td>
+                                            <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                                <t t-esc="picking.location_dest_id.name"/>
+                                            </td>
+                                            <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                                <t t-esc="picking.scheduled_date.strftime('%d-%m-%Y %H:%M:%S')"/>
+                                            </td>
+                                            <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                                <t t-if="picking.date_done">
+                                                    <t t-esc="picking.date_done.strftime('%d-%m-%Y %H:%M:%S')"/>
+                                                </t>
+                                                <t t-else="">-</t>
+                                            </td>
+                                            <!-- <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200"> -->
+                                                <!-- Previous movement can be added here if needed -->
+                                            <!-- </td> -->
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tracking Information -->
+                    <div class="p-8 border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white flex items-center">
+                                <i class="fas fa-map-marker mr-2 icon-primary-theme"></i>
+                                Tracking Information
+                            </h3>
+                        </div>
+                        <div class="overflow-x-auto rounded-lg shadow">
+                            <table  class="w-full text-sm" id="page-expedition-tracking-list-table">
+                                <thead>
+                                    <tr class="bg-gray-100 dark:bg-gray-600">
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">
+                                            Método de envío
+                                        </th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">
+                                            Shipping Weight
+                                        </th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">
+                                            Commitment Date (Fecha de entrega)
+                                        </th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">
+                                            Effective Date (Fecha efectiva)
+                                        </th>
+                                        <th scope="col" class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-100">
+                                            Delivery Status (Estado de entrega)s
+                                        </th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="expedition-tracking-items">
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                            <t t-esc="order.carrier_id.name"/>
+                                        </td>
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                            <t t-out="order.shipping_weight"/>
+                                        </td>
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                            <t t-out="order.commitment_date"/>
+                                        </td>
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                            <t t-out="order.effective_date"/>
+                                        </td>
+                                        <td class="px-6 py-4 text-left text-gray-800 dark:text-gray-200">
+                                            <t t-out="order.delivery_status"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Chatter -->
+                    <div class="border-t border-gray-200 dark:border-gray-700">
+                        <div class="p-5" id="communication-toggle">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-medium dark:text-white flex items-center">
+                                    <i class="fas fa-comments mr-2 icon-primary-theme"></i>
+                                    Communication history
+                                </h3>
+                            </div>
+                        </div>
+
+                        <div id="communication-content" class="p-6 pt-0">
+                            <t t-set="partner" t-value="user"/>
+                            <!-- Communication content wrapper -->
+                            <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+                                <!-- Chat header -->
+                                <div class="chat-header bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 p-4 flex justify-between items-center">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 bg-blue-500 dark:bg-blue-600 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
+                                                <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-200">Chat with <span t-out="partner.name"/></span>
+                                    </div>
+                                </div>
+
+                                <!-- Messages container with increased height -->
+                                <div class="space-y-4 h-[500px] overflow-y-auto p-4 messages-container bg-white dark:bg-gray-800" t-attf-id="#{page_name}-details-chat-messages" t-attf-data-order-id="#{order.id}"
+                                    t-attf-data-partner-id="#{user.partner_id.id}"></div>
+
+                                <!-- Message input area in separate container -->
+                                <div class="message-composer bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 p-4">
+                                    <div class="message-input-wrapper bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg shadow-sm dark:shadow-gray-900/50" id="message-input-container">
+                                        <div class="flex items-end p-2">
+                                            <div class="flex-shrink-0 mr-2">
+                                                <div class="w-8 h-8 rounded-full bg-gray-500 dark:bg-gray-600 flex items-center justify-center">
+                                                    <img t-if="user.partner_id.image_128" class="w-5 h-5 rounded-full" t-attf-src="/web/image/res.partner/#{user.partner_id.id}/image_128/50x50"/>
+                                                    <svg t-else="" class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow relative">
+                                                <div class="flex items-center">
+                                                <button class="message-attach-button text-gray-500 dark:text-gray-300 hover:text-primary-theme dark:hover:text-blue-400 p-2">
+                                                        <i class="fas fa-paperclip"></i>
+                                                    </button>
+                                                    <div class="flex-grow">
+                                                        <input type="hidden" t-attf-id="page-details-expedition-message-attachment-token" t-att-value="request.csrf_token()"/>
+                                                        <input type="file" t-attf-id="page-details-expedition-message-attachment-input" class="hidden"/>
+                                                    <textarea class="message-input bg-transparent border-0 rounded-md text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 w-full py-2 resize-none focus:outline-none focus:ring-1 focus-ring-theme" rows="1" placeholder="Write a message..."></textarea>
+                                                    </div>
+                                                <button t-attf-id="page-details-expedition-send-message" class="message-send-button text-primary-theme  hover:text-primary-theme  bg-light-active  p-2 rounded-full flex items-center justify-center ml-2">
+                                                        <i class="fas fa-paper-plane"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="h-30"></div>
+
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,1117 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* portal_stock
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+t\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-23 14:08+0000\n"
+"PO-Revision-Date: 2026-01-23 14:08+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "%d product(s) created successfully."
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid ""
+"<i class=\"fas fa-arrow-left mr-1.5\"/> <span class=\"hidden "
+"sm:inline\">Volver</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<i class=\"fas fa-box mr-2 text-primary-theme \"/>\n"
+"                            Product Information"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<i class=\"fas fa-check-double mr-1\"/>\n"
+"                                                                            <span class=\"font-medium mr-1\">Done:</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<i class=\"fas fa-clipboard-check mr-1\"/>\n"
+"                                                                            <span class=\"font-medium mr-1\">Confirmed:</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<i class=\"fas fa-comments mr-2 text-primary-theme \"/>\n"
+"                                Communication History"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid "<i class=\"fas fa-download mr-1\"/>Download template"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid "<i class=\"fas fa-file-import\"/> Import"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid ""
+"<i class=\"fas fa-info-circle mr-1\"/>\n"
+"                                Required columns: <strong>name</strong>, <strong>tracking</strong>, <strong>width</strong>, <strong>height</strong>, <strong>length</strong>, <strong>weight</strong>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<i class=\"fas fa-info-circle mr-2 text-primary-theme \"/>\n"
+"                            Lot Information"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<i class=\"fas fa-map-marker-alt mr-2 text-primary-theme \"/>\n"
+"                            Location"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<i class=\"fas fa-play-circle mr-1\"/>\n"
+"                                                                            <span class=\"font-medium mr-1\">In Progress:</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid ""
+"<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden sm:inline\">Create "
+"Product</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid "<i class=\"fas fa-plus mr-1.5\"/> Add Attribute"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "<i class=\"fas fa-plus-circle mr-1.5\"/> Add filter condition"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "<i class=\"fas fa-save\"/> Save"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
+msgid "<i class=\"fas fa-save\"/> Upload"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "<i class=\"fas fa-times mr-1\"/> Clear selection"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "<i class=\"fas fa-times\"/> Cancel"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<i class=\"fas fa-tools mr-2 text-primary-theme\"/>\n"
+"                            Repair / Review History"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid ""
+"<option value=\"all\" selected=\"selected\">All</option>\n"
+"                                            <option value=\"any\">Any</option>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "<span class=\"font-medium\">Internal Reference:</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "<span class=\"font-medium\">Location:</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "<span class=\"font-medium\">Lot/Serial Number:</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "<span class=\"font-medium\">Name:</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
+msgid "<span class=\"font-medium\">No results found</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "<span class=\"font-medium\">Quantity:</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "<span class=\"font-medium\">Reference:</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
+msgid "<span class=\"font-medium\">Showing</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "<span class=\"font-medium\">State:</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid "<span class=\"mx-1 text-sm\">cm</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
+msgid "<span class=\"mx-1 text-sm\">cm³</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
+msgid "<span class=\"mx-1 text-sm\">kg</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid "<span class=\"mx-1\">x</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lots_list
+msgid "<span class=\"mx-1\">·</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
+msgid ""
+"<span class=\"sr-only\">Next</span>\n"
+"                    <i class=\"fas fa-chevron-right\"/>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
+msgid ""
+"<span class=\"sr-only\">Previous</span>\n"
+"                    <i class=\"fas fa-chevron-left\"/>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lots_list
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_products_list
+msgid "<span class=\"text-gray-400\">-</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid ""
+"<span class=\"text-gray-500 ml-1\">*</span>\n"
+"                                        <span class=\"ml-2 text-xs text-gray-500 italic\">\n"
+"                                            <i class=\"fas fa-info-circle\"/> Auto Calculated\n"
+"                                        </span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
+msgid "<span class=\"text-red-500 ml-1\">*</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<span class=\"text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide\">\n"
+"                                                                    <i class=\"fas fa-check-circle mr-1\"/>Results\n"
+"                                                                </span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<span class=\"text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide\">\n"
+"                                                                    <i class=\"fas fa-history mr-1\"/>State History\n"
+"                                                                </span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<span class=\"text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide\">\n"
+"                                                                    <i class=\"fas fa-stethoscope mr-1\"/>Diagnosis\n"
+"                                                                </span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid ""
+"<span class=\"text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide\">\n"
+"                                                                    <i class=\"fas fa-sticky-note mr-1\"/>Notes\n"
+"                                                                </span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid ""
+"<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
+"dark:text-gray-300 mr-3\">0 selected</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
+msgid "<span>of</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_products_list
+msgid "<strong>Available: </strong>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_products_list
+msgid "<strong>Incoming: </strong>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_products_list
+msgid "<strong>Outgoing: </strong>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_products_list
+msgid "<strong>Real Stock: </strong>"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Account partner not found"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Actions"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "Advanced Search"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "All"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "Apply Filters"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid ""
+"Attributes\n"
+"                                    <span class=\"text-red-500 text-xl\">*</span>\n"
+"                                    <span class=\"ml-2 text-xs text-gray-500 italic\">\n"
+"                                        <i class=\"fas fa-info-circle\"/> Add only if the product has variants, e.g. Hair Dryer (Color: White, Red, Green).\n"
+"                                    </span>"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Available"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "Back"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
+msgid "Barcode"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Cada variante debe tener al menos SKU o código de barras"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "Chat about"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "Close modal"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Delete"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid "Delete image"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
+msgid ""
+"Drag and drop a file here, or <span class=\"text-primary-theme browse-"
+"link\">browse</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid ""
+"Drag and drop an Excel file here, or <span class=\"text-primary-theme "
+"browse-link cursor-pointer hover:underline\" id=\"stock-products-browse-"
+"link\">browse</span>"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Error al actualizar variantes de producto"
+msgstr "Error updating product variants"
+
+#. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Error al actualizar variantes:"
+msgstr "Error updating variants:"
+
+#. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Error al añadir atributo"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Error al cargar valores de atributo:"
+msgstr "Error loading attribute values:"
+
+#. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Error al crear producto:"
+msgstr "Error creating product:"
+
+#. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Error al leer el archivo de imagen"
+msgstr "Error reading image file"
+
+#. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Error al obtener atributos"
+msgstr "Error getting attributes"
+
+#. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Error al obtener valores de atributo"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Estado"
+msgstr "State"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Excel export not available. Please install xlsxwriter."
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Excel import not available. Please install openpyxl."
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Export Excel"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
+msgid "File Upload"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Ha ocurrido un error al crear el producto"
+msgstr "An error occurred while creating the product"
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid "Height"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Image"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Import Excel"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid "Import Products from Excel"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Import failed with %d errors."
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Import failed: %s"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "In Repair"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "In Review"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "In Stock"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Incoming"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Internal Reference"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Invalid lots payload"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Invalid products payload"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid "Length"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Location"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Lot Details"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Lot deleted successfully"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Lot not found"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "Lot/Serial"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Lot/Serial Number"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Lots/Serials"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid "Maximum file size: 5MB"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid "Measures (cm)"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Missing lot identifier"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Missing product identifier"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Missing required columns: %s"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+#: code:addons/portal_stock/controllers/stocks.py:0
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "Name"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid ""
+"Name\n"
+"                                    <span class=\"text-red-500 text-xl\">*</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "Name <span class=\"text-red-500 text-xl\">*</span>"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "New"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "No additional information"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "No file provided"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "No lots selected"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "No permitted lots found for deletion"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "No permitted products found for deletion"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "No products found"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "No products selected"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "No repair or review history"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "No se encontraron variantes para actualizar"
+msgstr "No variants found to update"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "No valid lots to delete"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "No valid products to delete"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid ""
+"Optional: <strong>sku</strong>, <strong>barcode</strong>, + attribute "
+"columns (Color, RAM, ROM...)"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Out of Stock"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Outgoing"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
+msgid "Pagination"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid "Please select a file to upload."
+msgstr ""
+
+#. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Por favor, seleccione un archivo de imagen válido"
+msgstr "Please select a valid image file"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Product"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid "Product Create"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "Product Edit"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Product created successfully"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Product deleted successfully"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Product not found"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Product updated successfully"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Product variants updated successfully"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "Product:"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-javascript
+#: code:addons/portal_stock/static/src/js/create_modal_page.js:0
+msgid "Producto actualizado correctamente"
+msgstr "Product updated successfully"
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Quantity"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "Quantity:"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Real Stock"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "Remove image"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Repair"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Repaired"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Repairs"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "Reset"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "Return"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Review"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Reviewed"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Attribute value \"%s\" not found for \"%s\""
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Barcode \"%s\" already exists, skipping"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Dimensions must be greater than 0"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Error creating product - %s"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Invalid numeric values for dimensions or weight"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Invalid tracking value \"%s\" (must be \"serial\" or \"none\")"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Missing product name"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: SKU \"%s\" already exists, skipping"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+msgid "Row %d: Weight cannot be negative"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
+msgid "SKU"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "Search ..."
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
+msgid "Showing 1-"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Status"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "Stock"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "Unavailable"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_import_products_modal
+msgid "Upload Excel File (.xlsx)"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_file_upload_modal
+msgid "Upload File"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "Upload image"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lots_list
+msgid "View details"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
+msgid "Volume"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
+msgid "Volume (cm³)"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
+msgid "Weight"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_update_product_modal
+msgid "Weight (kg)"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid "Width"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_create_product_modal
+msgid "Width x Height x Length"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_details_page
+msgid "Write a message..."
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "You are not allowed to upload an attachment here."
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "You do not have access to this lot"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/create_product_modal.py:0
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "You do not have access to this product"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/lots.py:0
+msgid "lots"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_lot_pager
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_pager
+msgid "of"
+msgstr ""
+
+#. module: portal_stock
+#: model_terms:ir.ui.view,arch_db:portal_stock.portal_stock_page
+msgid "of the following conditions:"
+msgstr ""
+
+#. module: portal_stock
+#. odoo-python
+#: code:addons/portal_stock/controllers/stocks.py:0
+msgid "products"
+msgstr ""

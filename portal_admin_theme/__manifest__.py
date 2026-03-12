@@ -10,13 +10,11 @@
     'website': 'https://www.dafe.es',
     'license': 'AGPL-3',
     'category': 'Extra Tools',
-    'summary': 'RPC Client API Module',
-    'depends': ['client_account'],
+    'summary': 'Portal Admin Theme Module',
+    'depends': ['account_partner'],
     'data': [
         'portal/layout.xml',
-        'security/ir.model.access.csv',
-        'portal/account_templates.xml',
-        'portal/settings_templates.xml'
+        'security/ir.model.access.csv'
     ],
     'assets': {
         'portal_admin_theme.fontawesome': [
@@ -39,6 +37,10 @@
             'portal_admin_theme/static/src/network/rpc.js',
             'portal_admin_theme/static/src/js/realtime/portal_realtime_service.js',
             'portal_admin_theme/static/src/js/layout/user_notifications.js'
+        ],
+        'portal_admin_theme.tools': [
+            'portal_admin_theme/static/src/js/tools/numbers.js',
+            'portal_admin_theme/static/src/js/tools/actions.js',
         ]
     }
 }

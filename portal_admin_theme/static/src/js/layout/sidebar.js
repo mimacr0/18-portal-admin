@@ -8,6 +8,12 @@ const sysInitSidebar = () => {
     const contentOverlay = document.querySelector('.content-overlay');
     const mainContent = document.getElementById('main-content');
 
+    // Verificar que los elementos críticos existen
+    if (!sidebar || !mainContent) {
+        console.warn('Sidebar: Critical elements not found');
+        return;
+    }
+
     // Convert sidebar to overlay mode
     sidebar.classList.add('sidebar-overlay');
     mainContent.classList.add('full-width');
@@ -17,10 +23,10 @@ const sysInitSidebar = () => {
         initThemeToggle();
     }
 
-    // Set initial state of toggle button
-    toggleFullIcon.classList.add('hidden');
-    toggleCollapsedIcon.classList.remove('hidden');
-    sidebarToggle.setAttribute('data-sidebar-state', 'collapsed');
+    // Set initial state of toggle button (si existen)
+    if (toggleFullIcon) toggleFullIcon.classList.add('hidden');
+    if (toggleCollapsedIcon) toggleCollapsedIcon.classList.remove('hidden');
+    if (sidebarToggle) sidebarToggle.setAttribute('data-sidebar-state', 'collapsed');
 
     // Save the collapsed state to localStorage
     localStorage.setItem('sidebarState', 'collapsed');
@@ -35,63 +41,65 @@ const sysInitSidebar = () => {
     }, 100);
 
     // Toggle sidebar with enhanced animations
-    sidebarToggle.addEventListener('click', function () {
-        const currentState = this.getAttribute('data-sidebar-state');
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function () {
+            const currentState = this.getAttribute('data-sidebar-state');
 
-        if (currentState === 'full') {
-            // Prepare for collapse animation
-            document.body.style.overflow = 'hidden'; // Prevent potential scroll jumps during animation
+            if (currentState === 'full') {
+                // Prepare for collapse animation
+                document.body.style.overflow = 'hidden'; // Prevent potential scroll jumps during animation
 
-            // Animate collapse - SLOWER with soft slide
-            sidebar.classList.add('collapsed');
+                // Animate collapse - SLOWER with soft slide
+                sidebar.classList.add('collapsed');
 
-            // Hide overlay
-            if (contentOverlay) {
-                contentOverlay.classList.remove('active');
+                // Hide overlay
+                if (contentOverlay) {
+                    contentOverlay.classList.remove('active');
+                }
+
+                // Change toggle icon with slight delay for visual polish
+                setTimeout(() => {
+                    if (toggleFullIcon) toggleFullIcon.classList.add('hidden');
+                    if (toggleCollapsedIcon) toggleCollapsedIcon.classList.remove('hidden');
+                }, 350); // Increased delay for hide effect
+
+                this.setAttribute('data-sidebar-state', 'collapsed');
+
+                localStorage.setItem('sidebarState', 'collapsed');
+
+                // Re-enable scrolling after animation completes
+                setTimeout(() => {
+                    document.body.style.overflow = '';
+                }, 1000);
+            } else {
+                // Prepare for expand animation
+                document.body.style.overflow = 'hidden'; // Prevent potential scroll jumps during animation
+
+                // Show overlay
+                if (contentOverlay) {
+                    contentOverlay.classList.add('active');
+                }
+
+                // Animate expand with soft slide
+                sidebar.classList.remove('collapsed');
+
+                // Change toggle icon with slight delay for visual polish
+                setTimeout(() => {
+                    if (toggleFullIcon) toggleFullIcon.classList.remove('hidden');
+                    if (toggleCollapsedIcon) toggleCollapsedIcon.classList.add('hidden');
+                }, 250);
+
+                this.setAttribute('data-sidebar-state', 'full');
+
+                localStorage.setItem('sidebarState', 'full');
+
+                // Re-enable scrolling after animation completes
+                setTimeout(() => {
+                    document.body.style.overflow = '';
+                }, 700);
             }
-
-            // Change toggle icon with slight delay for visual polish
-            setTimeout(() => {
-                toggleFullIcon.classList.add('hidden');
-                toggleCollapsedIcon.classList.remove('hidden');
-            }, 350); // Increased delay for hide effect
-
-            this.setAttribute('data-sidebar-state', 'collapsed');
-
-            localStorage.setItem('sidebarState', 'collapsed');
-
-            // Re-enable scrolling after animation completes
-            setTimeout(() => {
-                document.body.style.overflow = '';
-            }, 1000);
-        } else {
-            // Prepare for expand animation
-            document.body.style.overflow = 'hidden'; // Prevent potential scroll jumps during animation
-
-            // Show overlay
-            if (contentOverlay) {
-                contentOverlay.classList.add('active');
-            }
-
-            // Animate expand with soft slide
-            sidebar.classList.remove('collapsed');
-
-            // Change toggle icon with slight delay for visual polish
-            setTimeout(() => {
-                toggleFullIcon.classList.remove('hidden');
-                toggleCollapsedIcon.classList.add('hidden');
-            }, 250);
-
-            this.setAttribute('data-sidebar-state', 'full');
-
-            localStorage.setItem('sidebarState', 'full');
-
-            // Re-enable scrolling after animation completes
-            setTimeout(() => {
-                document.body.style.overflow = '';
-            }, 700);
-        }
-    });
+        });
+    }
 
     // Make overlay clickable to close sidebar
     if (contentOverlay) {

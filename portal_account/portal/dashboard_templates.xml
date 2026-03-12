@@ -1,65 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <template id="portal_dashboard_recent_activity_content" name="Portal Dashboard Recent Activity Content">
+
+        <t t-foreach="recent_activity" t-as="activity">
+            <div class="flex items-start">
+                <div class="bg-green-100 dark:bg-green-900 p-2 rounded-full mr-3">
+                    <i t-attf-class="#{activity.icon} text-green-500 dark:text-green-400 text-sm"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-medium text-gray-900 dark:text-white"><t t-out="activity.title"/></p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400"><t t-out="activity.message"/></p>
+                    <p class="text-xs text-gray-400 dark:text-gray-500"><t t-out="activity.time_ago"/></p>
+                </div>
+            </div>
+        </t>
+    </template>
+
     <template id="portal_dashboard_page" name="Portal Dashboard Page">
         <t t-call="portal_admin_theme.portal_admin_layout">
 
             <div class="w-full">
 
                 <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                    <!-- KPI Cards -->
-                    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Receptions</p>
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-receptions-value" data-value="0">0</h3>
-                                <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
+                <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+                    <!-- Receptions KPI Card -->
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow md:col-span-1 lg:col-span-1">
+                        <div class="flex justify-between items-center mb-3">
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Receptions</p>
+                            <div class="bg-cyan-100 dark:bg-cyan-900 p-2 rounded-full">
+                                <i class="fas fa-box text-cyan-500 dark:text-cyan-400 text-sm"></i>
                             </div>
-                            <div class="bg-cyan-100 dark:bg-cyan-900 p-3 rounded-full">
-                                <i class="fas fa-box text-cyan-500 dark:text-cyan-400"></i>
+                        </div>
+                        <div class="grid grid-cols-3 lg:grid-cols-3 gap-2">
+                            <!-- Arrived this month -->
+                            <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-2 text-center">
+                                <p class="text-xs text-green-600 dark:text-green-400 font-medium">Arrived</p>
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="dashboard-kpi-receptions-arrived">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-receptions-change">
+                                    <i class="fas fa-spinner fa-spin mr-1 text-gray-400"></i>
+                                </p>
+                            </div>
+                            <!-- Pending this month -->
+                            <div class="bg-amber-50 dark:bg-amber-900/30 rounded-lg p-2 text-center">
+                                <p class="text-xs text-amber-600 dark:text-amber-400 font-medium">Pending</p>
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="dashboard-kpi-receptions-pending">-</h3>
+                            </div>
+                            <!-- Total historical -->
+                            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-2 text-center">
+                                <p class="text-xs text-gray-600 dark:text-gray-400 font-medium">Total</p>
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="dashboard-kpi-receptions-total">-</h3>
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Expeditions</p>
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-expeditions-value" data-value="0">0</h3>
-                                <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
+                        <div class="flex justify-between items-center mb-3">
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Expeditions</p>
+                            <div class="bg-purple-100 dark:bg-purple-900 p-2 rounded-full">
+                                <i class="fas fa-truck text-purple-500 dark:text-purple-400 text-sm"></i>
                             </div>
-                            <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-full">
-                                <i class="fas fa-truck text-purple-500 dark:text-purple-400"></i>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <!-- Quotes -->
+                            <div class="bg-amber-50 dark:bg-amber-900/30 rounded-lg p-2 text-center">
+                                <p class="text-xs text-amber-600 dark:text-amber-400 font-medium">Quotes</p>
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="dashboard-kpi-quotes-total">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-quotes-change">
+                                    <i class="fas fa-spinner fa-spin mr-1 text-gray-400"></i>
+                                </p>
+                            </div>
+                            <!-- Sales -->
+                            <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-2 text-center">
+                                <p class="text-xs text-green-600 dark:text-green-400 font-medium">Sales</p>
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="dashboard-kpi-sales-total">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-sales-change">
+                                    <i class="fas fa-spinner fa-spin mr-1 text-gray-400"></i>
+                                </p>
+                            </div>
+                            <!-- Deliveries -->
+                            <div class="bg-purple-50 dark:bg-purple-900/30 rounded-lg p-2 text-center">
+                                <p class="text-xs text-purple-600 dark:text-purple-400 font-medium">Deliveries</p>
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="dashboard-kpi-expeditions-total">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-expeditions-change">
+                                    <i class="fas fa-spinner fa-spin mr-1 text-gray-400"></i>
+                                </p>
                             </div>
                         </div>
                     </div>
 
+                    <!-- <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Sales</p>
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-kpi-sales-total">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-sales-change">
+                                    <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+                                </p>
+                            </div>
+                            <div class="bg-green-100 dark:bg-green-900 p-3 rounded-full">
+                                <i class="fas fa-shopping-cart text-green-500 dark:text-green-400"></i>
+                            </div>
+                        </div>
+                    </div> -->
+                    <!-- Sales Card (moved to Expeditions card)
                     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Products</p>
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-products-value" data-value="0">0</h3>
-                                <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
+                        <div class="flex justify-between items-center mb-3">
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Sales</p>
+                            <div class="bg-green-100 dark:bg-green-900 p-2 rounded-full">
+                                <i class="fas fa-shopping-cart text-green-500 dark:text-green-400 text-sm"></i>
                             </div>
-                            <div class="bg-amber-100 dark:bg-amber-900 p-3 rounded-full">
-                                <i class="fas fa-cubes text-amber-500 dark:text-amber-400"></i>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-amber-50 dark:bg-amber-900/30 rounded-lg p-3">
+                                <p class="text-xs text-amber-600 dark:text-amber-400 font-medium mb-1">Quotes</p>
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white" id="dashboard-kpi-quotes-total-alt">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-quotes-change-alt">
+                                    <i class="fas fa-spinner fa-spin mr-1 text-gray-400"></i>
+                                </p>
+                            </div>
+                            <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-3">
+                                <p class="text-xs text-green-600 dark:text-green-400 font-medium mb-1">Confirmed</p>
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white" id="dashboard-kpi-sales-total-alt">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-sales-change-alt">
+                                    <i class="fas fa-spinner fa-spin mr-1 text-gray-400"></i>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+                   
+
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow md:col-span-1 lg:col-span-1">
+                        <div class="flex justify-between items-center mb-3">
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Products</p>
+                            <div class="bg-amber-100 dark:bg-amber-900 p-2 rounded-full">
+                                <i class="fas fa-cubes text-amber-500 dark:text-amber-400 text-sm"></i>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                            <!-- Total -->
+                            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-2 text-center">
+                                <p class="text-xs text-gray-600 dark:text-gray-400 font-medium">Total</p>
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="dashboard-kpi-products-total">-</h3>
+                            </div>
+                            <!-- New this month -->
+                            <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-2 text-center">
+                                <p class="text-xs text-blue-600 dark:text-blue-400 font-medium">New</p>
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="dashboard-kpi-products-new">-</h3>
+                                <p class="text-xs text-gray-500" id="dashboard-kpi-products-change">
+                                    <i class="fas fa-spinner fa-spin mr-1 text-gray-400"></i>
+                                </p>
+                            </div>
+                            <!-- In Stock -->
+                            <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-2 text-center">
+                                <p class="text-xs text-green-600 dark:text-green-400 font-medium">In Stock</p>
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="dashboard-kpi-products-in-stock">-</h3>
+                            </div>
+                            <!-- Out of Stock -->
+                            <div class="bg-red-50 dark:bg-red-900/30 rounded-lg p-2 text-center">
+                                <p class="text-xs text-red-600 dark:text-red-400 font-medium">No Stock</p>
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="dashboard-kpi-products-out-stock">-</h3>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Stock Card - Hidden
                     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
                         <div class="flex justify-between items-start">
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Stock</p>
-                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-stock-value" data-value="0">0</h3>
-                                <p class="text-xs text-gray-500"><i class="fas fa-arrow-up mr-1"></i>0% since last month</p>
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-kpi-stock-total">-</h3>
+                                <p class="text-xs" id="dashboard-kpi-stock-change">
+                                    <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+                                </p>
                             </div>
-                            <div class="bg-green-100 dark:bg-green-900 p-3 rounded-full">
-                                <i class="fas fa-boxes-stacked text-green-500 dark:text-green-400"></i>
+                            <div class="bg-teal-100 dark:bg-teal-900 p-3 rounded-full">
+                                <i class="fas fa-boxes-stacked text-teal-500 dark:text-teal-400"></i>
                             </div>
                         </div>
                     </div>
+                    -->
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
@@ -68,16 +189,16 @@
                     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h3>
                         <div class="grid grid-cols-2 gap-3">
-                            <button class="bg-cyan-100 hover:bg-cyan-200 dark:bg-cyan-700 dark:hover:bg-cyan-600 text-cyan-700 dark:text-cyan-100 p-3 rounded-lg transition duration-200 flex items-center justify-center">
+                            <a href="/portal_account/static/templates/receptions.xlsx" target="_blank" class="bg-cyan-100 hover:bg-cyan-200 dark:bg-cyan-700 dark:hover:bg-cyan-600 text-cyan-700 dark:text-cyan-100 p-3 rounded-lg transition duration-200 flex items-center justify-center text-center">
                                 <i class="fas fa-file-invoice mr-2"></i> Receptions Template
-                            </button>
-                            <button class="bg-purple-100 hover:bg-purple-200 dark:bg-purple-700 dark:hover:bg-purple-600 text-purple-700 dark:text-purple-100 p-3 rounded-lg transition duration-200 flex items-center justify-center">
+                            </a>
+                            <a href="/portal_account/static/templates/expeditions.xlsx" target="_blank" class="bg-purple-100 hover:bg-purple-200 dark:bg-purple-700 dark:hover:bg-purple-600 text-purple-700 dark:text-purple-100 p-3 rounded-lg transition duration-200 flex items-center justify-center text-center">
                                 <i class="fas fa-file-invoice mr-2"></i> Expeditions Template
-                            </button>
-                            <button class="bg-amber-100 hover:bg-amber-200 dark:bg-amber-700 dark:hover:bg-amber-600 text-amber-700 dark:text-amber-100 p-3 rounded-lg transition duration-200 flex items-center justify-center">
+                            </a>
+                            <button id="dashboard-page-import-receptions-button" class="bg-amber-100 hover:bg-amber-200 dark:bg-amber-700 dark:hover:bg-amber-600 text-amber-700 dark:text-amber-100 p-3 rounded-lg transition duration-200 flex items-center justify-center">
                                 <i class="fas fa-file-import mr-2"></i> Import receptions
                             </button>
-                            <button class="bg-green-100 hover:bg-green-200 dark:bg-green-700 dark:hover:bg-green-600 text-green-700 dark:text-green-100 p-3 rounded-lg transition duration-200 flex items-center justify-center">
+                            <button id="dashboard-page-import-expeditions-button" class="bg-green-100 hover:bg-green-200 dark:bg-green-700 dark:hover:bg-green-600 text-green-700 dark:text-green-100 p-3 rounded-lg transition duration-200 flex items-center justify-center">
                                 <i class="fas fa-file-import mr-2"></i> Import expeditions
                             </button>
                         </div>
@@ -88,52 +209,11 @@
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Activity</h3>
                         </div>
-                        <div class="space-y-4">
-                            <div class="flex items-start">
-                                <div class="bg-green-100 dark:bg-green-900 p-2 rounded-full mr-3">
-                                    <i class="fas fa-dollar-sign text-green-500 dark:text-green-400 text-sm"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white">New reception completed</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Reception #45890</p>
-                                    <p class="text-xs text-gray-400 dark:text-gray-500">10 minutes ago</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <div class="bg-cyan-100 dark:bg-cyan-900 p-2 rounded-full mr-3">
-                                    <i class="fas fa-user text-cyan-500 dark:text-cyan-400 text-sm"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white">New expedition completed</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Expedition #45890</p>
-                                    <p class="text-xs text-gray-400 dark:text-gray-500">45 minutes ago</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <div class="bg-amber-100 dark:bg-amber-900 p-2 rounded-full mr-3">
-                                    <i class="fas fa-exclamation-triangle text-amber-500 dark:text-amber-400 text-sm"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white">Inventory alert</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Product #39845 is low in stock</p>
-                                    <p class="text-xs text-gray-400 dark:text-gray-500">2 hours ago</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <div class="bg-purple-100 dark:bg-purple-900 p-2 rounded-full mr-3">
-                                    <i class="fas fa-tasks text-purple-500 dark:text-purple-400 text-sm"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white">New product added</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Product #39845</p>
-                                    <p class="text-xs text-gray-400 dark:text-gray-500">4 hours ago</p>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="space-y-4 max-h-64 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600" id="dashboard-page-recent-activity-container"></div>
                     </div>
 
                     <!-- Account Balance Card -->
-                    <div class="bg-gradient-to-r from-blue-500 to-cyan-500 dark:from-blue-800 dark:to-cyan-700 p-4 rounded-lg shadow text-white">
+                    <div class="content-gradient p-4 rounded-lg shadow text-white">
                         <div class="flex justify-between items-start mb-4">
                             <h3 class="text-lg font-semibold">Account Balance</h3>
                             <i class="fas fa-credit-card text-white/80 text-xl"></i>
@@ -141,13 +221,13 @@
                         <div class="grid grid-cols-2 gap-2 text-sm mb-4">
                             <div>
                                 <p class="opacity-80">Account</p>
-                                <p class="text-3xl font-bold">ABS</p>
+                                <p id="dashboard-page-account-label" class="text-3xl font-bold"><span t-out="account_partner.name"/></p>
                             </div>
                             <div>
                                 <p class="text-sm opacity-80">Available Credit</p>
-                                <p class="text-3xl font-bold">$42,567.89</p>
-                                <p class="text-sm opacity-80">Pending Approval</p>
-                                <p class="text-3xl font-bold">$1,200</p>
+                                <p id="dashboard-page-available-credit-value" class="text-3xl font-bold" data-value="0" data-current="0" data-suffix="" data-decimals="2" data-thousand-sep="" data-decimal-sep=""></p>
+                                <p id="dashboard-page-pending-approval-label" class="text-sm opacity-80 hidden">Pending Approval</p>
+                                <p id="dashboard-page-pending-approval-value" class="text-3xl font-bold hidden" data-value="0" data-current="0" data-suffix="" data-decimals="2" data-thousand-sep="" data-decimal-sep=""></p>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-sm mt-8">
@@ -158,8 +238,36 @@
                                 <i class="fas fa-credit-card mr-2"></i> Pay Now
                             </button>
                         </div>
+                        <!-- Credit History inside card -->
+                        <div class="mt-4 pt-4 border-t border-white/20">
+                            <p class="text-sm opacity-80 mb-2">Credit History</p>
+                            <div class="space-y-2 max-h-32 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-white/30" id="dashboard-credit-history-container">
+                                <div class="flex justify-center items-center py-2">
+                                    <i class="fas fa-spinner fa-spin text-white/60 mr-2"></i>
+                                    <span class="text-white/60 text-xs">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
+                </div>
+
+                <!-- Period Selector -->
+                <div class="flex justify-end mb-3">
+                    <div class="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1">
+                        <button type="button" data-period="7d" class="dashboard-period-btn px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 bg-primary-theme text-white">
+                            7 days
+                        </button>
+                        <button type="button" data-period="week" class="dashboard-period-btn px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Weekly
+                        </button>
+                        <button type="button" data-period="month" class="dashboard-period-btn px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Monthly
+                        </button>
+                        <button type="button" data-period="year" class="dashboard-period-btn px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Yearly
+                        </button>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
@@ -167,59 +275,31 @@
                     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Receptions</h3>
-                            <span class="text-sm text-gray-500 dark:text-gray-400">Last 7 days</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400" id="receptions-chart-period-label">Last 7 days</span>
                         </div>
-                        <div id="weekly-sales-chart" class="h-36"></div>
-                        <div class="flex items-center justify-center mt-3">
-                            <span class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-receptions-value" data-value="0">0</span>
-                            <span class="text-sm text-green-500 ml-2"><i class="fas fa-arrow-up mr-1"></i>0% since last month</span>
-                        </div>
+                        <div id="receptions-chart" class="h-56"></div>
                     </div>
 
                     <!-- Spark Chart 2 -->
                     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Expeditions</h3>
-                            <span class="text-sm text-gray-500 dark:text-gray-400">Last 7 days</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400" id="expeditions-chart-period-label">Last 7 days</span>
                         </div>
-                        <div id="website-traffic-chart" class="h-36"></div>
-                        <div class="flex items-center justify-center mt-3">
-                            <span class="text-2xl font-bold text-gray-900 dark:text-white" id="dashboard-total-expeditions-value" data-value="0">0</span>
-                            <span class="text-sm text-green-500 ml-2"><i class="fas fa-arrow-up mr-1"></i>0% since last month</span>
-                        </div>
+                        <div id="expeditions-chart" class="h-56"></div>
                     </div>
+                </div>
+                <div style="height: 75px;">
+
                 </div>
 
             </div>
 
             <t t-set="footer_content">
-                <!-- Modal -->
-                <div id="dashboard-page-add-credit-modal" class="modal" data-outside-close="false">
-                    <div class="modal-content max-w-2xl w-full mx-auto">
-                        <div class="modal-header">
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Add Credit</h3>
-                            <button data-modal-close="true" class="close-modal" aria-label="Close modal">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form>
-                                <div class="form-group">
-                                    <label for="credit-amount">Credit Amount</label>
-                                    <input type="number" id="credit-amount" class="form-control" required="required" />
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
-                                <i class="fas fa-times"></i> Cancel
-                            </button>
-                            <button class="modal-btn modal-btn-primary">
-                                <i class="fas fa-plus"></i> Add Credit
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <!-- Dashboard Modals -->
+                <t t-call="portal_account.dashboard_add_credit_modal"/>
+                <t t-call="portal_account.dashboard_import_receptions_modal"/>
+                <t t-call="portal_account.dashboard_import_expeditions_modal"/>
             </t>
 
         </t>

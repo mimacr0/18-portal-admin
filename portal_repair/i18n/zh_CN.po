@@ -1,0 +1,722 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* portal_repair
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+t\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-22 10:53+0000\n"
+"PO-Revision-Date: 2026-01-22 10:53+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid "<i class=\"fas fa-arrow-left mr-1.5\"/> Go Back"
+msgstr "<i class=\"fas fa-arrow-left mr-1.5\"/> 返回"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid ""
+"<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
+"                            Product Information"
+msgstr ""
+"<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
+"                            产品信息"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid ""
+"<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
+"                            Repair Information"
+msgstr ""
+"<i class=\"fas fa-box mr-2 icon-primary-theme\"/>\n"
+"                            维修信息"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid ""
+"<i class=\"fas fa-comments mr-2 icon-primary-theme\"/>\n"
+"                                Communication history"
+msgstr ""
+"<i class=\"fas fa-comments mr-2 icon-primary-theme\"/>\n"
+"                                沟通历史"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid ""
+"<i class=\"fas fa-exchange mr-2 icon-primary-theme\"/>\n"
+"                        Movement History"
+msgstr ""
+"<i class=\"fas fa-exchange mr-2 icon-primary-theme\"/>\n"
+"                        移动历史"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid ""
+"<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden "
+"sm:inline\">Create</span>"
+msgstr "<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden sm:inline\">创建</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid "<i class=\"fas fa-plus mr-1.5\"/> Catalog"
+msgstr "<i class=\"fas fa-plus mr-1.5\"/> 目录"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid "<i class=\"fas fa-plus-circle mr-1.5\"/> Add filter condition"
+msgstr "<i class=\"fas fa-plus-circle mr-1.5\"/> 添加过滤条件"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid "<i class=\"fas fa-save\"/> Save"
+msgstr "<i class=\"fas fa-save\"/> 保存"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid ""
+"<i class=\"fas fa-screwdriver-wrench mr-2 icon-primary-theme\"/>\n"
+"                            Repair Information"
+msgstr ""
+"<i class=\"fas fa-screwdriver-wrench mr-2 icon-primary-theme\"/>\n"
+"                            维修信息"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid "<i class=\"fas fa-times mr-1\"/> Clear selection"
+msgstr "<i class=\"fas fa-times mr-1\"/> 清除选择"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid "<i class=\"fas fa-times\"/> Cancel"
+msgstr "<i class=\"fas fa-times\"/> 取消"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid "<i class=\"fas fa-trash-alt mr-1\"/> Clear"
+msgstr "<i class=\"fas fa-trash-alt mr-1\"/> 清除"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid ""
+"<option value=\"all\" selected=\"selected\">All</option>\n"
+"                                        <option value=\"any\">Any</option>"
+msgstr ""
+"<option value=\"all\" selected=\"selected\">全部</option>\n"
+"                                        <option value=\"any\">任意</option>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
+msgid "<span class=\"font-medium\">No results found</span>"
+msgstr "<span class=\"font-medium\">未找到结果</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
+msgid "<span class=\"font-medium\">Showing</span>"
+msgstr "<span class=\"font-medium\">显示</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid "<span class=\"ml-2 text-sm\">Renew</span>"
+msgstr "<span class=\"ml-2 text-sm\">续保</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid "<span class=\"ml-2 text-sm\">Repair</span>"
+msgstr "<span class=\"ml-2 text-sm\">维修</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid "<span class=\"ml-2 text-sm\">Review</span>"
+msgstr "<span class=\"ml-2 text-sm\">审查</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid "<span class=\"ml-2 text-sm\">Warranty</span>"
+msgstr "<span class=\"ml-2 text-sm\">保修</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid ""
+"<span class=\"ml-2 text-xs text-gray-500 italic\">\n"
+"                                            <i class=\"fas fa-info-circle\"/> Select products from catalog\n"
+"                                        </span>"
+msgstr ""
+"<span class=\"ml-2 text-xs text-gray-500 italic\">\n"
+"                                            <i class=\"fas fa-info-circle\"/> 从目录中选择产品\n"
+"                                        </span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
+msgid ""
+"<span class=\"sr-only\">Next</span>\n"
+"                    <i class=\"fas fa-chevron-right\"/>"
+msgstr ""
+"<span class=\"sr-only\">下一页</span>\n"
+"                    <i class=\"fas fa-chevron-right\"/>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
+msgid ""
+"<span class=\"sr-only\">Previous</span>\n"
+"                    <i class=\"fas fa-chevron-left\"/>"
+msgstr ""
+"<span class=\"sr-only\">上一页</span>\n"
+"                    <i class=\"fas fa-chevron-left\"/>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid "<span class=\"text-red-500 ml-1\">*</span>"
+msgstr "<span class=\"text-red-500 ml-1\">*</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid ""
+"<span id=\"selected-count\" class=\"ml-2 bg-white text-cyan-700 dark:bg-"
+"gray-700 dark:text-cyan-300 text-xs font-bold px-2 py-0.5 rounded-"
+"full\">0</span>"
+msgstr ""
+"<span id=\"selected-count\" class=\"ml-2 bg-white text-cyan-700 dark:bg-"
+"gray-700 dark:text-cyan-300 text-xs font-bold px-2 py-0.5 rounded-"
+"full\">0</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid ""
+"<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
+"dark:text-gray-300 mr-3\">0 selected</span>"
+msgstr ""
+"<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
+"dark:text-gray-300 mr-3\">已选择 0</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "<span>Chat with</span>"
+msgstr "<span>与...聊天</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "<span>Current Alarm Stage:</span>"
+msgstr "<span>当前警报阶段：</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
+msgid "<span>Current stage:</span>"
+msgstr "<span>当前阶段:</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "<span>Description:</span>"
+msgstr "<span>描述：</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
+msgid "<span>Diagnostic:</span>"
+msgstr "<span>诊断：</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "<span>Lifecycle State:</span>"
+msgstr "<span>生命周期状态：</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "<span>Lot Quantity:</span>"
+msgstr "<span>批次数量：</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "<span>Lot name:</span>"
+msgstr "<span>批次名称：</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
+msgid "<span>Lot:</span>"
+msgstr "<span>批次:</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "<span>Maintenance Operation:</span>"
+msgstr "<span>维护操作：</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
+msgid "<span>Name:</span>"
+msgstr "<span>名称:</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "<span>Product Name:</span>"
+msgstr "<span>产品名称：</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
+msgid "<span>Product:</span>"
+msgstr "<span>产品:</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "<span>REF:</span>"
+msgstr "<span>REF:</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
+msgid "<span>Result:</span>"
+msgstr "<span>结果：</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
+msgid "<span>State:</span>"
+msgstr "<span>状态:</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
+msgid "<span>Title:</span>"
+msgstr "<span>标题:</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_list
+msgid "<span>Type:</span>"
+msgstr "<span>类型：</span>"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
+msgid "<span>of</span>"
+msgstr "<span>共</span>"
+
+#. module: portal_repair
+#: model:ir.model.fields,field_description:portal_repair.field_quality_alert__access_warning
+msgid "Access warning"
+msgstr "访问警告"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Active"
+msgstr "激活"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid "Add products using the \"Add\" button"
+msgstr "使用“添加”按钮添加产品"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid "Advanced Search"
+msgstr "高级搜索"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "Alert"
+msgstr "警报"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "All"
+msgstr "全部"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid "Apply Filters"
+msgstr "应用过滤器"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Cancelled"
+msgstr "已取消"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid "Close modal"
+msgstr "关闭模态框"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Create Date"
+msgstr "创建日期"
+
+#. module: portal_repair
+#: model:ir.model.fields,help:portal_repair.field_quality_alert__access_url
+msgid "Customer Portal URL"
+msgstr "客户门户网址"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Delete"
+msgstr "删除"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "Description"
+msgstr "描述"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "Destination Location"
+msgstr "目标位置"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "Diagnosis"
+msgstr "诊断"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "Done Date"
+msgstr "完成日期"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_modal.py:0
+msgid "Error creating stock movement."
+msgstr "创建库存移动时出错。"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Excel export not available. Please install xlsxwriter."
+msgstr "Excel导出不可用。请安装xlsxwriter。"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Export Excel"
+msgstr "导出Excel"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "Go back"
+msgstr "返回"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "In transit"
+msgstr "运输中"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "In warehouse"
+msgstr "在仓库中"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "Lifecycle State"
+msgstr "生命周期状态"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Lot"
+msgstr "批次"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid "Maintenance Operation"
+msgstr "维护操作"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Maintenance Type"
+msgstr "维护类型"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid "Name"
+msgstr "名称"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/models/quality_alert.py:0
+msgid "New message in reception: %(ref)s"
+msgstr "接收入库新消息：%(ref)s"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid "No products selected"
+msgstr "未选择产品"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_modal.py:0
+msgid "No products selected for the repair alert."
+msgstr "未选择维修警报的产品。"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_modal.py:0
+msgid "No valid lots or locations to create alerts."
+msgstr "没有有效的批次或位置来创建警报。"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "Origin Location"
+msgstr "原始位置"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
+msgid "Pagination"
+msgstr "分页"
+
+#. module: portal_repair
+#: model:ir.model.fields,field_description:portal_repair.field_quality_alert__access_url
+msgid "Portal Access URL"
+msgstr "门户访问网址"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid "Problem"
+msgstr "问题"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid "Problem Description"
+msgstr "问题描述"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Product"
+msgstr "产品"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Product Info"
+msgstr "产品信息"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid "Products"
+msgstr "产品"
+
+#. module: portal_repair
+#: model:ir.model,name:portal_repair.model_quality_alert
+msgid "Quality Alert"
+msgstr "质量警报"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_details.py:0
+msgid "Reception Details"
+msgstr "接收详情"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "Reference"
+msgstr "参考"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Renew"
+msgstr "续保"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Repair"
+msgstr "维修"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_modal_template
+msgid "Repair Alert Create"
+msgstr "创建维修警报"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Repair Done Date"
+msgstr "维修完成日期"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "Repair ID"
+msgstr "维修ID"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Repair Info"
+msgstr "维修信息"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Repair Schedule Date"
+msgstr "维修计划日期"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_modal.py:0
+msgid "Repair alert(s) created successfully."
+msgstr "维修警报已成功创建。"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Repairing"
+msgstr "维修中"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Repairs"
+msgstr "维修"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid "Reset"
+msgstr "重置"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "Results"
+msgstr "结果"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Return After Sales"
+msgstr "售后退货"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Review"
+msgstr "审查"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "SAT"
+msgstr "SAT"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid "SAT (Technical Support Service)"
+msgstr "SAT (技术支持服务)"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "Scheduled Date"
+msgstr "计划日期"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid "Search ..."
+msgstr "搜索 ..."
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid "Search products..."
+msgstr "搜索产品..."
+
+#. module: portal_repair
+#: model:ir.model.fields,field_description:portal_repair.field_quality_alert__access_token
+msgid "Security Token"
+msgstr "安全令牌"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid "Selected Products"
+msgstr "已选产品"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Sent for recycling"
+msgstr "已发送回收"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Sent to client"
+msgstr "已发送给客户"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Sent to repair"
+msgstr "已发送维修"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
+msgid "Showing 1-"
+msgstr "显示 1-"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Stage"
+msgstr "阶段"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "State"
+msgstr "状态"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Title"
+msgstr "标题"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Type"
+msgstr "类型"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "Warranty"
+msgstr "保修"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_details_page
+msgid "Write a message..."
+msgstr "写消息..."
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_details.py:0
+msgid "You are not allowed to upload an attachment here."
+msgstr "您无权在此处上传附件。"
+
+#. module: portal_repair
+#. odoo-python
+#: code:addons/portal_repair/controllers/repair_list.py:0
+msgid "alerts"
+msgstr "警报"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_pager
+msgid "of"
+msgstr "共"
+
+#. module: portal_repair
+#: model_terms:ir.ui.view,arch_db:portal_repair.portal_repair_alert_page_main
+msgid "of the following conditions:"
+msgstr "以下条件："

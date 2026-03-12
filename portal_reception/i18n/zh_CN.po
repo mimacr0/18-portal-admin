@@ -1,0 +1,814 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* portal_reception
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+t\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-22 11:29+0000\n"
+"PO-Revision-Date: 2026-01-22 11:29+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"far fa-calendar-alt mr-2 text-gray-500 dark:text-gray-500\"/>\n"
+"                                    Scheduled Date:"
+msgstr ""
+"<i class=\"far fa-calendar-alt mr-2 text-gray-500 dark:text-gray-500\"/>\n"
+"                                    计划日期："
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<i class=\"fas fa-arrow-left mr-1.5\"/> Go Back"
+msgstr "<i class=\"fas fa-arrow-left mr-1.5\"/> 返回"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-box mr-2 text-primary-theme \"/>\n"
+"                            Products by Package"
+msgstr ""
+"<i class=\"fas fa-box mr-2 text-primary-theme \"/>\n"
+"                            按包裹分类的产品"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-comments mr-2 text-primary-theme \"/>\n"
+"                                Communication history"
+msgstr ""
+"<i class=\"fas fa-comments mr-2 text-primary-theme \"/>\n"
+"                                沟通历史"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-exchange-alt mr-2 text-primary-theme \"/>\n"
+"                            Movement Summary"
+msgstr ""
+"<i class=\"fas fa-exchange-alt mr-2 text-primary-theme \"/>\n"
+"                            移动汇总"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-exclamation-triangle mr-2 text-red-500\"/>\n"
+"                            Failed Quality Checks"
+msgstr ""
+"<i class=\"fas fa-exclamation-triangle mr-2 text-red-500\"/>\n"
+"                            质量检查失败"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<i class=\"fas fa-info-circle mr-1\"/> No failed quality checks"
+msgstr "<i class=\"fas fa-info-circle mr-1\"/> 没有失败的质量检查"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<i class=\"fas fa-info-circle mr-1\"/> No movements for this reception"
+msgstr "<i class=\"fas fa-info-circle mr-1\"/> 此收货没有任何移动"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<i class=\"fas fa-info-circle mr-1\"/> No products in this package"
+msgstr "<i class=\"fas fa-info-circle mr-1\"/> 此包裹中没有产品"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-info-circle mr-2 text-primary-theme \"/>\n"
+"                            Reception Info"
+msgstr ""
+"<i class=\"fas fa-info-circle mr-2 text-primary-theme \"/>\n"
+"                            收货信息"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid ""
+"<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden "
+"sm:inline\">Create</span>"
+msgstr "<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden sm:inline\">创建</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<i class=\"fas fa-plus mr-1.5\"/> Catalog"
+msgstr "<i class=\"fas fa-plus mr-1.5\"/> 目录"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<i class=\"fas fa-plus-circle mr-1.5\"/> Add filter condition"
+msgstr "<i class=\"fas fa-plus-circle mr-1.5\"/> 添加筛选条件"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<i class=\"fas fa-save\"/> Save"
+msgstr "<i class=\"fas fa-save\"/> 保存"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-tag mr-2 text-gray-500 dark:text-gray-500\"/>\n"
+"                                    Origin:"
+msgstr ""
+"<i class=\"fas fa-tag mr-2 text-gray-500 dark:text-gray-500\"/>\n"
+"                                    来源："
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<i class=\"fas fa-times mr-1\"/> Clear selection"
+msgstr "<i class=\"fas fa-times mr-1\"/> 清除选择"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<i class=\"fas fa-times\"/> Cancel"
+msgstr "<i class=\"fas fa-times\"/> 取消"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<i class=\"fas fa-trash-alt mr-1\"/> Clear"
+msgstr "<i class=\"fas fa-trash-alt mr-1\"/> 清除"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-truck mr-2 text-gray-500 dark:text-gray-500\"/>\n"
+"                                    Tracking:"
+msgstr ""
+"<i class=\"fas fa-truck mr-2 text-gray-500 dark:text-gray-500\"/>\n"
+"                                    跟踪："
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-user mr-2 text-primary-theme \"/>\n"
+"                            Partner"
+msgstr ""
+"<i class=\"fas fa-user mr-2 text-primary-theme \"/>\n"
+"                            合作伙伴"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-user-tag mr-2 text-gray-500 dark:text-gray-300\"/>\n"
+"                                    Customer ID:"
+msgstr ""
+"<i class=\"fas fa-user-tag mr-2 text-gray-500 dark:text-gray-300\"/>\n"
+"                                    客户编号："
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid ""
+"<option value=\"all\" selected=\"selected\">All</option>\n"
+"                                            <option value=\"any\">Any</option>"
+msgstr ""
+"<option value=\"all\" selected=\"selected\">全部</option>\n"
+"                                            <option value=\"any\">任意</option>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<span class=\"font-medium\">Completed:</span>"
+msgstr "<span class=\"font-medium\">完成：</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<span class=\"font-medium\">Created:</span>"
+msgstr "<span class=\"font-medium\">创建：</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid "<span class=\"font-medium\">No results found</span>"
+msgstr "<span class=\"font-medium\">未找到结果</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<span class=\"font-medium\">Product Weight:</span>"
+msgstr "<span class=\"font-medium\">产品重量：</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<span class=\"font-medium\">Shipping Method:</span>"
+msgstr "<span class=\"font-medium\">运输方式：</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<span class=\"font-medium\">Shipping Weight:</span>"
+msgstr "<span class=\"font-medium\">运输重量：</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid "<span class=\"font-medium\">Showing</span>"
+msgstr "<span class=\"font-medium\">显示</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<span class=\"font-medium\">Status:</span>"
+msgstr "<span class=\"font-medium\">状态：</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid ""
+"<span class=\"help-text\">Enter package number, product and quantity "
+"respectively.</span>"
+msgstr "<span class=\"help-text\">请分别输入包裹号、产品和数量。</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid ""
+"<span class=\"ml-2 text-xs text-gray-500 italic\">\n"
+"                                                <i class=\"fas fa-info-circle\"/> Select products from catalog\n"
+"                                            </span>"
+msgstr ""
+"<span class=\"ml-2 text-xs text-gray-500 italic\">\n"
+"                                                <i class=\"fas fa-info-circle\"/> 从目录中选择产品\n"
+"                                            </span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<span class=\"mx-1 text-sm\">kg</span>"
+msgstr "<span class=\"mx-1 text-sm\">kg</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<span class=\"mx-1 text-sm\">mm</span>"
+msgstr "<span class=\"mx-1 text-sm\">mm</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<span class=\"mx-1\">x</span>"
+msgstr "<span class=\"mx-1\">x</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid ""
+"<span class=\"sr-only\">Next</span>\n"
+"                    <i class=\"fas fa-chevron-right\"/>"
+msgstr ""
+"<span class=\"sr-only\">下一页</span>\n"
+"                    <i class=\"fas fa-chevron-right\"/>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid ""
+"<span class=\"sr-only\">Previous</span>\n"
+"                    <i class=\"fas fa-chevron-left\"/>"
+msgstr ""
+"<span class=\"sr-only\">上一页</span>\n"
+"                    <i class=\"fas fa-chevron-left\"/>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<span class=\"text-red-500 ml-1\">*</span>"
+msgstr "<span class=\"text-red-500 ml-1\">*</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid ""
+"<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
+"dark:text-gray-300 mr-3\">0 selected</span>"
+msgstr ""
+"<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
+"dark:text-gray-300 mr-3\">已选 0 个</span>"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid "<span>of</span>"
+msgstr "<span>共</span>"
+
+#. module: portal_reception
+#: model:ir.model.fields,field_description:portal_reception.field_stock_picking__access_warning
+msgid "Access warning"
+msgstr "访问警告"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Actions"
+msgstr "操作"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_list
+msgid "Add note..."
+msgstr "添加备注..."
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Add products using the \"Add\" button"
+msgstr "使用“添加”按钮添加产品"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Advanced Search"
+msgstr "高级搜索"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "All"
+msgstr "全部"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Apply Filters"
+msgstr "应用筛选"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Approved"
+msgstr "已批准"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Cancel"
+msgstr "取消"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Cancelled"
+msgstr "已取消"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Cannot update a completed or cancelled reception"
+msgstr "无法更新已完成或已取消的收货"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Carrier"
+msgstr "承运商"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Carrier Name"
+msgstr "承运商名称"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Carrier:"
+msgstr "承运商："
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Chat with"
+msgstr "聊天"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Close modal"
+msgstr "关闭弹窗"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Completed"
+msgstr "已完成"
+
+#. module: portal_reception
+#: model:ir.model.fields,help:portal_reception.field_stock_picking__access_url
+msgid "Customer Portal URL"
+msgstr "客户门户 URL"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Date"
+msgstr "日期"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Done"
+msgstr "完成"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Excel export not available. Please install xlsxwriter."
+msgstr "Excel 导出不可用。请安装 xlsxwriter。"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Export Excel"
+msgstr "导出 Excel"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/models/stock_picking.py:0
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Failed"
+msgstr "失败"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Final Destination"
+msgstr "最终目的地"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "From"
+msgstr "来源"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Go back"
+msgstr "返回"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Height"
+msgstr "高度"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Import Excel"
+msgstr "导入 Excel"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Invalid carrier"
+msgstr "无效的承运商"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_modal.py:0
+msgid "Invalid product ID"
+msgstr "无效的产品ID"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_modal.py:0
+msgid "Invalid quantity"
+msgstr "无效的数量"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Invalid reception ID"
+msgstr "无效的收货ID"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Invalid scheduled date"
+msgstr "无效的计划日期"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Length"
+msgstr "长度"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Measures (cm)"
+msgstr "尺寸（cm）"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Name"
+msgstr "名称"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/models/stock_picking.py:0
+msgid "New message in reception"
+msgstr "收货单中有新消息"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "No packages selected"
+msgstr "未选择任何包裹"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_modal.py:0
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "No products selected"
+msgstr "未选择任何产品"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "No valid receptions to cancel"
+msgstr "无可取消的有效收货"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Note"
+msgstr "备注"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Operation"
+msgstr "操作"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Package"
+msgstr "包裹"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Package Type"
+msgstr "包裹类型"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Package Weight"
+msgstr "包裹重量"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Package Weight (kg)"
+msgstr "包裹重量 (kg)"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Package:"
+msgstr "包裹："
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid "Pagination"
+msgstr "分页"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Pending"
+msgstr "待处理"
+
+#. module: portal_reception
+#: model:ir.model.fields,field_description:portal_reception.field_stock_picking__access_url
+msgid "Portal Access URL"
+msgstr "门户访问 URL"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Product"
+msgstr "产品"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Product Weight"
+msgstr "产品重量"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Product Weight (kg)"
+msgstr "产品重量 (kg)"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_modal.py:0
+msgid "Product not found"
+msgstr "未找到产品"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Products"
+msgstr "产品"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Products without package"
+msgstr "无包裹的产品"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "QC"
+msgstr "质检"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "QC Location"
+msgstr "质检位置"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Quantity"
+msgstr "数量"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "RECEPTION"
+msgstr "收货"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_list
+msgid "REF:"
+msgstr "参考："
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "RMA"
+msgstr "RMA"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "RMA (Return Merchandise Authorization)"
+msgstr "RMA (退货授权编号)"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Reason"
+msgstr "原因"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Reception Create"
+msgstr "创建收货"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Reception Details"
+msgstr "收货详情"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Reception Location"
+msgstr "收货位置"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_modal.py:0
+msgid "Reception created successfully"
+msgstr "收货创建成功"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Reception not found"
+msgstr "未找到收货"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Reception not found or access denied"
+msgstr "未找到收货或拒绝访问"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Reception not found or cannot be cancelled"
+msgstr "未找到收货或无法取消"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Reception updated successfully"
+msgstr "收货更新成功"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Receptions"
+msgstr "收货"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Reference"
+msgstr "参考"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Reset"
+msgstr "重置"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Scheduled Date"
+msgstr "计划日期"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Search ..."
+msgstr "搜索 ..."
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Search products..."
+msgstr "搜索产品..."
+
+#. module: portal_reception
+#: model:ir.model.fields,field_description:portal_reception.field_stock_picking__access_token
+msgid "Security Token"
+msgstr "安全令牌"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Selected Products"
+msgstr "已选产品"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Serial Number"
+msgstr "序列号"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Shipping Weight"
+msgstr "运输重量"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid "Showing 1-"
+msgstr "显示 1-"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "State"
+msgstr "状态"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Status"
+msgstr "状态"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Tracking Number"
+msgstr "跟踪编号"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Tracking Number (Optional)"
+msgstr "跟踪编号（可选）"
+
+#. module: portal_reception
+#: model:ir.model,name:portal_reception.model_stock_picking
+msgid "Transfer"
+msgstr "调拨"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "UoM"
+msgstr "计量单位"
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Weight"
+msgstr "重量"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Width"
+msgstr "宽度"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Write a message..."
+msgstr "写一条消息..."
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "You are not allowed to upload an attachment here."
+msgstr "您无权在此上传附件。"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "kg"
+msgstr "kg"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid "of"
+msgstr "共"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "of the following conditions:"
+msgstr "以下条件："
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "packages"
+msgstr "个包裹"

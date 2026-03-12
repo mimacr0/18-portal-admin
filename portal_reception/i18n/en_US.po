@@ -1,0 +1,783 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* portal_reception
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+t\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-22 11:29+0000\n"
+"PO-Revision-Date: 2026-01-22 11:29+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"far fa-calendar-alt mr-2 text-gray-500 dark:text-gray-500\"/>\n"
+"                                    Scheduled Date:"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<i class=\"fas fa-arrow-left mr-1.5\"/> Go Back"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-box mr-2 text-primary-theme \"/>\n"
+"                            Products by Package"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-comments mr-2 text-primary-theme \"/>\n"
+"                                Communication history"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-exchange-alt mr-2 text-primary-theme \"/>\n"
+"                            Movement Summary"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-exclamation-triangle mr-2 text-red-500\"/>\n"
+"                            Failed Quality Checks"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<i class=\"fas fa-info-circle mr-1\"/> No failed quality checks"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<i class=\"fas fa-info-circle mr-1\"/> No movements for this reception"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<i class=\"fas fa-info-circle mr-1\"/> No products in this package"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-info-circle mr-2 text-primary-theme \"/>\n"
+"                            Reception Info"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid ""
+"<i class=\"fas fa-plus mr-1.5\"/> <span class=\"hidden "
+"sm:inline\">Create</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<i class=\"fas fa-plus mr-1.5\"/> Catalog"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<i class=\"fas fa-plus-circle mr-1.5\"/> Add filter condition"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<i class=\"fas fa-save\"/> Save"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-tag mr-2 text-gray-500 dark:text-gray-500\"/>\n"
+"                                    Origin:"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<i class=\"fas fa-times mr-1\"/> Clear selection"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<i class=\"fas fa-times\"/> Cancel"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<i class=\"fas fa-trash-alt mr-1\"/> Clear"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-truck mr-2 text-gray-500 dark:text-gray-500\"/>\n"
+"                                    Tracking:"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-user mr-2 text-primary-theme \"/>\n"
+"                            Partner"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid ""
+"<i class=\"fas fa-user-tag mr-2 text-gray-500 dark:text-gray-300\"/>\n"
+"                                    Customer ID:"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid ""
+"<option value=\"all\" selected=\"selected\">All</option>\n"
+"                                            <option value=\"any\">Any</option>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<span class=\"font-medium\">Completed:</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<span class=\"font-medium\">Created:</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid "<span class=\"font-medium\">No results found</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<span class=\"font-medium\">Product Weight:</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<span class=\"font-medium\">Shipping Method:</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<span class=\"font-medium\">Shipping Weight:</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid "<span class=\"font-medium\">Showing</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "<span class=\"font-medium\">Status:</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid ""
+"<span class=\"help-text\">Enter package number, product and quantity "
+"respectively.</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid ""
+"<span class=\"ml-2 text-xs text-gray-500 italic\">\n"
+"                                                <i class=\"fas fa-info-circle\"/> Select products from catalog\n"
+"                                            </span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<span class=\"mx-1 text-sm\">kg</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<span class=\"mx-1 text-sm\">mm</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<span class=\"mx-1\">x</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid ""
+"<span class=\"sr-only\">Next</span>\n"
+"                    <i class=\"fas fa-chevron-right\"/>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid ""
+"<span class=\"sr-only\">Previous</span>\n"
+"                    <i class=\"fas fa-chevron-left\"/>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "<span class=\"text-red-500 ml-1\">*</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid ""
+"<span id=\"selected-count\" class=\"text-sm font-medium text-gray-700 "
+"dark:text-gray-300 mr-3\">0 selected</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid "<span>of</span>"
+msgstr ""
+
+#. module: portal_reception
+#: model:ir.model.fields,field_description:portal_reception.field_stock_picking__access_warning
+msgid "Access warning"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Actions"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_list
+msgid "Add note..."
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Add products using the \"Add\" button"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Advanced Search"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "All"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Apply Filters"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Approved"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Cancel"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Cancelled"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Cannot update a completed or cancelled reception"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Carrier"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Carrier Name"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Carrier:"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Chat with"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Close modal"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Completed"
+msgstr ""
+
+#. module: portal_reception
+#: model:ir.model.fields,help:portal_reception.field_stock_picking__access_url
+msgid "Customer Portal URL"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Date"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Done"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Excel export not available. Please install xlsxwriter."
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Export Excel"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/models/stock_picking.py:0
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Failed"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Final Destination"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "From"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Go back"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Height"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Import Excel"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Invalid carrier"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_modal.py:0
+msgid "Invalid product ID"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_modal.py:0
+msgid "Invalid quantity"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Invalid reception ID"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Invalid scheduled date"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Length"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Measures (cm)"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Name"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/models/stock_picking.py:0
+msgid "New message in reception"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "No packages selected"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_modal.py:0
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "No products selected"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "No valid receptions to cancel"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Note"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Operation"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Package"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Package Type"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Package Weight"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Package Weight (kg)"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Package:"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid "Pagination"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Pending"
+msgstr ""
+
+#. module: portal_reception
+#: model:ir.model.fields,field_description:portal_reception.field_stock_picking__access_url
+msgid "Portal Access URL"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Product"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Product Weight"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Product Weight (kg)"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_modal.py:0
+msgid "Product not found"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Products"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Products without package"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "QC"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "QC Location"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Quantity"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "RECEPTION"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_list
+msgid "REF:"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "RMA"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "RMA (Return Merchandise Authorization)"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Reason"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Reception Create"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Reception Details"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Reception Location"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_modal.py:0
+msgid "Reception created successfully"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Reception not found"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Reception not found or access denied"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Reception not found or cannot be cancelled"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "Reception updated successfully"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Receptions"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Reference"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Reset"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Scheduled Date"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Search ..."
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Search products..."
+msgstr ""
+
+#. module: portal_reception
+#: model:ir.model.fields,field_description:portal_reception.field_stock_picking__access_token
+msgid "Security Token"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Selected Products"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Serial Number"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Shipping Weight"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid "Showing 1-"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "State"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Status"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Tracking Number"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Tracking Number (Optional)"
+msgstr ""
+
+#. module: portal_reception
+#: model:ir.model,name:portal_reception.model_stock_picking
+msgid "Transfer"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "UoM"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "Weight"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "Width"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "Write a message..."
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_details.py:0
+msgid "You are not allowed to upload an attachment here."
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_details_page
+msgid "kg"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_pager
+msgid "of"
+msgstr ""
+
+#. module: portal_reception
+#: model_terms:ir.ui.view,arch_db:portal_reception.portal_reception_page_main
+msgid "of the following conditions:"
+msgstr ""
+
+#. module: portal_reception
+#. odoo-python
+#: code:addons/portal_reception/controllers/reception_list.py:0
+msgid "packages"
+msgstr ""

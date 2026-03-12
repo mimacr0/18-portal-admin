@@ -1,0 +1,322 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* portal_admin_theme
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-03 13:55+0000\n"
+"PO-Revision-Date: 2025-07-03 13:55+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid ""
+"<i class=\"fas fa-cog mr-2 text-gray-500 dark:text-gray-400\"/> Account "
+"Settings"
+msgstr ""
+"<i class=\"fas fa-cog mr-2 text-gray-500 dark:text-gray-400\"/> Configuración de la cuenta"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "<i class=\"fas fa-sign-out-alt mr-2\"/> Logout"
+msgstr "<i class=\"fas fa-sign-out-alt mr-2\"/> Cerrar sesión"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid ""
+"<i class=\"fas fa-user-circle mr-2 text-gray-500 dark:text-gray-400\"/> My "
+"Profile"
+msgstr ""
+"<i class=\"fas fa-user-circle mr-2 text-gray-500 dark:text-gray-400\"/> Mi perfil"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "<span>English</span>"
+msgstr "<span>Inglés</span>"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "<span>Español</span>"
+msgstr "<span>Español</span>"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "<span>中文</span>"
+msgstr "<span>Chino</span>"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__active
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__active
+msgid "Active"
+msgstr "Activo"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__activity
+msgid "Activity"
+msgstr "Actividad"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "Chinese"
+msgstr "Chino"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "Clear all notifications"
+msgstr "Borrar todas las notificaciones"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__create_uid
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__create_date
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__display_name
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__display_name
+msgid "Display Name"
+msgstr "Nombre para mostrar"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "English"
+msgstr "Inglés"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__id
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__id
+msgid "ID"
+msgstr "ID"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__icon
+msgid "Icon"
+msgstr "Icono"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__write_uid
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__write_date
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "Loading"
+msgstr "Cargando"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "Logo"
+msgstr "Logo"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__message
+msgid "Message"
+msgstr "Mensaje"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__notification
+msgid "Notification"
+msgstr "Notificación"
+
+#. module: portal_admin_theme
+#: model:ir.model,name:portal_admin_theme.model_portal_user_activity
+msgid "Portal User Activity"
+msgstr "Actividad del usuario del portal"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_res_users__portal_user_configuration
+msgid "Portal User Configuration"
+msgstr "Configuración del usuario del portal"
+
+#. module: portal_admin_theme
+#: model:ir.model,name:portal_admin_theme.model_portal_user_notification
+msgid "Portal User Notification"
+msgstr "Notificación del usuario del portal"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "Recent Pages"
+msgstr "Páginas recientes"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "Select Language"
+msgstr "Seleccionar idioma"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "Spanish"
+msgstr "Español"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__time_ago
+msgid "Time Ago"
+msgstr "Hace"
+
+#. module: portal_admin_theme
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__title
+msgid "Title"
+msgstr "Título"
+
+#. module: portal_admin_theme
+#: model:ir.model,name:portal_admin_theme.model_res_users
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_activity__user_id
+#: model:ir.model.fields,field_description:portal_admin_theme.field_portal_user_notification__user_id
+msgid "User"
+msgstr "Usuario"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "View all history"
+msgstr "Ver todo el historial"
+
+#. module: portal_admin_theme
+#: model_terms:ir.ui.view,arch_db:portal_admin_theme.portal_admin_layout
+msgid "default-user"
+msgstr "usuario-predeterminado"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Just now"
+msgstr "Ahora mismo"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "1 minute ago"
+msgstr "Hace 1 minuto"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d minutes ago"
+msgstr "Hace %d minutos"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "1 hour ago"
+msgstr "Hace 1 hora"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d hours ago"
+msgstr "Hace %d horas"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "1 day ago"
+msgstr "Hace 1 día"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d days ago"
+msgstr "Hace %d días"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "New repair alert"
+msgstr "Nueva alerta de reparación"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d repair alert(s) created"
+msgstr "%d alerta(s) de reparación creada(s)"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "New product"
+msgstr "Nuevo producto"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Product '%s' created"
+msgstr "Producto '%s' creado"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Products imported"
+msgstr "Productos importados"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d product(s) imported from Excel"
+msgstr "%d producto(s) importado(s) desde Excel"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "New reception"
+msgstr "Nueva recepción"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Reception '%s' created"
+msgstr "Recepción '%s' creada"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Receptions imported"
+msgstr "Recepciones importadas"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d reception(s) imported from Excel"
+msgstr "%d recepción(es) importada(s) desde Excel"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "New expedition"
+msgstr "Nueva expedición"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Expedition '%s' created"
+msgstr "Expedición '%s' creada"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "Expeditions imported"
+msgstr "Expediciones importadas"
+
+#. module: portal_admin_theme
+#. odoo-python
+#: code:addons/portal_admin_theme/models/portal_user_activity.py:0
+msgid "%d expedition(s) imported from Excel"
+msgstr "%d expedición(es) importada(s) desde Excel"
