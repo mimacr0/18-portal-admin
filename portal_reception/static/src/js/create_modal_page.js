@@ -76,6 +76,7 @@ const submitReceptionCreate = async () => {
 
     const senderId = form.querySelector('[name="sender_id"]')?.value;
     const shippingAddressId = form.querySelector('[name="shipping_address_id"]')?.value;
+    const carrierId = form.querySelector('[name="carrier_id"]')?.value;
     const customerReference = form.querySelector('[name="customer_reference"]')?.value;
     const packageTypeId = form.querySelector('[name="package_type_id"]')?.value;
     const numberOfPackages = form.querySelector('[name="number_of_packages"]')?.value;
@@ -100,6 +101,7 @@ const submitReceptionCreate = async () => {
         const response = await rpc('/account/reception/create', {
             sender_id: senderId,
             shipping_address_id: shippingAddressId || false,
+            carrier_id: carrierId || false,
             customer_reference: customerReference || false,
             package_type_id: packageTypeId,
             number_of_packages: numberOfPackages || 1,
@@ -151,7 +153,7 @@ const initAddAddressModal = () => {
             const typeInput = document.getElementById('reception-add-address-type');
 
             if (targetInput) targetInput.value = targetSelectId || '';
-            
+
             // Determine type based on target select ID
             const isShipping = targetSelectId?.includes('shipping');
             if (typeInput) typeInput.value = isShipping ? 'delivery' : 'sender';
@@ -165,7 +167,7 @@ const initAddAddressModal = () => {
 
             // Clear fields
             ['new-address-name', 'new-address-email', 'new-address-phone',
-             'new-address-street', 'new-address-city', 'new-address-zip']
+                'new-address-street', 'new-address-city', 'new-address-zip']
                 .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
             const countryEl = document.getElementById('new-address-country-id');
             if (countryEl) countryEl.value = '';
@@ -215,7 +217,7 @@ const initAddAddressModal = () => {
             // Add the new address as an option in both selects (sender + shipping)
             // so it's immediately available in both, then select it in the target
             ['page-reception-list-create-form-sender-id',
-             'page-reception-list-create-form-shipping-address-id']
+                'page-reception-list-create-form-shipping-address-id']
                 .forEach(selectId => {
                     const select = document.getElementById(selectId);
                     if (!select) return;
@@ -284,24 +286,15 @@ const renderStockKanban = (quants) => {
     }
 
     container.innerHTML = quants.map(q => `
-        <div class="stock-quant-card bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md border border-gray-200 dark:border-gray-700 p-4 cursor-pointer transition-all duration-200 group flex flex-col items-center text-center"
-             data-product-id="${q.product_id}" data-product-name="${q.product_name}" 
-             data-mapping-id="${q.mapping_id || ''}" data-mapping-name="${q.mapping_name || ''}" data-mapping-sku="${q.mapping_sku || ''}">
-            <div class="w-20 h-20 mb-3 rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-700 flex items-center justify-center relative">
-                <img src="${q.image_url}" alt="${q.product_name}" class="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300"/>
-                <div class="absolute top-0 right-0 bg-theme text-white text-[10px] font-bold px-1.5 py-0.5 rounded-bl-lg">
-                    Qty: ${q.available_quantity}
-                </div>
+        <div class="stock-quant-card bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md border border-gray-200 dark:border-gray-700 p-2 cursor-pointer transition-all duration-200 group flex flex-col items-center text-center"
+             data-product-id="${q.id}" data-product-name="${q.name}">
+            <div class="w-16 h-16 mb-2 rounded-md overflow-hidden bg-gray-50 dark:bg-gray-700 flex items-center justify-center relative">
+                <img src="${q.image_url}" alt="${q.name}" class="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300"/>
             </div>
             <div class="flex-1 w-full">
-                <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-0.5 line-clamp-1">${q.product_name}</h4>
-                <p class="text-[10px] text-gray-500 dark:text-gray-400 font-mono mb-2">${q.product_code || 'No Code'}</p>
-                ${q.mapping_id ? `
-                    <div class="px-2 py-1 bg-green-50 text-green-600 text-[9px] font-bold rounded uppercase tracking-wider mb-1">Mapping: ${q.mapping_sku}</div>
-                ` : `
-                    <div class="px-2 py-1 bg-yellow-50 text-yellow-600 text-[9px] font-bold rounded uppercase tracking-wider mb-1">Unmapped</div>
-                `}
-                <div class="px-3 py-1 bg-theme text-white text-[10px] font-bold rounded-full uppercase tracking-wider inline-block">Select</div>
+                <h4 class="text-[11px] font-semibold text-gray-900 dark:text-gray-100 mb-0.5 line-clamp-2 leading-tight h-7 shadow-none">${q.name}</h4>
+                <p class="text-[9px] text-gray-500 dark:text-gray-400 font-mono mb-1.5">${q.code || ''}</p>
+                <div class="px-3 py-1 bg-theme text-white text-[9px] font-bold rounded-full uppercase tracking-wider inline-block">Map</div>
             </div>
         </div>
     `).join('');
@@ -311,7 +304,7 @@ const renderStockKanban = (quants) => {
         card.addEventListener('click', () => {
             const mappingId = card.dataset.mappingId;
             const mappingName = card.dataset.mappingName;
-            
+
             if (mappingId) {
                 // If mapping exists, add it directly
                 addMappingToLines(mappingId, mappingName);
@@ -330,21 +323,21 @@ const renderStockKanban = (quants) => {
 const addMappingToLines = (mappingId, mappingName) => {
     const products = getSelectedProducts();
     const exists = products.find(p => p.product_id === parseInt(mappingId));
-    
+
     if (exists) {
         systemShowNotification('Product already added.', { type: 'info' });
         return false;
     }
-    
+
     products.push({
         product_id: parseInt(mappingId),
         product_name: mappingName,
         quantity: 1
     });
-    
+
     const productsInput = getElement('page-reception-list-create-form-products-list');
     if (productsInput) productsInput.value = JSON.stringify(products);
-    
+
     renderSelectedProducts();
     systemShowNotification('Product added.', { type: 'success', duration: 2000 });
     return true;
@@ -358,7 +351,7 @@ const openMappingModal = (productId, productName, currentSku = '') => {
     getElement('mapping-internal-name').value = productName;
     getElement('mapping-client-name').value = productName;
     getElement('mapping-client-sku').value = currentSku;
-    
+
     if (window.Modal) window.Modal.open('reception-product-mapping-modal');
 };
 
@@ -373,7 +366,7 @@ const initStockSelector = () => {
         if (window.Modal) window.Modal.open('reception-stock-selector-modal');
         // Fetch quants
         try {
-            const response = await rpc('/account/reception/stock_quants', {});
+            const response = await rpc('/account/reception/unmapped_products', {});
             if (response.status === 'success') {
                 renderStockKanban(response.quants);
             }
@@ -389,7 +382,7 @@ const initStockSelector = () => {
             clearTimeout(timeout);
             timeout = setTimeout(async () => {
                 const search = searchInput.value;
-                const response = await rpc('/account/reception/stock_quants', { search });
+                const response = await rpc('/account/reception/unmapped_products', { search });
                 if (response.status === 'success') {
                     renderStockKanban(response.quants);
                 }
@@ -426,7 +419,7 @@ const initMappingModal = () => {
             if (response.status === 'success') {
                 // Add the newly created mapping to the lines
                 addMappingToLines(response.id, response.name);
-                
+
                 if (window.Modal) {
                     window.Modal.close('reception-product-mapping-modal');
                     window.Modal.close('reception-stock-selector-modal'); // Close parent if any
@@ -474,15 +467,15 @@ const renderRMAProductKanban = (productMaps) => {
     }
 
     container.innerHTML = productMaps.map(pm => `
-        <div class="rma-product-card bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md border border-gray-200 dark:border-gray-700 p-4 cursor-pointer transition-all duration-200 group flex flex-col items-center text-center"
+        <div class="rma-product-card bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md border border-gray-200 dark:border-gray-700 p-2 cursor-pointer transition-all duration-200 group flex flex-col items-center text-center"
              data-product-id="${pm.id}" data-product-name="${pm.name}">
-            <div class="w-24 h-24 mb-3 rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-700 flex items-center justify-center">
-                <img src="${pm.image_url}" alt="${pm.name}" class="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300"/>
+            <div class="w-16 h-16 mb-2 rounded-md overflow-hidden bg-gray-50 dark:bg-gray-700 flex items-center justify-center">
+                <img src="/account/reception/product_image/${pm.product_id}" alt="${pm.name}" class="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300"/>
             </div>
-            <div class="flex-1">
-                <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1 line-clamp-2">${pm.name}</h4>
-                <p class="text-xs text-gray-500 dark:text-gray-400 font-mono mb-2">${pm.account_sku || 'No SKU'}</p>
-                <div class="px-2 py-1 bg-theme-light text-theme text-[10px] font-bold rounded uppercase tracking-wider inline-block">Select</div>
+            <div class="flex-1 w-full">
+                <h4 class="text-[11px] font-semibold text-gray-900 dark:text-gray-100 mb-0.5 line-clamp-2 leading-tight h-7 shadow-none">${pm.name}</h4>
+                <p class="text-[9px] text-gray-500 dark:text-gray-400 font-mono mb-1.5">${pm.account_sku || ''}</p>
+                <div class="px-2 py-0.5 bg-theme-light text-theme text-[9px] font-bold rounded uppercase tracking-wider inline-block">Select</div>
             </div>
         </div>
     `).join('');
@@ -492,7 +485,7 @@ const renderRMAProductKanban = (productMaps) => {
         card.addEventListener('click', () => {
             const pmId = card.dataset.productId;
             const pmName = card.dataset.productName;
-            
+
             if (addMappingToLines(pmId, pmName)) {
                 if (window.Modal) window.Modal.close('reception-product-map-selector-modal');
             }
@@ -509,7 +502,7 @@ const initRMAProductSelector = () => {
 
     btn.addEventListener('click', async () => {
         if (window.Modal) window.Modal.open('reception-product-map-selector-modal');
-        
+
         // Fetch products
         try {
             const response = await rpc('/account/reception/product_maps', {});
@@ -610,15 +603,15 @@ const initCatalogSelector = () => {
     document.addEventListener('click', (e) => {
         const addBtn = e.target.closest('.product-add-btn');
         if (!addBtn || !addBtn.closest(`#${catalogContainerId}`)) return;
-        
+
         const card = addBtn.closest('.product-card');
         if (!card) return;
-        
+
         const productId = card.dataset.productId;
         const productName = card.querySelector('h3')?.textContent.trim();
         const productSkuInput = card.querySelector('.text-gray-500');
         const productSku = productSkuInput ? productSkuInput.textContent.trim().replace(/[\[\]]/g, '') : '';
-        
+
         openMappingModal(productId, productName, productSku);
     });
 };

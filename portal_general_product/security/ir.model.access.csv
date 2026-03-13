@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_product_map_portal,account.product.map.portal,rma_base.model_account_product_map,base.group_portal,1,0,0,0

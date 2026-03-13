@@ -7,7 +7,7 @@
             <div class="w-full" t-attf-id="page-#{page_name}-main-container">
 
                 <div class="card-title-container mb-4 flex items-center">
-                    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">RMA (Return Merchandise Authorization)</h1>
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Reception Packages</h1>
                 </div>
 
                 <!-- Barra de herramientas de acciones masivas -->
@@ -202,9 +202,34 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-out="package.name"/>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100" t-out="package.shipping_weight"/>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100" t-out="package.package_type_id.name"/>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100" t-out="package.pack_date"/>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.carrier_id.name"></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.shipping_weight"></div>
+                </td>  
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.package_type_id.name"></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.pack_date"></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.sender_id.name"></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="package.shipping_address_id.name"></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-100">
+                        <t t-foreach="package.rma_products_line_ids" t-as="line">
+                            <div class="flex justify-between gap-2 border-b border-gray-100 last:border-0 py-0.5">
+                                <span class="truncate" t-out="line.product_map_id.name"/>
+                                <span class="font-bold text-primary-theme" t-out="line.quantity"/>
+                            </div>
+                        </t>
+                    </div>
+                </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span t-if="package.rma_state == 'draft'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Received</span>
                     <span t-if="package.rma_state == 'opened'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Opened &amp; Inspected</span>
@@ -212,8 +237,25 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <a t-attf-href="/account/reception/print/#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 dark:text-gray-100" title="Print Label"> <i class="fas fa-print"></i> </a>
-                    <a t-attf-href="/account/reception/details/#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 dark:text-gray-100"> <i class="fas fa-info-circle"></i> </a>
-                    <button t-if="package.rma_state == 'draft'" t-att-data-reception-id="package.id" class="reception-delete-btn text-gray-600 hover:text-gray-900 dark:text-gray-100"> <i class="fas fa-ban"></i> </button>
+                    <a t-attf-href="/account/reception/details/#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 dark:text-gray-100" title="Internal Details"> <i class="fas fa-info-circle"></i> </a>
+                    
+                    <!-- Conditional Links -->
+                    <a t-if="package.type == 'return'" t-attf-href="/account/rma/units?package_id=#{package.id}" 
+                       class="text-primary-theme hover:text-theme-dark mr-3" title="RMA List"
+                       data-history-url="/account/rma/units"
+                       data-history-title="RMA Units"
+                       data-history-icon="fa-box-open">
+                       <i class="fas fa-box-open"></i>
+                    </a>
+                    <a t-if="package.type == 'new'" t-attf-href="/account/reception/stock_list/#{package.id}" 
+                       class="text-blue-600 hover:text-blue-800 mr-3" title="Stock List"
+                       t-attf-data-history-url="/account/reception/stock_list/#{package.id}"
+                       data-history-title="Stock List"
+                       data-history-icon="fa-boxes">
+                       <i class="fas fa-boxes"></i>
+                    </a>
+                    
+                    <button t-if="package.rma_state == 'draft'" t-att-data-reception-id="package.id" class="reception-delete-btn text-gray-600 hover:text-gray-900 dark:text-gray-100" title="Delete"> <i class="fas fa-ban"></i> </button>
                 </td>
             </tr>
             <!-- Other screen sizes omitted for clarity -->

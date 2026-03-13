@@ -56,7 +56,7 @@ class PortalReceptionListController(PortalAdminController):
     def _get_admin_layout_menus(self):
         menus = super()._get_admin_layout_menus()
         menus.append({
-            'name': _('RMA'),
+            'name': _('Reception Packages'),
             'url': '/account/reception',
             'icon': 'fas fa-warehouse',
             'order': 20
@@ -85,6 +85,29 @@ class PortalReceptionListController(PortalAdminController):
             ]}
         ]
 
+    def _get_reception_list_columns(self):
+        return [
+            {'id': 'name', 'label': _('Tracking/Name'), 'sortable': True, 'responsive': ['sm', 'md', 'lg']},
+            {'id': 'carrier', 'label': _('Carrier'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
+            {'id': 'weight', 'label': _('Weight'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
+            {'id': 'type', 'label': _('Package Type'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
+            {'id': 'date', 'label': _('Date'), 'sortable': True, 'lg': True, 'responsive': ['md', 'lg']},
+            {'id': 'sender', 'label': _('Sender'), 'sortable': True, 'md': True, 'responsive': ['md', 'lg']},
+            {'id': 'shipping', 'label': _('Shipping Address'), 'sortable': True, 'lg': True, 'responsive': ['md', 'lg']},
+            {'id': 'products', 'label': _('Declared Products'), 'sortable': True, 'lg': True, 'responsive': ['md', 'lg']},
+            {'id': 'state', 'label': _('Status'), 'sortable': True, 'lg': True, 'responsive': ['md', 'lg']},
+            {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True, 'responsive': ['sm', 'md', 'lg']}
+        ]
+
+    def _get_reception_list_filters(self):
+        return [
+            {'id': 'all', 'label': _('All'), 'icon': 'fas fa-check-circle', 'active': True, 'domain': []},
+            {'id': 'pending', 'label': _('Pending'), 'icon': 'fas fa-clock', 'domain': [('type', '=', 'return'), ('rma_state', '=', 'draft')]},
+            {'id': 'done', 'label': _('Done'), 'icon': 'fas fa-check', 'domain': [('type', '=', 'return'), ('rma_state', '=', 'done')]},
+            {'id': 'return', 'label': _('Return'), 'icon': 'fas fa-undo', 'domain': [('type', '=', 'return')]},
+            {'id': 'new', 'label': _('New'), 'icon': 'fas fa-star', 'domain': [('type', '=', 'new')]}
+        ]
+
     @http.route('/account/reception', type='http', auth="user", website=True)
     def account_reception_action(self, **post):
         # Ensure translations render with user's language
@@ -103,6 +126,7 @@ class PortalReceptionListController(PortalAdminController):
         shipping_addresses = all_partners.filtered(lambda p: p.type in ['delivery'])
         countries = request.env['res.country'].sudo().search([])
         package_types = request.env['stock.package.type'].sudo().search([])
+        carriers = request.env['delivery.carrier'].sudo().search([('active', '=', True)])
 
         values = self._get_admin_layout_values()
 
@@ -114,27 +138,13 @@ class PortalReceptionListController(PortalAdminController):
             'shipping_addresses': shipping_addresses,
             'countries': countries,
             'package_types': package_types,
-            'page_title': _('RMA'),
+            'carriers': carriers,
+            'page_title': _('Packages'),
             'page_url': '/account/reception',
             'flatpickr': True,
             'select2': True,
-            'list_filters': [
-                {'id': 'all', 'label': _('All'), 'icon': 'fas fa-check-circle', 'active': True},
-                {'id': 'pending', 'label': _('Pending'), 'icon': 'fas fa-clock'},
-                {'id': 'done', 'label': _('Done'), 'icon': 'fas fa-check'},
-                {'id': 'return', 'label': _('Return'), 'icon': 'fas fa-check'},
-                {'id': 'new', 'label': _('New'), 'icon': 'fas fa-check'}
-            ],
-            'list_columns': [
-                {'id': 'name', 'label': _('Tracking/Name'), 'sortable': True, 'responsive': ['sm', 'md', 'lg']},
-                # {'id': 'carrier', 'label': _('Carrier'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
-                {'id': 'weight', 'label': _('Weight'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
-                # {'id': 'type', 'label': _('Package Type'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
-                {'id': 'date', 'label': _('Date'), 'sortable': True, 'md': True, 'responsive': ['md', 'lg']},
-                {'id': 'state', 'label': _('Status'), 'sortable': True, 'md': True, 'responsive': ['md', 'lg']},
-                # {'id': 'note', 'label': _('Note'), 'sortable': False, 'responsive': ['lg']},
-                {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True, 'responsive': ['sm', 'md', 'lg']}
-            ],
+            'list_filters': self._get_reception_list_filters(),
+            'list_columns': self._get_reception_list_columns(),
             'tools_actions': [
                 {'name': 'import', 'label': _('Import Excel'), 'icon': 'fas fa-file-import', 'color': 'btn-primary', 'modal_id': 'dashboard-page-import-receptions-modal'},
             ],
@@ -143,7 +153,8 @@ class PortalReceptionListController(PortalAdminController):
                 {'name': 'export', 'label': _('Export Excel'), 'icon': 'fas fa-file-excel', 'color': 'btn-primary'},
                 {'name': 'delete', 'label': _('Cancel'), 'icon': 'fas fa-ban'},
             ],
-            'advanced_search': json.dumps(self._get_reception_advanced_search_fields())
+            'advanced_search': json.dumps(self._get_reception_advanced_search_fields()),
+            '_': _,
         })
         
         # Procesar columnas para añadir flags de visibilidad según responsive
@@ -196,23 +207,23 @@ class PortalReceptionListController(PortalAdminController):
         ]
 
         # Apply quick filters
-        if quick_filter == 'new':
-            base_domain.append(('type', '=', 'new'))
-        elif quick_filter == 'return':
-            base_domain.append(('type', '=', 'return'))
-        elif quick_filter == 'pending':
-            base_domain.extend([('type', '=', 'return'), ('rma_state', '=', 'draft')])
-        elif quick_filter == 'done':
-            base_domain.extend([('type', '=', 'return'), ('rma_state', '=', 'done')])
+        # Apply quick filters
+        if quick_filter:
+            active_filter = next((f for f in self._get_reception_list_filters() if f['id'] == quick_filter), None)
+            if active_filter and active_filter.get('domain'):
+                base_domain = expression.AND([base_domain, active_filter['domain']])
 
 
         # Aplicar búsqueda de texto
         if search:
-            base_domain.extend(expression.OR([
-                [('name', 'ilike', search)],
-                [('carrier_id.name', 'ilike', search)],
-                # [('owner_id.name', 'ilike', search)]
-            ]))
+            base_domain = expression.AND([
+                base_domain,
+                expression.OR([
+                    [('name', 'ilike', search)],
+                    [('carrier_id.name', 'ilike', search)],
+                    # [('owner_id.name', 'ilike', search)]
+                ])
+            ])
 
         # Aplicar dominio de búsqueda avanzada
         if domain and isinstance(domain, list) and domain:
@@ -309,7 +320,7 @@ class PortalReceptionListController(PortalAdminController):
                         expression.OR(adv_condition_domains)
                     ])
                 else:
-                    base_domain.extend(adv_conditions)
+                    base_domain = expression.AND([base_domain, adv_conditions])
 
         return base_domain
 
@@ -338,10 +349,12 @@ class PortalReceptionListController(PortalAdminController):
             'status': 'success',
             'list': qweb._render('portal_reception.portal_reception_list', {
                 'packages': packages,
-                'batch_actions': True
+                'batch_actions': True,
+                '_': _,
             }),
             'pager': qweb._render('portal_reception.portal_reception_pager', {
                 'items_label': _('packages'),
+                '_': _,
                 **pagination_data
             }),
             'last_page': pagination_data['last_page']
@@ -503,7 +516,7 @@ class PortalReceptionListController(PortalAdminController):
                 'name': pm.name,
                 'account_sku': pm.account_sku,
                 'internal_product_name': pm.product_id.name,
-                'image_url': f'/web/image/product.product/{pm.product_id.id}/image_128' if pm.product_id.image_128 else '/web/static/img/placeholder.png'
+                'image_url': f'/account/reception/product_image/{pm.product_id.id}'
             } for pm in product_maps]
         }
 

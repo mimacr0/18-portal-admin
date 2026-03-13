@@ -252,51 +252,50 @@ const sysLayoutInitPagesHistory = () => {
     const historyList = document.getElementById('history-list');
     const clearHistoryBtn = document.getElementById('clear-history');
 
-    // Process history action elements
-    for (const historyActionElement of historyActionElements) {
+    // Use event delegation to handle clicks on history action elements (including dynamic ones)
+    document.addEventListener('click', function(e) {
+        const historyActionElement = e.target.closest('[data-history-url]');
+        if (!historyActionElement) return;
+
         const historyUrl = historyActionElement.getAttribute('data-history-url');
         const historyTitle = historyActionElement.getAttribute('data-history-title') || 'Untitled Page';
         const historyIcon = historyActionElement.getAttribute('data-history-icon') || 'fa fa-file';
 
-        if (!historyUrl) continue;
+        // Save history but don't stop the event (allow navigation)
+        const history = sysLayoutHistoryLoadHistory();
+        const MAX_HISTORY_ITEMS = 10;
 
-        historyActionElement.addEventListener('click', function(e) {
-            // Save history but don't stop the event
-            const history = sysLayoutHistoryLoadHistory();
-            const MAX_HISTORY_ITEMS = 10;
+        // Create new history entry and set as active
+        const newEntry = {
+            path: historyUrl,
+            title: historyTitle,
+            timestamp: new Date().toISOString(),
+            icon: historyIcon,
+            active: true
+        };
 
-            // Create new history entry with element's attributes and set as active
-            const newEntry = {
-                path: historyUrl,
-                title: historyTitle,
-                timestamp: new Date().toISOString(),
-                icon: historyIcon,
-                active: true
-            };
+        // Reset active state on all items
+        const updatedHistory = history.map(item => ({
+            ...item,
+            active: false
+        }));
 
-            // Reset active state on all items
-            const updatedHistory = history.map(item => ({
-                ...item,
-                active: false
-            }));
+        // Remove duplicate if exists
+        const filteredHistory = updatedHistory.filter(item => item.path !== historyUrl);
 
-            // Remove duplicate if exists
-            const filteredHistory = updatedHistory.filter(item => item.path !== historyUrl);
+        // Add new entry to the beginning
+        filteredHistory.unshift(newEntry);
 
-            // Add new entry to the beginning
-            filteredHistory.unshift(newEntry);
+        // Limit to max items
+        const trimmedHistory = filteredHistory.slice(0, MAX_HISTORY_ITEMS);
 
-            // Limit to max items
-            const trimmedHistory = filteredHistory.slice(0, MAX_HISTORY_ITEMS);
+        // Save updated history
+        sysLayoutHistorySaveHistory(trimmedHistory);
 
-            // Save updated history
-            sysLayoutHistorySaveHistory(trimmedHistory);
-
-            // Update UI
-            updateHistoryDropdown();
-            sysLayoutReloadPagesHistory();
-        });
-    }
+        // Update UI
+        updateHistoryDropdown();
+        sysLayoutReloadPagesHistory();
+    });
 
     const updateHistoryDropdown = () => {
         if (!historyList) return;

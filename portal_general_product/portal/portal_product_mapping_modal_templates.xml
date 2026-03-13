@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Product Mapping Stock Selector Modal -->
+    <template id="product_mapping_stock_selector_modal">
+        <div id="product-mapping-stock-selector-modal" class="modal" data-outside-close="false">
+            <div class="modal-content max-w-4xl w-full mx-auto max-h-[90vh] flex flex-col">
+                <div class="modal-header">
+                    <h3 class="text-lg font-semibold">Select Product to Map</h3>
+                    <button type="button" class="close-modal" data-modal-close="true">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body overflow-y-auto flex-1 p-4 bg-gray-50 dark:bg-gray-900 border-y border-gray-200 dark:border-gray-700">
+                    <div class="mb-4 sticky top-0 bg-gray-50 dark:bg-gray-900 z-10 pb-2">
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="product-mapping-stock-search" 
+                                   class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 focus:ring-2 focus:ring-theme focus:border-theme outline-none transition-all"
+                                   placeholder="Search by Product Name or Code..."/>
+                        </div>
+                    </div>
+                    
+                    <div id="product-mapping-stock-kanban-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                        <div class="col-span-full py-20 text-center text-gray-500">
+                            <i class="fas fa-spinner fa-spin text-3xl mb-4"></i>
+                            <p>Loading catalog...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer flex justify-end p-4">
+                    <button type="button" data-modal-close="true" class="modal-btn modal-btn-secondary">
+                        <i class="fas fa-times mr-1.5"></i> Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Product Mapping Creation Modal -->
+    <template id="product_mapping_form_modal">
+        <div id="product-mapping-create-modal" class="modal" data-outside-close="false">
+            <div class="modal-content max-w-md w-full mx-auto">
+                <div class="modal-header">
+                    <h3 class="text-lg font-semibold">New Product Mapping</h3>
+                    <button type="button" class="close-modal" data-modal-close="true">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body p-6">
+                    <input type="hidden" id="mapping-product-id"/>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Internal Product</label>
+                            <input type="text" id="mapping-internal-name" readonly="readonly"
+                                   class="w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-700 rounded-md px-3 py-2 text-sm text-gray-500"/>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Your Product Name</label>
+                            <input type="text" id="mapping-client-name" 
+                                   class="w-full border border-gray-300 dark:border-gray-700 rounded-md px-3 py-2 text-sm focus:ring-theme focus:border-theme outline-none dark:bg-gray-800 dark:text-white"
+                                   placeholder="e.g. My Custom Product Name"/>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Your SKU</label>
+                            <input type="text" id="mapping-client-sku" 
+                                   class="w-full border border-gray-300 dark:border-gray-700 rounded-md px-3 py-2 text-sm focus:ring-theme focus:border-theme outline-none dark:bg-gray-800 dark:text-white"
+                                   placeholder="e.g. SKU-12345"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer flex justify-end gap-2 p-4 bg-gray-50 dark:bg-gray-800 rounded-b-xl border-t border-gray-200 dark:border-gray-700">
+                    <button type="button" data-modal-close="true" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">Cancel</button>
+                    <button type="button" id="product-mapping-save-btn" 
+                            class="px-4 py-2 text-sm font-medium text-white btn-primary rounded-md shadow-sm">Save Mapping</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Product Mapping Import Modal (Placeholder for parity) -->
+    <template id="product_mapping_import_modal">
+        <div id="product-mapping-import-modal" class="modal" data-outside-close="false">
+            <div class="modal-content max-w-lg w-full mx-auto">
+                <div class="modal-header">
+                    <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">Import Product Mappings</h3>
+                    <button data-modal-close="true" class="close-modal">
+                        <i class="fas fa-times"/>
+                    </button>
+                </div>
+                <div class="modal-body p-6">
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Excel import functionality is being developed.</p>
+                </div>
+                <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700">
+                    <button data-modal-close="true" class="modal-btn modal-btn-secondary">Close</button>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_rma_units_page_main" name="Portal RMA Units Page">
+        <t t-call="portal_admin_theme.portal_admin_layout">
+            <div class="w-full" t-attf-id="page-#{page_name}-main-container">
+                <div class="card-title-container mb-4 flex items-center">
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100" t-out="page_title"/>
+                    <input type="hidden" t-attf-id="page-#{page_name}-package-id" t-att-value="package_id or ''"/>
+                </div>
+
+                <!-- Bulk Actions Toolbar -->
+                <div id="bulk-actions-toolbar" class="bg-white rounded-lg shadow mb-4 p-3 hidden dark:bg-gray-800">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center">
+                            <span id="selected-count" class="text-sm font-medium text-gray-700 dark:text-gray-300 mr-3">0 selected</span>
+                            <div class="h-4 border-l border-gray-300 dark:border-gray-700 mr-3"></div>
+                            <div class="flex flex-wrap gap-2">
+                                <t t-foreach="batch_actions" t-as="batch_action">
+                                    <button t-attf-id="page-list-#{page_name}-batch-action-#{batch_action.get('name')}" 
+                                            t-attf-class="px-3 py-1 text-white text-sm rounded transition-colors flex items-center #{batch_action.get('color', 'bg-red-600 hover:bg-red-700')}">
+                                        <i t-attf-class="#{batch_action.get('icon')} mr-1.5"></i> <t t-out="batch_action.get('label')"/>
+                                    </button>
+                                </t>
+                            </div>
+                        </div>
+                        <button id="clear-selection" class="text-sm text-gray-600 hover:text-gray-800">
+                            <i class="fas fa-times mr-1"></i> Clear selection
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Filters -->
+                <t t-if="list_filters">
+                    <div class="border-b border-gray-200 dark:border-gray-700 mb-2">
+                        <div class="flex overflow-x-auto scrollbar-hide">
+                            <input type="hidden" t-attf-id="page-#{page_name}-list-quick-filter-active" value="all"/>
+                            <t t-foreach="list_filters" t-as="list_filter">
+                                <button type="button" t-attf-id="page-#{page_name}-list-filter-#{list_filter.get('id')}" 
+                                        t-attf-class="tab-button #{list_filter.get('active') and 'active border-primary-theme text-primary-theme' or 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} px-6 py-3 text-sm font-medium border-b-2 focus:outline-none transition-colors duration-200 ease-in-out dark:text-white relative">
+                                    <i t-attf-class="#{list_filter.get('icon')} mr-2"></i>
+                                    <t t-out="list_filter.get('label')"/>
+                                </button>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- RMA Units Table Container -->
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-20 dark:bg-gray-800">
+                    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-col lg:flex-row justify-between gap-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <button id="launch-create-rma_units-form-button" class="px-3 py-1.5 btn-primary text-white rounded-md transition-colors flex items-center">
+                                    <i class="fas fa-plus mr-1.5"></i> <span class="hidden sm:inline">Create</span>
+                                </button>
+                            </div>
+
+                            <div class="flex items-center justify-between gap-2">
+                                <!-- Simple search -->
+                                <div class="relative flex-grow max-w-xs">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-search text-gray-400 dark:text-gray-500"></i>
+                                    </div>
+                                    <input type="text" t-attf-id="page-#{page_name}-list-quick-search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-cyan-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus-ring-theme " placeholder="Search ..."/>
+                                </div>
+
+                                <!-- Advanced search toggle -->
+                                <button t-if="advanced_search" t-attf-id="page-#{page_name}-list-advanced-search-toggle" class="p-2 border border-gray-300 rounded-md hover:bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
+
+                                <!-- Tools actions -->
+                                <div class="flex items-center">
+                                    <!-- Column Picker -->
+                                    <div class="relative inline-block text-left mr-2" id="rma-columns-selector-container">
+                                        <button type="button" id="rma-columns-selector-btn" class="p-2 border border-gray-300 rounded-md hover:bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
+                                            <i class="fas fa-columns"></i>
+                                        </button>
+                                        <div id="rma-columns-dropdown" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-20 hidden dark:bg-gray-800 dark:ring-gray-700">
+                                            <div class="py-1 px-3" role="none">
+                                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider py-2 border-b border-gray-100 dark:border-gray-700 mb-1">Display Columns</p>
+                                                <t t-foreach="list_columns" t-as="col">
+                                                    <div t-if="col.get('optional')" class="flex items-center py-2">
+                                                        <input type="checkbox" t-att-id="'col-check-' + col.get('id')" t-att-data-column-id="col.get('id')" class="rma-column-toggle h-4 w-4 text-primary-theme border-gray-300 rounded focus:ring-primary-theme" t-att-checked="'checked' if col.get('optional') == 'show' else None"/>
+                                                        <label t-att-for="'col-check-' + col.get('id')" class="ml-2 block text-sm text-gray-700 dark:text-gray-300 cursor-pointer" t-out="col.get('label')"/>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <t t-foreach="tools_actions" t-as="tools_action">
+                                        <button t-if="tools_action.get('url')" t-attf-id="page-list-#{page_name}-tools-action-#{tools_action.get('name')}" 
+                                                t-attf-onclick="location.href='#{tools_action.get('url')}'"
+                                                class="p-2 rounded-md hover:bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
+                                            <i t-att-class="tools_action.get('icon')"></i>
+                                        </button>
+                                        <button t-else="" t-attf-id="page-list-#{page_name}-tools-action-#{tools_action.get('name')}" 
+                                                t-att-data-modal-open="tools_action.get('modal_id')"
+                                                class="p-2 rounded-md hover:bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
+                                            <i t-att-class="tools_action.get('icon')"></i>
+                                        </button>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Advanced search panel (hidden by default) -->
+                        <div t-attf-id="page-#{page_name}-list-advanced-search-panel" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 hidden">
+                            <input type="hidden" t-attf-id="page-#{page_name}-list-advanced-search-domain" value="[]"/>
+                            <input type="hidden" t-attf-id="page-#{page_name}-list-advanced-search-fields" t-att-value="advanced_search"/>
+                            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Advanced Search</h3>
+                            <div class="w-full">
+                                <div class="mb-4">
+                                    <p class="text-sm text-gray-700 dark:text-gray-300">
+                                        <select t-attf-id="page-#{page_name}-list-advanced-search-match-type" class="inline-block mx-1 px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus-ring-theme focus:border-primary-theme bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                                            <option value="all" selected="selected">All</option>
+                                            <option value="any">Any</option>
+                                        </select>
+                                        of the following conditions:
+                                    </p>
+                                </div>
+                                <div t-attf-id="page-#{page_name}-list-advanced-search-lines-container" class="space-y-3"></div>
+                                <div class="mt-3">
+                                    <button t-attf-id="page-#{page_name}-list-advanced-search-add-line-btn" class="flex items-center text-primary-theme hover:text-primary-theme text-sm font-medium">
+                                        <i class="fas fa-plus-circle mr-1.5"></i> Add filter condition
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex justify-end space-x-3">
+                                <button t-attf-id="page-#{page_name}-list-advanced-search-reset-btn" class="px-3 py-1 text-sm border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700"> Reset </button>
+                                <button t-attf-id="page-#{page_name}-list-advanced-search-apply-btn" class="px-3 py-1 text-sm btn-primary text-white rounded-md shadow-sm"> Apply Filters </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-800">
+                                <tr>
+                                    <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left">
+                                        <input t-attf-id="page-#{page_name}-list-select-all-checkbox" type="checkbox" class="h-4 w-4 text-primary-theme border-gray-300 rounded"/>
+                                    </th>
+                                    <t t-foreach="list_columns" t-as="list_column">
+                                        <th scope="col" t-att-data-column-id="list_column.get('id')" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider #{list_column.get('optional') == 'hide' and 'hidden' or ''}">
+                                            <div class="flex items-center">
+                                                <span t-out="list_column.get('label')"/>
+                                                <i t-attf-id="list-column-#{page_name}-#{list_column.get('id')}-sort-icon" t-if="list_column.get('sortable')" class="fas fa-sort ml-1 text-gray-400"></i>
+                                            </div>
+                                        </th>
+                                    </t>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="rma-units-list-items">
+                                <t t-call="portal_rma.portal_rma_list"/>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pager Container -->
+            <div class="fixed bottom-0 right-0 z-10 mr-6 mb-6" t-attf-id="page-#{page_name}-list-pagination-container-main">
+                <input type="hidden" t-attf-id="page-#{page_name}-list-pagination-page" value="1"/>
+                <div class="pagination-container px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg" t-attf-id="page-#{page_name}-list-pagination-container">
+                    <t t-call="portal_rma.portal_rma_pager"/>
+                </div>
+            </div>
+
+            <t t-set="footer_content">
+                <t t-call="portal_rma.rma_units_import_modal">
+                    <t t-set="page_name" t-value="'rma_units'"/>
+                </t>
+                <t t-call="portal_rma.rma_stock_selector_modal">
+                    <t t-set="page_name" t-value="'rma_units'"/>
+                </t>
+                <t t-call="portal_rma.rma_product_mapping_modal">
+                    <t t-set="page_name" t-value="'rma_units'"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_rma_list" name="Portal RMA Units List Rows">
+        <t t-foreach="units" t-as="unit">
+            <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
+                    <input type="checkbox" class="rma-units-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded" t-att-data-unit-id="unit.id"/>
+                </td>
+                <td data-column-id="name" class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900 dark:text-white" t-out="unit.name"/>
+                </td>
+                <td data-column-id="product" class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-500 dark:text-gray-300" t-out="unit.product_id.display_name"/>
+                </td>
+                <td data-column-id="account_sku" t-attf-class="px-6 py-4 whitespace-nowrap #{not list_columns or any(c.get('id') == 'account_sku' and c.get('optional') == 'hide' for c in list_columns) and 'hidden' or ''}">
+                    <div class="text-sm text-gray-500 dark:text-gray-300" t-out="unit.account_sku or '-'"/>
+                </td>
+                <td data-column-id="account_ean13" t-attf-class="px-6 py-4 whitespace-nowrap #{not list_columns or any(c.get('id') == 'account_ean13' and c.get('optional') == 'hide' for c in list_columns) and 'hidden' or ''}">
+                    <div class="text-sm text-gray-500 dark:text-gray-300" t-out="unit.account_ean13 or '-'"/>
+                </td>
+                <td data-column-id="account_fnsku" t-attf-class="px-6 py-4 whitespace-nowrap #{not list_columns or any(c.get('id') == 'account_fnsku' and c.get('optional') == 'hide' for c in list_columns) and 'hidden' or ''}">
+                    <div class="text-sm text-gray-500 dark:text-gray-300" t-out="unit.account_fnsku or '-'"/>
+                </td>
+                <td data-column-id="account_asin" t-attf-class="px-6 py-4 whitespace-nowrap #{not list_columns or any(c.get('id') == 'account_asin' and c.get('optional') == 'hide' for c in list_columns) and 'hidden' or ''}">
+                    <div class="text-sm text-gray-500 dark:text-gray-300" t-out="unit.account_asin or '-'"/>
+                </td>
+                <td data-column-id="serial" t-attf-class="px-6 py-4 whitespace-nowrap #{not list_columns or any(c.get('id') == 'serial' and c.get('optional') == 'hide' for c in list_columns) and 'hidden' or ''}">
+                    <div class="text-sm text-gray-500 dark:text-gray-300" t-out="unit.serial or '-'"/>
+                </td>
+                <td data-column-id="imei" t-attf-class="px-6 py-4 whitespace-nowrap #{not list_columns or any(c.get('id') == 'imei' and c.get('optional') == 'hide' for c in list_columns) and 'hidden' or ''}">
+                    <div class="text-sm text-gray-500 dark:text-gray-300" t-out="unit.imei or '-'"/>
+                </td>
+                <td data-column-id="location" t-attf-class="px-6 py-4 whitespace-nowrap #{not list_columns or any(c.get('id') == 'location' and c.get('optional') == 'hide' for c in list_columns) and 'hidden' or ''}">
+                    <div class="text-sm text-gray-500 dark:text-gray-300" t-out="unit.location_id.display_name or '-'"/>
+                </td>
+                <td data-column-id="condition" t-attf-class="px-6 py-4 whitespace-nowrap #{not list_columns or any(c.get('id') == 'condition' and c.get('optional') == 'hide' for c in list_columns) and 'hidden' or ''}">
+                    <div class="text-sm text-gray-500" t-out="unit.condition"/>
+                </td>
+                <td data-column-id="state" class="px-6 py-4 whitespace-nowrap">
+                    <span t-attf-class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full #{unit.state == 'done' and 'bg-green-100 text-green-800' or 'bg-blue-100 text-blue-800'}" t-out="unit.state"/>
+                </td>
+                <td data-column-id="actions" class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <a t-attf-href="/account/rma/units/details/#{unit.id}" class="text-primary-theme hover:text-theme-dark"><i class="fas fa-eye"></i></a>
+                </td>
+            </tr>
+        </t>
+    </template>
+
+    <template id="portal_rma_pager" name="Portal RMA Pager">
+        <div class="flex items-center" t-if="items_total">
+            <p class="text-sm text-gray-700 dark:text-gray-300 mr-4">
+                Showing <span class="font-medium" t-out="items_count"/> of <span class="font-medium" t-out="items_total"/> <t t-out="items_label"/>
+            </p>
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                <button type="button" class="px-2 py-2 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50" id="rma-units-pagination-previous"> <i class="fas fa-chevron-left"></i> </button>
+                <t t-foreach="pages" t-as="p">
+                    <button type="button" t-att-data-page="p.get('page')" t-attf-class="rma-list-pagination-button px-3 py-2 border text-sm font-medium #{p.get('active') and 'z-10 bg-blue-50 border-blue-500 text-blue-600' or 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'}">
+                        <t t-out="p.get('page')"/>
+                    </button>
+                </t>
+                <button type="button" class="px-2 py-2 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50" id="rma-units-pagination-next"> <i class="fas fa-chevron-right"></i> </button>
+            </nav>
+        </div>
+    </template>
+</odoo>

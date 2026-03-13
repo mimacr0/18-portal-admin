@@ -29,6 +29,7 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
 
         sender_id = post.get('sender_id')
         shipping_address_id = post.get('shipping_address_id')
+        carrier_id = post.get('carrier_id')
         customer_reference = post.get('customer_reference')
         number_of_packages = post.get('number_of_packages')
         package_type_id = post.get('package_type_id')
@@ -44,6 +45,7 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
         # Determine carrier if needed, or just use weight
         package_vals = {
             'package_type_id': int(package_type_id) if package_type_id else False,
+            'carrier_id': int(carrier_id) if carrier_id else False,
             'owner_id': partner.commercial_partner_id.id,
             'sender_id': int(sender_id) if sender_id else False,
             'shipping_address_id': int(shipping_address_id) if shipping_address_id else False,
@@ -299,9 +301,9 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
             'items': result_items
         }
 
-    @http.route('/account/reception/stock_quants', type='json', auth='user')
-    def account_reception_stock_quants(self, search='', **kw):
-        """Fetch all products with their stock info for the current client"""
+    @http.route('/account/reception/unmapped_products', type='json', auth='user')
+    def account_reception_unmapped_products(self, search='', **kw):
+        """Fetch all products not yet mapped for the current client"""
         self._ensure_user_lang_context()
         partner_id = request.env.user.partner_id
         
@@ -313,66 +315,52 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
 
         # Search products instead of quants to show everything
         ProductProduct = request.env['product.product'].sudo()
-        domain = []
-        if search:
-            domain = [
-                '|', ('name', 'ilike', search),
-                ('default_code', 'ilike', search)
-            ]
 
-        # Use 18.0 search to get products
-        products = ProductProduct.search(domain, limit=500) # Increased limit to ensure "all" products are visible
-        
-        # Fetch actual quants to calculate available quantity
-        # Exclude repairs location
-        repairs_location = request.env.ref('repair_module.stock_location_repairs', raise_if_not_found=False)
-        stock_location = request.env.ref('stock.stock_location_stock', raise_if_not_found=False)
-        
-        if not stock_location:
-            # Fallback to any internal location if stock ref not found
-            stock_location_id = request.env['stock.location'].sudo().search([('usage', '=', 'internal')], limit=1).id
-        else:
-            stock_location_id = stock_location.id
-
-        quant_domain = [
-            ('product_id', 'in', products.ids),
-        ]
-        if stock_location_id:
-            quant_domain.append(('location_id', 'child_of', stock_location_id))
-        if repairs_location:
-            quant_domain.append(('location_id', '!=', repairs_location.id))
-            
-        quants = request.env['stock.quant'].sudo().search(quant_domain)
-        
-        # Group quants by product
-        qty_by_product = {}
-        for q in quants:
-            qty_by_product[q.product_id.id] = qty_by_product.get(q.product_id.id, 0.0) + (q.quantity - q.reserved_quantity)
-
-        # Find existing mappings for these products
-        mappings = request.env['account.product.map'].sudo().search([
-            ('product_id', 'in', products.ids),
+        # OPTIMIZATION: Get only IDs from account.product.map to exclude them
+        mapped_product_ids = request.env['account.product.map'].sudo().search([
             ('account_id', '=', account_partner.id),
             ('active', '=', True)
-        ])
-        mapping_by_product = {m.product_id.id: m for m in mappings}
+        ]).product_id.ids
+
+        domain = [('id', 'not in', mapped_product_ids)]
+        if search:
+            domain = expression.AND([
+                domain,
+                expression.OR([
+                    [('name', 'ilike', search)],
+                    [('default_code', 'ilike', search)]
+                ])
+            ])
+
+        # Use 18.0 search to get products excluding those already mapped
+        products = ProductProduct.search(domain, limit=500)
+        if not products:
+            return {'status': 'success', 'quants': []}
+        
+        # Removed stock calculation logic (quants and aggregation)
+        # It is not needed for the mapping process.
 
         result = []
         for p in products:
-            mapping = mapping_by_product.get(p.id)
             result.append({
-                'id': p.id, # Using product ID as the reference now
-                'product_id': p.id,
-                'product_name': p.name,
-                'product_code': p.default_code,
-                'available_quantity': qty_by_product.get(p.id, 0.0),
-                'mapping_id': mapping.id if mapping else False,
-                'mapping_name': mapping.name if mapping else False,
-                'mapping_sku': mapping.account_sku if mapping else False,
-                'image_url': f'/web/image/product.product/{p.id}/image_128' if p.image_128 else '/web/static/img/placeholder.png'
+                'id': p.id,
+                'name': p.name,
+                'code': p.default_code,
+                'image_url': f'/account/reception/product_image/{p.id}'
             })
 
         return {'status': 'success', 'quants': result}
+
+    @http.route('/account/reception/product_image/<int:product_id>', type='http', auth='user')
+    def account_reception_product_image(self, product_id, **kw):
+        """Securely serve product images to portal users using sudo()"""
+        product = request.env['product.product'].sudo().browse(product_id)
+        if not product.exists() or not product.image_128:
+            return request.redirect('/web/static/img/placeholder.png')
+        
+        return request.env['ir.binary']._get_image_stream_from(
+            product, 'image_128',
+        ).get_response()
 
     @http.route('/account/reception/product/map/quick_create', type='json', auth='user')
     def account_reception_product_map_quick_create(self, **post):
