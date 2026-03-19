@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_sales_page_main" name="Portal Sales Page">
+        <t t-call="portal_admin_theme.portal_admin_layout">
+
+            <div class="w-full" t-attf-id="page-#{page_name}-main-container">
+
+                <div class="card-title-container mb-4 flex items-center">
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Sales Orders</h1>
+                </div>
+
+                <!-- Barra de herramientas de acciones masivas -->
+                <div id="bulk-actions-toolbar" class="bg-white rounded-lg shadow mb-4 p-3 hidden dark:bg-gray-800">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center">
+                            <span id="selected-count" class="text-sm font-medium text-gray-700 dark:text-gray-300 mr-3">0 selected</span>
+                            <div class="h-4 border-l border-gray-300 dark:border-gray-700 mr-3"></div>
+                            <div class="flex flex-wrap gap-2">
+                                <t t-foreach="batch_actions" t-as="batch_action">
+                                    <button t-attf-id="page-list-#{page_name}-batch-action-#{batch_action.get('name')}" 
+                                            t-attf-class="px-3 py-1 text-white text-sm rounded transition-colors flex items-center #{batch_action.get('color', 'bg-red-600 hover:bg-red-700')}">
+                                        <i t-attf-class="#{batch_action.get('icon')} mr-1.5"></i> <t t-out="batch_action.get('label')"/>
+                                    </button>
+                                </t>
+                            </div>
+                        </div>
+                        <button id="clear-selection" class="text-sm text-gray-600 hover:text-gray-800">
+                            <i class="fas fa-times mr-1"></i> Clear selection
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Acciones rápidas de filtrado -->
+                <t t-if="list_filters">
+                    <div class="border-b border-gray-200 dark:border-gray-700 mb-2">
+                        <div class="flex overflow-x-auto scrollbar-hide">
+                            <input type="hidden" t-attf-id="page-#{page_name}-list-quick-filter-active" value="[]"/>
+                            <t t-foreach="list_filters" t-as="list_filter">
+                                <button t-if="list_filter.get('active')" type="button" t-attf-id="page-#{page_name}-list-filter-#{list_filter.get('id')}" class="tab-button active px-6 py-3 text-sm font-medium border-b-2 border-primary-theme text-primary-theme focus:outline-none transition-colors duration-200 ease-in-out dark:text-white relative">
+                                    <i t-attf-class="#{list_filter.get('icon')} mr-2"></i>
+                                    <t t-out="list_filter.get('label')"/>
+                                </button>
+                                <button t-else="" type="button" t-attf-id="page-#{page_name}-list-filter-#{list_filter.get('id')}" class="tab-button px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none transition-colors duration-200 ease-in-out dark:text-white dark:hover:text-gray-300 relative">
+                                    <i t-attf-class="#{list_filter.get('icon')} mr-2"></i>
+                                    <t t-out="list_filter.get('label')"/>
+                                </button>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Tabla de pedidos -->
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-20 dark:bg-gray-800">
+                    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-col lg:flex-row justify-between gap-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <!-- Could add a "New Quotation" button here if needed -->
+                            </div>
+
+                            <div class="flex items-center justify-between gap-2">
+                                <!-- Buscar entrada -->
+                                <div class="relative flex-grow max-w-xs">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-search text-gray-400 dark:text-gray-500"></i>
+                                    </div>
+                                    <input type="text" t-attf-id="page-#{page_name}-list-quick-search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-cyan-500 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus-ring-theme " placeholder="Search ..."/>
+                                </div>
+
+                                <!-- Botón de búsqueda avanzada -->
+                                <button t-if="advanced_search" t-attf-id="page-#{page_name}-list-advanced-search-toggle" data-tooltip-target="tooltip-advanced-search" class="p-2 border border-gray-300 rounded-md hover:bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
+
+                                <!-- Column Picker -->
+                                <div class="relative inline-block text-left mr-2" id="sale-columns-selector-container">
+                                    <button type="button" id="sale-columns-selector-btn" class="p-2 border border-gray-300 rounded-md hover:bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 relative">
+                                        <i class="fas fa-columns"></i>
+                                    </button>
+                                    <div id="sale-columns-dropdown" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-20 hidden dark:bg-gray-800 dark:ring-gray-700">
+                                        <div class="py-1 px-3" role="none">
+                                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider py-2 border-b border-gray-100 dark:border-gray-700 mb-1">Display Columns</p>
+                                            <t t-foreach="list_columns" t-as="col">
+                                                <div t-if="col.get('optional')" class="flex items-center py-2">
+                                                    <input type="checkbox" t-att-id="'col-check-' + col.get('id')" t-att-data-column-id="col.get('id')" class="sale-column-toggle h-4 w-4 text-primary-theme border-gray-300 rounded focus:ring-primary-theme" t-att-checked="'checked' if col.get('optional') == 'show' else None"/>
+                                                    <label t-att-for="'col-check-' + col.get('id')" class="ml-2 block text-sm text-gray-700 dark:text-gray-300 cursor-pointer" t-out="col.get('label')"/>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Panel de búsqueda avanzada -->
+                        <div t-attf-id="page-#{page_name}-list-advanced-search-panel" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 hidden">
+                            <input type="hidden" t-attf-id="page-#{page_name}-list-advanced-search-domain" value="[]"/>
+                            <input type="hidden" t-attf-id="page-#{page_name}-list-advanced-search-fields" t-att-value="advanced_search"/>
+                            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Advanced Search</h3>
+
+                            <div class="w-full">
+                                <div class="mb-4">
+                                    <p class="text-sm text-gray-700 dark:text-gray-300">
+                                        <select t-attf-id="page-#{page_name}-list-advanced-search-match-type" class="inline-block mx-1 px-2 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus-ring-theme focus:border-primary-theme bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
+                                            <option value="all" selected="selected">All</option>
+                                            <option value="any">Any</option>
+                                        </select>
+                                        of the following conditions:
+                                    </p>
+                                </div>
+                                <div t-attf-id="page-#{page_name}-list-advanced-search-lines-container" class="space-y-3"></div>
+                                <div class="mt-3">
+                                    <button t-attf-id="page-#{page_name}-list-advanced-search-add-line-btn" class="flex items-center text-primary-theme hover:text-primary-theme text-sm font-medium">
+                                        <i class="fas fa-plus-circle mr-1.5"></i> Add filter condition
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 flex justify-end space-x-3">
+                                <button t-attf-id="page-#{page_name}-list-advanced-search-reset-btn" class="px-3 py-1 text-sm border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700"> Reset </button>
+                                <button t-attf-id="page-#{page_name}-list-advanced-search-apply-btn" class="px-3 py-1 text-sm btn-primary text-white rounded-md shadow-sm"> Apply Filters </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-800">
+                                <tr class="hidden lg:table-row">
+                                    <th t-if="batch_actions" scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        <div class="flex items-center">
+                                            <input t-attf-id="page-#{page_name}-list-select-all-checkbox" type="checkbox" class="h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme dark:border-gray-600 dark:bg-gray-700 dark:checked:btn-primary dark:checked:border-primary-theme"/>
+                                        </div>
+                                    </th>
+                                    <t t-foreach="list_columns" t-as="list_column">
+                                        <th t-if="list_column.get('sortable')" scope="col" t-att-data-column-id="list_column.get('id')" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider #{list_column.get('optional') == 'hide' and 'hidden' or ''}">
+                                            <div class="flex items-center">
+                                                <span t-out="list_column.get('label')"/>
+                                                <i t-attf-id="list-column-#{page_name}-#{list_column.get('id')}-sort-icon" t-if="list_column.get('sortable')" class="fas fa-sort ml-1 text-gray-400"></i>
+                                            </div>
+                                        </th>
+                                        <th t-else="" scope="col" t-att-data-column-id="list_column.get('id')" t-attf-class="px-6 py-3 #{list_column.get('right') and 'text-right' or 'text-left'} text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider #{list_column.get('optional') == 'hide' and 'hidden' or ''}">
+                                            <span t-out="list_column.get('label')"/>
+                                        </th>
+                                    </t>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" id="sale-page-list-items"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fixed bottom-0 right-0 z-10 mr-6 mb-6" t-attf-id="page-#{page_name}-list-pagination-container-main">
+                <input type="hidden" t-attf-id="page-#{page_name}-list-pagination-page" value="1"/>
+                <div class="pagination-container px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg flex items-center justify-between" t-attf-id="page-#{page_name}-list-pagination-container"></div>
+            </div>
+
+            <div class="h-25"></div>
+
+            <t t-set="footer_content">
+                <t t-call="portal_account.portal_file_upload_modal"/>
+            </t>
+
+        </t>
+    </template>
+
+    <template id="portal_sales_list" name="Portal Sales List">
+        <t t-foreach="orders" t-as="order">
+            <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 hidden lg:table-row">
+                <td class="px-3 py-4 whitespace-nowrap" t-if="batch_actions">
+                    <input type="checkbox" class="orders-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded" t-att-data-order-id="order.id"/>
+                </td>
+                <td data-column-id="name" class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100" t-out="order.name"/>
+                </td>
+                <td data-column-id="date" class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="order.date_order" t-options='{"widget": "date"}'/>
+                </td>
+                <td data-column-id="amount_total" class="px-6 py-4 whitespace-nowrap text-right">
+                    <div class="text-sm text-gray-900 dark:text-gray-100" t-out="order.amount_total" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                </td>  
+                <td data-column-id="products" t-attf-class="px-6 py-4 whitespace-nowrap #{any(c.get('id') == 'products' and c.get('optional') == 'hide' for c in list_columns) and 'hidden' or ''}">
+                    <div class="text-sm text-gray-900 dark:text-gray-100">
+                        <t t-foreach="order.order_line" t-as="line">
+                            <div t-if="not line.display_type" class="flex justify-between gap-2 border-b border-gray-100 dark:border-gray-700 last:border-0 py-0.5">
+                                <span class="truncate max-w-[150px]" t-att-title="line.product_id.name" t-out="line.name"/>
+                                <span class="font-bold text-primary-theme" t-out="int(line.product_uom_qty)"/>
+                            </div>
+                        </t>
+                    </div>
+                </td>
+                <td data-column-id="state" class="px-6 py-4 whitespace-nowrap">
+                    <span t-if="order.state == 'draft'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Quotation</span>
+                    <span t-if="order.state == 'sent'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Quotation Sent</span>
+                    <span t-if="order.state == 'sale'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Sales Order</span>
+                    <span t-if="order.state == 'done'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Locked</span>
+                    <span t-if="order.state == 'cancel'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Cancelled</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <!-- <a t-if="order.state in ('draft', 'sent')" href="#" class="sale-delete-btn text-red-600 hover:text-red-900 mr-3 dark:text-red-400" title="Cancel Order" t-att-data-sale-id="order.id"> <i class="fas fa-times-circle"></i> </a> -->
+                    <a t-att-href="order.get_portal_url(report_type='pdf', download=True)" class="text-gray-600 hover:text-gray-900 mr-3 dark:text-gray-100" title="Download PDF"> <i class="fas fa-file-pdf"></i> </a>
+                    <a t-att-href="order.get_details_url()" class="text-gray-600 hover:text-gray-900 mr-3 dark:text-gray-100" title="Details"
+                       t-attf-data-history-url="#{order.get_details_url()}"
+                       t-attf-data-history-title="Order Details: #{order.name}"
+                       data-history-icon="fa-info-circle">
+                       <i class="fas fa-info-circle"></i>
+                    </a>
+                </td>
+            </tr>
+        </t>
+    </template>
+
+    <template id="portal_sales_pager" name="Portal Sales Pager">
+        <div class="hidden sm:flex sm:items-center" t-if="items_count > 0">
+            <p class="text-sm text-gray-700 dark:text-gray-300 mr-4">
+                Showing <span class="font-medium" t-out="items_count"/> of <span class="font-medium" t-out="items_total"/> <span t-out="items_label"/>
+            </p>
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <button type="button" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 hover:bg-gray-50" id="sale-list-pagination-previous"> <i class="fas fa-chevron-left"></i> </button>
+                <t t-foreach="pages" t-as="page">
+                    <button t-att-data-page="page.get('page')" t-attf-class="sale-list-pagination-button inline-flex items-center px-3 py-2 border text-sm font-medium #{page.get('active') and 'z-10 bg-light-active border-cyan-500 text-primary-theme' or 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'}">
+                        <span t-out="page.get('page')"/>
+                    </button>
+                </t>
+                <button type="button" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 hover:bg-gray-50" id="sale-list-pagination-next"> <i class="fas fa-chevron-right"></i> </button>
+            </nav>
+        </div>
+    </template>
+
+
+</odoo>

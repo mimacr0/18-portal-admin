@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_sales_details_page" name="Portal Sales Details Page">
+        <t t-call="portal_admin_theme.portal_admin_layout">
+
+            <!-- Details Page -->
+            <div class="w-full md:w-4/5 mx-auto lg:max-w-7xl bg-white dark:bg-gray-800 rounded-xl shadow-lg print:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <!-- Document Action Bar -->
+                <div class="p-5 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    <a href="/account/sales" 
+                       class="inline-flex items-center text-primary-theme hover:text-primary-theme transition-colors"
+                       data-history-url="/account/sales"
+                       data-history-title="Sales Orders"
+                       data-history-icon="fa-shopping-cart">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Go back
+                    </a>
+                    <div class="flex items-center space-x-4">
+                        <div class="sale-status-selector relative">
+                            <span t-attf-class="px-3 py-1.5 bg-#{order.state in ('sale', 'done') and 'green' or (order.state == 'cancel' and 'red' or 'blue')}-100 text-#{order.state in ('sale', 'done') and 'green' or (order.state == 'cancel' and 'red' or 'blue')}-800 dark:bg-#{order.state in ('sale', 'done') and 'green' or (order.state == 'cancel' and 'red' or 'blue')}-900 dark:text-#{order.state in ('sale', 'done') and 'green' or (order.state == 'cancel' and 'red' or 'blue')}-200 text-xs font-medium rounded-full flex items-center">
+                                <span t-attf-class="w-2 h-2 bg-#{order.state in ('sale', 'done') and 'green' or (order.state == 'cancel' and 'red' or 'blue')}-500 dark:bg-#{order.state in ('sale', 'done') and 'green' or (order.state == 'cancel' and 'red' or 'blue')}-400 rounded-full mr-1.5"></span>
+                                <t t-if="order.state == 'draft'">Quotation</t>
+                                <t t-elif="order.state == 'sent'">Quotation Sent</t>
+                                <t t-elif="order.state == 'sale'">Sales Order</t>
+                                <t t-elif="order.state == 'done'">Locked</t>
+                                <t t-elif="order.state == 'cancel'">Cancelled</t>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sale Header -->
+                <div class="p-8 border-b border-gray-200 dark:border-gray-700 relative">
+                    <div class="flex flex-col md:flex-row justify-between items-start relative z-10">
+                        <div>
+                            <div class="flex items-center">
+                                <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">ORDER</h1>
+                                <span class="ml-4 text-xl font-medium text-primary-theme "><t t-out="order.name"/></span>
+                            </div>
+                            <div class="mt-4 space-y-1">
+                                <p class="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                                    <i class="far fa-calendar-alt mr-2 text-gray-500"></i>
+                                    Order Date: <span class="ml-1 font-medium text-gray-800 dark:text-gray-200"><t t-out="order.date_order" t-options='{"widget": "date"}'/></span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-6 md:mt-0 text-right">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Total Amount</p>
+                            <p class="text-3xl font-bold text-primary-theme"><t t-out="order.amount_total" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center"> <i class="fas fa-file-invoice mr-2 text-primary-theme "></i> Invoicing Address </h3>
+                        <div class="text-sm space-y-2">
+                            <t t-set="address" t-value="order.partner_invoice_id"/>
+                            <p class="font-medium text-base text-gray-800 dark:text-white"><t t-out="address.name"/></p>
+                            <p t-if="address.street" class="text-gray-700 dark:text-gray-200"><t t-out="address.street"/></p>
+                            <p t-if="address.city" class="text-gray-700 dark:text-gray-200"><t t-out="address.city"/></p>
+                            <p t-if="address.zip" class="text-gray-700 dark:text-gray-200"><t t-out="address.zip"/></p>
+                            <p t-if="address.country_id" class="text-gray-700 dark:text-gray-200"><t t-out="address.country_id.name"/></p>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white flex items-center"> <i class="fas fa-truck mr-2 text-primary-theme "></i> Shipping Address </h3>
+                        <div class="text-sm space-y-2">
+                            <t t-set="address" t-value="order.partner_shipping_id"/>
+                            <p class="font-medium text-base text-gray-800 dark:text-white"><t t-out="address.name"/></p>
+                            <p t-if="address.street" class="text-gray-700 dark:text-gray-200"><t t-out="address.street"/></p>
+                            <p t-if="address.city" class="text-gray-700 dark:text-gray-200"><t t-out="address.city"/></p>
+                            <p t-if="address.zip" class="text-gray-700 dark:text-gray-200"><t t-out="address.zip"/></p>
+                            <p t-if="address.country_id" class="text-gray-700 dark:text-gray-200"><t t-out="address.country_id.name"/></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Table -->
+                <div class="p-8 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-6 flex items-center"> <i class="fas fa-shopping-basket mr-2 text-primary-theme "></i> Order Lines </h3>
+                    <div class="overflow-x-auto rounded-lg shadow">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                                    <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-100">Product</th>
+                                    <th class="px-6 py-3 text-right font-semibold text-gray-700 dark:text-gray-100">Quantity</th>
+                                    <th class="px-6 py-3 text-right font-semibold text-gray-700 dark:text-gray-100">Unit Price</th>
+                                    <th class="px-6 py-3 text-right font-semibold text-gray-700 dark:text-gray-100">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-800">
+                                <t t-foreach="order.order_line" t-as="line">
+                                    <tr t-if="not line.display_type" class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                        <td class="px-6 py-4 text-gray-800 dark:text-gray-200">
+                                            <div class="font-medium" t-out="line.product_id.name"/>
+                                            <div class="text-xs text-gray-500" t-out="line.name" t-if="line.name != line.product_id.name"/>
+                                        </td>
+                                        <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200"> <span t-out="line.product_uom_qty"/> <span t-out="line.product_uom.name"/> </td>
+                                        <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200"> <span t-out="line.price_unit" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/> </td>
+                                        <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200 font-medium"> <span t-out="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/> </td>
+                                    </tr>
+                                    <tr t-elif="line.display_type == 'line_section'" class="bg-gray-100 dark:bg-gray-700">
+                                        <td colspan="4" class="px-6 py-2 font-bold text-gray-900 dark:text-white" t-out="line.name"/>
+                                    </tr>
+                                    <tr t-elif="line.display_type == 'line_note'" class="bg-gray-50 dark:bg-gray-800 italic">
+                                        <td colspan="4" class="px-6 py-2 text-gray-600 dark:text-gray-400" t-out="line.name"/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Taxes and Total Summary -->
+                    <div class="mt-6 flex justify-end">
+                        <div class="w-full md:w-64 space-y-2">
+                            <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                                <span>Untaxed Amount:</span>
+                                <span t-out="order.amount_untaxed" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                                <span>Taxes:</span>
+                                <span t-out="order.amount_tax" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                            </div>
+                            <div class="flex justify-between text-lg font-bold text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-700 pt-2">
+                                <span>Total:</span>
+                                <span t-out="order.amount_total" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Communication history -->
+                <div class="border-t border-gray-200 dark:border-gray-700">
+                    <div class="p-5" id="communication-toggle">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium dark:text-white flex items-center">
+                                <i class="fas fa-comments mr-2 text-primary-theme "></i>
+                                Communication history
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="communication-content" class="p-6 pt-0">
+                        <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+                            <div class="chat-header bg-gray-50 dark:bg-gray-700 border-b p-4 flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center"> <i class="fas fa-comments text-white text-xs"></i> </div>
+                                    <span class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-200">Chat for order <t t-out="order.name"/></span>
+                                </div>
+                            </div>
+                            <div class="space-y-4 h-[500px] overflow-y-auto p-4 messages-container bg-white dark:bg-gray-800" id="sale_details-details-chat-messages" t-att-data-order-id="order.id" t-att-data-partner-id="user.partner_id.id"></div>
+                            <div class="message-composer bg-white dark:bg-gray-800 border-t p-4">
+                                <div class="message-input-wrapper bg-white dark:bg-gray-700 border rounded-lg" id="message-input-container">
+                                    <div class="flex items-end p-2">
+                                        <div class="flex-grow">
+                                            <input type="hidden" id="page-details-sale-message-attachment-token" t-att-value="request.csrf_token()"/>
+                                            <input type="file" id="page-details-sale-message-attachment-input" class="hidden"/>
+                                            <textarea class="message-input bg-transparent border-0 w-full py-2 focus:outline-none" rows="1" placeholder="Write a message..."></textarea>
+                                        </div>
+                                        <button id="page-details-sale-send-message" class="message-send-button text-primary-theme p-2 rounded-full"> <i class="fas fa-paper-plane"></i> </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h-25"></div>
+            </div>
+        </t>
+    </template>
+
+
+</odoo>

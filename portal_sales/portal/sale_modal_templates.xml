@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- This file is currently empty as no modals are needed for the sales order list view. -->
+    <!-- You can add custom modals for sales order actions here if needed. -->
+
+</odoo>
