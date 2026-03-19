@@ -52,14 +52,6 @@
                     <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                         <div class="flex flex-col lg:flex-row justify-between gap-4">
                             <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                <div class="flex items-center gap-2">
-                                    <a t-if="page_name == 'lots'" href="/account/stock" class="px-3 py-1.5 btn-primary text-white rounded-md  transition-colors flex items-center">
-                                        <i class="fas fa-arrow-left mr-1.5"/> <span class="hidden sm:inline">Volver</span>
-                                    </a>
-                                    <button t-if="page_name == 'stock'" t-attf-id="launch-create-#{page_name}-form-button" class="px-3 py-1.5 btn-primary text-white rounded-md  transition-colors flex items-center">
-                                        <i class="fas fa-plus mr-1.5"/> <span class="hidden sm:inline">Create Product</span>
-                                    </button>
-                                </div>
                             </div>
 
                             <div class="flex items-center justify-between gap-2">
@@ -68,7 +60,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i class="fas fa-search text-gray-400 dark:text-gray-500"/>
                                     </div>
-                                    <input type="text" t-attf-id="page-#{page_name}-list-search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-primary-theme dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Search ..."/>
+                                    <input type="text" t-attf-id="page-#{page_name}-list-search" t-att-value="search" class="block w-full pl-10 pr-3 py-1.5 text-sm border border-gray-300 rounded-md focus:border-primary-theme dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Search ..."/>
                                 </div>
 
                                 <!-- Advanced search toggle button -->
@@ -88,7 +80,7 @@
                         <!-- Advanced search panel - hidden by default -->
                         <div t-attf-id="page-#{page_name}-list-advanced-search-panel" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 hidden">
                             <!-- Keep ids consistent with JS modules -->
-                            <input type="hidden" t-attf-id="page-#{page_name}-list-advanced-search-domain" value="[]"/>
+                            <input type="hidden" t-attf-id="page-#{page_name}-list-advanced-search-domain" t-att-value="domain_json or '[]'"/>
                             <input type="hidden" t-attf-id="page-#{page_name}-list-advanced-search-fields" t-att-value="advanced_search"/>
                             <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Advanced Search</h3>
 
@@ -195,7 +187,6 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700" t-attf-id="#{page_name}-page-list-items">
-                                <t t-if="page_name == 'lots' and lots_list_html" t-out="lots_list_html"/>
                                 <t t-if="page_name == 'stock' and products_list_html" t-out="products_list_html"/>
                             </tbody>
                         </table>
@@ -207,7 +198,6 @@
             <div class="fixed bottom-0 right-0 z-10 mr-6 mb-6">
                 <input type="hidden" t-attf-id="#{page_name}-list-pagination-page" value="1"/>
                 <div class="pagination-container px-4 py-3 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-lg flex items-center justify-between" t-attf-id="#{page_name}-list-pagination-container">
-                    <t t-if="page_name == 'lots' and lots_pager_html" t-out="lots_pager_html"/>
                     <t t-if="page_name == 'stock' and products_pager_html" t-out="products_pager_html"/>
                 </div>
             </div>
@@ -216,115 +206,13 @@
 
             <t t-set="footer_content">
 
-                <!-- Stock Create Product Modal -->
-                <t t-call="portal_stock.portal_create_product_modal"/>
                 <!-- File Upload Modal -->
-                <t t-call="portal_stock.portal_file_upload_modal"/>
+                <t t-call="portal_general_product.portal_file_upload_modal"/>
                 <!-- Import Products Modal -->
-                <t t-call="portal_stock.portal_import_products_modal"/>
+                <t t-call="portal_general_product.portal_import_products_modal"/>
 
                 <!-- Product Edit Modal -->
-                <div id="page-stock-edit-modal" class="modal" data-outside-close="false" style="z-index: 9999;">
-                    <div class="modal-content max-w-2xl w-full mx-auto">
-                        <div class="modal-header">
-                            <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">Product Edit</h3>
-                            <button data-modal-close="true" class="close-modal" aria-label="Close modal">
-                                <i class="fas fa-times"/>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="page-stock-edit-form">
-                                <input type="hidden" name="product_id" id="page-stock-edit-form-product-id"/>
-                                <input type="hidden" name="image_base64" id="page-stock-edit-form-image-base64"/>
-                                <div class="form-group">
-                                    <div class="grid grid-cols-2 items-start">
-                                        <div class="col-span-1 w-full p-2">
-                                            <label for="page-stock-edit-form-name" class="form-label-sm font-sm mb-1">Name <span class="text-red-500 text-xl">*</span></label>
-                                            <input type="text" name="name" id="page-stock-edit-form-name" class="form-input text-xl rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Name" required="required"/>
-                                            <div class="form-error invisible mt-1" id="page-stock-edit-form-name-error"/>
-                                        </div>
-                                        <div class="col-start-2 flex justify-end items-start">
-                                            <div class="relative group w-24 h-24">
-                                                <input type="file" name="image" class="hidden" id="page-stock-edit-form-image" accept="image/*"/>
-                                                <label for="page-stock-edit-form-image" class="cursor-pointer block w-full h-full">
-                                                    <img id="page-stock-edit-form-image-preview" src="/portal_stock/static/img/placeholder.png" alt="Upload image" class="w-full h-full border-2 border-gray-400 object-cover rounded transition-opacity duration-200 group-hover:opacity-80"/>
-                                                </label>
-                                                <button type="button" id="page-stock-edit-form-image-delete" class="absolute top-1 right-1 bg-white text-red-600 p-1 rounded-full shadow-md hover:bg-red-100 opacity-0 group-hover:opacity-100 transition-opacity duration-200" title="Remove image">
-                                                    <i class="fa fa-trash"/>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-2 sm:grid-cols-1 gap-4">
-                                    <div class="form-group">
-                                        <div class="flex items-center">
-                                            <label for="page-stock-edit-form-sku" class="form-label-sm font-sm">SKU</label>
-                                            <span class="text-red-500 ml-1">*</span>
-                                        </div>
-                                        <div>
-                                            <input type="text" name="sku" id="page-stock-edit-form-sku" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="SKU" required="required"/>
-                                            <div class="form-error invisible" id="page-stock-edit-form-sku-error"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="flex items-center">
-                                            <label for="page-stock-edit-form-barcode" class="form-label-sm font-sm">Barcode</label>
-                                            <span class="text-red-500 ml-1">*</span>
-                                        </div>
-                                        <div>
-                                            <input type="text" name="barcode" id="page-stock-edit-form-barcode" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Barcode" required="required" maxlength="13"/>
-                                            <div class="form-error invisible" id="page-stock-edit-form-barcode-error"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="flex items-center">
-                                            <label for="page-stock-edit-form-volume" class="form-label-sm font-sm">Volume (cm³)</label>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <input type="number" name="volume" id="page-stock-edit-form-volume" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Volume" step="0.01" min="0"/>
-                                            <span class="mx-1 text-sm">cm³</span>
-                                            <div class="form-error invisible" id="page-stock-edit-form-volume-error"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="flex items-center">
-                                            <label for="page-stock-edit-form-weight" class="form-label-sm font-sm">Weight (kg)</label>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <input type="number" name="weight" id="page-stock-edit-form-weight" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Weight" step="0.01" min="0"/>
-                                            <span class="mx-1 text-sm">kg</span>
-                                            <div class="form-error invisible" id="page-stock-edit-form-weight-error"/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div>
-                                        <div class="flex space-x-4 mt-1">
-                                            <div class="flex items-center">
-                                                <input type="radio" name="tracking" id="page-stock-edit-tracking-serial" value="serial" class="w-4 h-4 text-primary-theme border-gray-300 focus-ring-theme"/>
-                                                <label for="page-stock-edit-tracking-serial" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">Return</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input type="radio" name="tracking" id="page-stock-edit-tracking-none" value="none" class="w-4 h-4 text-primary-theme border-gray-300 focus-ring-theme"/>
-                                                <label for="page-stock-edit-tracking-none" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">New</label>
-                                            </div>
-                                        </div>
-                                        <div class="form-error invisible mt-1" id="page-stock-edit-form-tracking-error"/>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700">
-                            <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
-                                <i class="fas fa-times"/> Cancel
-                            </button>
-                            <button id="page-stock-edit-form-submit" class="modal-btn modal-btn-primary">
-                                <i class="fas fa-save"/> Save
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <t t-call="portal_general_product.portal_edit_product_modal"/>
 
             </t>
 
@@ -332,130 +220,41 @@
     </template>
 
     <template id="portal_products_list" name="Portal Stock List">
-        <t t-foreach="products" t-as="product">
+        <t t-foreach="quants" t-as="quant">
             <!-- Large screens row -->
             <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 hidden lg:table-row">
                 <td class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme" t-att-data-product-id="product.id" t-att-data-product-name="product.name"/>
+                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme" t-att-data-product-id="quant.id" t-att-data-product-name="quant.product_id.name"/>
                 </td>
-                <!-- <td class="px-6 py-4" style="max-width: 300px;">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <img class="size-10 rounded-full" t-attf-src="data:image/png;base64,#{product_images.get(product.id) or ''}" t-att-alt="product.name"/>
-                        </div>
-                        <div class="ml-4 min-w-0 flex-1">
-                            <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words" t-esc="product.name"/>
-                            <t t-foreach="product.product_template_attribute_value_ids" t-as="attribute_value">
-                                <span class="px-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 mt-1">
-                                    <t t-esc="attribute_value.attribute_line_id.attribute_id.name"/>: <t t-esc="attribute_value.name"/>
-                                </span>
-                            </t>
-                        </div>
-                    </div>
-                </td> -->
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center gap-3">
                         <div class="flex-shrink-0">
-                                <img class="size-10 rounded-full" t-attf-src="data:image/png;base64,#{product_images.get(product.id) or ''}" t-att-alt="product.name"/>
+                                <img class="size-10 rounded-full" t-attf-src="data:image/png;base64,#{product_images.get(quant.id) or ''}" t-att-alt="quant.product_id.name"/>
                         </div>
-                        <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="product.display_name"/>
+                        <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="quant.product_id.display_name"/>
                     </div>
-                </td>
-                <!-- <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="product.default_code"/>
-                </td> -->
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="product.barcode"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900 dark:text-gray-100">
-                        <t t-if="product.qty_available">
-                            <div class="flex mb-1">
-                                <div class="text-left pr-2 w-32"><strong>Real Stock: </strong></div>
-                                <div><t t-esc="product.qty_available"/></div>
-                            </div>
-                        </t>
-                        <t t-if="product.free_qty">
-                            <div class="flex mb-1">
-                                <div class="text-left pr-2 w-32"><strong>Available: </strong></div>
-                                <div><t t-esc="product.free_qty"/></div>
-                            </div>
-                        </t>
-                        <t t-if="product.incoming_qty">
-                            <div class="flex mb-1">
-                                <div class="text-left pr-2 w-32"><strong>Incoming: </strong></div>
-                                <div><t t-esc="product.incoming_qty"/></div>
-                            </div>
-                        </t>
-                        <t t-if="product.outgoing_qty">
-                            <div class="flex mb-1">
-                                <div class="text-left pr-2 w-32"><strong>Outgoing: </strong></div>
-                                <div><t t-esc="product.outgoing_qty"/></div>
-                            </div>
-                        </t>
-                    </div>
-                </td>
-<!--                    <td class="px-6 py-4 whitespace-nowrap">-->
-<!--                        <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="product.qty_available"/>-->
-<!--                    </td>-->
-<!--                    <td class="px-6 py-4 whitespace-nowrap">-->
-<!--                        <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="product.free_qty"/>-->
-<!--                    </td>-->
-<!--                    <td class="px-6 py-4 whitespace-nowrap">-->
-<!--                        <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="product.incoming_qty"/>-->
-<!--                    </td>-->
-<!--                    <td class="px-6 py-4 whitespace-nowrap">-->
-<!--                        <div class="text-sm text-gray-900 dark:text-gray-100" t-esc="product.outgoing_qty"/>-->
-<!--                    </td>-->
-                <!-- Columna de Reparaciones/Revisiones -->
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <t t-set="stats" t-value="products_repair_stats.get(product.id, {})"/>
-                    <div class="text-sm text-gray-900 dark:text-gray-100">
-                        <t t-if="stats.get('in_repair', 0) > 0">
-                            <div class="flex mb-1">
-                                <div class="text-left pr-2 w-24"><strong><t t-esc="label_in_repair"/>: </strong></div>
-                                <div><t t-esc="stats.get('in_repair', 0)"/></div>
-                            </div>
-                        </t>
-                        <t t-if="stats.get('repaired', 0) > 0">
-                            <div class="flex mb-1">
-                                <div class="text-left pr-2 w-24"><strong><t t-esc="label_repaired"/>: </strong></div>
-                                <div><t t-esc="stats.get('repaired', 0)"/></div>
-                            </div>
-                        </t>
-                        <t t-if="stats.get('in_review', 0) > 0">
-                            <div class="flex mb-1">
-                                <div class="text-left pr-2 w-24"><strong><t t-esc="label_in_review"/>: </strong></div>
-                                <div><t t-esc="stats.get('in_review', 0)"/></div>
-                            </div>
-                        </t>
-                        <t t-if="stats.get('reviewed', 0) > 0">
-                            <div class="flex mb-1">
-                                <div class="text-left pr-2 w-24"><strong><t t-esc="label_reviewed"/>: </strong></div>
-                                <div><t t-esc="stats.get('reviewed', 0)"/></div>
-                            </div>
-                        </t>
-                        <t t-if="not stats.get('in_repair', 0) and not stats.get('repaired', 0) and not stats.get('in_review', 0) and not stats.get('reviewed', 0)">
-                            <span class="text-gray-400">-</span>
-                        </t>
+                        <div class="flex mb-1">
+                            <div class="text-left pr-2 w-32"><strong>Quantity: </strong></div>
+                            <div><t t-esc="quant.quantity"/></div>
+                        </div>
+                        <div class="flex mb-1">
+                            <div class="text-left pr-2 w-32"><strong>Location: </strong></div>
+                            <div><t t-esc="quant.location_id.name"/></div>
+                        </div>
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <t t-call="portal_stock.product_type_and_status_badges">
-                        <t t-set="product_id" t-value="product.id"/>
-                        <t t-set="qty_available" t-value="product.qty_available"/>
+                        <t t-set="product_id" t-value="quant.product_id.id"/>
+                        <t t-set="qty_available" t-value="quant.quantity"/>
                     </t>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <t t-if="product.tracking == 'serial' and products_has_lots.get(product.id, False)">
-                        <a t-attf-href="/account/stock/lots?product_id=#{product.id}" t-attf-data-tooltip-target="tooltip-lots-#{product.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
-                            <i class="fas fa-list"/>
-                        </a>
-                    </t>
-                    <button t-attf-data-tooltip-target="tooltip-edit-#{product.id}" t-att-data-product-id="product.id" class="product-edit-button text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
-                        <i class="fas fa-edit"/>
-                    </button>
-                    <button t-attf-data-tooltip-target="tooltip-delete-#{product.id}" t-att-data-product-id="product.id" class="product-delete-button text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
+
+                    <button t-attf-data-tooltip-target="tooltip-delete-#{quant.id}" t-att-data-product-id="quant.id" class="product-delete-button text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-trash"/>
                     </button>
                 </td>
@@ -464,30 +263,22 @@
             <!-- Medium screens row -->
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 hidden md:table-row lg:hidden">
                 <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme" t-att-data-product-id="product.id" t-att-data-product-name="product.name"/>
+                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme" t-att-data-product-id="quant.id" t-att-data-product-name="quant.product_id.name"/>
                 </td>
                 <td class="px-6 py-4" style="max-width: 300px;">
                     <div class="min-w-0">
-                        <div class="text-sm text-gray-900 dark:text-gray-100 break-words" t-esc="product.name"/>
-                        <div class="text-sm text-gray-500 break-words" t-esc="product.default_code"/>
+                        <div class="text-sm text-gray-900 dark:text-gray-100 break-words" t-esc="quant.product_id.name"/>
+                        <div class="text-sm text-gray-500 break-words" t-esc="quant.product_id.default_code"/>
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <t t-call="portal_stock.product_type_and_status_badges">
-                        <t t-set="product_id" t-value="product.id"/>
-                        <t t-set="qty_available" t-value="product.qty_available"/>
+                        <t t-set="product_id" t-value="quant.product_id.id"/>
+                        <t t-set="qty_available" t-value="quant.quantity"/>
                     </t>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <t t-if="product.tracking == 'serial' and products_has_lots.get(product.id, False)">
-                        <a t-attf-href="/account/stock/lots?product_id=#{product.id}" t-attf-data-tooltip-target="tooltip-lots-#{product.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
-                            <i class="fas fa-list"/>
-                        </a>
-                    </t>
-                    <button t-attf-data-tooltip-target="tooltip-edit-#{product.id}" t-att-data-product-id="product.id" class="product-edit-button text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
-                        <i class="fas fa-edit"/>
-                    </button>
-                    <button t-attf-data-tooltip-target="tooltip-delete-#{product.id}" t-att-data-product-id="product.id" class="product-delete-button text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <button t-attf-data-tooltip-target="tooltip-delete-#{quant.id}" t-att-data-product-id="quant.id" class="product-delete-button text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-trash"/>
                     </button>
                 </td>
@@ -496,21 +287,13 @@
             <!-- Small screens row -->
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 table-row md:hidden">
                 <td t-if="batch_actions" class="px-3 py-4 whitespace-nowrap">
-                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme" t-att-data-product-id="product.id" t-att-data-product-name="product.name"/>
+                    <input type="checkbox" class="products-list-checkbox h-4 w-4 text-primary-theme border-gray-300 rounded focus-ring-theme" t-att-data-product-id="quant.id" t-att-data-product-name="quant.product_id.name"/>
                 </td>
                 <td class="px-6 py-4" style="max-width: 300px;">
-                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words" t-esc="product.name"/>
+                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100 break-words" t-esc="quant.product_id.name"/>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <t t-if="product.tracking == 'serial' and products_has_lots.get(product.id, False)">
-                        <a t-attf-href="/account/stock/lots?product_id=#{product.id}" t-attf-data-tooltip-target="tooltip-lots-#{product.id}" class="text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
-                            <i class="fas fa-list"/>
-                        </a>
-                    </t>
-                    <button t-attf-data-tooltip-target="tooltip-edit-#{product.id}" t-att-data-product-id="product.id" class="product-edit-button text-gray-600 hover:text-gray-900 mr-3 relative dark:text-gray-100 dark:hover:text-gray-100">
-                        <i class="fas fa-edit"/>
-                    </button>
-                    <button t-attf-data-tooltip-target="tooltip-delete-#{product.id}" t-att-data-product-id="product.id" class="product-delete-button text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
+                    <button t-attf-data-tooltip-target="tooltip-delete-#{quant.id}" t-att-data-product-id="quant.id" class="product-delete-button text-gray-600 hover:text-gray-900 relative dark:text-gray-100 dark:hover:text-gray-100">
                         <i class="fas fa-trash"/>
                     </button>
                 </td>
@@ -578,17 +361,8 @@
         </div>
     </template>
 
-    <!-- Template reutilizable para badges de tipo de producto y estado de stock -->
     <template id="product_type_and_status_badges" name="Product Type and Status Badges">
-        <t t-set="is_spare_part" t-value="products_is_spare_parts.get(product_id, False)"/>
         <div class="flex flex-row gap-1 items-center flex-wrap">
-            <!-- Badge de tipo de producto -->
-            <span t-if="is_spare_part" class="px-2 py-0.5 inline-block text-xs leading-tight font-semibold rounded-full bg-blue-100 text-blue-800 whitespace-nowrap w-fit">
-                <t t-esc="'Spare Parts'"/>
-            </span>
-            <span t-else="" class="px-2 py-0.5 inline-block text-xs leading-tight font-semibold rounded-full bg-yellow-100 text-yellow-800 whitespace-nowrap w-fit">
-                <t t-esc="'Product'"/>
-            </span>
             <!-- Badge de estado de stock -->
             <span t-attf-class="px-2 py-0.5 inline-block text-xs leading-tight font-semibold rounded-full whitespace-nowrap w-fit #{qty_available > 0 and 'bg-green-100 text-green-800' or 'bg-red-100 text-red-800'}">
                 <t t-esc="qty_available > 0 and label_in_stock or label_out_of_stock"/>
@@ -596,15 +370,5 @@
         </div>
     </template>
 
-    <!-- Template reutilizable para badge de tipo de producto (solo tipo, sin estado) -->
-    <template id="product_type_badge" name="Product Type Badge">
-        <t t-set="is_spare_part" t-value="products_is_spare_parts.get(product_id, False)"/>
-        <span t-if="is_spare_part" class="px-2 py-0.5 inline-block text-xs leading-tight font-semibold rounded-full bg-blue-100 text-blue-800 whitespace-nowrap w-fit">
-            <t t-esc="'Spare Parts'"/>
-        </span>
-        <span t-else="" class="px-2 py-0.5 inline-block text-xs leading-tight font-semibold rounded-full bg-yellow-100 text-yellow-800 whitespace-nowrap w-fit">
-            <t t-esc="'Product'"/>
-        </span>
-    </template>
 
 </odoo>

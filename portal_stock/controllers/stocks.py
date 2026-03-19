@@ -20,178 +20,19 @@ from odoo.osv import expression
 class PortalStockController(PortalAdminController):
     # Constantes de configuración
     PRODUCT_FIELDS_MAPPING = {
-        'name': 'name',
-        'sku': 'default_code',
-        'barcode': 'barcode',
-        'stock': 'qty_available',
-        'status': 'qty_available',
+        'name': 'product_id.name',
+        'sku': 'product_id.default_code',
+        'barcode': 'product_id.barcode',
+        'stock': 'quantity',
+        'location': 'location_id.name',
+        'status': 'quantity',
+        'product_id': 'product_id',
     }
 
     DEFAULT_LIMIT_PARAM = 'portal_stock.page_list_default_limit'
     DEFAULT_LIMIT_VALUE = '100'
     
-    def _get_lots_domain_for_product(self, product_id):
-        """Obtiene el dominio para verificar si un producto tiene lotes accesibles"""
-        partner_id = request.env.user.partner_id
-        account_partner = request.env['account.partner'].sudo().search([
-            ('partner_id', '=', partner_id.commercial_partner_id.id)
-        ], limit=1)
-        
-        if not account_partner:
-            return expression.FALSE_DOMAIN
-        
-        # Verificar que el producto pertenece al account_partner
-        products = request.env['product.product'].sudo().search([
-            ('is_storable', '=', True),
-            ('account_partner_id', '=', account_partner.id),
-            ('id', '=', product_id)
-        ])
-        
-        if not products:
-            return expression.FALSE_DOMAIN
-        
-        return [('product_id', '=', product_id)]
 
-    def _get_repair_stages(self):
-        """Obtiene los IDs de stages para reparaciones en proceso y completadas"""
-        # Stages en proceso
-        stage_received = request.env.ref('repair_module.quality_alert_stage_received', raise_if_not_found=False)  # In Warehouse
-        stage_repairing = request.env.ref('repair_module.quality_alert_stage_repairing', raise_if_not_found=False)
-        stage_sent_review = request.env.ref('repair_module.quality_alert_stage_sent_to_review_repair', raise_if_not_found=False)
-        
-        # Stages completados
-        stage_postsale = request.env.ref('repair_module.quality_alert_stage_sent_to_postsale', raise_if_not_found=False)
-        stage_sent_client = request.env.ref('repair_module.quality_alert_stage_sent_to_client', raise_if_not_found=False)
-        stage_sent_recycle = request.env.ref('repair_module.quality_alert_stage_sent_to_recycle', raise_if_not_found=False)  # Sent for Recycling
-        
-        in_progress_stages = [s.id for s in [stage_received, stage_repairing, stage_sent_review] if s]
-        done_stages = [s.id for s in [stage_postsale, stage_sent_client, stage_sent_recycle] if s]
-        
-        return in_progress_stages, done_stages
-
-    def _get_products_repair_data(self, products, account_partner):
-        """
-        Obtiene información de lotes y estadísticas de reparación para una lista de productos.
-        Optimizado para hacer consultas en batch en lugar de por producto.
-        
-        Args:
-            products: recordset de productos
-            account_partner: account.partner del usuario
-            
-        Returns:
-            tuple (products_has_lots, products_repair_stats)
-        """
-        StockLot = request.env['stock.lot'].sudo()
-        QualityAlert = request.env['quality.alert'].sudo()
-        
-        products_has_lots = {}
-        products_repair_stats = {}
-        
-        # Inicializar stats vacías para todos los productos
-        empty_stats = {'in_repair': 0, 'repaired': 0, 'in_review': 0, 'reviewed': 0}
-        for product in products:
-            products_repair_stats[product.id] = empty_stats.copy()
-        
-        # Separar productos por tipo de tracking
-        products_with_tracking = products.filtered(lambda p: p.tracking in ['serial', 'lot'])
-        products_without_tracking = products.filtered(lambda p: p.tracking not in ['serial', 'lot'])
-        
-        # Verificar lotes solo para productos con tracking serial
-        serial_products = products.filtered(lambda p: p.tracking == 'serial')
-        if serial_products:
-            # Una sola consulta para verificar qué productos tienen lotes
-            lots_data = StockLot.read_group(
-                [('product_id', 'in', serial_products.ids)],
-                ['product_id'],
-                ['product_id']
-            )
-            products_with_lots = {d['product_id'][0] for d in lots_data if d['product_id']}
-            for product in products:
-                products_has_lots[product.id] = product.id in products_with_lots
-        else:
-            for product in products:
-                products_has_lots[product.id] = False
-        
-        # Obtener stages
-        in_progress_stages, done_stages = self._get_repair_stages()
-        all_stages = in_progress_stages + done_stages
-        
-        if not all_stages or not account_partner:
-            return products_has_lots, products_repair_stats
-        
-        # Base domain común
-        base_domain = [
-            ('account_partner_id', '=', account_partner.id),
-            ('stage_id', 'in', all_stages)
-        ]
-        
-        # --- Productos CON tracking: contar alertas ---
-        if products_with_tracking:
-            tracking_domain = base_domain + [('product_id', 'in', products_with_tracking.ids)]
-            
-            # Una sola consulta agrupada por producto, maintenance_type y stage
-            alerts_grouped = QualityAlert.read_group(
-                tracking_domain,
-                ['product_id', 'maintenance_type', 'stage_id'],
-                ['product_id', 'maintenance_type', 'stage_id'],
-                lazy=False
-            )
-            
-            for group in alerts_grouped:
-                product_id = group['product_id'][0] if group['product_id'] else None
-                if not product_id:
-                    continue
-                    
-                mtype = group['maintenance_type']
-                stage_id = group['stage_id'][0] if group['stage_id'] else None
-                count = group['__count']
-                
-                # Determinar la categoría
-                if mtype == 'repair':
-                    if stage_id in in_progress_stages:
-                        products_repair_stats[product_id]['in_repair'] += count
-                    elif stage_id in done_stages:
-                        products_repair_stats[product_id]['repaired'] += count
-                elif mtype == 'review':
-                    if stage_id in in_progress_stages:
-                        products_repair_stats[product_id]['in_review'] += count
-                    elif stage_id in done_stages:
-                        products_repair_stats[product_id]['reviewed'] += count
-        
-        # --- Productos SIN tracking: sumar cantidades ---
-        if products_without_tracking:
-            no_tracking_domain = base_domain + [('product_id', 'in', products_without_tracking.ids)]
-            
-            # Una sola consulta agrupada sumando quantity
-            alerts_grouped = QualityAlert.read_group(
-                no_tracking_domain,
-                ['product_id', 'maintenance_type', 'stage_id', 'quantity:sum'],
-                ['product_id', 'maintenance_type', 'stage_id'],
-                lazy=False
-            )
-            
-            for group in alerts_grouped:
-                product_id = group['product_id'][0] if group['product_id'] else None
-                if not product_id:
-                    continue
-                    
-                mtype = group['maintenance_type']
-                stage_id = group['stage_id'][0] if group['stage_id'] else None
-                qty_sum = group['quantity'] or 0
-                
-                # Determinar la categoría
-                if mtype == 'repair':
-                    if stage_id in in_progress_stages:
-                        products_repair_stats[product_id]['in_repair'] += qty_sum
-                    elif stage_id in done_stages:
-                        products_repair_stats[product_id]['repaired'] += qty_sum
-                elif mtype == 'review':
-                    if stage_id in in_progress_stages:
-                        products_repair_stats[product_id]['in_review'] += qty_sum
-                    elif stage_id in done_stages:
-                        products_repair_stats[product_id]['reviewed'] += qty_sum
-        
-        return products_has_lots, products_repair_stats
 
     def _get_admin_layout_menus(self):
         menus = super()._get_admin_layout_menus()
@@ -209,7 +50,6 @@ class PortalStockController(PortalAdminController):
         return [
             {'id': 'name', 'label': _('Name'), 'type': 'text'},
             {'id': 'sku', 'label': _('SKU'), 'type': 'text'},
-            {'id': 'barcode', 'label': _('Barcode'), 'type': 'text'},
             {'id': 'stock', 'label': _('Stock'), 'type': 'number'},
             {
                 'id': 'status',
@@ -219,15 +59,16 @@ class PortalStockController(PortalAdminController):
                     {'id': 'in_stock', 'label': _('In Stock')},
                     {'id': 'out_stock', 'label': _('Out of Stock')}
                 ]
-            }
+            },
+            {'id': 'location', 'label': _('Location'), 'type': 'text'}
         ]
-
     @http.route('/account/stock', type='http', auth="user", website=True)
     def account_stock_action(self, **post):
-        ProductProducts = request.env['product.product'].sudo()
-        partner_id = request.env.user.partner_id
-        account_partner = request.env['account.partner'].sudo().search([('id', '=', partner_id.commercial_partner_id.id)], limit=1)
-        stock = ProductProducts.search([('is_storable', '=', True), ('account_partner_id', '=', account_partner.id)])
+        StockQuant = request.env['stock.quant'].sudo()
+        # Find stock location
+        stock_location = request.env.ref('stock.stock_location_stock')
+        base_domain = [('location_id', 'child_of', stock_location.id), ('quantity', '>', 0)]
+        stock = StockQuant.search(base_domain)
 
         attributes = request.env['product.attribute'].sudo().search([])
         attributes_data = []
@@ -237,7 +78,6 @@ class PortalStockController(PortalAdminController):
 
         values = self._get_admin_layout_values()
 
-        # Definimos la lista de filtros
         list_filters = [
             {
                 'id': 'all',
@@ -254,16 +94,6 @@ class PortalStockController(PortalAdminController):
                 'id': 'out_stock',
                 'label': _('Out of Stock'),
                 'icon': 'fas fa-cubes'
-            },
-            {
-                'id': 'in_stock_spare_parts',
-                'label': _('In Stock Spare Parts'),
-                'icon': 'fas fa-boxes',
-            },
-            {
-                'id': 'out_stock_spare_parts',
-                'label': _('Out of Stock Spare Parts'),
-                'icon': 'fas fa-cubes'
             }
         ]
 
@@ -274,9 +104,8 @@ class PortalStockController(PortalAdminController):
         list_columns = [
             {'id': 'name', 'label': _('Name'), 'sortable': True, 'responsive': ['sm', 'md', 'lg']},
             # {'id': 'sku', 'label': _('SKU'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
-            {'id': 'barcode', 'label': _('Barcode'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
+            # {'id': 'barcode', 'label': _('Barcode'), 'sortable': True, 'lg': True, 'responsive': ['lg']},
             {'id': 'stock', 'label': _('Stock'), 'sortable': True, 'md': True, 'responsive': ['lg']},
-            {'id': 'repairs', 'label': _('Repairs'), 'sortable': False, 'lg': True, 'responsive': ['lg']},
             {'id': 'status', 'label': _('Status'), 'sortable': True, 'responsive': ['md', 'lg']},
             {'id': 'actions', 'label': _('Actions'), 'sortable': False, 'right': True, 'responsive': ['sm', 'md', 'lg']}
         ]
@@ -291,13 +120,39 @@ class PortalStockController(PortalAdminController):
         # Cargar productos iniciales para mostrar en la página
         SysParams = request.env['ir.config_parameter'].sudo()
         limit = int(SysParams.get_param(self.DEFAULT_LIMIT_PARAM, self.DEFAULT_LIMIT_VALUE))
-        base_domain = self._build_product_domain('', None, 'all')
+        
+        search = post.get('search', '')
+        domain = post.get('domain')
+        if domain and isinstance(domain, str):
+            try:
+                domain = json.loads(domain)
+            except Exception:
+                domain = None
+        
+        # Support for direct product_id filtering
+        product_id = post.get('product_id')
+        if product_id:
+            try:
+                p_id = int(product_id)
+                if not domain:
+                    domain = []
+                if not any(isinstance(c, (list, tuple)) and c[0] == 'product_id' for c in domain):
+                    domain.append(['product_id', '=', p_id])
+            except (ValueError, TypeError):
+                pass
+
+        base_domain = self._build_product_domain(search, domain, 'all')
+        
+        # Aplicar filtros rápidos (como quantity > 0 si está activo)
+        active_filter = post.get('quick_filter') or next((f['id'] for f in list_filters if f.get('active')), 'all')
+        base_domain = self._apply_quick_filter(base_domain, active_filter)
+
         # El contexto ya tiene el idioma establecido por _get_admin_layout_values()
         user_lang = request.env.context.get('lang') or 'es_ES'
-        products = ProductProducts.with_context(lang=user_lang).search(base_domain, limit=limit, order='id desc')
         
-        # Pre-cargar información de lotes y estadísticas de reparación para productos
-        products_has_lots, products_repair_stats = self._get_products_repair_data(products, account_partner)
+        StockQuant = request.env['stock.quant'].sudo()
+        quants = StockQuant.with_context(lang=user_lang).search(base_domain, limit=limit, order='id desc')
+        
         
         # Obtener imágenes de productos directamente
         # Cargar placeholder una vez
@@ -311,51 +166,36 @@ class PortalStockController(PortalAdminController):
                 placeholder_base64 = base64.b64encode(f.read()).decode('utf-8')
         
         product_images = {}
-        for product in products:
+        for quant in quants:
+            product = quant.product_id
             # Obtener la imagen del producto (image_1920 hace fallback al template)
             if product.image_1920:
-                product_images[product.id] = product.image_1920
+                product_images[quant.id] = product.image_1920
             elif product.product_tmpl_id and product.product_tmpl_id.image_1920:
-                product_images[product.id] = product.product_tmpl_id.image_1920
+                product_images[quant.id] = product.product_tmpl_id.image_1920
             elif placeholder_base64:
                 # Usar placeholder si no hay imagen
-                product_images[product.id] = placeholder_base64
+                product_images[quant.id] = placeholder_base64
         
-        # Obtener la categoría de repuestos para identificar productos
-        spare_parts_category = request.env.ref('product_menu.product_category_spare_parts', raise_if_not_found=False)
-        products_is_spare_parts = {}
-        if spare_parts_category:
-            for product in products:
-                products_is_spare_parts[product.id] = product.categ_id.id == spare_parts_category.id
-        else:
-            for product in products:
-                products_is_spare_parts[product.id] = False
         
         # Renderizar la lista de productos (el contexto ya tiene el idioma establecido)
         qweb = request.env['ir.qweb']
         products_list_html = qweb._render('portal_stock.portal_products_list', {
-            'products': products,
+            'quants': quants,
             'batch_actions': True,
-            'products_has_lots': products_has_lots,
-            'products_repair_stats': products_repair_stats,
             'product_images': product_images,
-            'products_is_spare_parts': products_is_spare_parts,
             'label_in_stock': _('In Stock'),
             'label_out_of_stock': _('Out of Stock'),
-            'label_in_repair': _('In Repair'),
-            'label_repaired': _('Repaired'),
-            'label_in_review': _('In Review'),
-            'label_reviewed': _('Reviewed'),
         })
         
         # Preparar datos de paginación inicial
-        items_total = ProductProducts.search_count(base_domain)
-        items_count = len(products)
+        items_total = StockQuant.search_count(base_domain)
+        items_count = len(quants)
         pagination_data = self._get_pagination_data(1, items_total, limit)
         pagination_data.update({'items_total': items_total, 'items_count': items_count})
         
         products_pager_html = qweb._render('portal_stock.portal_stock_pager', {
-            'products': products,
+            'quants': quants,
             'items_label': _('products'),
             **pagination_data
         })
@@ -368,6 +208,8 @@ class PortalStockController(PortalAdminController):
             'attributes': attributes_data,
             'page_title': _('Stock'),
             'page_url': '/account/stock',
+            'search': search,
+            'domain_json': json.dumps(domain) if domain else '[]',
             'select2': True,
             'list_filters': list_filters,
             'list_columns': list_columns,  # Añadimos las columnas a renderizar
@@ -381,30 +223,41 @@ class PortalStockController(PortalAdminController):
             ],
             'products_list_html': products_list_html,
             'products_pager_html': products_pager_html,
-            'products_is_spare_parts': products_is_spare_parts,  # Asegurar que esté disponible en el contexto principal
         })
 
         return request.render("portal_stock.portal_stock_page", values)
 
     def _build_product_domain(self, search='', domain=None, match_type='all'):
-        """Construye el dominio de búsqueda para productos"""
-        partner_id = request.env.user.partner_id
-        account_partner = request.env['account.partner'].sudo().search([('partner_id', '=', partner_id.commercial_partner_id.id)], limit=1)
-        base_domain = [('is_storable', '=', True), ('account_partner_id', '=', account_partner.id)]
+        """Construye el dominio de búsqueda para quants"""
+        import logging
+        _logger = logging.getLogger(__name__)
+        
+        stock_location = request.env.ref('stock.stock_location_stock')
+        base_domain = [('location_id', 'child_of', stock_location.id)]
+        
+        # Check if is_storable is a valid field on product.product in this Odoo version
+        Product = request.env['product.product'].sudo()
+        if 'is_storable' in Product._fields:
+            base_domain.append(('product_id.is_storable', '=', True))
+        elif 'type' in Product._fields:
+            # Fallback for older Odoo versions (Odoo < 17)
+            base_domain.append(('product_id.type', '=', 'product'))
+        
+        _logger.info(f"Building domain: search='{search}', domain={domain}, match_type={match_type}")
 
         # Se aplica el filtro de búsqueda por nombre, SKU, código de barras, display_name o atributos
         if search:
             # ilike ya maneja los comodines automáticamente, no necesitamos agregar %
             term = search.strip()
             base_domain.extend(expression.OR([
-                [('name', 'ilike', term)],
-                [('default_code', 'ilike', term)],
-                [('barcode', 'ilike', term)],
-                [('display_name', 'ilike', term)],
+                [('product_id.name', 'ilike', term)],
+                [('product_id.default_code', 'ilike', term)],
+                [('product_id.barcode', 'ilike', term)],
+                [('product_id.display_name', 'ilike', term)],
                 # Buscar en valores de atributos del producto
-                [('product_template_attribute_value_ids.name', 'ilike', term)],
+                [('product_id.product_template_attribute_value_ids.name', 'ilike', term)],
                 # Buscar en nombres de atributos
-                [('product_template_attribute_value_ids.attribute_id.name', 'ilike', term)]
+                [('product_id.product_template_attribute_value_ids.attribute_id.name', 'ilike', term)]
             ]))
         # Aplicar dominio de búsqueda avanzada
         if domain and isinstance(domain, list) and domain:
@@ -427,13 +280,13 @@ class PortalStockController(PortalAdminController):
                     # Permitimos '=' y '!='
                     operator = operator or '='
                     if val in ['in stock', 'instock', 'in_stock', 'in']:
-                        cond = ('qty_available', '>', 0)
+                        cond = ('quantity', '>', 0)
                         if operator == '!=':
-                            cond = ('qty_available', '<=', 0)
+                            cond = ('quantity', '<=', 0)
                     elif val in ['out of stock', 'outofstock', 'out_stock', 'out']:
-                        cond = ('qty_available', '<=', 0)
+                        cond = ('quantity', '<=', 0)
                         if operator == '!=':
-                            cond = ('qty_available', '>', 0)
+                            cond = ('quantity', '>', 0)
                     else:
                         # fallback sin condición válida
                         continue
@@ -441,13 +294,13 @@ class PortalStockController(PortalAdminController):
                     adv_condition_domains.append([cond])
                     continue
 
-                # Campo STOCK numérico (qty_available)
+                # Campo STOCK numérico (quantity)
                 if field_key == 'stock':
                     # Normalizar operador: '=' por defecto si 'ilike'
                     if operator == 'ilike':
                         operator = '='
                     try:
-                        numeric_value = float(raw_value)
+                        numeric_value = float(str(raw_value))
                     except (ValueError, TypeError):
                         continue
                     cond = (model_field, operator or '=', numeric_value)
@@ -455,12 +308,22 @@ class PortalStockController(PortalAdminController):
                     adv_condition_domains.append([cond])
                     continue
 
-                # Campos de texto: name, sku, barcode
+                # Campos de texto y otros: name, sku, barcode, product_id
                 op = (operator or 'ilike').lower()
-                val = str(raw_value or '').strip()
-                if op in ('ilike', 'not ilike'):
-                    # Asegurar búsqueda por coincidencia parcial
-                    val = f"%{val}%"
+                
+                # If it's an ID field, don't use ilike and keep as int if possible
+                if field_key == 'product_id' or model_field.endswith('.id'):
+                    try:
+                        val = int(raw_value)
+                        op = '=' if op == 'ilike' else op
+                    except (ValueError, TypeError):
+                        val = str(raw_value or '').strip()
+                else:
+                    val = str(raw_value or '').strip()
+                    if op in ('ilike', 'not ilike'):
+                        # Asegurar búsqueda por coincidencia parcial
+                        val = f"%{val}%"
+                
                 cond = (model_field, op, val)
                 adv_conditions.append(cond)
                 adv_condition_domains.append([cond])
@@ -474,6 +337,8 @@ class PortalStockController(PortalAdminController):
                     ])
                 else:  # 'all' es el predeterminado
                     base_domain.extend(adv_conditions)
+        
+        _logger.info(f"Final base_domain: {base_domain}")
         return base_domain
 
     def _get_pagination_data(self, page, items_total, limit):
@@ -509,27 +374,10 @@ class PortalStockController(PortalAdminController):
         if not quick_filter or quick_filter == 'all':
             return base_domain
         
-        # Obtener la categoría de repuestos usando el ID externo
-        spare_parts_category = request.env.ref('product_menu.product_category_spare_parts', raise_if_not_found=False)
-        
         if quick_filter == 'in_stock':
-            base_domain.append(('qty_available', '>', 0))
-            # Excluir productos de la categoría de repuestos
-            if spare_parts_category:
-                base_domain.append(('categ_id', '!=', spare_parts_category.id))
+            base_domain.append(('quantity', '>', 0))
         elif quick_filter == 'out_stock':
-            base_domain.append(('qty_available', '<=', 0))
-            # Excluir productos de la categoría de repuestos
-            if spare_parts_category:
-                base_domain.append(('categ_id', '!=', spare_parts_category.id))
-        elif quick_filter == 'in_stock_spare_parts':
-            if spare_parts_category:
-                base_domain.append(('categ_id', '=', spare_parts_category.id))
-                base_domain.append(('qty_available', '>', 0))
-        elif quick_filter == 'out_stock_spare_parts':
-            if spare_parts_category:
-                base_domain.append(('categ_id', '=', spare_parts_category.id))
-                base_domain.append(('qty_available', '<=', 0))
+            base_domain.append(('quantity', '<=', 0))
         
         return base_domain
 
@@ -555,22 +403,15 @@ class PortalStockController(PortalAdminController):
             order_by = f"{self.PRODUCT_FIELDS_MAPPING[sort]} {order}"
 
         # Obtener productos y contar
-        ProductProducts = request.env['product.product'].sudo()
+        StockQuant = request.env['stock.quant'].sudo()
         # Asegurar que el contexto tenga el idioma del usuario (endpoint JSON, no pasa por _get_admin_layout_values)
         self._ensure_user_lang_context()
         user_lang = request.env.context.get('lang') or 'es_ES'
-        products = ProductProducts.with_context(lang=user_lang).search(base_domain, limit=limit, offset=offset, order=order_by)
-        items_total = ProductProducts.search_count(base_domain)
-        items_count = len(products)
+        quants = StockQuant.with_context(lang=user_lang).search(base_domain, limit=limit, offset=offset, order=order_by)
+        items_total = StockQuant.search_count(base_domain)
+        items_count = len(quants)
 
-        # Obtener account_partner del usuario actual
-        partner_id = request.env.user.partner_id
-        account_partner = request.env['account.partner'].sudo().search([
-            ('partner_id', '=', partner_id.commercial_partner_id.id)
-        ], limit=1)
         
-        # Pre-cargar información de lotes y estadísticas de reparación para productos
-        products_has_lots, products_repair_stats = self._get_products_repair_data(products, account_partner)
 
         # Obtener imágenes de productos directamente
         # Cargar placeholder una vez
@@ -584,50 +425,35 @@ class PortalStockController(PortalAdminController):
                 placeholder_base64 = base64.b64encode(f.read()).decode('utf-8')
         
         product_images = {}
-        for product in products:
+        for quant in quants:
+            product = quant.product_id
             # Obtener la imagen del producto (image_1920 hace fallback al template)
             if product.image_1920:
-                product_images[product.id] = product.image_1920
+                product_images[quant.id] = product.image_1920
             elif product.product_tmpl_id and product.product_tmpl_id.image_1920:
-                product_images[product.id] = product.product_tmpl_id.image_1920
+                product_images[quant.id] = product.product_tmpl_id.image_1920
             elif placeholder_base64:
                 # Usar placeholder si no hay imagen
-                product_images[product.id] = placeholder_base64
+                product_images[quant.id] = placeholder_base64
 
         # Preparar datos de paginación
         pagination_data = self._get_pagination_data(page, items_total, limit)
         pagination_data.update({'items_total': items_total, 'items_count': items_count})
 
-        # Obtener la categoría de repuestos para identificar productos
-        spare_parts_category = request.env.ref('product_menu.product_category_spare_parts', raise_if_not_found=False)
-        products_is_spare_parts = {}
-        if spare_parts_category:
-            for product in products:
-                products_is_spare_parts[product.id] = product.categ_id.id == spare_parts_category.id
-        else:
-            for product in products:
-                products_is_spare_parts[product.id] = False
 
         # El contexto ya tiene el idioma establecido por _ensure_user_lang_context()
         qweb = request.env['ir.qweb']
         return {
             'status': 'success',
             'list': qweb._render('portal_stock.portal_products_list', {
-                'products': products,
+                'quants': quants,
                 'batch_actions': True,
-                'products_has_lots': products_has_lots,
-                'products_repair_stats': products_repair_stats,
                 'product_images': product_images,
-                'products_is_spare_parts': products_is_spare_parts,
                 'label_in_stock': _('In Stock'),
                 'label_out_of_stock': _('Out of Stock'),
-                'label_in_repair': _('In Repair'),
-                'label_repaired': _('Repaired'),
-                'label_in_review': _('In Review'),
-                'label_reviewed': _('Reviewed')
             }),
             'pager': qweb._render('portal_stock.portal_stock_pager', {
-                'products': products,
+                'quants': quants,
                 'items_label': _('products'),
                 **pagination_data
             }),
@@ -732,27 +558,20 @@ class PortalStockController(PortalAdminController):
     def account_stock_delete_product(self, product_id=None, **kw):
         """Archive a single product variant owned by the current account partner.
 
-        Uses sudo but enforces ownership by checking `account_partner_id`.
+        Uses sudo.
         Archives the product instead of deleting it (sets active=False).
         """
         try:
             if not product_id:
-                return {'status': 'error', 'message': _('Missing product identifier')}
+                return {'status': 'error', 'message': _('Missing quant identifier')}
 
-            Product = request.env['product.product'].sudo()
-            product = Product.browse(int(product_id))
+            Quant = request.env['stock.quant'].sudo()
+            quant = Quant.browse(int(product_id))
 
-            if not product.exists():
-                return {'status': 'error', 'message': _('Product not found')}
+            if not quant.exists():
+                return {'status': 'error', 'message': _('Quant not found')}
 
-            # Ensure product belongs to current account partner
-            partner = request.env.user.partner_id
-            account_partner = request.env['account.partner'].sudo().search([
-                ('partner_id', '=', partner.commercial_partner_id.id)
-            ], limit=1)
-            if account_partner and product.account_partner_id.id != account_partner.id:
-                return {'status': 'error', 'message': _('You do not have access to this product')}
-
+            product = quant.product_id
             # Archive product instead of deleting (set active=False)
             product.write({'active': False})
             return {'status': 'success', 'message': _('Product archived successfully')}
@@ -768,7 +587,7 @@ class PortalStockController(PortalAdminController):
         try:
             ids_param = product_ids or kw.get('ids') or kw.get('products')
             if not ids_param:
-                return {'status': 'error', 'message': _('No products selected')}
+                return {'status': 'error', 'message': _('No items selected')}
 
             # Allow both list and comma-separated string
             if isinstance(ids_param, str):
@@ -776,25 +595,20 @@ class PortalStockController(PortalAdminController):
             elif isinstance(ids_param, (list, tuple)):
                 ids = [int(x) for x in ids_param]
             else:
-                return {'status': 'error', 'message': _('Invalid products payload')}
+                return {'status': 'error', 'message': _('Invalid items payload')}
 
             if not ids:
-                return {'status': 'error', 'message': _('No valid products to delete')}
+                return {'status': 'error', 'message': _('No valid items to delete')}
 
-            partner = request.env.user.partner_id
-            account_partner = request.env['account.partner'].sudo().search([
-                ('id', '=', partner.commercial_partner_id.id)
-            ], limit=1)
-
-            Product = request.env['product.product'].sudo()
-            products = Product.search([
+            Quant = request.env['stock.quant'].sudo()
+            quants = Quant.search([
                 ('id', 'in', ids),
-                ('account_partner_id', '=', account_partner.id)
             ])
 
-            if not products:
-                return {'status': 'error', 'message': _('No permitted products found for archiving')}
+            if not quants:
+                return {'status': 'error', 'message': _('No permitted items found for archiving')}
 
+            products = quants.mapped('product_id')
             count = len(products)
             # Archive products instead of deleting (set active=False)
             products.write({'active': False})
@@ -816,17 +630,9 @@ class PortalStockController(PortalAdminController):
                 headers=[('Content-Type', 'text/plain')]
             )
         
-        ProductProduct = request.env['product.product'].sudo()
-        partner_id = request.env.user.partner_id
-        
-        account_partner = request.env['account.partner'].sudo().search([
-            ('partner_id', '=', partner_id.commercial_partner_id.id)
-        ], limit=1)
-        
-        domain = [
-            ('is_storable', '=', True),
-            ('account_partner_id', '=', account_partner.id if account_partner else 0)
-        ]
+        StockQuant = request.env['stock.quant'].sudo()
+        stock_location = request.env.ref('stock.stock_location_stock')
+        domain = [('location_id', 'child_of', stock_location.id), ('quantity', '>', 0)]
         
         if ids:
             try:
@@ -836,7 +642,7 @@ class PortalStockController(PortalAdminController):
             except ValueError:
                 pass
         
-        products = ProductProduct.search(domain, order='name asc')
+        quants = StockQuant.search(domain, order='location_id, product_id')
 
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
@@ -865,38 +671,33 @@ class PortalStockController(PortalAdminController):
         worksheet.set_column(0, 0, 35)  # Name
         worksheet.set_column(1, 1, 15)  # SKU
         worksheet.set_column(2, 2, 18)  # Barcode
-        worksheet.set_column(3, 3, 12)  # Real Stock
-        worksheet.set_column(4, 4, 12)  # Available
-        worksheet.set_column(5, 5, 12)  # Incoming
-        worksheet.set_column(6, 6, 12)  # Outgoing
-        worksheet.set_column(7, 7, 12)  # Status
+        worksheet.set_column(3, 3, 20)  # Location
+        worksheet.set_column(4, 4, 12)  # Quantity
+        worksheet.set_column(5, 5, 12)  # Status
         
         # Headers
         headers = [
             _('Name'),
             _('SKU'),
             _('Barcode'),
-            _('Real Stock'),
-            _('Available'),
-            _('Incoming'),
-            _('Outgoing'),
+            _('Location'),
+            _('Quantity'),
             _('Status'),
         ]
         for col, header in enumerate(headers):
             worksheet.write(0, col, header, header_format)
         
         # Data rows
-        for row, product in enumerate(products, start=1):
-            status = _('In Stock') if product.qty_available > 0 else _('Out of Stock')
+        for row, quant in enumerate(quants, start=1):
+            status = _('In Stock') if quant.quantity > 0 else _('Out of Stock')
+            product = quant.product_id
             
             worksheet.write(row, 0, product.name or '', cell_format)
             worksheet.write(row, 1, product.default_code or '', cell_format)
             worksheet.write(row, 2, product.barcode or '', cell_format)
-            worksheet.write(row, 3, product.qty_available or 0, number_format)
-            worksheet.write(row, 4, product.free_qty or 0, number_format)
-            worksheet.write(row, 5, product.incoming_qty or 0, number_format)
-            worksheet.write(row, 6, product.outgoing_qty or 0, number_format)
-            worksheet.write(row, 7, status, cell_format)
+            worksheet.write(row, 3, quant.location_id.display_name or '', cell_format)
+            worksheet.write(row, 4, quant.quantity or 0, number_format)
+            worksheet.write(row, 5, status, cell_format)
         
         workbook.close()
         

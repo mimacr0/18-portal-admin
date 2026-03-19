@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!-- This file is used to allow inheritance of templates from the portal_general_product module -->    
+    <template id="portal_product_mapping_list_stock_button" inherit_id="portal_general_product.portal_product_mapping_list">
+        <xpath expr="//td[@data-column-id='actions']" position="inside">
+            <a t-attf-href="/account/stock?product_id=#{mapping.product_id.id}" 
+               class="text-primary-theme hover:text-theme-dark mr-3" title="Stock List"
+               data-history-url="/account/stock"
+               data-history-title="Stock"
+               data-history-icon="fa-cubes">
+               <i class="fas fa-cubes"></i>
+            </a>
+        </xpath>
+    </template>
+</odoo>
