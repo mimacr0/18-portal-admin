@@ -251,7 +251,7 @@ class PortalReceptionDetailsController(PortalReceptionListController):
                     'name': package.carrier_id.name,
                 } or None,
                 'carrier_name': package.carrier_id.name if package.carrier_id else '',
-                'products': package.rma_products_line_ids.mapped(lambda l: {
+                'products': package.package_products_line_ids.mapped(lambda l: {
                     'product_id': l.product_map_id.id,
                     'product_quantity': l.quantity
                 })

@@ -4,265 +4,298 @@
     <!-- Package Create Modal -->
     <template id="reception_create_modal">
         <div t-attf-id="page-#{page_name}-list-create-modal" class="modal" data-outside-close="false">
-            <div class="modal-content max-w-2xl w-full mx-auto max-h-[90vh] flex flex-col">
+            <div class="modal-content w-full h-full max-w-full max-h-full rounded-none flex flex-col">
                     <div class="modal-header">
-                    <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100" t-attf-id="page-#{page_name}-list-create-modal-title">Package Create</h3>
+                    <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100" t-attf-id="page-#{page_name}-list-create-modal-title">Create Package Return</h3>
                     <button data-modal-close="true" class="close-modal" aria-label="Close modal">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <div class="modal-body overflow-y-auto flex-1">
-                    <form t-attf-id="page-#{page_name}-list-create-form">
-                        <!-- Hidden field to switch create modal into edit mode when needed -->
-                        <input type="hidden" t-attf-id="page-#{page_name}-list-create-form-reception-id"/>
+                <div class="modal-body overflow-y-auto flex-1 p-0">
+                    <!-- Step Progress Indicator -->
+                    <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                        <div class="flex items-center justify-between max-w-md mx-auto">
+                            <div class="flex flex-col items-center">
+                                <div id="step-indicator-1" class="w-8 h-8 rounded-full bg-theme text-white flex items-center justify-center text-sm font-bold border-2 border-theme">1</div>
+                                <span class="text-[10px] mt-1 font-medium text-theme uppercase">General</span>
+                            </div>
+                            <div class="flex-1 h-0.5 bg-gray-200 mx-2 -mt-4"></div>
+                            <div class="flex flex-col items-center">
+                                <div id="step-indicator-2" class="w-8 h-8 rounded-full bg-white text-gray-400 flex items-center justify-center text-sm font-bold border-2 border-gray-200">2</div>
+                                <span class="text-[10px] mt-1 font-medium text-gray-400 uppercase">Addresses</span>
+                            </div>
+                            <div class="flex-1 h-0.5 bg-gray-200 mx-2 -mt-4"></div>
+                            <div class="flex flex-col items-center">
+                                <div id="step-indicator-3" class="w-8 h-8 rounded-full bg-white text-gray-400 flex items-center justify-center text-sm font-bold border-2 border-gray-200">3</div>
+                                <span class="text-[10px] mt-1 font-medium text-gray-400 uppercase">Summary</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <form t-attf-id="page-#{page_name}-list-create-form" class="p-6">
+                        <!-- Hidden fields -->
+                         <input type="hidden" t-attf-id="page-#{page_name}-list-create-form-reception-id"/>
+                         <input type="hidden" name="packages_data" id="reception-packages-data-input" value="[]"/>
+                         <input type="hidden" name="type" id="reception-type-input" value="return"/>
                         
-                        <!-- Sender field -->
-                        <div class="form-group">
-                            <div class="flex items-center">
-                                <label t-attf-for="page-#{page_name}-list-create-form-sender-id" class="form-label-sm font-sm">Sender</label>
-                                <span class="text-red-500 ml-1">*</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <select name="sender_id" t-attf-id="page-#{page_name}-list-create-form-sender-id" class="form-input-sm flex-grow text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme ">
-                                    <option value="">— Select sender —</option>
-                                    <t t-foreach="sender_addresses" t-as="sender">
-                                        <option t-att-value="sender.id" t-esc="sender.display_name"/>
-                                    </t>
-                                </select>
-                                <button type="button"
-                                        class="add-address-btn flex-shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
-                                        data-address-target="page-reception-list-create-form-sender-id"
-                                        title="Create new sender">
-                                    <i class="fas fa-plus text-xs"></i>
-                                </button>
-
-                            </div>
-                            <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-sender-id-error"></div>
-                        </div>
-
-                        <!-- Shipping Address field -->
-                        <div class="form-group">
-                            <div class="flex items-center">
-                                <label t-attf-for="page-#{page_name}-list-create-form-shipping-address-id" class="form-label-sm font-sm">Shipping Address</label>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <select name="shipping_address_id" t-attf-id="page-#{page_name}-list-create-form-shipping-address-id" class="form-input-sm flex-grow text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme ">
-                                    <option value="">— Select address —</option>
-                                    <t t-foreach="shipping_addresses" t-as="addr">
-                                        <option t-att-value="addr.id" t-esc="addr.display_name"/>
-                                    </t>
-                                </select>
-                                <button type="button"
-                                        class="add-address-btn flex-shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
-                                        data-address-target="page-reception-list-create-form-shipping-address-id"
-                                        title="Create new address">
-                                    <i class="fas fa-plus text-xs"></i>
-                                </button>
-
-                            </div>
-                        </div>
-
-                        <!-- Customer Reference field -->
-                        <div class="form-group">
-                            <div class="flex items-center">
-                                <label t-attf-for="page-#{page_name}-list-create-form-customer-reference" class="form-label-sm font-sm">Customer Reference</label>
-                            </div>
-                            <div>
-                                <input type="text" name="customer_reference" t-attf-id="page-#{page_name}-list-create-form-customer-reference"
-                                       class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme "
-                                       placeholder="Your reference number..."/>
-                            </div>
-                        </div>
-
-                        <!-- Package type field -->
-                        <div class="form-group">
-                            <div class="flex items-center">
-                                <label t-attf-for="page-#{page_name}-list-create-form-package-type-id" class="form-label-sm font-sm">Package Type</label>
-                                <span class="text-red-500 ml-1">*</span>
-                            </div>
-                            <div>
-                                <select name="package_type_id" t-attf-id="page-#{page_name}-list-create-form-package-type-id" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme ">
-                                    <t t-foreach="package_types" t-as="pt">
-                                        <option t-att-value="pt.id" t-esc="pt.name"/>
-                                    </t>
-                                </select>
-                                <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-package-type-id-error"></div>
-                            </div>
-                        </div>
-
-                        <!-- Carrier field -->
-                        <div class="form-group">
-                            <div class="flex items-center">
-                                <label t-attf-for="page-#{page_name}-list-create-form-carrier-id" class="form-label-sm font-sm">Carrier</label>
-                                <span class="text-red-500 ml-1">*</span>
-                            </div>
-                            <div>
-                                <select name="carrier_id" t-attf-id="page-#{page_name}-list-create-form-carrier-id" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme ">
-                                    <option value="">— Select carrier —</option>
-                                    <t t-foreach="carriers" t-as="carrier">
-                                        <option t-att-value="carrier.id" t-esc="carrier.name"/>
-                                    </t>
-                                </select>
-                                <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-carrier-id-error"></div>
-                            </div>
-                        </div>
-
-                        <!-- Number of Packages field -->
-                        <div class="form-group">
-                            <div class="flex items-center">
-                                <label t-attf-for="page-#{page_name}-list-create-form-number-of-packages" class="form-label-sm font-sm">Number of Packages</label>
-                                <span class="text-red-500 ml-1">*</span>
-                            </div>
-                            <div>
-                                <input type="number" name="number_of_packages" t-attf-id="page-#{page_name}-list-create-form-number-of-packages"
-                                       class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme "
-                                       min="1" value="1" required="required"/>
-                                <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-number-of-packages-error"></div>
-                            </div>
-                        </div>
-
-
-                        <!-- Weight field -->
-                        <div class="form-group">
-                            <div class="flex items-center">
-                                <label t-attf-for="page-#{page_name}-list-create-form-weight" class="form-label-sm font-sm">Weight (kg)</label>
-                                <span class="text-red-500 ml-1">*</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <input type="number" step="0.01" min="0" name="weight" required="required" t-attf-id="page-#{page_name}-list-create-form-weight"
-                                        class="form-input-sm w-full text-sm shadow rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme "
-                                        placeholder="Total Weight"/>
-                                <span class="mx-1 text-sm">kg</span>
-                            </div>
-                            <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-list-create-form-weight-error"/>
-                        </div>
-
-                        <!-- Notes field -->
-                        <div class="form-group">
-                            <div class="flex items-center">
-                                <label t-attf-for="page-#{page_name}-list-create-form-notes" class="form-label-sm font-sm">Internal Notes</label>
-                            </div>
-                            <div>
-                                <textarea name="notes" t-attf-id="page-#{page_name}-list-create-form-notes" class="form-input-sm w-full text-sm rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme " rows="3" placeholder="Additional information..."></textarea>
-                                <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-notes-error"></div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="flex items-center">
-                                <label t-attf-for="page-#{page_name}-list-create-form-products-list" class="form-label-sm font-sm">Products</label>
-                                <span class="text-red-500 ml-1">*</span>
-                            </div>
-
-                            <div class="field-help mb-2">
-                                <span class="help-text">Select products and set quantity.</span>
-                            </div>
-
-                            <input name="products" type="hidden" t-attf-id="page-#{page_name}-list-create-form-products-list" required="required"/>
-
-                            <div t-attf-id="page-#{page_name}-list-create-form-products-container">
-                                <div class="mt-3 mb-4 flex flex-wrap items-center gap-2">
-                                    <button t-attf-id="page-#{page_name}-list-create-form-products-add-rma-product-btn" type="button"
-                                            class="px-2 py-0.5 bg-theme-light text-theme border border-theme rounded-md transition-colors text-xs flex items-center">
-                                        <i class="fas fa-search mr-1.5"></i> Add RMA Product
-                                    </button>
-                                    <button t-attf-id="page-#{page_name}-list-create-form-products-add-stock-btn" type="button"
-                                            class="px-2 py-0.5 bg-blue-50 text-blue-600 border border-blue-200 rounded-md transition-colors text-xs flex items-center">
-                                        <i class="fas fa-cubes mr-1.5"></i> From Stock
-                                    </button>
-                                    <!-- <button t-attf-id="page-#{page_name}-list-create-form-products-add-catalog-btn" type="button"
-                                            class="px-2 py-0.5 btn-primary text-white rounded-md transition-colors text-xs flex items-center">
-                                        <i class="fas fa-plus mr-1.5"></i> Catalog
-                                    </button> -->
-                                </div>
-                                
-                                 <div t-attf-id="page-#{page_name}-list-create-form-products-line-items-container"
-                                     class="products-line-items-container gap-2">
-                                </div>
-
-                             
-                            </div>
-
-                            <div class="form-error invisible" t-attf-id="page-#{page_name}-list-create-form-products-list-error"></div>
-                        </div>
-
-                        <!-- Shared modal for creating a new res.partner (used for both sender & shipping address) -->
-                        <div id="reception-add-address-modal" class="modal" data-outside-close="false">
-
-                            <div class="modal-content max-w-md w-full mx-auto">
-                                <div class="modal-header">
-                                    <h3 class="text-base font-semibold" id="reception-add-address-modal-title">New Address</h3>
-
-                                    <button type="button" class="close-modal" data-modal-close="true">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <!-- Hidden: which select to update after save, and what type to create -->
-                                    <input type="hidden" id="reception-add-address-target-select"/>
-                                    <input type="hidden" id="reception-add-address-type"/>
-
-
-                                    <div class="grid grid-cols-1 gap-3">
-                                        <div>
-                                            <label class="form-label-sm">Name *</label>
-                                            <input type="text" id="new-address-name" class="form-input-sm w-full" required="1"/>
-                                        </div>
-                                        <div>
-                                            <label class="form-label-sm">Email</label>
-                                            <input type="email" id="new-address-email" class="form-input-sm w-full"/>
-                                        </div>
-                                        <div>
-                                            <label class="form-label-sm">Phone</label>
-                                            <input type="text" id="new-address-phone" class="form-input-sm w-full"/>
-                                        </div>
-                                        <div>
-                                            <label class="form-label-sm">Street</label>
-                                            <input type="text" id="new-address-street" class="form-input-sm w-full"/>
-                                        </div>
-                                        <div class="grid grid-cols-2 gap-2">
-                                            <div>
-                                                <label class="form-label-sm">City</label>
-                                                <input type="text" id="new-address-city" class="form-input-sm w-full"/>
-                                            </div>
-                                            <div>
-                                                <label class="form-label-sm">ZIP</label>
-                                                <input type="text" id="new-address-zip" class="form-input-sm w-full"/>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label class="form-label-sm">Country</label>
-                                            <select id="new-address-country-id" class="form-input-sm w-full">
-                                                <option value="">— Select country —</option>
-                                                <t t-foreach="countries" t-as="country">
-                                                    <option t-att-value="country.id" t-esc="country.name"/>
-                                                </t>
-                                            </select>
-                                        </div>
-
+                        <!-- STEP 1: PACKAGES & ADDRESSES -->
+                        <div id="reception-create-step-1" class="step-content space-y-6">
+                            
+                            <!-- Countries Section -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-blue-50/30 p-4 rounded-xl border border-blue-100/50">
+                                <!-- Origin Country -->
+                                <div class="form-group mb-0">
+                                    <label class="form-label-sm font-semibold flex items-center text-blue-800">
+                                        <i class="fas fa-globe-americas mr-2 text-blue-500"></i> Origin Country
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </label>
+                                    <div class="mt-1">
+                                        <select name="sender_country_id" t-attf-id="page-#{page_name}-list-create-form-sender-country-id" class="form-input-sm w-full rounded-lg border-gray-200 focus:ring-theme">
+                                            <option value="">— Select Origin —</option>
+                                            <t t-foreach="countries" t-as="country">
+                                                <option t-att-value="country.id" t-esc="country.name" t-att-selected="country.code == 'ES'"/>
+                                            </t>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="modal-footer flex justify-end gap-2">
-                                    <button type="button" data-modal-close="true" class="modal-btn modal-btn-secondary">
-                                        <i class="fas fa-times"></i> Cancel
-                                    </button>
-                                    <button type="button" id="reception-add-address-save-btn" class="modal-btn modal-btn-primary">
 
-                                        <i class="fas fa-save"></i> Save
+                                <!-- Destination Country -->
+                                <div class="form-group mb-0">
+                                    <label class="form-label-sm font-semibold flex items-center text-blue-800">
+                                        <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i> Destination Country
+                                        <span class="text-red-500 ml-1">*</span>
+                                    </label>
+                                    <div class="mt-1">
+                                        <select name="receiver_country_id" t-attf-id="page-#{page_name}-list-create-form-receiver-country-id" class="form-input-sm w-full rounded-lg border-gray-200 focus:ring-theme bg-gray-50 cursor-not-allowed">
+                                            <t t-foreach="countries.filtered(lambda c: c.code == 'ES')" t-as="country">
+                                                <option t-att-value="country.id" t-esc="country.name" selected="selected"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="border-gray-100"/>
+
+                            <!-- Dynamic Packages Section -->
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="text-sm font-bold text-gray-800 flex items-center">
+                                        <i class="fas fa-boxes mr-2 text-theme"></i> Bulto Details
+                                    </h4>
+                                    <button type="button" id="reception-add-package-btn" class="text-xs font-semibold px-3 py-1.5 bg-theme-light text-primary-theme rounded-lg hover:bg-primary-theme hover:text-white transition-all flex items-center border border-primary-theme/10">
+                                        <i class="fas fa-plus-circle mr-1.5"></i> Extra Bulto
                                     </button>
+                                </div>
+
+                                <div id="reception-packages-list-container" class="space-y-3">
+                                    <!-- Package Items will be injected by JS -->
+                                    <div class="package-item bg-white border border-theme-light rounded-xl p-4 shadow-sm relative overflow-hidden group">
+                                        <div class="absolute top-0 left-0 w-1 h-full bg-theme"></div>
+                                        <div class="flex items-center justify-between mb-3">
+                                            <span class="text-xs font-bold text-theme uppercase tracking-wider">Bulto #1</span>
+                                            <span class="text-[10px] text-gray-400 bg-gray-50 px-2 py-0.5 rounded border border-gray-100">Default</span>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="text-[10px] font-bold text-gray-500 uppercase flex items-center">
+                                                <i class="fas fa-tag mr-2 text-theme-light"></i> Content / Product Name
+                                            </label>
+                                            <input type="text" name="pkg_product_name[]" class="form-input-sm w-full mt-1 pkg-product-name rounded-lg border-gray-200" placeholder="e.g. Xiaomi Mi 11 Ultra..."/>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="text-[10px] font-bold text-gray-500 uppercase flex items-center">
+                                                <i class="fas fa-cubes mr-2 text-theme-light"></i> Units
+                                            </label>
+                                            <input type="number" step="1" min="1" name="pkg_units[]" class="form-input-sm w-full mt-1 pkg-units rounded-lg border-gray-200" value="1"/>
+                                        </div>
+
+                                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                                            <div>
+                                                <label class="text-[10px] font-bold text-gray-500 uppercase">Weight (kg) *</label>
+                                                <input type="number" step="0.01" min="0.1" name="pkg_weight[]" class="form-input-sm w-full mt-1 pkg-weight" value="1.00"/>
+                                            </div>
+                                            <div>
+                                                <label class="text-[10px] font-bold text-gray-500 uppercase">Length (cm)</label>
+                                                <input type="number" step="1" min="1" name="pkg_length[]" class="form-input-sm w-full mt-1 pkg-length" value="10"/>
+                                            </div>
+                                            <div>
+                                                <label class="text-[10px] font-bold text-gray-500 uppercase">Width (cm)</label>
+                                                <input type="number" step="1" min="1" name="pkg_width[]" class="form-input-sm w-full mt-1 pkg-width" value="10"/>
+                                            </div>
+                                            <div>
+                                                <label class="text-[10px] font-bold text-gray-500 uppercase">Height (cm)</label>
+                                                <input type="number" step="1" min="1" name="pkg_height[]" class="form-input-sm w-full mt-1 pkg-height" value="10"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notes -->
+                            <div class="form-group">
+                                <label class="form-label-sm font-semibold flex items-center">
+                                    <i class="fas fa-sticky-note mr-2 text-theme"></i> Reception Notes
+                                </label>
+                                <textarea name="notes" class="form-input-sm w-full mt-1 rounded-lg border-gray-200" rows="1" placeholder="Add any special instructions..."></textarea>
+                            </div>
+
+                            <!-- Carrier Estimates Section (Step 1) -->
+                            <div id="reception-step1-carriers-section" class="hidden space-y-4 pt-4 border-t border-gray-100 animate-fade-in">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="text-sm font-bold text-gray-800 flex items-center">
+                                        <i class="fas fa-shipping-fast mr-2 text-theme"></i> Available Carriers
+                                    </h4>
+                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Select One</span>
+                                </div>
+                                <div id="reception-step1-carriers-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <!-- Carriers cards will be injected here -->
                                 </div>
                             </div>
                         </div>
 
+                        <!-- STEP 2: ADDRESSES (Hidden) -->
+                        <div id="reception-create-step-2" class="step-content hidden animate-fade-in space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Sender details -->
+                                <div class="space-y-4 p-4 rounded-xl border border-gray-100 bg-gray-50/30">
+                                    <h5 class="text-xs font-bold text-gray-700 uppercase flex items-center">
+                                        <i class="fas fa-sign-out-alt mr-2 text-theme"></i> Sender Details
+                                    </h5>
+                                    <input type="hidden" name="sender_id" id="reception-sender-address-id" value=""/>
+                                        <div class="relative">
+                                            <input type="text" id="reception-sender-search" placeholder="Search by name, email or phone..." class="form-input-sm w-full rounded-lg border-gray-200 pr-8"/>
+                                            <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 text-xs pointer-events-none"></i>
+                                        </div>
+                                        <div id="reception-sender-search-results" class="hidden mt-1 max-h-40 overflow-y-auto rounded-lg border border-gray-100 bg-white shadow-lg z-50"></div>
+                                        
+                                       
+                                        <div id="reception-sender-selected-badge" class="hidden mt-2 flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-1.5">
+                                            <i class="fas fa-check-circle text-green-500 text-xs"></i>
+                                            <span id="reception-sender-selected-name" class="text-xs font-semibold text-green-700"></span>
+                                            <button type="button" id="reception-sender-clear-btn" class="ml-auto text-gray-400 hover:text-red-500 transition-all text-xs">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <p class="text-[10px] text-gray-400 mt-1"><i class="fas fa-info-circle mr-1"></i>Leave empty to create a new sender with the fields below.</p>
+                                    <div class="grid grid-cols-1 gap-3">
+                                     <!-- Country Display (Read-only) -->
+                                  
+                                        <!-- Zip Search -->
+                                        <div class="grid grid-cols-1">
+                                            <label class="text-[10px] font-bold text-theme uppercase">Zip/City Search</label>
+                                            <div class="relative">
+                                                <input type="text" id="reception-sender-zip-search" placeholder="Quick zip/city finder..." class="form-input-sm w-full rounded-lg border-theme/20 focus:border-theme pr-8"/>
+                                                <i class="fas fa-map-pin absolute right-3 top-1/2 -translate-y-1/2 text-theme-light text-xs pointer-events-none"></i>
+                                            </div>
+                                            <div id="reception-sender-zip-results" class="hidden absolute left-0 right-0 mt-1 max-h-40 overflow-y-auto rounded-lg border border-gray-100 bg-white shadow-xl z-[60]"></div>
+                                        </div>
+
+                                        <input type="text" name="sender_name" placeholder="Contact Name" class="form-input-sm w-full rounded-lg border-gray-100"/>
+                                        <input type="text" name="sender_street" placeholder="Street" class="form-input-sm w-full rounded-lg border-gray-100"/>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <input type="text" name="sender_city" placeholder="City" class="form-input-sm w-full rounded-lg border-gray-100"/>
+                                            <input type="text" name="sender_zip" placeholder="ZIP Code" class="form-input-sm w-full rounded-lg border-gray-100"/>
+                                        </div>
+                                        <div class="grid grid-cols-1">
+                                            <input type="text" name="sender_state_name" placeholder="Province / State" class="form-input-sm w-full rounded-lg border-gray-100"/>
+                                            <input type="hidden" name="sender_state_id" value=""/>
+                                        </div>
+                                        <div class="grid grid-cols-1">
+                                            <input type="text" id="reception-sender-country-name-display" placeholder="Country" class="form-input-sm w-full rounded-lg border-gray-100 bg-gray-50 cursor-not-allowed" readonly="readonly" value="Spain"/>
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <input type="email" name="sender_email" placeholder="Email" class="form-input-sm w-full rounded-lg border-gray-100"/>
+                                            <input type="text" name="sender_phone" placeholder="Phone" class="form-input-sm w-full rounded-lg border-gray-100"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Receiver details -->
+                                <div class="space-y-4 p-4 rounded-xl border border-gray-100 bg-gray-50/30">
+                                    <h5 class="text-xs font-bold text-gray-700 uppercase flex items-center">
+                                        <i class="fas fa-sign-in-alt mr-2 text-theme"></i> Shipping To
+                                    </h5>
+                                    
+                                    <!-- Country Display (Read-only) -->
+                                    <div class="grid grid-cols-1 gap-3">
+                                        <!-- Zip Search -->
+                                        <div class="grid grid-cols-1">
+                                            <label class="text-[10px] font-bold text-theme uppercase">Zip/City Search</label>
+                                            <div class="relative">
+                                                <input type="text" id="reception-receiver-zip-search" placeholder="Quick zip/city finder..." class="form-input-sm w-full rounded-lg border-theme/20 focus:border-theme pr-8"/>
+                                                <i class="fas fa-map-pin absolute right-3 top-1/2 -translate-y-1/2 text-theme-light text-xs pointer-events-none"></i>
+                                            </div>
+                                            <div id="reception-receiver-zip-results" class="hidden absolute left-0 right-0 mt-1 max-h-40 overflow-y-auto rounded-lg border border-gray-100 bg-white shadow-xl z-[60]"></div>
+                                        </div>
+                                        <input type="text" name="receiver_name" placeholder="Receiver Name" class="form-input-sm w-full rounded-lg border-gray-100" t-att-value="company.name"/>
+                                        <input type="text" name="receiver_street" placeholder="Street" class="form-input-sm w-full rounded-lg border-gray-100" t-att-value="company.street"/>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <input type="text" name="receiver_city" placeholder="City" class="form-input-sm w-full rounded-lg border-gray-100" t-att-value="company.city"/>
+                                            <input type="text" name="receiver_zip" placeholder="ZIP Code" class="form-input-sm w-full rounded-lg border-gray-100" t-att-value="company.zip"/>
+                                        </div>
+                                        <div class="grid grid-cols-1">
+                                            <input type="text" name="receiver_state_name" placeholder="Province / State" class="form-input-sm w-full rounded-lg border-gray-100" t-att-value="company.state_id.name"/>
+                                            <input type="hidden" name="receiver_state_id" t-att-value="company.state_id.id"/>
+                                        </div>
+                                        <div class="grid grid-cols-1">
+                                            <input type="text" id="reception-receiver-country-name-display" placeholder="Country" class="form-input-sm w-full rounded-lg border-gray-100 bg-gray-50 cursor-not-allowed" readonly="readonly" value="Spain"/>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <input type="email" name="receiver_email" placeholder="Email" class="form-input-sm w-full rounded-lg border-gray-100" t-att-value="company.email"/>
+                                            <input type="text" name="receiver_phone" placeholder="Phone" class="form-input-sm w-full rounded-lg border-gray-100" t-att-value="company.phone"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: SUMMARY (Hidden) -->
+                        <div id="reception-create-step-3" class="step-content hidden animate-fade-in space-y-6">
+                            <div class="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
+                                <div class="bg-gray-50 px-6 py-4 border-b border-gray-100">
+                                    <h4 class="text-sm font-bold text-gray-800 flex items-center">
+                                        <i class="fas fa-clipboard-check mr-2 text-green-500"></i> Reception Summary
+                                    </h4>
+                                </div>
+                                <div class="p-6">
+                                    <div id="reception-summary-content" class="space-y-4">
+                                        <!-- Summary content will be injected by JS -->
+                                        <div class="flex items-center justify-center py-10">
+                                            <i class="fas fa-spinner fa-spin text-theme text-2xl"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <input type="hidden" name="carrier_id" id="reception-selected-carrier-id"/>
                     </form>
                 </div>
-                <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700">
-                    <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
-                        <i class="fas fa-times"></i> Cancel
-                    </button>
-                    <button t-attf-id="page-#{page_name}-list-create-product-form-submit" class="modal-btn modal-btn-primary">
-                        <i class="fas fa-save"></i> Save
-                    </button>
+
+
+                <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-between items-center rounded-b-lg border-t border-gray-200 dark:border-gray-700">
+                    <div>
+                        <button id="reception-create-back-btn" class="modal-btn modal-btn-secondary d-none">
+                            <i class="fas fa-arrow-left mr-1"></i> Back
+                        </button>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="reception-create-next-btn" class="modal-btn modal-btn-primary">
+                            <span>Next</span> <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                        <button id="reception-create-submit-btn" class="modal-btn modal-btn-primary d-none">
+                            <i class="fas fa-check-circle mr-1"></i> Create Reception
+                        </button>
+                        <button id="reception-create-new-btn" class="modal-btn modal-btn-primary d-none">
+                            <i class="fas fa-plus mr-1"></i> New Reception
+                        </button>
+                        <button data-modal-close="true" id="reception-create-exit-btn" class="modal-btn modal-btn-secondary d-none">
+                            <i class="fas fa-door-open mr-1"></i> Exit
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -377,7 +410,7 @@
     <!-- RMA Product Kanban Selector Modal -->
     <template id="reception_product_map_selector_modal">
         <div id="reception-product-map-selector-modal" class="modal" data-outside-close="false">
-            <div class="modal-content max-w-4xl w-full mx-auto max-h-[90vh] flex flex-col">
+            <div class="modal-content w-full h-full max-w-full max-h-full rounded-none flex flex-col">
                 <div class="modal-header">
                     <h3 class="text-lg font-semibold">Select RMA Product</h3>
                     <button type="button" class="close-modal" data-modal-close="true">
@@ -414,7 +447,7 @@
     <!-- Stock Selector Modal -->
     <template id="reception_stock_selector_modal">
         <div id="reception-stock-selector-modal" class="modal" data-outside-close="false">
-            <div class="modal-content max-w-4xl w-full mx-auto max-h-[90vh] flex flex-col">
+            <div class="modal-content w-full h-full max-w-full max-h-full rounded-none flex flex-col">
                 <div class="modal-header">
                     <h3 class="text-lg font-semibold">Select from Inventory</h3>
                     <button type="button" class="close-modal" data-modal-close="true">

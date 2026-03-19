@@ -79,7 +79,7 @@ class PortalReceptionListController(PortalAdminController):
             {'id': 'package_type', 'label': _('Package Type'), 'type': 'select', 'options': package_type_options},
             {'id': 'pack_date', 'label': _('Date'), 'type': 'date'},
             {'id': 'state', 'label': _('Status'), 'type': 'select', 'options': [
-                {'id': 'draft', 'label': _('Received')},
+                {'id': 'draft', 'label': _('Waiting Package')},
                 {'id': 'opened', 'label': _('Opened & Inspected')},
                 {'id': 'done', 'label': _('Empty / Done')}
             ]}
@@ -123,7 +123,7 @@ class PortalReceptionListController(PortalAdminController):
             ('id', 'child_of', partner_id.commercial_partner_id.id),
         ])
         sender_addresses = all_partners.filtered(lambda p: p.type == 'sender')
-        shipping_addresses = all_partners.filtered(lambda p: p.type in ['delivery'])
+        shipping_addresses = all_partners.filtered(lambda p: p.type in ['delivery'] and (not p.country_id or p.country_id.code == 'ES'))
         countries = request.env['res.country'].sudo().search([])
         package_types = request.env['stock.package.type'].sudo().search([])
         carriers = request.env['delivery.carrier'].sudo().search([('active', '=', True)])
@@ -139,6 +139,7 @@ class PortalReceptionListController(PortalAdminController):
             'countries': countries,
             'package_types': package_types,
             'carriers': carriers,
+            'company': request.env.company,
             'page_title': _('Packages'),
             'page_url': '/account/reception',
             'flatpickr': True,

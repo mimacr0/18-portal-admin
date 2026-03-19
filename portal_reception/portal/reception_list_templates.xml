@@ -55,9 +55,16 @@
                     <div class="p-4 border-b border-gray-200 dark:border-gray-700">
                         <div class="flex flex-col lg:flex-row justify-between gap-4">
                             <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                <div class="flex items-center">
-                                    <button t-attf-id="launch-create-#{page_name}-form-button" class="px-3 py-1.5 btn-primary text-white rounded-md  transition-colors flex items-center">
-                                        <i class="fas fa-plus mr-1.5"></i> <span class="hidden sm:inline">Create</span>
+                                <div class="flex items-center gap-2">
+                                    <button t-attf-id="launch-create-#{page_name}-new-button" 
+                                            data-reception-type="new"
+                                            class="launch-reception-create-btn px-3 py-1.5 btn-primary text-white rounded-md transition-colors flex items-center">
+                                        <i class="fas fa-plus mr-1.5"></i> <span class="hidden sm:inline">Reception Package</span>
+                                    </button>
+                                    <button t-attf-id="launch-create-#{page_name}-return-button" 
+                                            data-reception-type="return"
+                                            class="launch-reception-create-btn px-3 py-1.5 bg-gray-600 hover:bg-gray-700 text-white rounded-md transition-colors flex items-center">
+                                        <i class="fas fa-undo mr-1.5"></i> <span class="hidden sm:inline">Return Package</span>
                                     </button>
                                 </div>
                             </div>
@@ -222,7 +229,7 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900 dark:text-gray-100">
-                        <t t-foreach="package.rma_products_line_ids" t-as="line">
+                        <t t-foreach="package.package_products_line_ids" t-as="line">
                             <div class="flex justify-between gap-2 border-b border-gray-100 last:border-0 py-0.5">
                                 <span class="truncate" t-out="line.product_map_id.name"/>
                                 <span class="font-bold text-primary-theme" t-out="line.quantity"/>
@@ -231,7 +238,7 @@
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <span t-if="package.rma_state == 'draft'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Received</span>
+                    <span t-if="package.rma_state == 'draft'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Waiting Package</span>
                     <span t-if="package.rma_state == 'opened'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Opened &amp; Inspected</span>
                     <span t-if="package.rma_state == 'done'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Empty / Done</span>
                 </td>
@@ -253,6 +260,14 @@
                        data-history-title="Stock List"
                        data-history-icon="fa-boxes">
                        <i class="fas fa-boxes"></i>
+                    </a>
+                    
+                    <a t-if="package.sale_id" t-attf-href="/account/sales/details/#{package.sale_id.id}" 
+                       class="text-amber-600 hover:text-amber-800 mr-3" title="Sale Order"
+                       t-attf-data-history-url="/account/sales/details/#{package.sale_id.id}"
+                       t-attf-data-history-title="Sale Order: #{package.sale_id.name}"
+                       data-history-icon="fa-shopping-cart">
+                       <i class="fas fa-shopping-cart"></i>
                     </a>
                     
                     <button t-if="package.rma_state == 'draft'" t-att-data-reception-id="package.id" class="reception-delete-btn text-gray-600 hover:text-gray-900 dark:text-gray-100" title="Delete"> <i class="fas fa-ban"></i> </button>

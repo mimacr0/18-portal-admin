@@ -133,18 +133,31 @@ export const reloadReceptionListPage = async () => {
  *
  */
 export const initReceptionsManagementListPage = () => {
-    // Configurar botón para crear nuevos elementos
-    const createButton = document.getElementById('launch-create-reception-form-button');
-    if(createButton) createButton.addEventListener('click', () => {
-        // Open the modal using the theme's Modal system
-        const modalId = 'page-reception-list-create-modal';
-        if (window.Modal) {
-            window.Modal.open(modalId);
-        } else {
-            // Fallback: set data-open attribute directly
-            const modal = document.getElementById(modalId);
-            if (modal) modal.setAttribute('data-open', 'true');
-        }
+    // Configurar botones para crear nuevos elementos (tanto "New" como "Return")
+    const createButtons = document.querySelectorAll('.launch-reception-create-btn');
+    createButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Read the type from the button (passed as 'return' by default)
+            const type = btn.dataset.receptionType || 'return';
+            const typeInput = document.getElementById('reception-type-input');
+            if (typeInput) typeInput.value = type;
+
+            // Update Title dynamically
+            const titleEl = document.getElementById('page-reception-list-create-modal-title');
+            if (titleEl) {
+                titleEl.textContent = type === 'new' ? 'Create Reception Package' : 'Create Package Return';
+            }
+
+            // Open the modal using the theme's Modal system
+            const modalId = 'page-reception-list-create-modal';
+            if (window.Modal) {
+                window.Modal.open(modalId);
+            } else {
+                // Fallback: set data-open attribute directly
+                const modal = document.getElementById(modalId);
+                if (modal) modal.setAttribute('data-open', 'true');
+            }
+        });
     });
 
     // Configurar botón para importar archivos

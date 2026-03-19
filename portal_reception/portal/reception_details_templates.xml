@@ -8,7 +8,11 @@
             <div class="w-full md:w-4/5 mx-auto lg:max-w-7xl bg-white dark:bg-gray-800 rounded-xl shadow-lg print:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
                 <!-- Document Action Bar -->
                 <div class="p-5 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-                    <a href="/account/reception" class="inline-flex items-center text-primary-theme hover:text-primary-theme transition-colors">
+                    <a href="/account/reception" 
+                       class="inline-flex items-center text-primary-theme hover:text-primary-theme transition-colors"
+                       data-history-url="/account/reception"
+                       data-history-title="Reception Packages"
+                       data-history-icon="fa-box">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
@@ -20,7 +24,7 @@
                                 <span t-attf-class="w-2 h-2 bg-#{package.rma_state == 'done' and 'green' or (package.rma_state == 'draft' and 'amber' or 'blue')}-500 dark:bg-#{package.rma_state == 'done' and 'green' or (package.rma_state == 'draft' and 'amber' or 'blue')}-400 rounded-full mr-1.5"></span>
                                 <t t-if="package.rma_state == 'done'">Completed</t>
                                 <t t-elif="package.rma_state == 'opened'">Opened &amp; Inspected</t>
-                                <t t-else="">Received</t>
+                                <t t-else="">Waiting Package</t>
                             </span>
                         </div>
                     </div>
@@ -70,7 +74,7 @@
                                 <span t-attf-class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-#{package.rma_state == 'done' and 'green' or (package.rma_state == 'draft' and 'amber' or 'blue')}-100">
                                     <t t-if="package.rma_state == 'done'">Completed</t>
                                     <t t-elif="package.rma_state == 'opened'">Opened &amp; Inspected</t>
-                                    <t t-else="">Received</t>
+                                    <t t-else="">Waiting Package</t>
                                 </span>
                             </p>
                             <p class="text-gray-700 dark:text-gray-200"> <span class="font-medium">Created:</span> <t t-out="package.create_date"/> </p>
@@ -92,8 +96,8 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-gray-800">
-                                <t t-if="package.rma_products_line_ids">
-                                    <tr t-foreach="package.rma_products_line_ids" t-as="line" class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <t t-if="package.package_products_line_ids">
+                                    <tr t-foreach="package.package_products_line_ids" t-as="line" class="hover:bg-gray-50 dark:hover:bg-gray-700">
                                         <td class="px-6 py-4 text-gray-800 dark:text-gray-200"> <span t-out="line.product_map_id.product_id.display_name"/> </td>
                                         <td class="px-6 py-4 text-right text-gray-800 dark:text-gray-200 font-medium"> <span t-out="line.quantity"/> </td>
                                     </tr>

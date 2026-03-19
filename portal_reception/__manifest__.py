@@ -14,11 +14,12 @@
     'summary': """
         Modulo para recepciones en el portal del cliente.
     """,
-    'depends': ['portal_account', 'portal_catalog', 'rma_reception'],
+    'depends': ['portal_account', 'portal_catalog', 'rma_reception', 'portal_sales'],
     'license': 'AGPL-3',
     'website': "https://www.dafe.es",
     'data': [
         'security/ir.model.access.csv',
+        'data/portal_reception_data.xml',
         'portal/reception_list_templates.xml',
         'portal/reception_details_templates.xml',
         'portal/reception_modal_templates.xml',
