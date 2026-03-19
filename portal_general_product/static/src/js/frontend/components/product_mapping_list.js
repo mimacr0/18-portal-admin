@@ -1,5 +1,6 @@
 import { rpc } from "@web/core/network/rpc";
 import { applyProductMappingColumnVisibility } from "./product_mapping_columns.js";
+import { fillProductEditForm, initProductEditModal } from "../../product_modal.js";
 
 /**
  * Sorting configuration for the product mapping list.
@@ -137,4 +138,37 @@ export const initProductMappingListPage = () => {
             reloadProductMappingListPage();
         });
     }
+
+    // Edit button initialization
+    const pageListItems = document.getElementById('product-mapping-list-items');
+    if (pageListItems) {
+        pageListItems.addEventListener('click', async (e) => {
+            const btn = e.target.closest('.product-edit-btn');
+            if (btn) {
+                const mappingId = btn.dataset.mappingId;
+                if (!mappingId) return;
+
+                try {
+                    showLoadingScreen();
+                    const response = await rpc('/account/stock/get/product', { mapping_id: mappingId });
+                    if (response && response.status === 'success' && response.product) {
+                        fillProductEditForm(response.product);
+                        initProductEditModal();
+                        Modal.open(btn.dataset.modalOpen || `page-${pageName}-edit-modal`);
+                    } else {
+                        systemShowNotification(response?.message || 'Error fetching product data', { type: 'error' });
+                    }
+                } catch (error) {
+                    console.error('Error fetching product data:', error);
+                } finally {
+                    hideLoadingScreen();
+                }
+            }
+        });
+    }
+
+    // Listener for list reload
+    document.addEventListener('list:reload', () => {
+        reloadProductMappingListPage();
+    });
 };

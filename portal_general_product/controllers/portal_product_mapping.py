@@ -211,6 +211,7 @@ class PortalProductMappingController(PortalDashboardController):
             'status': 'success',
             'list': qweb._render('portal_general_product.portal_product_mapping_list', {
                 'mappings': mappings,
+                'page_name': 'product_mapping',
                 'list_columns': self._get_product_mapping_list_columns(),
                 'batch_actions': self._get_product_mapping_batch_actions(),
                 '_': _,

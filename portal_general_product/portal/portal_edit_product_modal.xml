@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_edit_product_modal" name="Portal Product Edit Modal">
+        <!-- Product Edit Modal -->
+        <t t-set="page_name" t-value="'product_mapping'"/>
+        <div t-attf-id="page-#{page_name}-edit-modal" class="modal" data-outside-close="false" style="z-index: 9999;">
+            <div class="modal-content max-w-2xl w-full mx-auto">
+                <div class="modal-header">
+                    <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100">Product Edit</h3>
+                    <button data-modal-close="true" class="close-modal" aria-label="Close modal">
+                        <i class="fas fa-times"/>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form t-attf-id="page-#{page_name}-edit-form">
+                        <input type="hidden" name="product_id" t-attf-id="page-#{page_name}-edit-form-product-id"/>
+                        <input type="hidden" name="image_base64" t-attf-id="page-#{page_name}-edit-form-image-base64"/>
+                        <div class="form-group">
+                            <div class="grid grid-cols-2 items-start">
+                                <div class="col-span-1 w-full p-2">
+                                    <label t-attf-for="page-#{page_name}-edit-form-name" class="form-label-sm font-sm mb-1">Name <span class="text-red-500 text-xl">*</span></label>
+                                    <input type="text" name="name" t-attf-id="page-#{page_name}-edit-form-name" class="form-input text-xl rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Name" required="required"/>
+                                    <div class="form-error invisible mt-1" t-attf-id="page-#{page_name}-edit-form-name-error"/>
+                                </div>
+                                <div class="col-start-2 flex justify-end items-start">
+                                    <div class="relative group w-24 h-24">
+                                        <input type="file" name="image" class="hidden" t-attf-id="page-#{page_name}-edit-form-image" accept="image/*"/>
+                                        <label t-attf-for="page-#{page_name}-edit-form-image" class="cursor-pointer block w-full h-full">
+                                            <img t-attf-id="page-#{page_name}-edit-form-image-preview" src="/portal_stock/static/img/placeholder.png" alt="Upload image" class="w-full h-full border-2 border-gray-400 object-cover rounded transition-opacity duration-200 group-hover:opacity-80"/>
+                                        </label>
+                                        <button type="button" t-attf-id="page-#{page_name}-edit-form-image-delete" class="absolute top-1 right-1 bg-white text-red-600 p-1 rounded-full shadow-md hover:bg-red-100 opacity-0 group-hover:opacity-100 transition-opacity duration-200" title="Remove image">
+                                            <i class="fa fa-trash"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-1 gap-4">
+                            <div class="form-group">
+                                <label t-attf-for="page-#{page_name}-edit-form-account-sku" class="form-label-sm font-sm">Account SKU</label>
+                                <input type="text" name="account_sku" t-attf-id="page-#{page_name}-edit-form-account-sku" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Account SKU"/>
+                            </div>
+                            <div class="form-group">
+                                <label t-attf-for="page-#{page_name}-edit-form-account-ean13" class="form-label-sm font-sm">EAN13</label>
+                                <input type="text" name="account_ean13" t-attf-id="page-#{page_name}-edit-form-account-ean13" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="EAN13" maxlength="13"/>
+                            </div>
+                            <div class="form-group">
+                                <label t-attf-for="page-#{page_name}-edit-form-account-fnsku" class="form-label-sm font-sm">FNSKU</label>
+                                <input type="text" name="account_fnsku" t-attf-id="page-#{page_name}-edit-form-account-fnsku" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="FNSKU"/>
+                            </div>
+                            <div class="form-group">
+                                <label t-attf-for="page-#{page_name}-edit-form-account-asin" class="form-label-sm font-sm">ASIN</label>
+                                <input type="text" name="account_asin" t-attf-id="page-#{page_name}-edit-form-account-asin" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="ASIN"/>
+                            </div>
+                            <div class="form-group">
+                                <label t-attf-for="page-#{page_name}-edit-form-marketplace" class="form-label-sm font-sm">Marketplace</label>
+                                <select name="marketplace" edit-modal-attf-id="page-#{page_name}-edit-form-marketplace" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme">
+                                    <option value="">Select Marketplace...</option>
+                                    <option value="amazon">Amazon</option>
+                                    <option value="cdiscount">Cdiscount</option>
+                                    <option value="ebay">eBay</option>
+                                    <option value="temu">Temu</option>
+                                    <option value="aliexpress">AliExpress</option>
+                                    <option value="pccomponentes">PcComponentes</option>
+                                    <option value="carrefour">Carrefour</option>
+                                    <option value="worten">Worten</option>
+                                    <option value="web">Webstore</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-span-2 sm:col-span-1">
+                                <label t-attf-for="page-#{page_name}-edit-form-notes" class="form-label-sm font-sm">Notes</label>
+                                <textarea name="notes" t-attf-id="page-#{page_name}-edit-form-notes" class="form-input-sm w-full text-sm shadow rounded-md border-1 border-gray-300 focus:outline-none focus:ring-1 focus-ring-theme dark:focus-ring-theme" placeholder="Notes..." rows="3"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer bg-gray-50 dark:bg-gray-800 px-6 py-4 flex justify-end rounded-b-lg border-t border-gray-200 dark:border-gray-700">
+                    <button data-modal-close="true" class="modal-btn modal-btn-secondary mr-2">
+                        <i class="fas fa-times"/> Cancel
+                    </button>
+                    <button t-attf-id="page-#{page_name}-edit-form-submit" class="modal-btn modal-btn-primary">
+                        <i class="fas fa-save"/> Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

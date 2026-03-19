@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-# Empty for now as we don't need new models yet
+# from . import account_product_map
