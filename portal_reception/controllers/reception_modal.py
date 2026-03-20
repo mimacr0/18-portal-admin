@@ -292,25 +292,29 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
                 package.sale_id = sale_order.id
 
             # Create Sale Order Lines
-            shipping_product = getattr(carrier, 'product_id', False)
-            shipping_product_id = getattr(shipping_product, 'id', False)
+            carrier_product_id = False
+            if carrier:
+                carrier_product_id = getattr(carrier.product_id, 'id', False)
+            
+            bundle_product_id = getattr(GenericProduct, 'id', False)
             
             sale_order_id = getattr(sale_order, 'id', False)
             if sale_order_id:
                 # 1. Main Shipping Service Line (with total price)
                 request.env['sale.order.line'].sudo().create({
                     'order_id': sale_order_id,
-                    'product_id': shipping_product_id,
+                    'product_id': carrier_product_id,
                     'name': _("Shipping Service (%d packages, %d total units, %.2f kg)") % (number_of_packages, total_units, total_weight),
                     'product_uom_qty': 1.0,
                     'price_unit': float(total_price),
                 })
-
+                
                 # 2. Individual Package Lines (informational, price 0)
                 for package in created_packages:
                     request.env['sale.order.line'].sudo().create({
                         'order_id': sale_order_id,
-                        'product_id': shipping_product_id,
+                        'product_id': bundle_product_id,
+                        'package_id': package.id,
                         'name': _("Bundle / Package: %s") % package.name,
                         'product_uom_qty': 1.0,
                         'price_unit': 0.0,
