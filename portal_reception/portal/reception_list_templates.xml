@@ -242,35 +242,37 @@
                     <span t-if="package.rma_state == 'opened'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Opened &amp; Inspected</span>
                     <span t-if="package.rma_state == 'done'" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Empty / Done</span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <a t-attf-href="/account/reception/print/#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 dark:text-gray-100" title="Print Label"> <i class="fas fa-print"></i> </a>
-                    <a t-attf-href="/account/reception/details/#{package.id}" class="text-gray-600 hover:text-gray-900 mr-3 dark:text-gray-100" title="Internal Details"> <i class="fas fa-info-circle"></i> </a>
-                    
-                    <!-- Conditional Links -->
-                    <a t-if="package.type == 'return'" t-attf-href="/account/rma/units?package_id=#{package.id}" 
-                       class="text-primary-theme hover:text-theme-dark mr-3" title="RMA List"
-                       data-history-url="/account/rma/units"
-                       data-history-title="RMA Units"
-                       data-history-icon="fa-box-open">
-                       <i class="fas fa-box-open"></i>
-                    </a>
-                    <a t-if="package.type == 'new'" t-attf-href="/account/reception/stock_list/#{package.id}" 
-                       class="text-blue-600 hover:text-blue-800 mr-3" title="Stock List"
-                       t-attf-data-history-url="/account/reception/stock_list/#{package.id}"
-                       data-history-title="Stock List"
-                       data-history-icon="fa-boxes">
-                       <i class="fas fa-boxes"></i>
-                    </a>
-                    
-                    <a t-if="package.sale_id" t-attf-href="/account/sales/details/#{package.sale_id.id}" 
-                       class="text-amber-600 hover:text-amber-800 mr-3" title="Sale Order"
-                       t-attf-data-history-url="/account/sales/details/#{package.sale_id.id}"
-                       t-attf-data-history-title="Sale Order: #{package.sale_id.name}"
-                       data-history-icon="fa-shopping-cart">
-                       <i class="fas fa-shopping-cart"></i>
-                    </a>
-                    
-                    <button t-if="package.rma_state == 'draft'" t-att-data-reception-id="package.id" class="reception-delete-btn text-gray-600 hover:text-gray-900 dark:text-gray-100" title="Delete"> <i class="fas fa-ban"></i> </button>
+                <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
+                    <div class="reception-actions flex items-center justify-end gap-1">
+                        <a t-attf-href="/account/reception/print/#{package.id}" class="text-gray-600 hover:text-gray-900 dark:text-gray-100" title="Print Label"> <i class="fas fa-print"></i> </a>
+                        <a t-attf-href="/account/reception/details/#{package.id}" class="text-gray-600 hover:text-gray-900 dark:text-gray-100" title="Internal Details"> <i class="fas fa-info-circle"></i> </a>
+                        
+                        <!-- Conditional Links -->
+                        <a t-if="package.type == 'return' and package.rma_unit_ids" t-attf-href="/account/rma/units?package_id=#{package.id}" 
+                           class="text-primary-theme hover:text-theme-dark" title="RMA List"
+                           data-history-url="/account/rma/units"
+                           data-history-title="RMA Units"
+                           data-history-icon="fa-box-open">
+                           <i class="fas fa-box-open"></i>
+                        </a>
+                        <a t-if="package.type == 'new' and package.quant_ids" t-attf-href="/account/reception/stock_list/#{package.id}" 
+                           class="text-blue-600 hover:text-blue-800" title="Stock List"
+                           t-attf-data-history-url="/account/reception/stock_list/#{package.id}"
+                           data-history-title="Stock List"
+                           data-history-icon="fa-boxes">
+                           <i class="fas fa-boxes"></i>
+                        </a>
+                        
+                        <a t-if="package.sale_id" t-attf-href="/account/sales/details/#{package.sale_id.id}" 
+                           class="text-amber-600 hover:text-amber-800" title="Sale Order"
+                           t-attf-data-history-url="/account/sales/details/#{package.sale_id.id}"
+                           t-attf-data-history-title="Sale Order: #{package.sale_id.name}"
+                           data-history-icon="fa-shopping-cart">
+                           <i class="fas fa-shopping-cart"></i>
+                        </a>
+                        
+                        <button t-if="package.rma_state == 'draft'" t-att-data-reception-id="package.id" class="reception-delete-btn text-gray-600 hover:text-gray-900 dark:text-gray-100" title="Delete"> <i class="fas fa-ban"></i> </button>
+                    </div>
                 </td>
             </tr>
             <!-- Other screen sizes omitted for clarity -->

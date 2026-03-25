@@ -4,9 +4,9 @@
     <!-- Package Create Modal -->
     <template id="reception_create_modal">
         <div t-attf-id="page-#{page_name}-list-create-modal" class="modal" data-outside-close="false">
-            <div class="modal-content w-full h-full max-w-full max-h-full rounded-none flex flex-col">
-                    <div class="modal-header">
-                    <h3 class="text-lg font-sm text-gray-900 dark:text-gray-100" t-attf-id="page-#{page_name}-list-create-modal-title">Create Package Return</h3>
+            <div class="modal-content max-w-2xl max-h-[95vh] rounded-2xl flex flex-col mx-auto my-auto shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div class="modal-header bg-white dark:bg-gray-800 px-6 py-4 flex justify-between items-center border-b border-gray-100 dark:border-gray-700">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100" t-attf-id="page-#{page_name}-list-create-modal-title">Create Package Reception</h3>
                     <button data-modal-close="true" class="close-modal" aria-label="Close modal">
                         <i class="fas fa-times"></i>
                     </button>
@@ -84,9 +84,9 @@
                                     <h4 class="text-sm font-bold text-gray-800 flex items-center">
                                         <i class="fas fa-boxes mr-2 text-theme"></i> Bulto Details
                                     </h4>
-                                    <button type="button" id="reception-add-package-btn" class="text-xs font-semibold px-3 py-1.5 bg-theme-light text-primary-theme rounded-lg hover:bg-primary-theme hover:text-white transition-all flex items-center border border-primary-theme/10">
+                                    <!-- <button type="button" id="reception-add-package-btn" class="text-xs font-semibold px-3 py-1.5 bg-theme-light text-primary-theme rounded-lg hover:bg-primary-theme hover:text-white transition-all flex items-center border border-primary-theme/10">
                                         <i class="fas fa-plus-circle mr-1.5"></i> Extra Bulto
-                                    </button>
+                                    </button> -->
                                 </div>
 
                                 <div id="reception-packages-list-container" class="space-y-3">
@@ -98,37 +98,48 @@
                                             <span class="text-[10px] text-gray-400 bg-gray-50 px-2 py-0.5 rounded border border-gray-100">Default</span>
                                         </div>
                                         <div class="mb-4">
-                                            <label class="text-[10px] font-bold text-gray-500 uppercase flex items-center">
-                                                <i class="fas fa-tag mr-2 text-theme-light"></i> Content / Product Name
+                                            <label class="text-[9px] font-bold text-gray-400 uppercase flex items-center">
+                                                <i class="fas fa-tag mr-1.5 text-gray-300"></i> Content / Product Name
                                             </label>
-                                            <input type="text" name="pkg_product_name[]" class="form-input-sm w-full mt-1 pkg-product-name rounded-lg border-gray-200" placeholder="e.g. Xiaomi Mi 11 Ultra..."/>
+                                            <input type="text" name="pkg_product_name[]" class="form-input-sm w-full pkg-product-name rounded-lg border-gray-100" placeholder="e.g. Xiaomi Mi 11 Ultra..."/>
                                         </div>
-                                        <div class="mb-4">
-                                            <label class="text-[10px] font-bold text-gray-500 uppercase flex items-center">
-                                                <i class="fas fa-cubes mr-2 text-theme-light"></i> Units
-                                            </label>
-                                            <input type="number" step="1" min="1" name="pkg_units[]" class="form-input-sm w-full mt-1 pkg-units rounded-lg border-gray-200" value="1"/>
+                                        <div class="grid grid-cols-2 gap-3 mb-3">
+                                            <div class="space-y-1">
+                                                <label class="text-[9px] font-bold text-gray-400 uppercase flex items-center">
+                                                    <i class="fas fa-cubes mr-1 text-gray-300"></i> Units
+                                                </label>
+                                                <input type="number" step="1" min="1" name="pkg_units[]" class="form-input-sm w-full pkg-units rounded-lg border-gray-100" value="1"/>
+                                            </div>
+                                            <div class="space-y-1">
+                                                <label class="text-[9px] font-bold text-gray-400 uppercase flex items-center">
+                                                    <i class="fas fa-weight-hanging mr-1 text-gray-300"></i> Weight (kg) *
+                                                </label>
+                                                <input type="number" step="0.01" min="0.1" name="pkg_weight[]" class="form-input-sm w-full pkg-weight rounded-lg border-gray-100" value="1.00"/>
+                                            </div>
                                         </div>
-
-                                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                                            <div>
-                                                <label class="text-[10px] font-bold text-gray-500 uppercase">Weight (kg) *</label>
-                                                <input type="number" step="0.01" min="0.1" name="pkg_weight[]" class="form-input-sm w-full mt-1 pkg-weight" value="1.00"/>
+                                        <div class="grid grid-cols-3 gap-3">
+                                            <div class="space-y-1">
+                                                <label class="text-[9px] font-bold text-gray-400 uppercase">Length (cm)</label>
+                                                <input type="number" step="1" min="1" name="pkg_length[]" class="form-input-sm w-full pkg-length" value="10"/>
                                             </div>
-                                            <div>
-                                                <label class="text-[10px] font-bold text-gray-500 uppercase">Length (cm)</label>
-                                                <input type="number" step="1" min="1" name="pkg_length[]" class="form-input-sm w-full mt-1 pkg-length" value="10"/>
+                                            <div class="space-y-1">
+                                                <label class="text-[9px] font-bold text-gray-400 uppercase">Width (cm)</label>
+                                                <input type="number" step="1" min="1" name="pkg_width[]" class="form-input-sm w-full pkg-width" value="10"/>
                                             </div>
-                                            <div>
-                                                <label class="text-[10px] font-bold text-gray-500 uppercase">Width (cm)</label>
-                                                <input type="number" step="1" min="1" name="pkg_width[]" class="form-input-sm w-full mt-1 pkg-width" value="10"/>
-                                            </div>
-                                            <div>
-                                                <label class="text-[10px] font-bold text-gray-500 uppercase">Height (cm)</label>
-                                                <input type="number" step="1" min="1" name="pkg_height[]" class="form-input-sm w-full mt-1 pkg-height" value="10"/>
+                                            <div class="space-y-1">
+                                                <label class="text-[9px] font-bold text-gray-400 uppercase">Height (cm)</label>
+                                                <input type="number" step="1" min="1" name="pkg_height[]" class="form-input-sm w-full pkg-height" value="10"/>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+
+                                <!-- Bottom Add Button Area -->
+                                <div class="flex justify-center py-2">
+                                    <button type="button" id="reception-add-package-btn-bottom" class="text-xs font-semibold px-6 py-2 bg-white text-primary-theme rounded-xl hover:bg-theme-light transition-all flex items-center border-2 border-dashed border-theme-light group w-full justify-center">
+                                        <i class="fas fa-plus-circle mr-2 text-theme group-hover:scale-110 transition-transform"></i> 
+                                        <span>Add Another Bulto</span>
+                                    </button>
                                 </div>
                             </div>
 

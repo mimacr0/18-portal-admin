@@ -149,17 +149,22 @@ const renderPackagesList = () => {
                     <i class="fas fa-tag mr-1.5 text-gray-300"></i> Content / Product Name
                 </label>
                 <input type="text" class="form-input-sm w-full pkg-field rounded-lg border-gray-100" data-field="product_name" data-index="${index}" value="${pkg.product_name || ''}" placeholder="Briefly describe what's inside..."/>
-            <div class="mb-4">
-                <label class="text-[9px] font-bold text-gray-400 uppercase flex items-center">
-                    <i class="fas fa-cubes mr-1.5 text-gray-300"></i> Units
-                </label>
-                <input type="number" step="1" min="1" class="form-input-sm w-full pkg-field rounded-lg border-gray-100" data-field="units" data-index="${index}" value="${pkg.units || 1}"/>
             </div>
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <div class="grid grid-cols-2 gap-3 mb-3">
                 <div class="space-y-1">
-                    <label class="text-[9px] font-bold text-gray-400 uppercase">Weight (kg) *</label>
-                    <input type="number" step="0.01" min="0.1" class="form-input-sm w-full pkg-field" data-field="weight" data-index="${index}" value="${pkg.weight}"/>
+                    <label class="text-[9px] font-bold text-gray-400 uppercase flex items-center">
+                        <i class="fas fa-cubes mr-1 text-gray-300"></i> Units
+                    </label>
+                    <input type="number" step="1" min="1" class="form-input-sm w-full pkg-field rounded-lg border-gray-100" data-field="units" data-index="${index}" value="${pkg.units || 1}"/>
                 </div>
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase flex items-center">
+                        <i class="fas fa-weight-hanging mr-1 text-gray-300"></i> Weight (kg) *
+                    </label>
+                    <input type="number" step="0.01" min="0.1" class="form-input-sm w-full pkg-field rounded-lg border-gray-100" data-field="weight" data-index="${index}" value="${pkg.weight}"/>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
                 <div class="space-y-1">
                     <label class="text-[9px] font-bold text-gray-400 uppercase">Length (cm)</label>
                     <input type="number" step="1" min="1" class="form-input-sm w-full pkg-field" data-field="length" data-index="${index}" value="${pkg.length}"/>
@@ -605,13 +610,15 @@ const initReceptionCreateModal = () => {
 
     // Add Package
     const addPkgBtn = getElement('reception-add-package-btn');
-    if (addPkgBtn) {
-        addPkgBtn.addEventListener('click', () => {
-            const pkgs = getPackages();
-            pkgs.push({ weight: 1.0, length: 10, width: 10, height: 10, units: 1 });
-            savePackages(pkgs);
-        });
-    }
+    const addPkgBtnBottom = getElement('reception-add-package-btn-bottom');
+    const onAddPackage = () => {
+        const pkgs = getPackages();
+        pkgs.push({ weight: 1.0, length: 10, width: 10, height: 10, units: 1 });
+        savePackages(pkgs);
+    };
+
+    if (addPkgBtn) addPkgBtn.addEventListener('click', onAddPackage);
+    if (addPkgBtnBottom) addPkgBtnBottom.addEventListener('click', onAddPackage);
 
 
     // Reset form and steps when modal closes

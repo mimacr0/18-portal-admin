@@ -34,13 +34,15 @@ class PortalReceptionModalController(PortalReceptionDetailsController):
         countries_to_match = []
         if sender_country_id:
             countries_to_match.append(int(sender_country_id))
-        if receiver_country_id:
-            countries_to_match.append(int(receiver_country_id))
+
+        # ESTO SE COMENTA SI LOS PAQUETES SOLO TIENEN COMO DESTINO LA EMRPESA MIMACRO
+        # if receiver_country_id:
+        #     countries_to_match.append(int(receiver_country_id))
             
         try:
             if countries_to_match:
                 domain = expression.AND([domain, [
-                    '|', ('country_ids', '=', False), 
+                    # '|', ('country_ids', '=', False), 
                     ('country_ids', 'in', list(set(countries_to_match)))
                 ]])
         except (ValueError, TypeError) as e:
